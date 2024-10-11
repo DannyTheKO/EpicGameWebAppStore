@@ -7,8 +7,6 @@ public partial class Account
 {
     public int AccountId { get; set; }
 
-    public int? GameId { get; set; }
-
     public string? Username { get; set; }
 
     public string? Password { get; set; }
@@ -20,6 +18,4 @@ public partial class Account
     public DateTime? CreatedOn { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
-    public virtual Game? Game { get; set; }
 }

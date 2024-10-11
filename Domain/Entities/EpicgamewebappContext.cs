@@ -45,19 +45,12 @@ public partial class EpicgamewebappContext : DbContext
 
             entity.ToTable("account");
 
-            entity.HasIndex(e => e.GameId, "GameID_INDEX");
-
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.GameId).HasColumnName("GameID");
             entity.Property(e => e.IsAdmin).HasColumnType("enum('N','Y')");
             entity.Property(e => e.Password).HasMaxLength(45);
             entity.Property(e => e.Username).HasMaxLength(45);
-
-            entity.HasOne(d => d.Game).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.GameId)
-                .HasConstraintName("FK_Account_Game");
         });
 
         modelBuilder.Entity<Accountgame>(entity =>
@@ -66,9 +59,9 @@ public partial class EpicgamewebappContext : DbContext
                 .HasNoKey()
                 .ToTable("accountgame");
 
-            entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_idx");
+            entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_INDEX");
 
-            entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_idx");
+            entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_INDEX");
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.DateAdded).HasColumnType("datetime");
@@ -91,20 +84,21 @@ public partial class EpicgamewebappContext : DbContext
 
             entity.HasIndex(e => e.AccountId, "AccountID_INDEX");
 
-            entity.HasIndex(e => e.GameId, "GameID_INDEX");
-
             entity.HasIndex(e => e.PaymentMethodId, "PaymentMethodID_INDEX");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-            entity.Property(e => e.GameId).HasColumnName("GameID");
             entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
             entity.Property(e => e.TotalAmount).HasPrecision(8);
 
             entity.HasOne(d => d.Account).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_Cart_Account");
+
+            entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.PaymentMethodId)
+                .HasConstraintName("FK_Cart_PaymentMethod");
         });
 
         modelBuilder.Entity<Cartdetail>(entity =>
@@ -125,8 +119,11 @@ public partial class EpicgamewebappContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany(p => p.Cartdetails)
                 .HasForeignKey(d => d.CartId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CartDetail_Cart");
+
+            entity.HasOne(d => d.Game).WithMany(p => p.Cartdetails)
+                .HasForeignKey(d => d.GameId)
+                .HasConstraintName("FK_CartDetail_Game");
         });
 
         modelBuilder.Entity<Discount>(entity =>

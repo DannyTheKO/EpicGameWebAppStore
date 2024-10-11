@@ -23,7 +23,7 @@ public partial class Game
 
     public string? Description { get; set; }
 
-    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
+    public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
