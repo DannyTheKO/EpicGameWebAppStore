@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Compile Remove="obj\**\*.cs" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 

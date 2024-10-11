@@ -20,4 +20,8 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="obj\**\*.cs" />
+	</ItemGroup>
+
 </Project>

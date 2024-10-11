@@ -1,7 +1,19 @@
+// Domain
+using EpicGameWebAppStore.Domain.Entities;
+
+// Application
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add connection into Database
+
+// Add scoped into services
+
 
 var app = builder.Build();
 
