@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-//Domain
+// Domain
 using EpicGameWebAppStore.Domain.Entities;
 
-namespace EpicGameWebAppStore.DataAccess;
+namespace EpicGameWebAppStore.Infrastructure.DataAccess;
 
 public partial class EpicgamewebappContext : DbContext
 {
