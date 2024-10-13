@@ -1,0 +1,35 @@
+@model EpicGameWebAppStore.Domain.Entities.Publisher
+
+<h1>Edit Publisher</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="PublisherId" />
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Address"></label>
+        <input asp-for="Address" />
+        <span asp-validation-for="Address"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" />
+        <span asp-validation-for="Phone"></span>
+    </div>
+    <div>
+        <label asp-for="Website"></label>
+        <input asp-for="Website" />
+        <span asp-validation-for="Website"></span>
+    </div>
+    <div>
+        <input type="submit" value="Save" />
+    </div>
+</form>

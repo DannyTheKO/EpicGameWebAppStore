@@ -1,0 +1,12 @@
+@model EpicGameWebAppStore.Domain.Entities.Publisher
+
+<h1>Delete Publisher</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>@Model.Name</h4>
+    <form asp-action="DeleteConfirmed">
+        <input type="hidden" asp-for="PublisherId" />
+        <input type="submit" value="Delete" />
+    </form>
+</div>

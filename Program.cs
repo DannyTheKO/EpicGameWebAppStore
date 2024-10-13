@@ -1,5 +1,7 @@
 // Domain
 using EpicGameWebAppStore.Domain.Entities;
+using EpicGameWebAppStore.Infrastructure.DataAccess; // Thêm không gian tên cho DbContext
+using Microsoft.EntityFrameworkCore;
 
 // Application
 
@@ -10,9 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Add connection into Database
+// Cấu hình kết nối đến cơ sở dữ liệu
+builder.Services.AddDbContext<EpicgamewebappContext>(options =>
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add scoped into services
+// Thêm các dịch vụ khác nếu cần
+// builder.Services.AddScoped<IYourService, YourService>(); // Ví dụ thêm dịch vụ
 
 
 var app = builder.Build();

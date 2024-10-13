@@ -1,0 +1,24 @@
+@model IEnumerable<EpicGameWebAppStore.Domain.Entities.Publisher>
+
+<h1>Publisher List</h1>
+<a asp-action="Create">Create New Publisher</a>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var publisher in Model)
+        {
+            <tr>
+                <td>@publisher.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@publisher.PublisherId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@publisher.PublisherId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
