@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+// The "EpicGameDBContext.cs" file acts as a bridge between the application and the database, 
+// providing an abstraction layer for performing database operations and managing the entities 
+// in the application.
+
+
 // Domain
 using EpicGameWebAppStore.Domain.Entities;
 
 namespace EpicGameWebAppStore.Infrastructure.DataAccess;
 
-public partial class EpicgamewebappContext : DbContext
+public partial class EpicGameDBContext : DbContext
 {
-    public EpicgamewebappContext()
+    public EpicGameDBContext()
     {
     }
 
-    public EpicgamewebappContext(DbContextOptions<EpicgamewebappContext> options)
+    public EpicGameDBContext(DbContextOptions<EpicGameDBContext> options)
         : base(options)
     {
     }
@@ -38,7 +43,7 @@ public partial class EpicgamewebappContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server = 127.0.0.1; User = root; Password = root; Database = epicgamewebapp");
+        => optionsBuilder.UseMySQL("Server=localhost;User=root;Password=root;Database=epicgamewebapp");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

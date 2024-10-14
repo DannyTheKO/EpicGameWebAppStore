@@ -1,8 +1,12 @@
-// Domain
-using EpicGameWebAppStore.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 // Application
+using EpicGameWebAppStore.Application.Services;
+using EpicGameWebAppStore.Application.Interfaces;
 
+// Infrastructure
+using EpicGameWebAppStore.Infrastructure.Repository;
+using EpicGameWebAppStore.Infrastructure.DataAccess;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Add connection into Database
+builder.Services.AddDbContext<EpicGameDBContext>(options =>
+    options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
 
 // Add scoped into services
-
+builder.Services.AddScoped<IGameServices, GameServices>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 var app = builder.Build();
 
