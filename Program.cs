@@ -8,6 +8,9 @@ using EpicGameWebAppStore.Application.Interfaces;
 using EpicGameWebAppStore.Infrastructure.Repository;
 using EpicGameWebAppStore.Infrastructure.DataAccess;
 
+// Domain
+using EpicGameWebAppStore.Domain.Repository;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

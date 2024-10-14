@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 // Domain
 using EpicGameWebAppStore.Domain.Entities;
+using EpicGameWebAppStore.Domain.Repository;
 
 // Application
 using EpicGameWebAppStore.Application.Interfaces;

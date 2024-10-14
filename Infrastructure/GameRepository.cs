@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 
-// Application
-using EpicGameWebAppStore.Application.Interfaces;
+
 
 // Domain
 using EpicGameWebAppStore.Domain.Entities;
+using EpicGameWebAppStore.Domain.Repository;
 
 // Infrastructure
 using EpicGameWebAppStore.Infrastructure.DataAccess;

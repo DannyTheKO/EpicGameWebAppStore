@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 // Domain
 using EpicGameWebAppStore.Domain.Entities;
 
-namespace EpicGameWebAppStore.Application.Interfaces
+namespace EpicGameWebAppStore.Domain.Repository
 {
     public interface IGameRepository
     {
