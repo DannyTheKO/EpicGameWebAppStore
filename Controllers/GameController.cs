@@ -22,7 +22,7 @@ namespace EpicGameWebAppStore.Controllers
         // GET: Game/Index
         public async Task<IActionResult> Index()
         {
-            var games = _gameServices.GetAllGameAsync();
+            var games = await _gameServices.GetAllGameAsync();
             return View(games);
         }
 
