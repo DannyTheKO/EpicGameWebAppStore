@@ -1,8 +1,12 @@
 @model IEnumerable<EpicGameWebAppStore.Domain.Entities.Publisher>
 
-<h1>Publisher List</h1>
-<a asp-action="Create">Create New Publisher</a>
-<table>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+
+<h1 class="mt-4">Publisher List</h1>
+<a asp-action="Create" class="btn btn-success">Create New Publisher</a>
+<table class="table mt-3">
     <thead>
         <tr>
             <th>Name</th>
@@ -15,8 +19,8 @@
             <tr>
                 <td>@publisher.Name</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@publisher.PublisherId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@publisher.PublisherId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@publisher.PublisherId" class="btn btn-warning">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@publisher.PublisherId" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

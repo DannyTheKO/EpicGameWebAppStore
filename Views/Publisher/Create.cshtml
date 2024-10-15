@@ -2,11 +2,15 @@
 
 <h1>Create Publisher</h1>
 
-<form asp-action="Create">
-    <div>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+
+<form asp-action="Create" class="container mt-4">
+    <div class="form-group">
         <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label asp-for="Address"></label>
@@ -29,6 +33,6 @@
         <span asp-validation-for="Website"></span>
     </div>
     <div>
-        <input type="submit" value="Create" />
+        <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
