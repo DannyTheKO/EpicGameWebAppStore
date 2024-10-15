@@ -15,6 +15,7 @@ namespace EpicGameWebAppStore.Application.Services
 {
     public class GameServices : IGameServices
     {
+        // Create Constructor
         private readonly IGameRepository _gameRepository;
 
         public GameServices(IGameRepository gameRepository)
@@ -22,23 +23,7 @@ namespace EpicGameWebAppStore.Application.Services
             _gameRepository = gameRepository;
         }
 
-        // TODO: Searching game by Name
-        // TODO: Searching game by Genre
-        // TODO: Searching game by Publisher
-        // TODO: Searching game by Release Date ? not sure...
-        // This is for searching game feature... for later use - Danny
-        public async Task<Game> GetGameByIdAsync(int id)
-        {
-            try
-            {
-                return await _gameRepository.GetById(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get specific game id", ex);
-            }
-        }
-
+        // == Basic CRUD Function ==
         public async Task<IEnumerable<Game>> GetAllGameAsync()
         {
             try
@@ -87,5 +72,26 @@ namespace EpicGameWebAppStore.Application.Services
             await _gameRepository.Delete(id);
             return game;
         }
+
+        // == Feature Function ==
+
+        // Search by Game ID
+        public async Task<Game> GetGameByIdAsync(int id)
+        {
+            try
+            {
+                return await _gameRepository.GetById(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to get specific game id", ex);
+            }
+        }
+
+        // TODO: Search By Publisher => Get Publisher By "ID"
+        // TODO: Search By Genre => Get Genre By "ID"
+        // TODO: Search By Name
+        // TODO: Search By Publisher
+        // TODO: Search By Rating
     }
 }

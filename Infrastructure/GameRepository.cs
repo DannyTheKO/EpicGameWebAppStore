@@ -24,7 +24,7 @@ public class GameRepository : IGameRepository
 
     public GameRepository(EpicGameDBContext context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _context = context;
     }
 
     public async Task<IEnumerable<Game>> GetAll()
