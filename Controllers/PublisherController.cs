@@ -1,4 +1,11 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using EpicGameWebAppStore.Application.Services;
+using EpicGameWebAppStore.Application.Interfaces;
+using EpicGameWebAppStore.Infrastructure.Repository;
+using EpicGameWebAppStore.Infrastructure.DataAccess;
+using EpicGameWebAppStore.Domain.Repository;
+using EpicGameWebAppStore.Domain.Entities;
 
 // Application
 using EpicGameWebAppStore.Application.Services;
@@ -19,12 +26,11 @@ builder.Services.AddControllersWithViews();
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDBContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+    options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
 
 // Add scoped into services
 builder.Services.AddScoped<IGameServices, GameServices>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 var app = builder.Build();
 
@@ -32,7 +38,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-   
+
     app.UseHsts();
 }
 
