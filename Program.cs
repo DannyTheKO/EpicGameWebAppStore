@@ -24,7 +24,6 @@ builder.Services.AddDbContext<EpicGameDBContext>(options =>
 // Add scoped into services
 builder.Services.AddScoped<IGameServices, GameServices>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 var app = builder.Build();
 

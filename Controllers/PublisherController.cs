@@ -1,56 +1,151 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using EpicGameWebAppStore.Application.Services;
-using EpicGameWebAppStore.Application.Interfaces;
-using EpicGameWebAppStore.Infrastructure.Repository;
-using EpicGameWebAppStore.Infrastructure.DataAccess;
-using EpicGameWebAppStore.Domain.Repository;
+using Microsoft.EntityFrameworkCore;
 using EpicGameWebAppStore.Domain.Entities;
-
-// Application
-using EpicGameWebAppStore.Application.Services;
-using EpicGameWebAppStore.Application.Interfaces;
-
-// Infrastructure
-using EpicGameWebAppStore.Infrastructure.Repository;
 using EpicGameWebAppStore.Infrastructure.DataAccess;
 
-// Domain
-using EpicGameWebAppStore.Domain.Repository;
-
-
-var builder = WebApplication.CreateBuilder(args);
-
-
-builder.Services.AddControllersWithViews();
-
-// Add connection into Database
-builder.Services.AddDbContext<EpicGameDBContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
-
-// Add scoped into services
-builder.Services.AddScoped<IGameServices, GameServices>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-
-var app = builder.Build();
-
-
-if (!app.Environment.IsDevelopment())
+namespace EpicGameWebAppStore.Controllers
 {
-    app.UseExceptionHandler("/Home/Error");
+    [Route("pub")] // Route gốc cho controller
+    public class PublishersController : Controller
+    {
+        private readonly EpicGameDBContext _context;
 
-    app.UseHsts();
+        public PublishersController(EpicGameDBContext context)
+        {
+            _context = context;
+        }
+
+        // GET: publishers
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Publishers.ToListAsync());
+        }
+
+        // GET: publishers/details/5
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var publisher = await _context.Publishers
+                .FirstOrDefaultAsync(m => m.PublisherId == id);
+            if (publisher == null)
+            {
+                return NotFound();
+            }
+
+            return View(publisher);
+        }
+
+        // GET: publishers/create
+        [HttpGet("create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: publishers/create
+        [HttpPost("create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("PublisherId,Name,Address,Email,Phone,Website")] Publisher publisher)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(publisher);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(publisher);
+        }
+
+        // GET: publishers/edit/5
+        [HttpGet("edit/{id}")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var publisher = await _context.Publishers.FindAsync(id);
+            if (publisher == null)
+            {
+                return NotFound();
+            }
+            return View(publisher);
+        }
+
+        // POST: publishers/edit/5
+        [HttpPost("edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("PublisherId,Name,Address,Email,Phone,Website")] Publisher publisher)
+        {
+            if (id != publisher.PublisherId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(publisher);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PublisherExists(publisher.PublisherId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(publisher);
+        }
+
+        // GET: publishers/delete/5
+        [HttpGet("delete/{id}")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var publisher = await _context.Publishers
+                .FirstOrDefaultAsync(m => m.PublisherId == id);
+            if (publisher == null)
+            {
+                return NotFound();
+            }
+
+            return View(publisher);
+        }
+
+        // POST: publishers/delete/5
+        [HttpPost("delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var publisher = await _context.Publishers.FindAsync(id);
+            _context.Publishers.Remove(publisher);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool PublisherExists(int id)
+        {
+            return _context.Publishers.Any(e => e.PublisherId == id);
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
