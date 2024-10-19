@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
-using EpicGameWebAppStore.Domain.Repository;
+using Domain.Entities;
+using Domain.Repository;
 
 // Application
-using EpicGameWebAppStore.Application.Interfaces;
+using Application.Interfaces;
 
-namespace EpicGameWebAppStore.Application.Services
+namespace Application.Services
 {
     public class GameServices : IGameServices
     {

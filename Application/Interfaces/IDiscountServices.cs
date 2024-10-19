@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
+using Domain.Entities;
 
-namespace EpicGameWebAppStore.Application.Interfaces
+namespace Application.Interfaces
 {
     public interface IDiscountServices
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Repository
+namespace Application.Interfaces
 {
-    internal interface IGenreRepository
+    public interface IAuthenticationService
     {
 
     }

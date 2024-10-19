@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
+using Domain.Entities;
 
 namespace EpicGameWebAppStore.Infrastructure.DataAccess;
 

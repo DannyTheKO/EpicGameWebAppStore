@@ -2,10 +2,10 @@
 using Org.BouncyCastle.Asn1.X509;
 
 // Application
-using EpicGameWebAppStore.Application.Interfaces;
+using Application.Interfaces;
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
+using Domain.Entities;
 
 
 namespace EpicGameWebAppStore.Controllers

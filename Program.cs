@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 
 // Application
-using EpicGameWebAppStore.Application.Services;
-using EpicGameWebAppStore.Application.Interfaces;
+using Application.Services;
+using Application.Interfaces;
 
 // Infrastructure
 using EpicGameWebAppStore.Infrastructure.Repository;
 using EpicGameWebAppStore.Infrastructure.DataAccess;
 
 // Domain
-using EpicGameWebAppStore.Domain.Repository;
+using Domain.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);

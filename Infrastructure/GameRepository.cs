@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
-using EpicGameWebAppStore.Domain.Repository;
+using Domain.Entities;
+using Domain.Repository;
 
 // Infrastructure
 using EpicGameWebAppStore.Infrastructure.DataAccess;
