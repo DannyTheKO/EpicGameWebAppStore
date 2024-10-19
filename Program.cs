@@ -6,7 +6,7 @@ using Application.Interfaces;
 
 // Infrastructure
 using EpicGameWebAppStore.Infrastructure.Repository;
-using EpicGameWebAppStore.Infrastructure.DataAccess;
+using Infrastructure.DataAccess;
 
 // Domain
 using Domain.Repository;
@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Add connection into Database
-builder.Services.AddDbContext<EpicGameDBContext>(options =>
+builder.Services.AddDbContext<EpicGameDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
 
 // Add scoped into services

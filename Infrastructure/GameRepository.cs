@@ -13,16 +13,16 @@ using Domain.Entities;
 using Domain.Repository;
 
 // Infrastructure
-using EpicGameWebAppStore.Infrastructure.DataAccess;
+using Infrastructure.DataAccess;
 
 
 namespace EpicGameWebAppStore.Infrastructure.Repository;
 
 public class GameRepository : IGameRepository
 {
-    private readonly EpicGameDBContext _context;
+    private readonly EpicGameDbContext _context;
 
-    public GameRepository(EpicGameDBContext context)
+    public GameRepository(EpicGameDbContext context)
     {
         _context = context;
     }
