@@ -12,57 +12,48 @@ using Infrastructure.Repository;
 using Domain.Repository;
 using Domain.Authentication;
 
-
-var builder = WebApplication.CreateBuilder(args);
-
-
-builder.Services.AddControllersWithViews();
-
-// Add connection into Database
-builder.Services.AddDbContext<EpicGameDbContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
-
-// == Add scoped into services ==
-
-// Authentication Service
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-// Authorization Service
-
-
-
-// Game Service
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-
-// Account Service
-
-// Discount Service
-
-// Genre Service
-
-// Publisher Service
-
-var app = builder.Build();
-
-
-if (!app.Environment.IsDevelopment())
+namespace EpicGameWebAppStore
 {
-    app.UseExceptionHandler("/Home/Error");
-   
-    app.UseHsts();
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllersWithViews();
+
+            // Add connection into Database
+            builder.Services.AddDbContext<EpicGameDbContext>(options =>
+                options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+
+            // Add scoped services
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IGameService, GameService>();
+            builder.Services.AddScoped<IGameRepository, GameRepository>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+            builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+            builder.Services.AddScoped<IPublisherService, PublisherService>();
+
+            var app = builder.Build();
+
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.Run();
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
