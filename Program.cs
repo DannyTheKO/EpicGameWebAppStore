@@ -25,7 +25,7 @@ builder.Services.AddDbContext<EpicGameDbContext>(options =>
 // == Add scoped into services ==
 
 // Authentication Service
-builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Authorization Service
@@ -33,7 +33,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 // Game Service
-builder.Services.AddScoped<IGameServices, GameServices>();
+builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 // Account Service

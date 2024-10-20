@@ -10,11 +10,11 @@ using Domain.Entities;
 
 namespace Application.Services
 {
-    public class AuthenticationServices : IAuthenticationServices
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserRepository _userRepository;
 
-        public AuthenticationServices(IUserRepository userRepository)
+        public AuthenticationService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -22,7 +22,7 @@ namespace Application.Services
         public async Task<bool> ValidateUserCredentialAsync(string username, string password)
         {
             var account = await _userRepository.GetUserByUserNameAsync(username);
-            return account != null && account.Password == password;
+            return account.Username != null && account.Password == password;
         }
 
         public async Task<string> GenerateTokenAsync(string username)

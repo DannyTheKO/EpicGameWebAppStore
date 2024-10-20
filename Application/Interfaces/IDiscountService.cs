@@ -9,7 +9,7 @@ using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IDiscountServices
+    public interface IDiscountService
     {
         // == Basic CRUD Function ==
         public Task<IEnumerable<Discount>> GetAllDiscountAsync();

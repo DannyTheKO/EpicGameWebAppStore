@@ -13,12 +13,12 @@ using Application.Interfaces;
 
 namespace Application.Services
 {
-    public class GameServices : IGameServices
+    public class GameService : IGameService
     {
         // Create Constructor
         private readonly IGameRepository _gameRepository;
 
-        public GameServices(IGameRepository gameRepository)
+        public GameService(IGameRepository gameRepository)
         {
             _gameRepository = gameRepository;
         }

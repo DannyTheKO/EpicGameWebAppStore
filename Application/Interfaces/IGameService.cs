@@ -9,7 +9,7 @@ using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IGameServices
+    public interface IGameService
     {
         // == Basic CRUD Function ==
         public Task<IEnumerable<Game>> GetAllGameAsync();

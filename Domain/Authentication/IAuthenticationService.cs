@@ -9,7 +9,7 @@ using Domain.Entities;
 
 namespace Domain.Authentication
 {
-    public interface IAuthenticationServices
+    public interface IAuthenticationService
     {
         Task<bool> ValidateUserCredentialAsync(string username, string password);
         Task<string> GenerateTokenAsync(string username);

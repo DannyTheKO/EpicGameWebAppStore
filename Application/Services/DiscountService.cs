@@ -14,11 +14,11 @@ using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Application.Services
 {
-    public class DiscountServices : IDiscountServices
+    public class DiscountService : IDiscountService
     {
         private readonly IDiscountRepository _discountRepository;
 
-        public DiscountServices(IDiscountRepository discountRepository)
+        public DiscountService(IDiscountRepository discountRepository)
         {
             _discountRepository = discountRepository;
         }
