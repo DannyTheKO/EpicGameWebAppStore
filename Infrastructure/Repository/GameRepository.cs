@@ -16,7 +16,7 @@ using Domain.Repository;
 using Infrastructure.DataAccess;
 
 
-namespace EpicGameWebAppStore.Infrastructure.Repository;
+namespace Infrastructure.Repository;
 
 public class GameRepository : IGameRepository
 {
