@@ -4,13 +4,13 @@ using NuGet.Common;
 using Microsoft.EntityFrameworkCore;
 
 // Domain
-using Application.Interfaces;
 using Domain.Entities;
+
+// Application
+using Application.Interfaces;
 
 namespace EpicGameWebAppStore.Controllers
 {
-    //[ApiController]
-    //[Route("[controller]")]
     public class AuthController : Controller
     {
         private readonly IAuthenticationService _authenticationServices;
@@ -24,9 +24,36 @@ namespace EpicGameWebAppStore.Controllers
         [HttpGet("RegisterPage")]
         public IActionResult RegisterPage()
         {
-	        return View(new Account());
+	        return View();
         }
 		// TODO: POST: Auth/Register
+		public async Task<IActionResult> RegisterConfirm(Account account)
+		{
+			// Validate if user input is valid
+			if (!ModelState.IsValid)
+			{
+				return View("RegisterPage", account);
+			}
+
+			// Check if the username already exists
+			var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
+			if (existingAccount != null)
+			{
+				ModelState.AddModelError(string.Empty, "Username already exists");
+				return View("RegisterPage", account);
+			}
+
+			// Create a new account
+			account.CreatedOn = DateTime.UtcNow;
+			// TODO: Hash the password before saving it
+			// account.Password = HashPassword(account.Password);
+
+			// Save the account to the database
+			await _authenticationServices.AddUserAsync(account);
+
+			// Redirect to login page or return a success message
+			return RedirectToAction("LoginPage");
+		}
 
 
         // GET: Auth/LoginPage

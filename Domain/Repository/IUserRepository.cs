@@ -12,6 +12,23 @@ namespace Domain.Repository
 {
     public interface IUserRepository
     {
-        Task<Account> GetUserByUserNameAsync(string username);
+
+		// == Basic CRUD operation ==
+
+        // Create User into Database
+        Task AddUserAsync(Account account);
+
+        // TODO: Read User From the Database
+
+        // TODO: Update User From the Database
+
+        // TODO: Delete User From the Database
+
+		
+        // == Function operation ==
+
+		// Get User by Username From the Database
+		Task<Account> GetUserByUserNameAsync(string username);
+
     }
 }

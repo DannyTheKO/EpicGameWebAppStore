@@ -11,8 +11,30 @@ namespace Application.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<bool> ValidateUserCredentialAsync(string username, string password);
-        Task<string> GenerateTokenAsync(string username);
+        // == Basic CRUD operation ==
+
+        // TODO: Create User
+        Task AddUserAsync(Account account);
+        
+        // TODO: Read User
+        
+        // TODO: Update User
+        
+        // TODO: Delete User
+
+
+        // == Function operation ==
+
+        // Select specify user
         Task<Account> GetAccountByUserNameAsync(string username);
+        
+
+        // == Service Application ==
+
+        // Validate User Credential
+        Task<bool> ValidateUserCredentialAsync(string username, string password);
+        
+        // Generate Token for User
+        Task<string> GenerateTokenAsync(string username);
     }
 }

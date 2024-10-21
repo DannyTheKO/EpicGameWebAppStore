@@ -23,10 +23,30 @@ namespace Infrastructure.Repository
         {
             _context = context;
         }
-        
-        public async Task<Account> GetUserByUserNameAsync(string username)
+
+		// == Basic CRUD operation ==
+
+		// Create User into Database
+		public async Task AddUserAsync(Account account)
+        {
+	        _context.Accounts.Add(account);
+	        await _context.SaveChangesAsync();
+        }
+
+		// TODO: Read User From the Database
+
+		// TODO: Update User From the Database
+
+		// TODO: Delete User From the Database
+
+
+		// == Function operation ==
+
+		// Get User by Username From the Database
+		public async Task<Account> GetUserByUserNameAsync(string username)
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
         }
+
     }
 }
