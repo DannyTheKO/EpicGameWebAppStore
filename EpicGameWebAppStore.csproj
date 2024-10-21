@@ -21,19 +21,28 @@
 	  <Compile Remove="DataAccess\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Infrastructure\**" />
+	  <Compile Remove="Tests\**"/>
+
 	  <Compile Remove="obj\**\*.cs" />
+
 	  <Content Remove="Application\**" />
 	  <Content Remove="DataAccess\**" />
 	  <Content Remove="Domain\**" />
 	  <Content Remove="Infrastructure\**" />
+	  <Content Remove="Tests\**"/>
+
 	  <EmbeddedResource Remove="Application\**" />
 	  <EmbeddedResource Remove="DataAccess\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Infrastructure\**" />
+	  <EmbeddedResource Remove="Tests\**"/>
+	  
 	  <None Remove="Application\**" />
 	  <None Remove="DataAccess\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Infrastructure\**" />
+	  <None Remove="Tests\**"/>
+
 	  <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 

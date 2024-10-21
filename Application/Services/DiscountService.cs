@@ -5,20 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
-using EpicGameWebAppStore.Domain.Repository;
+using Domain.Entities;
+using Domain.Repository;
 
 // Application
-using EpicGameWebAppStore.Application.Interfaces;
+using Application.Interfaces;
 using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace Application.Services
 {
-    public class DiscountServices : IDiscountServices
+    public class DiscountService : IDiscountService
     {
         private readonly IDiscountRepository _discountRepository;
 
-        public DiscountServices(IDiscountRepository discountRepository)
+        public DiscountService(IDiscountRepository discountRepository)
         {
             _discountRepository = discountRepository;
         }

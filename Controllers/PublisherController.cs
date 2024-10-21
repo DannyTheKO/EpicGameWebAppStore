@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EpicGameWebAppStore.Domain.Entities;
-using EpicGameWebAppStore.Infrastructure.DataAccess;
+using Domain.Entities;
+using Infrastructure.DataAccess;
 
 namespace EpicGameWebAppStore.Controllers
 {
     [Route("pub")] // Route gốc cho controller
-    public class PublishersController : Controller
+    public class PublisherController : Controller
     {
-        private readonly EpicGameDBContext _context;
+        private readonly EpicGameDbContext _context;
 
-        public PublishersController(EpicGameDBContext context)
+        public PublisherController(EpicGameDbContext context)
         {
             _context = context;
         }

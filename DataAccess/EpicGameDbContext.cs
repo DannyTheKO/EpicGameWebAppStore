@@ -8,17 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 
 // Domain
-using EpicGameWebAppStore.Domain.Entities;
+using Domain.Entities;
 
-namespace EpicGameWebAppStore.Infrastructure.DataAccess;
+namespace Infrastructure.DataAccess;
 
-public partial class EpicGameDBContext : DbContext
+public partial class EpicGameDbContext : DbContext
 {
-    public EpicGameDBContext()
+    public EpicGameDbContext()
     {
     }
 
-    public EpicGameDBContext(DbContextOptions<EpicGameDBContext> options)
+    public EpicGameDbContext(DbContextOptions<EpicGameDbContext> options)
         : base(options)
     {
     }
