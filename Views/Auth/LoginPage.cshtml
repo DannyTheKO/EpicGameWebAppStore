@@ -5,7 +5,7 @@
 
 <div class="row align-content-center justify-content-center">
     <div class="col col-md-4">
-		<form asp-action="LoginConfirm" asp-controller="Auth" method="post">
+		<form asp-action="LoginConfirm" asp-controller="Auth">
 		    <div asp-validation-summary="All" class="text-danger"></div>
 		    <div class="my-3 flex d-flex flex-row justify-content-between">
 			    <label asp-for="Username">Username</label>
@@ -18,7 +18,7 @@
 		    </div>
 
 		    <button type="submit" class="btn btn-success">Login</button>
-		    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+			<a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
 	    </form>
     </div>
 </div>

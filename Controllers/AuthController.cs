@@ -9,8 +9,8 @@ using Domain.Entities;
 
 namespace EpicGameWebAppStore.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    //[ApiController]
+    //[Route("[controller]")]
     public class AuthController : Controller
     {
         private readonly IAuthenticationService _authenticationServices;
@@ -26,7 +26,7 @@ namespace EpicGameWebAppStore.Controllers
         {
 	        return View(new Account());
         }
-        // TODO: POST: Auth/Register
+		// TODO: POST: Auth/Register
 
 
         // GET: Auth/LoginPage
@@ -36,40 +36,40 @@ namespace EpicGameWebAppStore.Controllers
 	        return View();
         }
 
-        // POST: Auth/
-        [HttpPost("LoginConfirm")]
+		// POST: Auth/LoginConfirm
+		[HttpPost("LoginConfirm")]
         public async Task<IActionResult> LoginConfirm(Account account)
         {
-            // Validate if user input is valid
-            if (!ModelState.IsValid) // Requirement is not satisfy => FAIL
-            {
-	            return View("LoginPage", account);
-            }
+	        // Validate if user input is valid
+	        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+	        {
+		        return View("LoginPage", account);
+	        }
 
-            // check if the user exist in the database
-            var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
-            if (existingAccount != null) // FOUND! 
-            {
-                // Get token for the existingAccount
-	            if (await _authenticationServices.ValidateUserCredentialAsync(account.Username, account.Password)) // Success
-	            {
-		            var token = await _authenticationServices.GenerateTokenAsync(account.Username);
-		            return Ok(new { Token = token });
-	            }
-	            else
-	            {
-                    // Password is incorrect
-                    ModelState.AddModelError(string.Empty, "Incorrect Password");
-	            }
-			}
-            else
-            {
-                //User does not exist in our database
-                ModelState.AddModelError(string.Empty, "User doest not exist");
-            }
-            
-            // Return to the login page with validation errors
-			return View("LoginPage", account);
+	        // Check if the user exists in the database
+	        var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
+	        if (existingAccount != null) // FOUND!
+	        {
+		        // Validate user credentials
+		        if (await _authenticationServices.ValidateUserCredentialAsync(account.Username, account.Password)) // Success
+		        {
+			        var token = await _authenticationServices.GenerateTokenAsync(account.Username);
+			        return Ok(new { Token = token });
+		        }
+		        else
+		        {
+			        // Password is incorrect
+			        ModelState.AddModelError(string.Empty, "Incorrect Password");
+		        }
+	        }
+	        else
+	        {
+		        // User does not exist in our database
+		        ModelState.AddModelError(string.Empty, "User does not exist");
+	        }
+
+	        // Return to the login page with validation errors
+	        return View("LoginPage", account);
         }
-    }
+	}
 }
