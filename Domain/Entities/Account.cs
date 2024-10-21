@@ -6,6 +6,7 @@ namespace Domain.Entities;
 
 public class Account
 {
+    
     public int AccountId { get; set; }
 
     [Required(ErrorMessage = "Username is required.")]
