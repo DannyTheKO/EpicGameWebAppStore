@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class Discount
+public class Discount
 {
     public int DiscountId { get; set; }
 

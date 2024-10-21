@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class Publisher
+public class Publisher
 {
     public int PublisherId { get; set; }
 

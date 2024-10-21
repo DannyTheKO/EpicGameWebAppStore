@@ -21,29 +21,49 @@
 	  <Compile Remove="DataAccess\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Infrastructure\**" />
-	  <Compile Remove="Tests\**"/>
+	  <Compile Remove="Tests\**" />
 
 	  <Compile Remove="obj\**\*.cs" />
+
+	  <Compile Remove="_Resource\**" />
 
 	  <Content Remove="Application\**" />
 	  <Content Remove="DataAccess\**" />
 	  <Content Remove="Domain\**" />
 	  <Content Remove="Infrastructure\**" />
-	  <Content Remove="Tests\**"/>
+	  <Content Remove="Tests\**" />
+	  <Content Remove="_Resource\**" />
 
 	  <EmbeddedResource Remove="Application\**" />
 	  <EmbeddedResource Remove="DataAccess\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Infrastructure\**" />
-	  <EmbeddedResource Remove="Tests\**"/>
+	  <EmbeddedResource Remove="Tests\**" />
+	  <EmbeddedResource Remove="_Resource\**" />
 	  
 	  <None Remove="Application\**" />
 	  <None Remove="DataAccess\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Infrastructure\**" />
-	  <None Remove="Tests\**"/>
+	  <None Remove="Tests\**" />
+	  <None Remove="_Resource\**" />
 
 	  <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

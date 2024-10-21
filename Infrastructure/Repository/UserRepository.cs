@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 // Domain
-using Domain.Authentication;
 using Domain.Entities;
 
 // Infrastructure
-using Infrastructure.DataAccess;
+using DataAccess;
+using Domain.Repository;
 
 
 namespace Infrastructure.Repository

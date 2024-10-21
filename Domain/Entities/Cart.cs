@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class Cart
+public class Cart
 {
     public int CartId { get; set; }
 

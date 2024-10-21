@@ -5,12 +5,11 @@ using Application.Services;
 using Application.Interfaces;
 
 // Infrastructure
-using Infrastructure.DataAccess;
+using DataAccess;
 using Infrastructure.Repository;
 
 // Domain
 using Domain.Repository;
-using Domain.Authentication;
 
 
 var builder = WebApplication.CreateBuilder(args);

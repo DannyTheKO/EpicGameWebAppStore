@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 // Domain
 using Domain.Entities;
 
-namespace Infrastructure.DataAccess;
+namespace DataAccess;
 
 public partial class EpicGameDbContext : DbContext
 {

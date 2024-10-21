@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Domain
-using Domain.Authentication;
+using Application.Interfaces;
 using Domain.Entities;
+using Domain.Repository;
 
 namespace Application.Services
 {
@@ -22,12 +23,12 @@ namespace Application.Services
         public async Task<bool> ValidateUserCredentialAsync(string username, string password)
         {
             var account = await _userRepository.GetUserByUserNameAsync(username);
-            return account.Username != null && account.Password == password;
+            return account != null && account.Password == password;
         }
 
         public async Task<string> GenerateTokenAsync(string username)
         {
-            // Implement logic to generate a JWT or other token
+            // TODO: Implement logic to generate a JWT or other token
             return await Task.FromResult("generated_token");
         }
 

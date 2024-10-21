@@ -1,0 +1,31 @@
+﻿@model Domain.Entities.Account
+
+<h2>@ViewData["Title"]</h2>
+<hr/>
+
+<div class="row align-content-center justify-content-center">
+    <div class="col col-md-4">
+		<form asp-action="LoginConfirm" asp-controller="Auth" method="post">
+		    <div asp-validation-summary="All" class="text-danger"></div>
+		    <div class="my-3 flex d-flex flex-row justify-content-between">
+			    <label asp-for="Username">Username</label>
+			    <input asp-for="Username"/>
+		    </div>
+        
+		    <div class="my-3 flex d-flex justify-content-between">
+			    <label asp-for="Password">Password</label>
+			    <input asp-for="Password" type="password"/>
+		    </div>
+
+		    <button type="submit" class="btn btn-success">Login</button>
+		    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+	    </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

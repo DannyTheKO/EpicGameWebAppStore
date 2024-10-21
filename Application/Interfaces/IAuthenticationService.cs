@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 // Domain
 using Domain.Entities;
 
-namespace Domain.Authentication
+namespace Application.Interfaces
 {
     public interface IAuthenticationService
     {
