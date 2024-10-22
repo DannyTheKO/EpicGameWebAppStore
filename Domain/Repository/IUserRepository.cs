@@ -18,17 +18,20 @@ namespace Domain.Repository
         // Create User into Database
         Task AddUserAsync(Account account);
 
-        // TODO: Read User From the Database
+		// TODO: Read User From the Database
 
-        // TODO: Update User From the Database
+		// TODO: Update User From the Database
 
-        // TODO: Delete User From the Database
+		// TODO: Delete User From the Database
 
-		
-        // == Function operation ==
 
-		// Get User by Username From the Database
-		Task<Account> GetUserByUserNameAsync(string username);
+		// == Function operation ==
+
+		// Get "Username" value by specific Account
+		Task<Account> GetByUsernameAsync(string username);
+
+		// Get "Email" value by specific Account
+		Task<Account> GetByEmailAsync(string email);
 
     }
 }

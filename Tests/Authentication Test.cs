@@ -22,7 +22,7 @@ public class AuthenticationServiceTests
 		// Arrange
 		var username = "TestUser";
 		var password = "password123";
-		_userRepositoryMock.Setup(repo => repo.GetUserByUserNameAsync(username))
+		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username))
 			.ReturnsAsync(new Account { Username = username, Password = password });
 
 		// Act
@@ -38,7 +38,7 @@ public class AuthenticationServiceTests
 		// Arrange
 		var username = "Test";
 		var password = "securepass";
-		_userRepositoryMock.Setup(repo => repo.GetUserByUserNameAsync(username))
+		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username))
 			.ReturnsAsync(new Account { Username = username, Password = "password" });
 
 		// Act

@@ -42,10 +42,16 @@ namespace Infrastructure.Repository
 
 		// == Function operation ==
 
-		// Get User by Username From the Database
-		public async Task<Account> GetUserByUserNameAsync(string username)
+		// Get "Username" from the Account table in the Database
+		public async Task<Account> GetByUsernameAsync(string username)
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+        }
+
+		// Get "Email" from the Account table in the Database
+		public async Task<Account> GetByEmailAsync(string email)
+        {
+	        return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
         }
 
     }

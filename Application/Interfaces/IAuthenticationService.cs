@@ -15,23 +15,26 @@ namespace Application.Interfaces
 
         // TODO: Create User
         Task AddUserAsync(Account account);
-        
-        // TODO: Read User
-        
-        // TODO: Update User
-        
-        // TODO: Delete User
+
+		// TODO: Read User
+
+		// TODO: Update User
+
+		// TODO: Delete User
 
 
-        // == Function operation ==
+		// == Function operation ==
 
-        // Select specify user
+		// Get "Username" value from specific Account
         Task<Account> GetAccountByUserNameAsync(string username);
-        
 
-        // == Service Application ==
+		// Get "Email" value from specific Account
+		Task<Account> GetAccountByEmailAsync(string email);
 
-        // Validate User Credential
+
+		// == Service Application ==
+
+		// Validate User Credential
         Task<bool> ValidateUserCredentialAsync(string username, string password);
         
         // Generate Token for User

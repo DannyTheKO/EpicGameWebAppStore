@@ -9,84 +9,111 @@ using Domain.Entities;
 // Application
 using Application.Interfaces;
 
+// Presentation
+using EpicGameWebAppStore.Models;
+
 namespace EpicGameWebAppStore.Controllers
 {
-    public class AuthController : Controller
-    {
-        private readonly IAuthenticationService _authenticationServices;
+	public class AuthController : Controller
+	{
+		private readonly IAuthenticationService _authenticationServices;
 
-        public AuthController(IAuthenticationService authenticationServices)
-        {
-            _authenticationServices = authenticationServices;
-        }
+		public AuthController(IAuthenticationService authenticationServices)
+		{
+			_authenticationServices = authenticationServices;
+		}
 
 		// == Register ==
 
-        // TODO: GET: Auth/Register
-        [HttpGet("RegisterPage")]
-        public IActionResult RegisterPage()
-        {
-	        return View();
-        }
-		// TODO: POST: Auth/Register
-		public async Task<IActionResult> RegisterConfirm(Account account)
+		// GET: Auth/Register
+		[HttpGet("RegisterPage")]
+		public IActionResult RegisterPage()
 		{
-			// Validate if user input is valid
+			return View();
+		}
+		// POST: Auth/RegisterConfirm
+		public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel, Account account)
+		{
+			// ==> Validate if user input is valid
 			if (!ModelState.IsValid)
 			{
+				return View("RegisterPage", registerViewModel);
+			}
+
+			// Check if the username and email already exists
+			var existingAccountUserName = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
+			var existingAccountEmail = await _authenticationServices.GetAccountByEmailAsync(account.Email);
+			if (existingAccountUserName != null && existingAccountEmail != null)
+			{
+				ModelState.AddModelError(string.Empty, "Username and Email already exists");
 				return View("RegisterPage", account);
 			}
 
-			// Check if the username already exists
-			var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
-			if (existingAccount != null)
+			if (existingAccountEmail != null)
+			{
+				ModelState.AddModelError(string.Empty, "Email already exists");
+				return View("RegisterPage", account);
+			}
+
+			if (existingAccountUserName != null)
 			{
 				ModelState.AddModelError(string.Empty, "Username already exists");
 				return View("RegisterPage", account);
 			}
 
-			// Create a new account
-			account.CreatedOn = DateTime.UtcNow;
-			// TODO: Hash the password before saving it
-			// account.Password = HashPassword(account.Password);
+			// Check is the "Password" and the "Confirm Password" is correct
+			if (registerViewModel.Password != registerViewModel.ConfirmPassword)
+			{
+				ModelState.AddModelError(string.Empty, "Password and Confirm Password are not the same");
+				return View("RegisterPage", account);
+			}
 
-			// Save the account to the database
+			// ==> Create a new account
+			account.CreatedOn = DateTime.UtcNow;
+			account.Username = registerViewModel.Username;
+			account.Password = registerViewModel.Password; // TODO: Hash the password before saving it
+			account.Email = registerViewModel.Email;
+			account.IsAdmin = "N"; // TODO: Going do some authorization later for this.
+								   // account.Password = HashPassword(account.Password);
+
+
+			// ==> Save the account to the database
 			await _authenticationServices.AddUserAsync(account);
 
-			// Redirect to login page or return a success message
-			return RedirectToAction("LoginPage");
+			// ==> Redirect to login page or return a success message
+			return RedirectToAction("RegisterPage");
 		}
 
 
 		// == Login ==
 
-        // GET: Auth/LoginPage
-        [HttpGet("LoginPage")]
-        public IActionResult LoginPage()
-        {
-	        return View();
-        }
+		// GET: Auth/LoginPage
+		[HttpGet("LoginPage")]
+		public IActionResult LoginPage()
+		{
+			return View();
+		}
 
 		// POST: Auth/LoginConfirm
 		[HttpPost("LoginConfirm")]
         public async Task<IActionResult> LoginConfirm(Account account)
-        {
-	        // Validate if user input is valid
+		{
+			// Validate if user input is valid
 	        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-	        {
+			{
 		        return View("LoginPage", account);
-	        }
+			}
 
 	        // Check if the user exists in the database
 	        var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
 	        if (existingAccount != null) // FOUND!
-	        {
+			{
 		        // Validate user credentials
 		        if (await _authenticationServices.ValidateUserCredentialAsync(account.Username, account.Password)) // Success
-		        {
-			        var token = await _authenticationServices.GenerateTokenAsync(account.Username);
-			        return Ok(new { Token = token });
-		        }
+				{
+					var token = await _authenticationServices.GenerateTokenAsync(account.Username);
+					return Ok(new { Token = token });
+				}
 		        else
 		        {
 			        // Password is incorrect
@@ -97,10 +124,10 @@ namespace EpicGameWebAppStore.Controllers
 	        {
 		        // User does not exist in our database
 		        ModelState.AddModelError(string.Empty, "User does not exist");
-	        }
+			}
 
-	        // Return to the login page with validation errors
-	        return View("LoginPage", account);
-        }
+			// Return to the login page with validation errors
+			return View("LoginPage", account);
+		}
 	}
 }

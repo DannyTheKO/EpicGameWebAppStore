@@ -36,17 +36,25 @@ namespace Application.Services
 
 
 		// == Function operation ==
-        public async Task<Account> GetAccountByUserNameAsync(string username)
+
+		// Get "Username" value by specific Account
+		public async Task<Account> GetAccountByUserNameAsync(string username)
         {
-            return await _userRepository.GetUserByUserNameAsync(username);
+            return await _userRepository.GetByUsernameAsync(username);
         }
 
-        // == Service Application ==
-		public async Task<bool> ValidateUserCredentialAsync(string username, string password)
+        // Get "Email" value by specific Account
+        public async Task<Account> GetAccountByEmailAsync(string email)
         {
-            var account = await _userRepository.GetUserByUserNameAsync(username);
-            return account != null && account.Password == password;
+	        return await _userRepository.GetByEmailAsync(email);
         }
+
+		// == Service Application ==
+		public async Task<bool> ValidateUserCredentialAsync(string username, string password)
+		{
+            var account = await _userRepository.GetByUsernameAsync(username);
+			return account != null && account.Password == password;
+		}
 
         public async Task<string> GenerateTokenAsync(string username)
         {
