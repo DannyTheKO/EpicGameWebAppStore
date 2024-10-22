@@ -20,6 +20,8 @@ namespace EpicGameWebAppStore.Controllers
             _authenticationServices = authenticationServices;
         }
 
+		// == Register ==
+
         // TODO: GET: Auth/Register
         [HttpGet("RegisterPage")]
         public IActionResult RegisterPage()
@@ -55,6 +57,8 @@ namespace EpicGameWebAppStore.Controllers
 			return RedirectToAction("LoginPage");
 		}
 
+
+		// == Login ==
 
         // GET: Auth/LoginPage
         [HttpGet("LoginPage")]
