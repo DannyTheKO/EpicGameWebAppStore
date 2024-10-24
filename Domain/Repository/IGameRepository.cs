@@ -1,32 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 // Domain
-using Domain.Entities;
 
-namespace Domain.Repository
+namespace Domain.Repository;
+
+public interface IGameRepository
 {
-    public interface IGameRepository
-    {
-        // == Basic CRUD Function ==
-        public Task<IEnumerable<Game>> GetAll();
-        public Task Add(Game game);
-        public Task Update(Game game);
-        public Task Delete(int id);
+	// == Basic CRUD Function ==
+	public Task<IEnumerable<Game>> GetAll();
+	public Task Add(Game game);
+	public Task Update(Game game);
+	public Task Delete(int id);
 
 
-        // == Feature Function ==
+	// == Feature Function ==
 
-        // Search by Game ID
-        public Task<Game> GetById(int id);
+	// Search by Game ID
+	public Task<Game> GetById(int id);
 
-        // TODO: Search By Publisher => Get Publisher By "ID"
-        // TODO: Search By Genre => Get Genre By "ID"
-        // TODO: Search By Name
-        // TODO: Search By Publisher
-        // TODO: Search By Rating
-    }
+	// TODO: Search By Publisher => Get Publisher By "ID"
+	// TODO: Search By Genre => Get Genre By "ID"
+	// TODO: Search By Name
+	// TODO: Search By Publisher
+	// TODO: Search By Rating
 }

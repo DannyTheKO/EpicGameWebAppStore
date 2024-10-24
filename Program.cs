@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-
-// Application
-using Application.Services;
 using Application.Interfaces;
+using Application.Services;
+using DataAccess;
+using Domain.Repository;
+using Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
+// Application
 
 // Infrastructure
-using DataAccess;
-using Infrastructure.Repository;
 
 // Domain
-using Domain.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +18,7 @@ builder.Services.AddControllersWithViews();
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+	options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
 
 // == Add scoped into services ==
 
@@ -28,7 +27,6 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Authorization Service
-
 
 
 // Game Service
@@ -48,9 +46,9 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-   
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -61,7 +59,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+	"default",
+	"{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

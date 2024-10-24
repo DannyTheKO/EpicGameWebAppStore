@@ -1,48 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.X509;
-
+﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 // Application
-using Application.Interfaces;
 
 // Domain
-using Domain.Entities;
 
 
-namespace EpicGameWebAppStore.Controllers
+namespace EpicGameWebAppStore.Controllers;
+
+public class GameController : Controller
 {
-    public class GameController : Controller
-    {
-        private readonly IGameService _gameServices;
+	private readonly IGameService _gameServices;
 
-        public GameController(IGameService gameServices)
-        {
-            _gameServices = gameServices;
-        }
+	public GameController(IGameService gameServices)
+	{
+		_gameServices = gameServices;
+	}
 
-        // GET: Game/Index
-        public async Task<IActionResult> Index()
-        {
-            var games = await _gameServices.GetAllGameAsync();
-            return View(games);
-        }
+	// GET: Game/Index
+	public async Task<IActionResult> Index()
+	{
+		var games = await _gameServices.GetAllGameAsync();
+		return View(games);
+	}
 
-        // TODO: Create Function
-        // GET: Game/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+	// TODO: Create Function
+	// GET: Game/Create
+	public IActionResult Create()
+	{
+		return View();
+	}
 
-        // POST: Game/Create
-        
-        // TODO: Update Function 
-        // GET: Game/Update/{id}
-        // POST: Game/Update/{id}
+	// POST: Game/Create
 
-        // TODO: Delete Function
-        // GET: Game/Delete/{id}
-        // POST: Game/Delete/{id}
+	// TODO: Update Function 
+	// GET: Game/Update/{id}
+	// POST: Game/Update/{id}
 
-
-    }
+	// TODO: Delete Function
+	// GET: Game/Delete/{id}
+	// POST: Game/Delete/{id}
 }

@@ -1,55 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 // Domain
-using Domain.Entities;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IAuthenticationService
 {
-	public interface IAuthenticationService
-	{
-		#region == Basic CRUB Function ==
-		// SELECT: Get all user
-		Task<IEnumerable<Account>> GetAllUser();
+	#region == Basic CRUB Function ==
 
-		// ACTION: Delete User
-		Task DeleteUser(int AccountId);
-		
-		#endregion
+	// SELECT: Get all user
+	Task<IEnumerable<Account>> GetAllUser();
 
-		
-		#region == Basic operation ==
-		// SELECT: Get Username by ID Account
-		Task<Account> GetUserId(int accountId);
+	// ACTION: Delete User
+	Task DeleteUser(int AccountId);
 
-		// SELECT: Get "Username" value from specific Account
-		Task<Account> GetAccountByUsername(string username);
+	#endregion
 
-		// SELECT: Get "Email" value from specific Account
-		Task<Account> GetAccountByEmail(string email);
+	#region == Basic operation ==
 
-		// ACTION: Validate User Credential
-		Task<bool> ValidateUserCredentialAsync(string username, string password);
+	// SELECT: Get Username by ID Account
+	Task<Account> GetUserId(int accountId);
 
-		// ACTION: Generate Token for User
-		Task<string> GenerateTokenAsync(string username);
-		
-		#endregion
+	// SELECT: Get "Username" value from specific Account
+	Task<Account> GetAccountByUsername(string username);
 
-		#region == Service Application ==
-		// ACTION: Register User
-		Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword);
+	// SELECT: Get "Email" value from specific Account
+	Task<Account> GetAccountByEmail(string email);
 
-		// ACTION: Login User
-		Task<(bool Success, string Message)> LoginUser(Account account);
+	// ACTION: Validate User Credential
+	Task<bool> ValidateUserCredentialAsync(string username, string password);
 
-		// ACTION: Update User
-		Task<Account> UpdateUser(Account account);
+	// ACTION: Generate Token for User
+	Task<string> GenerateTokenAsync(string username);
 
-		#endregion
+	#endregion
 
-	}
+	#region == Service Application ==
+
+	// ACTION: Register User
+	Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword);
+
+	// ACTION: Login User
+	Task<(bool Success, string Message)> LoginUser(Account account);
+
+	// ACTION: Update User
+	Task<Account> UpdateUser(Account account);
+
+	#endregion
 }

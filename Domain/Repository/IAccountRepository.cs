@@ -1,44 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 // Domain
-using Domain.Entities;
 
-namespace Domain.Repository
+namespace Domain.Repository;
+
+public interface IAccountRepository
 {
-    public interface IAccountRepository
-    {
-	    #region == Basic CRUD operation ==
-		
-	    // ACTION: Create User into Database
-	    Task AddUserAsync(Account account);
+	#region == Basic CRUD operation ==
 
-	    // SELECT: Get all user from Database
-	    Task<IEnumerable<Account>> GetAllUserAsync();
+	// ACTION: Create User into Database
+	Task AddUserAsync(Account account);
 
-	    // ACTION: Update User From the Database
-	    Task UpdateUserAsync(Account account);
+	// SELECT: Get all user from Database
+	Task<IEnumerable<Account>> GetAllUserAsync();
 
-	    // ACTION: Delete User From the Database
-	    Task DeleteUserAsync(int accountId);
-		
-	    #endregion
+	// ACTION: Update User From the Database
+	Task UpdateUserAsync(Account account);
+
+	// ACTION: Delete User From the Database
+	Task DeleteUserAsync(int accountId);
+
+	#endregion
 
 
-	    #region == Function operation ==
+	#region == Function operation ==
 
-	    // SELECT: Get User by AccountID From the Database
-	    Task<Account> GetUserByIdAsync(int accountId);
+	// SELECT: Get User by AccountID From the Database
+	Task<Account> GetUserByIdAsync(int accountId);
 
-	    // SELECT: Get "Username" value by specific Account
-	    Task<Account> GetByUsernameAsync(string username);
+	// SELECT: Get "Username" value by specific Account
+	Task<Account> GetByUsernameAsync(string username);
 
-	    // SELECT: Get "Email" value by specific Account
-	    Task<Account> GetByEmailAsync(string email);
+	// SELECT: Get "Email" value by specific Account
+	Task<Account> GetByEmailAsync(string email);
 
-	    #endregion
-    }
+	#endregion
 }

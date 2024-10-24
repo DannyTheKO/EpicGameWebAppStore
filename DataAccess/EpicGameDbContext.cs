@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-
 // The "EpicGameDBContext.cs" file acts as a bridge between the application and the database, 
 // providing an abstraction layer for performing database operations and managing the entities 
 // in the application.
 
-
 // Domain
-using Domain.Entities;
 
 namespace DataAccess;
 
 public partial class EpicGameDbContext : DbContext
 {
-    public EpicGameDbContext()
-    {
-    }
+	public EpicGameDbContext()
+	{
+	}
 
-    public EpicGameDbContext(DbContextOptions<EpicGameDbContext> options)
-        : base(options)
-    {
-    }
+	public EpicGameDbContext(DbContextOptions<EpicGameDbContext> options)
+		: base(options)
+	{
+	}
 
 	public virtual DbSet<Account> Accounts { get; set; }
 
@@ -42,7 +38,7 @@ public partial class EpicGameDbContext : DbContext
 	public virtual DbSet<Publisher> Publishers { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 		=> optionsBuilder.UseMySQL("Server=localhost;User=root;Password=root;Database=epicgamewebapp");
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
