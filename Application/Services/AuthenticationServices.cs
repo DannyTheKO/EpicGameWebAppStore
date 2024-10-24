@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
-// Domain
 
 namespace Application.Services;
 

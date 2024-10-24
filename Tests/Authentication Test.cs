@@ -17,34 +17,39 @@ public class AuthenticationServicesTests
 	}
 
 	[Fact]
-	public async Task ValidateUserCredentialsAsync_ShouldReturnTrue_WhenCredentialsAreValid()
+	public async Task LoginUser_ShouldReturnSuccessTrue_WhenCredentialsAreValid()
 	{
 		// Arrange
 		var username = "TestUser";
 		var password = "password123";
+		var account = new Account { Username = username, Password = password };
 		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username))
-			.ReturnsAsync(new Account { Username = username, Password = password });
+			.ReturnsAsync(account);
 
 		// Act
-		var result = await _authenticationServices.ValidateUserCredentialAsync(username, password);
+		var (success, message) = await _authenticationServices.LoginUser(account);
 
 		// Assert
-		Assert.True(result);
+		Assert.True(success);
+		Assert.Equal("generated_token", message);
 	}
 
 	[Fact]
-	public async Task ValidateUserCredentialsAsync_ShouldReturnFalse_WhenCredentialsAreInvalid()
+	public async Task LoginUser_ShouldReturnSuccessFalse_WhenCredentialsAreInvalid()
 	{
 		// Arrange
-		var username = "Test";
-		var password = "securepass";
+		var username = "TestUser";
+		var password = "wrongpassword";
+		var account = new Account { Username = username, Password = password };
 		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username))
-			.ReturnsAsync(new Account { Username = username, Password = "password" });
+			.ReturnsAsync(new Account { Username = username, Password = "correctpassword" });
 
 		// Act
-		var result = await _authenticationServices.ValidateUserCredentialAsync(username, password);
+		var (success, message) = await _authenticationServices.LoginUser(account);
 
 		// Assert
-		Assert.False(result);
+		Assert.False(success);
+		Assert.Equal("Invalid password", message);
 	}
+
 }
