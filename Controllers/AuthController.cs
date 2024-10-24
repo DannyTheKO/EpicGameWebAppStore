@@ -11,6 +11,7 @@ using Application.Interfaces;
 
 // Presentation
 using EpicGameWebAppStore.Models;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace EpicGameWebAppStore.Controllers
 {
@@ -31,57 +32,32 @@ namespace EpicGameWebAppStore.Controllers
 		{
 			return View();
 		}
+		
 		// POST: Auth/RegisterConfirm
-		public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel, Account account)
+		[HttpPost("RegisterConfirm")]
+		public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
 		{
-			// ==> Validate if user input is valid
 			if (!ModelState.IsValid)
 			{
 				return View("RegisterPage", registerViewModel);
 			}
 
-			// Check if the username and email already exists
-			var existingAccountUserName = await _authenticationServices.GetAccountByUsername(account.Username);
-			var existingAccountEmail = await _authenticationServices.GetAccountByEmail(account.Email);
-			if (existingAccountUserName != null && existingAccountEmail != null)
+			var account = new Account
 			{
-				ModelState.AddModelError(string.Empty, "Username and Email already exists");
+				Username = registerViewModel.Username,
+				Password = registerViewModel.Password,
+				Email = registerViewModel.Email
+			};
+
+			var (success, message) = await _authenticationServices.RegisterUser(account, registerViewModel.ConfirmPassword);
+
+			if (!success)
+			{
+				ModelState.AddModelError(string.Empty, message);
 				return View("RegisterPage", registerViewModel);
 			}
 
-			if (existingAccountEmail != null)
-			{
-				ModelState.AddModelError(string.Empty, "Email already exists");
-				return View("RegisterPage", registerViewModel);
-			}
-
-			if (existingAccountUserName != null)
-			{
-				ModelState.AddModelError(string.Empty, "Username already exists");
-				return View("RegisterPage", registerViewModel);
-			}
-
-			// Check is the "Password" and the "Confirm Password" is correct
-			if (registerViewModel.Password != registerViewModel.ConfirmPassword)
-			{
-				ModelState.AddModelError(string.Empty, "Password and Confirm Password are not the same");
-				return View("RegisterPage", registerViewModel);
-			}
-
-			// ==> Create a new account
-			account.CreatedOn = DateTime.UtcNow;
-			account.Username = registerViewModel.Username;
-			account.Password = registerViewModel.Password; // TODO: Hash the password before saving it
-			account.Email = registerViewModel.Email;
-			account.IsAdmin = "N"; // TODO: Going do some authorization later for this.
-								   // account.Password = HashPassword(account.Password);
-
-
-			// ==> Save the account to the database
-			await _authenticationServices.AddUser(account);
-
-			// ==> Redirect to login page or return a success message
-			return RedirectToAction("RegisterPage");
+			return RedirectToAction("Index", "Home");
 		}
 
 
@@ -96,36 +72,29 @@ namespace EpicGameWebAppStore.Controllers
 
 		// POST: Auth/LoginConfirm
 		[HttpPost("LoginConfirm")]
-        public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel, Account account)
+		public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
 		{
 			// Validate if user input is valid
-	        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+			if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
 			{
-		        return View("LoginPage", loginViewModel);
+				return View("LoginPage", loginViewModel);
 			}
 
-	        // Check if the user exists in the database
-	        var existingAccount = await _authenticationServices.GetAccountByUsername(loginViewModel.Username);
-	        if (existingAccount != null) // FOUND!
+			var account = new Account
 			{
-		        // Validate user credentials
-		        if (await _authenticationServices.ValidateUserCredentialAsync(loginViewModel.Username, loginViewModel.Password)) // Success
-				{
-					var token = await _authenticationServices.GenerateTokenAsync(loginViewModel.Username);
-					return Ok(new { Token = token });
-				}
+				Username = loginViewModel.Username,
+				Password = loginViewModel.Password,
+			};
 
-			    // Password is incorrect
-			    ModelState.AddModelError(string.Empty, "Incorrect Password");
-	        }
-	        else
-	        {
-		        // User does not exist in our database
-		        ModelState.AddModelError(string.Empty, "User does not exist");
+			var (success, message) = await _authenticationServices.LoginUser(account);
+
+			if (!success)
+			{
+				ModelState.AddModelError(string.Empty, message);
+				return View("LoginPage", loginViewModel);
 			}
 
-			// Return to the login page with validation errors
-			return View("LoginPage", loginViewModel);
+			return RedirectToAction("Index", "Home");
 		}
 	}
 }

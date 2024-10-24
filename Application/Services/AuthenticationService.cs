@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,14 +22,7 @@ namespace Application.Services
 			_userRepository = userRepository;
 		}
 
-		#region == Basic CRUD operation ==
-
-		// ACTION: Create User
-		public async Task AddUser(Account account)
-		{
-			await _userRepository.AddUserAsync(account);
-		}
-
+		#region == Basic CRUB Function ==
 		// SELECT: Get All User
 		public async Task<IEnumerable<Account>> GetAllUser()
 		{
@@ -55,7 +49,7 @@ namespace Application.Services
 
 
 
-		#region == Function operation ==
+		#region == Basic operation ==
 
 		// SELECT: Get specific Account using AccountID
 		public async Task<Account> GetUserId(int accountId)
@@ -75,22 +69,88 @@ namespace Application.Services
 			return await _userRepository.GetByEmailAsync(email);
 		}
 
-		#endregion
-
-
-		#region == Service Application ==
+		// ACTION: Validate User Credential
 		public async Task<bool> ValidateUserCredentialAsync(string username, string password)
 		{
 			var account = await _userRepository.GetByUsernameAsync(username);
 			return account != null && account.Password == password;
 		}
 
+		// ACTION: Generate Token for user
 		public async Task<string> GenerateTokenAsync(string username)
 		{
 			// TODO: Implement logic to generate a JWT or other token
 			return await Task.FromResult("generated_token");
 		}
 
+		#endregion
+
+
+		#region == Service Application ==
+
+		// ACTION: User Registration
+		public async Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword)
+		{
+			// Check if the username and email already exist
+			var existingAccountUserName = await GetAccountByUsername(account.Username);
+			var existingAccountEmail = await GetAccountByEmail(account.Email);
+			if (existingAccountUserName != null && existingAccountEmail != null)
+			{
+				return (false, "Username and Email already exist");
+			}
+
+			if (existingAccountEmail != null)
+			{
+				return (false, "Email already exists");
+			}
+
+			if (existingAccountUserName != null)
+			{
+				return (false, "Username already exists");
+			}
+
+			// Check if the "Password" and the "Confirm Password" are correct
+			if (account.Password != confirmPassword)
+			{
+				return (false, "Password and Confirm Password are not the same");
+			}
+
+			// Create a new account
+			account.CreatedOn = DateTime.UtcNow;
+			account.IsAdmin = "N"; // TODO: Implement authorization logic later
+
+			// TODO: Hash the password before saving it
+			// account.Password = HashPassword(account.Password);
+
+			// Save the account to the database
+			await _userRepository.AddUserAsync(account);
+
+			return (true, string.Empty);
+		}
+
+		// ACTION: User Login
+		public async Task<(bool Success, string Message)> LoginUser(Account account)
+		{
+			// Check if the username exists
+			var existingAccount = await GetAccountByUsername(account.Username);
+
+			if (existingAccount == null)
+			{
+				return (false, "Username does not exist");
+			}
+
+			// Validate password
+			if (existingAccount.Password != account.Password)
+			{
+				return (false, "Invalid password");
+			}
+
+			// Generate token
+			var token = await GenerateTokenAsync(account.Username);
+
+			// Return success with token
+			return (true, token);
+		}
 		#endregion
 	}
 }
