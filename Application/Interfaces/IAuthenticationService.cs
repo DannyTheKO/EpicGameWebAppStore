@@ -13,31 +13,37 @@ namespace Application.Interfaces
     {
         // == Basic CRUD operation ==
 
-        // TODO: Create User
-        Task AddUserAsync(Account account);
+        // ACTION: Create User
+        Task AddUser(Account account);
 
-		// TODO: Read User
+		// SELECT: Get all user
+		Task<IEnumerable<Account>> GetAllUser();
 
-		// TODO: Update User
+		// ACTION: Update User
+		Task UpdateUser(Account account);
 
-		// TODO: Delete User
+		// ACTION: Delete User
+		Task DeleteUser(int AccountId);
 
 
 		// == Function operation ==
 
-		// Get "Username" value from specific Account
-        Task<Account> GetAccountByUserNameAsync(string username);
+        // SELECT: Get Username by ID Account
+        Task<Account> GetUserId(int accountId);
 
-		// Get "Email" value from specific Account
-		Task<Account> GetAccountByEmailAsync(string email);
+		// SELECT: Get "Username" value from specific Account
+        Task<Account> GetAccountByUsername(string username);
+
+		// SELECT: Get "Email" value from specific Account
+		Task<Account> GetAccountByEmail(string email);
 
 
 		// == Service Application ==
 
-		// Validate User Credential
+		// ACTION: Validate User Credential
         Task<bool> ValidateUserCredentialAsync(string username, string password);
         
-        // Generate Token for User
+        // ACTION: Generate Token for User
         Task<string> GenerateTokenAsync(string username);
     }
 }

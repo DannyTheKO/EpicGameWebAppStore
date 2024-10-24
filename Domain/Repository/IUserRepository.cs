@@ -10,28 +10,38 @@ using Domain.Entities;
 
 namespace Domain.Repository
 {
-    public interface IUserRepository
-    {
+	public interface IUserRepository
+	{
 
-		// == Basic CRUD operation ==
+		#region == Basic CRUD operation ==
+		
+		// ACTION: Create User into Database
+		Task AddUserAsync(Account account);
 
-        // Create User into Database
-        Task AddUserAsync(Account account);
+		// SELECT: Get all user from Database
+		Task<IEnumerable<Account>> GetAllUserAsync();
 
-		// TODO: Read User From the Database
+		// ACTION: Update User From the Database
+		Task UpdateUserAsync(Account account);
 
-		// TODO: Update User From the Database
+		// ACTION: Delete User From the Database
+		Task DeleteUserAsync(int accountId);
+		
+		#endregion
 
-		// TODO: Delete User From the Database
 
+		#region == Function operation ==
 
-		// == Function operation ==
+		// SELECT: Get User by AccountID From the Database
+		Task<Account> GetUserByIdAsync(int accountId);
 
-		// Get "Username" value by specific Account
+		// SELECT: Get "Username" value by specific Account
 		Task<Account> GetByUsernameAsync(string username);
 
-		// Get "Email" value by specific Account
+		// SELECT: Get "Email" value by specific Account
 		Task<Account> GetByEmailAsync(string email);
 
-    }
+		#endregion
+
+	}
 }

@@ -24,35 +24,63 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-		// == Basic CRUD operation ==
+        #region == Basic CRUD operation ==
 
-		// Create User into Database
-		public async Task AddUserAsync(Account account)
+        // ACTION: Create User into Database
+        public async Task AddUserAsync(Account account)
         {
 	        _context.Accounts.Add(account);
 	        await _context.SaveChangesAsync();
         }
 
-		// TODO: Read User From the Database
-
-		// TODO: Update User From the Database
-
-		// TODO: Delete User From the Database
-
-
-		// == Function operation ==
-
-		// Get "Username" from the Account table in the Database
-		public async Task<Account> GetByUsernameAsync(string username)
+        // SELECT: Get all User from the Database 
+        public async Task<IEnumerable<Account>> GetAllUserAsync()
         {
-            return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+	        return await _context.Accounts.ToListAsync();
         }
 
-		// Get "Email" from the Account table in the Database
-		public async Task<Account> GetByEmailAsync(string email)
+        // ACTION: Update User From the Database
+        public async Task UpdateUserAsync(Account account)
+        {
+	        _context.Accounts.Update(account);
+	        await _context.SaveChangesAsync();
+        }
+
+        // ACTION: Delete User From the Database
+        public async Task DeleteUserAsync(int accountId)
+        {
+	        var account = await _context.Accounts.FindAsync(accountId);
+	        if (account != null)
+	        {
+		        _context.Accounts.Remove(account);
+		        await _context.SaveChangesAsync();
+	        }
+        }
+        
+        #endregion
+
+
+
+        #region == Function operation ==
+        
+        // SELECT: Get User by AccountID From the Database
+        public async Task<Account> GetUserByIdAsync(int accountId)
+        {
+	        return await _context.Accounts.FindAsync(accountId);
+        }
+        
+        // Get "Username" from the Account table in the Database
+        public async Task<Account> GetByUsernameAsync(string username)
+        {
+	        return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+        }
+
+        // Get "Email" from the Account table in the Database
+        public async Task<Account> GetByEmailAsync(string email)
         {
 	        return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
         }
-
+        
+        #endregion
     }
 }

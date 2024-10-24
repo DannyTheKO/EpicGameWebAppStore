@@ -41,31 +41,31 @@ namespace EpicGameWebAppStore.Controllers
 			}
 
 			// Check if the username and email already exists
-			var existingAccountUserName = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
-			var existingAccountEmail = await _authenticationServices.GetAccountByEmailAsync(account.Email);
+			var existingAccountUserName = await _authenticationServices.GetAccountByUsername(account.Username);
+			var existingAccountEmail = await _authenticationServices.GetAccountByEmail(account.Email);
 			if (existingAccountUserName != null && existingAccountEmail != null)
 			{
 				ModelState.AddModelError(string.Empty, "Username and Email already exists");
-				return View("RegisterPage", account);
+				return View("RegisterPage", registerViewModel);
 			}
 
 			if (existingAccountEmail != null)
 			{
 				ModelState.AddModelError(string.Empty, "Email already exists");
-				return View("RegisterPage", account);
+				return View("RegisterPage", registerViewModel);
 			}
 
 			if (existingAccountUserName != null)
 			{
 				ModelState.AddModelError(string.Empty, "Username already exists");
-				return View("RegisterPage", account);
+				return View("RegisterPage", registerViewModel);
 			}
 
 			// Check is the "Password" and the "Confirm Password" is correct
 			if (registerViewModel.Password != registerViewModel.ConfirmPassword)
 			{
 				ModelState.AddModelError(string.Empty, "Password and Confirm Password are not the same");
-				return View("RegisterPage", account);
+				return View("RegisterPage", registerViewModel);
 			}
 
 			// ==> Create a new account
@@ -78,7 +78,7 @@ namespace EpicGameWebAppStore.Controllers
 
 
 			// ==> Save the account to the database
-			await _authenticationServices.AddUserAsync(account);
+			await _authenticationServices.AddUser(account);
 
 			// ==> Redirect to login page or return a success message
 			return RedirectToAction("RegisterPage");
@@ -96,29 +96,27 @@ namespace EpicGameWebAppStore.Controllers
 
 		// POST: Auth/LoginConfirm
 		[HttpPost("LoginConfirm")]
-        public async Task<IActionResult> LoginConfirm(Account account)
+        public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel, Account account)
 		{
 			// Validate if user input is valid
 	        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
 			{
-		        return View("LoginPage", account);
+		        return View("LoginPage", loginViewModel);
 			}
 
 	        // Check if the user exists in the database
-	        var existingAccount = await _authenticationServices.GetAccountByUserNameAsync(account.Username);
+	        var existingAccount = await _authenticationServices.GetAccountByUsername(loginViewModel.Username);
 	        if (existingAccount != null) // FOUND!
 			{
 		        // Validate user credentials
-		        if (await _authenticationServices.ValidateUserCredentialAsync(account.Username, account.Password)) // Success
+		        if (await _authenticationServices.ValidateUserCredentialAsync(loginViewModel.Username, loginViewModel.Password)) // Success
 				{
-					var token = await _authenticationServices.GenerateTokenAsync(account.Username);
+					var token = await _authenticationServices.GenerateTokenAsync(loginViewModel.Username);
 					return Ok(new { Token = token });
 				}
-		        else
-		        {
-			        // Password is incorrect
-			        ModelState.AddModelError(string.Empty, "Incorrect Password");
-		        }
+
+			    // Password is incorrect
+			    ModelState.AddModelError(string.Empty, "Incorrect Password");
 	        }
 	        else
 	        {
@@ -127,7 +125,7 @@ namespace EpicGameWebAppStore.Controllers
 			}
 
 			// Return to the login page with validation errors
-			return View("LoginPage", account);
+			return View("LoginPage", loginViewModel);
 		}
 	}
 }
