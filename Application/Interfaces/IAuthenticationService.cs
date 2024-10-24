@@ -15,9 +15,6 @@ namespace Application.Interfaces
 		// SELECT: Get all user
 		Task<IEnumerable<Account>> GetAllUser();
 
-		// ACTION: Update User
-		Task UpdateUser(Account account);
-
 		// ACTION: Delete User
 		Task DeleteUser(int AccountId);
 		
@@ -48,6 +45,9 @@ namespace Application.Interfaces
 
 		// ACTION: Login User
 		Task<(bool Success, string Message)> LoginUser(Account account);
+
+		// ACTION: Update User
+		Task<Account> UpdateUser(Account account);
 
 		#endregion
 

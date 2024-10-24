@@ -15,11 +15,11 @@ using Domain.Repository;
 
 namespace Infrastructure.Repository
 {
-    public class UserRepository : IUserRepository
+    public class AccountRepository : IAccountRepository
     {
         private readonly EpicGameDbContext _context;
 
-        public UserRepository(EpicGameDbContext context)
+        public AccountRepository(EpicGameDbContext context)
         {
             _context = context;
         }

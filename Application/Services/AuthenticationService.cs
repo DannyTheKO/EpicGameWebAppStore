@@ -14,10 +14,10 @@ namespace Application.Services
 {
 	public class AuthenticationService : IAuthenticationService
 	{
-		private readonly IUserRepository _userRepository;
+		private readonly IAccountRepository _userRepository;
 		private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 
-		public AuthenticationService(IUserRepository userRepository)
+		public AuthenticationService(IAccountRepository userRepository)
 		{
 			_userRepository = userRepository;
 		}
@@ -27,22 +27,6 @@ namespace Application.Services
 		public async Task<IEnumerable<Account>> GetAllUser()
 		{
 			return await _userRepository.GetAllUserAsync();
-		}
-
-		// ACTION: Update User
-		public async Task UpdateUser(Account account)
-		{
-			await _userRepository.UpdateUserAsync(account);
-		}
-
-		// ACTION: Delete User
-		public async Task DeleteUser(int accountId)
-		{
-			var account = await _userRepository.GetUserByIdAsync(accountId);
-			if (account != null) // FOUND!
-			{
-				await _userRepository.DeleteUserAsync(accountId);
-			}
 		}
 
 		#endregion
@@ -152,5 +136,42 @@ namespace Application.Services
 			return (true, token);
 		}
 		#endregion
+
+		// ACTION: Update User
+		public async Task<Account> UpdateUser(Account account)
+		{
+			if (account == null) // NOT FOUND!
+			{
+				throw new ArgumentNullException(nameof(account), "Account cannot be null");
+			}
+
+			// Retrieve the existing account from the database
+			var existingAccount = await _userRepository.GetUserByIdAsync(account.AccountId);
+			if (existingAccount == null)
+			{
+				throw new Exception("Account not found");
+			}
+
+			// Update the account details
+			existingAccount.Username = account.Username;
+			existingAccount.Email = account.Email;
+			existingAccount.Password = account.Password; // Consider hashing the password
+			existingAccount.IsAdmin = account.IsAdmin;
+
+			// Save the updated account to the database
+			await _userRepository.UpdateUserAsync(existingAccount);
+
+			return existingAccount;
+		}
+
+		// ACTION: Delete User
+		public async Task DeleteUser(int accountId)
+		{
+			var account = await _userRepository.GetUserByIdAsync(accountId);
+			if (account != null) // FOUND!
+			{
+				await _userRepository.DeleteUserAsync(accountId);
+			}
+		}
 	}
 }

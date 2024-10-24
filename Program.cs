@@ -25,7 +25,7 @@ builder.Services.AddDbContext<EpicGameDbContext>(options =>
 
 // Authentication Service
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Authorization Service
 

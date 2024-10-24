@@ -8,11 +8,11 @@ namespace Tests;
 public class AuthenticationServiceTests
 {
 	private readonly AuthenticationService _authenticationService;
-	private readonly Mock<IUserRepository> _userRepositoryMock;
+	private readonly Mock<IAccountRepository> _userRepositoryMock;
 
 	public AuthenticationServiceTests()
 	{
-		_userRepositoryMock = new Mock<IUserRepository>();
+		_userRepositoryMock = new Mock<IAccountRepository>();
 		_authenticationService = new AuthenticationService(_userRepositoryMock.Object);
 	}
 
