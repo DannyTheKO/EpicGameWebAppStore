@@ -5,15 +5,15 @@ using Moq;
 
 namespace Tests;
 
-public class AuthenticationServiceTests
+public class AuthenticationServicesTests
 {
-	private readonly AuthenticationService _authenticationService;
+	private readonly AuthenticationServices _authenticationServices;
 	private readonly Mock<IAccountRepository> _userRepositoryMock;
 
-	public AuthenticationServiceTests()
+	public AuthenticationServicesTests()
 	{
 		_userRepositoryMock = new Mock<IAccountRepository>();
-		_authenticationService = new AuthenticationService(_userRepositoryMock.Object);
+		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object);
 	}
 
 	[Fact]
@@ -26,7 +26,7 @@ public class AuthenticationServiceTests
 			.ReturnsAsync(new Account { Username = username, Password = password });
 
 		// Act
-		var result = await _authenticationService.ValidateUserCredentialAsync(username, password);
+		var result = await _authenticationServices.ValidateUserCredentialAsync(username, password);
 
 		// Assert
 		Assert.True(result);
@@ -42,7 +42,7 @@ public class AuthenticationServiceTests
 			.ReturnsAsync(new Account { Username = username, Password = "password" });
 
 		// Act
-		var result = await _authenticationService.ValidateUserCredentialAsync(username, password);
+		var result = await _authenticationServices.ValidateUserCredentialAsync(username, password);
 
 		// Assert
 		Assert.False(result);

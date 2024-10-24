@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 // Application
 
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
+[Authorize]
 public class GameController : Controller
 {
 	private readonly IGameService _gameServices;

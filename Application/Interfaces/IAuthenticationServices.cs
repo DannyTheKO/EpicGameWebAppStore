@@ -3,7 +3,7 @@
 
 namespace Application.Interfaces;
 
-public interface IAuthenticationService
+public interface IAuthenticationServices
 {
 	#region == Basic CRUB Function ==
 
@@ -40,7 +40,7 @@ public interface IAuthenticationService
 	Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword);
 
 	// ACTION: Login User
-	Task<(bool Success, string Message)> LoginUser(Account account);
+	Task<(bool Success, string Result)> LoginUser(Account account);
 
 	// ACTION: Update User
 	Task<Account> UpdateUser(Account account);

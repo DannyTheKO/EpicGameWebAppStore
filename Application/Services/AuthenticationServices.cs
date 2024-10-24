@@ -5,14 +5,14 @@ using Domain.Repository;
 
 namespace Application.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationServices : IAuthenticationServices
 {
 	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
-	private readonly IAccountRepository _userRepository;
+	private readonly IAccountRepository _accountRepository;
 
-	public AuthenticationService(IAccountRepository userRepository)
+	public AuthenticationServices(IAccountRepository accountRepository)
 	{
-		_userRepository = userRepository;
+		_accountRepository = accountRepository;
 	}
 
 	#region == Basic CRUB Function ==
@@ -20,7 +20,7 @@ public class AuthenticationService : IAuthenticationService
 	// SELECT: Get All User
 	public async Task<IEnumerable<Account>> GetAllUser()
 	{
-		return await _userRepository.GetAllUserAsync();
+		return await _accountRepository.GetAllUserAsync();
 	}
 
 	#endregion
@@ -32,7 +32,7 @@ public class AuthenticationService : IAuthenticationService
 			throw new ArgumentNullException(nameof(account), "Account cannot be null");
 
 		// Retrieve the existing account from the database
-		var existingAccount = await _userRepository.GetUserByIdAsync(account.AccountId);
+		var existingAccount = await _accountRepository.GetUserByIdAsync(account.AccountId);
 		if (existingAccount == null) throw new Exception("Account not found");
 
 		// Update the account details
@@ -42,7 +42,7 @@ public class AuthenticationService : IAuthenticationService
 		existingAccount.IsAdmin = account.IsAdmin;
 
 		// Save the updated account to the database
-		await _userRepository.UpdateUserAsync(existingAccount);
+		await _accountRepository.UpdateUserAsync(existingAccount);
 
 		return existingAccount;
 	}
@@ -50,9 +50,9 @@ public class AuthenticationService : IAuthenticationService
 	// ACTION: Delete User
 	public async Task DeleteUser(int accountId)
 	{
-		var account = await _userRepository.GetUserByIdAsync(accountId);
+		var account = await _accountRepository.GetUserByIdAsync(accountId);
 		if (account != null) // FOUND!
-			await _userRepository.DeleteUserAsync(accountId);
+			await _accountRepository.DeleteUserAsync(accountId);
 	}
 
 
@@ -61,25 +61,25 @@ public class AuthenticationService : IAuthenticationService
 	// SELECT: Get specific Account using AccountID
 	public async Task<Account> GetUserId(int accountId)
 	{
-		return await _userRepository.GetUserByIdAsync(accountId);
+		return await _accountRepository.GetUserByIdAsync(accountId);
 	}
 
 	// SELECT: Get "Username" value by specific Account
 	public async Task<Account> GetAccountByUsername(string username)
 	{
-		return await _userRepository.GetByUsernameAsync(username);
+		return await _accountRepository.GetByUsernameAsync(username);
 	}
 
 	// SELECT: Get "Email" value by specific Account
 	public async Task<Account> GetAccountByEmail(string email)
 	{
-		return await _userRepository.GetByEmailAsync(email);
+		return await _accountRepository.GetByEmailAsync(email);
 	}
 
 	// ACTION: Validate User Credential
 	public async Task<bool> ValidateUserCredentialAsync(string username, string password)
 	{
-		var account = await _userRepository.GetByUsernameAsync(username);
+		var account = await _accountRepository.GetByUsernameAsync(username);
 		return account != null && account.Password == password;
 	}
 
@@ -119,13 +119,13 @@ public class AuthenticationService : IAuthenticationService
 		// account.Password = HashPassword(account.Password);
 
 		// Save the account to the database
-		await _userRepository.AddUserAsync(account);
+		await _accountRepository.AddUserAsync(account);
 
 		return (true, string.Empty);
 	}
 
 	// ACTION: User Login
-	public async Task<(bool Success, string Message)> LoginUser(Account account)
+	public async Task<(bool Success, string Result)> LoginUser(Account account)
 	{
 		// Check if the username exists
 		var existingAccount = await GetAccountByUsername(account.Username);
@@ -136,10 +136,10 @@ public class AuthenticationService : IAuthenticationService
 		if (existingAccount.Password != account.Password) return (false, "Invalid password");
 
 		// Generate token
-		var token = await GenerateTokenAsync(account.Username);
+		var result = await GenerateTokenAsync(account.Username);
 
 		// Return success with token
-		return (true, token);
+		return (true, result);
 	}
 
 	#endregion

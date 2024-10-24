@@ -15,6 +15,10 @@ public class HomeController : Controller
 
 	public IActionResult Index()
 	{
+		bool isAuthenticated = User.Identity.IsAuthenticated;
+		string accountUsername = User.Identity.Name;
+		ViewData["IsAuthenticated"] = isAuthenticated;
+		ViewData["Account_Username"] = accountUsername;
 		return View();
 	}
 

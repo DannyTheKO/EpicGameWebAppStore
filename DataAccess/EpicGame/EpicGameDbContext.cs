@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 // Domain
 
-namespace DataAccess;
+namespace DataAccess.EpicGame;
 
 public partial class EpicGameDbContext : DbContext
 {

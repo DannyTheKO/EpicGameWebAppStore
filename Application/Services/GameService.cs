@@ -1,9 +1,9 @@
-﻿using Application.Interfaces;
+﻿// Domain
 using Domain.Entities;
 using Domain.Repository;
-// Domain
 
 // Application
+using Application.Interfaces;
 
 namespace Application.Services;
 
