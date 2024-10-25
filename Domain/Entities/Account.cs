@@ -19,4 +19,6 @@ public class Account
 	public DateTime? CreatedOn { get; set; }
 
 	public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+	public virtual ICollection<Roles> Roles { get; set; } = new List<Roles>();
 }

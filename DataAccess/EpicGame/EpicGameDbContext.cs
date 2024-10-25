@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.X509;
+
 // The "EpicGameDBContext.cs" file acts as a bridge between the application and the database, 
 // providing an abstraction layer for performing database operations and managing the entities 
 // in the application.
@@ -36,6 +38,8 @@ public partial class EpicGameDbContext : DbContext
 	public virtual DbSet<Paymentmethod> Paymentmethods { get; set; }
 
 	public virtual DbSet<Publisher> Publishers { get; set; }
+
+	public virtual DbSet<Roles> Roles { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -211,6 +215,8 @@ public partial class EpicGameDbContext : DbContext
 			entity.Property(e => e.Phone).HasMaxLength(255);
 			entity.Property(e => e.Website).HasMaxLength(255);
 		});
+
+
 
 		OnModelCreatingPartial(modelBuilder);
 	}
