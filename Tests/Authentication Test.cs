@@ -9,11 +9,14 @@ public class AuthenticationServicesTests
 {
 	private readonly AuthenticationServices _authenticationServices;
 	private readonly Mock<IAccountRepository> _userRepositoryMock;
+	private readonly Mock<IRoleRepository> _roleRepositoryMock;
 
 	public AuthenticationServicesTests()
 	{
 		_userRepositoryMock = new Mock<IAccountRepository>();
-		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object);
+		_roleRepositoryMock = new Mock<IRoleRepository>();
+
+		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object, _roleRepositoryMock.Object);
 	}
 
 	[Fact]

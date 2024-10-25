@@ -6,6 +6,8 @@ public class Account
 {
 	public int AccountId { get; set; }
 
+	public int? RoleId { get; set; }
+
 	[Required(ErrorMessage = "Username is required.")]
 	public string? Username { get; set; }
 
@@ -14,11 +16,11 @@ public class Account
 
 	public string? Email { get; set; }
 
-	public string? IsAdmin { get; set; }
+	public string? IsActive { get; set; }
 
 	public DateTime? CreatedOn { get; set; }
 
 	public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-	public virtual ICollection<Roles> Roles { get; set; } = new List<Roles>();
+	public virtual Role? Role { get; set; }
 }

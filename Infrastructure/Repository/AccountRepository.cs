@@ -51,27 +51,37 @@ public class AccountRepository : IAccountRepository
 		}
 	}
 
-	#endregion
-
-
-	#region == Function operation ==
-
 	// SELECT: Get User by AccountID From the Database
 	public async Task<Account> GetUserByIdAsync(int accountId)
 	{
-		return await _context.Accounts.FindAsync(accountId);
+		var account = await _context.Accounts.FindAsync(accountId);
+		if (account == null)
+		{
+			throw new NullReferenceException($"Account with ID {accountId} not found.");
+		}
+		return account;
 	}
 
 	// Get "Username" from the Account table in the Database
 	public async Task<Account> GetByUsernameAsync(string username)
 	{
-		return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+		var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
+		if (account == null)
+		{
+			throw new NullReferenceException($"Account with Username {username} not found.");
+		}
+		return account;
 	}
 
 	// Get "Email" from the Account table in the Database
 	public async Task<Account> GetByEmailAsync(string email)
 	{
-		return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
+		var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
+		if (account == null)
+		{
+			throw new NullReferenceException($"Account with Email {email} not found.");
+		}
+		return account;
 	}
 
 	#endregion

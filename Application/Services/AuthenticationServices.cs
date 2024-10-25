@@ -8,10 +8,12 @@ public class AuthenticationServices : IAuthenticationServices
 {
 	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 	private readonly IAccountRepository _accountRepository;
+	private readonly IRoleRepository _roleRepository;
 
-	public AuthenticationServices(IAccountRepository accountRepository)
+	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
 	{
 		_accountRepository = accountRepository;
+		_roleRepository = roleRepository;
 	}
 
 	#region == Basic CRUB Function ==
@@ -38,7 +40,7 @@ public class AuthenticationServices : IAuthenticationServices
 		existingAccount.Username = account.Username;
 		existingAccount.Email = account.Email;
 		existingAccount.Password = account.Password; // Consider hashing the password
-		existingAccount.IsAdmin = account.IsAdmin;
+		existingAccount.IsActive = account.IsActive;
 
 		// Save the updated account to the database
 		await _accountRepository.UpdateUserAsync(existingAccount);
@@ -112,7 +114,7 @@ public class AuthenticationServices : IAuthenticationServices
 
 		// Create a new account
 		account.CreatedOn = DateTime.UtcNow;
-		account.IsAdmin = "N"; // TODO: Implement authorization logic later
+		account.IsActive = "N"; // TODO: Implement authorization logic later
 
 		// TODO: Hash the password before saving it
 		// account.Password = HashPassword(account.Password);
