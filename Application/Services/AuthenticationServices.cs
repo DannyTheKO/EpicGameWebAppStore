@@ -8,12 +8,10 @@ public class AuthenticationServices : IAuthenticationServices
 {
 	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 	private readonly IAccountRepository _accountRepository;
-	private readonly IRoleRepository _roleRepository;
 
 	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
 	{
 		_accountRepository = accountRepository;
-		_roleRepository = roleRepository;
 	}
 
 	#region == Basic CRUB Function ==
@@ -23,8 +21,6 @@ public class AuthenticationServices : IAuthenticationServices
 	{
 		return await _accountRepository.GetAllUserAsync();
 	}
-
-	#endregion
 
 	// ACTION: Update User
 	public async Task<Account> UpdateUser(Account account)
@@ -55,7 +51,7 @@ public class AuthenticationServices : IAuthenticationServices
 		if (account != null) // FOUND!
 			await _accountRepository.DeleteUserAsync(accountId);
 	}
-
+	#endregion
 
 	#region == Basic operation ==
 

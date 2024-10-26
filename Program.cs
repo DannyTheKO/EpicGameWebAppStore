@@ -11,21 +11,20 @@ using DataAccess.EpicGame;
 // Domain
 using Domain.Repository;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllersWithViews();
 
-// == Add scoped into services ==
+// == Add scoped into services ==s
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-	options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+	options.UseMySql(builder.Configuration.GetConnectionString("Default"), 
+		ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
+
 
 // Authentication Service
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddAuthentication("CookieAuth")
 	.AddCookie("CookieAuth", config =>
 	{
@@ -34,7 +33,11 @@ builder.Services.AddAuthentication("CookieAuth")
 	});
 
 // Authorization Service
+builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
 
+// Account And Role Service
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 // Game Service
 builder.Services.AddScoped<IGameService, GameService>();
@@ -49,7 +52,6 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 // Publisher Service
 
 var app = builder.Build();
-
 
 if (!app.Environment.IsDevelopment())
 {
