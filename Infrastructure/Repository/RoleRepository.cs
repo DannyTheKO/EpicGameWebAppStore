@@ -1,68 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess.EpicGame;
+﻿using DataAccess.EpicGame;
 using Domain.Entities;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Repository;
+
+public class RoleRepository : IRoleRepository
 {
-	public class RoleRepository : IRoleRepository
+	private readonly EpicGameDbContext _context;
+
+	public RoleRepository(EpicGameDbContext context)
 	{
-		private readonly EpicGameDbContext _context;
+		_context = context;
+	}
 
-		public RoleRepository(EpicGameDbContext context)
-		{
-			_context = context;
-		}
+	public async Task<Role> GetByIdAsync(int id)
+	{
+		return await _context.Roles.FindAsync(id);
+	}
 
-		// ACTION: Create Role from the Database
-		public async Task AddRoleAsync(Role role)
+	public async Task<IEnumerable<Role>> GetAllAsync()
+	{
+		return await _context.Roles.ToListAsync();
+	}
+
+	public async Task<Role> AddAsync(Role role)
+	{
+		await _context.Roles.AddAsync(role);
+		await _context.SaveChangesAsync();
+		return role;
+	}
+
+	public async Task UpdateAsync(Role role)
+	{
+		_context.Roles.Update(role);
+		await _context.SaveChangesAsync();
+	}
+
+	public async Task DeleteAsync(int id)
+	{
+		var role = await _context.Roles.FindAsync(id);
+		if (role != null)
 		{
-			_context.Roles.Add(role);
+			_context.Roles.Remove(role);
 			await _context.SaveChangesAsync();
-		}
-
-		// SELECT: Get ALL Role from the Database
-		public async Task<IEnumerable<Role>> GetAllRoleAsync()
-		{
-			return await _context.Roles.ToListAsync();
-		}
-
-		// SELECT: Get single Role using ID from the Database
-		public async Task<Role> GetById(int roleId)
-		{
-			var role = await _context.Roles.FindAsync(roleId);
-			if (role != null) // FOUND!
-			{
-				return role;
-			}
-			else
-			{
-				// if RoleId is not found!
-				throw new NullReferenceException($"Role with ID {roleId} not found.");
-			}
-		}
-
-		// ACTION: Update Role from the Database
-		public async Task UpdateRoleAsync(Role role)
-		{
-			_context.Roles.Update(role);
-			await _context.SaveChangesAsync();
-		}
-
-		// ACTION: Delete Role from the Database
-		public async Task DeleteRoleAsync(int roleId)
-		{
-			var role = await _context.Roles.FindAsync(roleId);
-			if (role != null) // FOUND!
-			{
-				_context.Roles.Remove(role);
-				await _context.SaveChangesAsync();
-			}
 		}
 	}
 }

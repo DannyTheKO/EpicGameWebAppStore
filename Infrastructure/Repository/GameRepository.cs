@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
+
 // Domain
 
 // Infrastructure
@@ -20,7 +21,12 @@ public class GameRepository : IGameRepository
 
 	public async Task<IEnumerable<Game>> GetAll()
 	{
-		return await _context.Games.ToListAsync();
+		var game = await _context.Games
+			.Include(g => g.Genre)
+			.Include(g => g.Publisher)
+			.ToListAsync();
+
+		return game;
 	}
 
 	public async Task<Game> GetById(int id)

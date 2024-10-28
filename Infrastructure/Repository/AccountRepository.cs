@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
+
 // Domain
 
 // Infrastructure
@@ -51,37 +52,26 @@ public class AccountRepository : IAccountRepository
 		}
 	}
 
+	#endregion
+
+	#region == Function operation ==
+
 	// SELECT: Get User by AccountID From the Database
 	public async Task<Account> GetUserByIdAsync(int accountId)
 	{
-		var account = await _context.Accounts.FindAsync(accountId);
-		if (account == null)
-		{
-			throw new NullReferenceException($"Account with ID {accountId} not found.");
-		}
-		return account;
+		return await _context.Accounts.FindAsync(accountId);
 	}
 
 	// Get "Username" from the Account table in the Database
 	public async Task<Account> GetByUsernameAsync(string username)
 	{
-		var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
-		if (account == null)
-		{
-			throw new NullReferenceException($"Account with Username {username} not found.");
-		}
-		return account;
+		return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
 	}
 
 	// Get "Email" from the Account table in the Database
 	public async Task<Account> GetByEmailAsync(string email)
 	{
-		var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
-		if (account == null)
-		{
-			throw new NullReferenceException($"Account with Email {email} not found.");
-		}
-		return account;
+		return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
 	}
 
 	#endregion

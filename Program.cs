@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-
-// Application
 using Application.Interfaces;
 using Application.Services;
+using DataAccess.EpicGame;
+using Domain.Repository;
+using Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
+// Application
 
 // Infrastructure
-using Infrastructure.Repository;
-using DataAccess.EpicGame;
 
 // Domain
-using Domain.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +18,7 @@ builder.Services.AddControllersWithViews();
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-	options.UseMySql(builder.Configuration.GetConnectionString("Default"), 
-		ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
+	options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
 
 
 // Authentication Service
@@ -30,6 +28,8 @@ builder.Services.AddAuthentication("CookieAuth")
 	{
 		config.Cookie.Name = "UserLoginCookie";
 		config.LoginPath = "/Auth/LoginPage";
+		config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+		config.SlidingExpiration = true;
 	});
 
 // Authorization Service

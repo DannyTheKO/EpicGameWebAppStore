@@ -48,7 +48,14 @@
 				@Html.DisplayFor(modelItem => item.Title)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.Price)
+				@if (item.Price == decimal.Zero)
+				{
+					<p>FREE</p>
+				}
+				else
+				{
+					@Html.DisplayFor(modelItem => item.Price)
+				}
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.Author)
@@ -63,10 +70,10 @@
 				@Html.DisplayFor(modelItem => item.Description)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.Genre.GenreId)
+				@Html.DisplayFor(modelItem => item.Genre.Name)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.Publisher.PublisherId)
+				@Html.DisplayFor(modelItem => item.Publisher.Name)
 			</td>
 			<td>
 				<a asp-action="Edit" asp-route-id="@item.GameId">Edit</a> |

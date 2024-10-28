@@ -1,15 +1,13 @@
-﻿using System.Security.Claims;
+﻿using Application.Interfaces;
+using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-
 // Domain
-using Domain.Entities;
 
 // Application
-using Application.Interfaces;
 
 // Presentation
-using EpicGameWebAppStore.Models;
 
 namespace EpicGameWebAppStore.Controllers;
 
@@ -23,7 +21,19 @@ public class AuthController : Controller
 		_authenticationServices = authenticationServices;
 	}
 
+	#region == Logout ==
+
+	[HttpGet("Logout")]
+	public async Task<IActionResult> Logout()
+	{
+		await HttpContext.SignOutAsync("CookieAuth");
+		return RedirectToAction("Index", "Home");
+	}
+
+	#endregion
+
 	#region == Register ==
+
 	// GET: Auth/Register
 	[HttpGet("RegisterPage")]
 	public IActionResult RegisterPage()
@@ -55,10 +65,10 @@ public class AuthController : Controller
 		return RedirectToAction("Index", "Home");
 	}
 
-
 	#endregion
 
 	#region == Login ==
+
 	// GET: Auth/LoginPage
 	[HttpGet("LoginPage")]
 	public IActionResult LoginPage()
@@ -68,6 +78,7 @@ public class AuthController : Controller
 
 	// POST: Auth/LoginConfirm
 	[HttpPost("LoginConfirm")]
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
 	{
 		// Validate if user input is valid
@@ -89,37 +100,11 @@ public class AuthController : Controller
 			return View("LoginPage", loginViewModel);
 		}
 
-		// Create claim for successfully login
-		var claims = new List<Claim>
-		{
-			new (ClaimTypes.Name, account.Username),
-		};
-
-		// Create Identity
-		var identity = new ClaimsIdentity(claims, "CookieAuth");
-
-		// Create Principal
-		var principal = new ClaimsPrincipal(identity);
-
-		// Sign in
+		var principal = _authenticationServices.CreateClaimsPrincipal(account);
 		await HttpContext.SignInAsync("CookieAuth", principal);
 
-
 		return RedirectToAction("Index", "Home");
 	}
 
 	#endregion
-
-	#region == Logout ==
-
-	[HttpGet("Logout")]
-	public async Task<IActionResult> Logout()
-	{
-		await HttpContext.SignOutAsync("CookieAuth");
-		return RedirectToAction("Index", "Home");
-	}
-
-	#endregion
-
-
 }

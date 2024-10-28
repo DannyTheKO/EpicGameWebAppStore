@@ -1,23 +1,22 @@
 ﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EpicGameWebAppStore.Controllers
+namespace EpicGameWebAppStore.Controllers;
+
+public class AdminController : Controller
 {
-	public class AdminController : Controller
+	private readonly IAuthenticationServices _authenticationServices;
+	private readonly IAuthorizationServices _authorizationServices;
+
+	public AdminController(IAuthorizationServices authorizationServices,
+		IAuthenticationServices authenticationServices)
 	{
-		private readonly IAuthorizationServices _authorizationServices;
-		private readonly IAuthenticationServices _authenticationServices;
+		_authorizationServices = authorizationServices;
+		_authenticationServices = authenticationServices;
+	}
 
-		public AdminController(IAuthorizationServices authorizationServices,
-			IAuthenticationServices authenticationServices)
-		{
-			_authorizationServices = authorizationServices;
-			_authenticationServices = authenticationServices;
-		}
-
-		public IActionResult Index()
-		{
-			return View();
-		}
+	public IActionResult Index()
+	{
+		return View();
 	}
 }

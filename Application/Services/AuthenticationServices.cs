@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using System.Security.Claims;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
 
@@ -6,8 +7,8 @@ namespace Application.Services;
 
 public class AuthenticationServices : IAuthenticationServices
 {
-	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 	private readonly IAccountRepository _accountRepository;
+	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 
 	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
 	{
@@ -51,6 +52,7 @@ public class AuthenticationServices : IAuthenticationServices
 		if (account != null) // FOUND!
 			await _accountRepository.DeleteUserAsync(accountId);
 	}
+
 	#endregion
 
 	#region == Basic operation ==
@@ -89,11 +91,10 @@ public class AuthenticationServices : IAuthenticationServices
 
 	#endregion
 
-
 	#region == Service Application ==
 
 	// ACTION: User Registration
-	public async Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword)
+	public async Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword)
 	{
 		// Check if the username and email already exist
 		var existingAccountUserName = await GetAccountByUsername(account.Username);
@@ -137,6 +138,19 @@ public class AuthenticationServices : IAuthenticationServices
 
 		// Return success with token
 		return (true, result);
+	}
+
+
+	// Create claim principal when user is login
+	public ClaimsPrincipal CreateClaimsPrincipal(Account account)
+	{
+		var claims = new List<Claim>
+		{
+			new(ClaimTypes.Name, account.Username)
+		};
+
+		var identity = new ClaimsIdentity(claims, "CookieAuth");
+		return new ClaimsPrincipal(identity);
 	}
 
 	#endregion

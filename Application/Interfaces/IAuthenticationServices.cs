@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using System.Security.Claims;
+using Domain.Entities;
+
 // Domain
 
 namespace Application.Interfaces;
@@ -37,13 +39,16 @@ public interface IAuthenticationServices
 	#region == Service Application ==
 
 	// ACTION: Register User
-	Task<(bool Success, string Message)> RegisterUser(Account account, string confirmPassword);
+	Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword);
 
 	// ACTION: Login User
 	Task<(bool Success, string Result)> LoginUser(Account account);
 
 	// ACTION: Update User
 	Task<Account> UpdateUser(Account account);
+
+	// ACTION: Claim Identity User
+	public ClaimsPrincipal CreateClaimsPrincipal(Account account);
 
 	#endregion
 }
