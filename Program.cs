@@ -19,7 +19,7 @@ builder.Services.AddControllersWithViews();
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+    options.UseMySQL(builder.Configuration.GetConnectionString("EpicGameDb")!));
 
 // Add scoped into services
 builder.Services.AddScoped<IGameServices, GameServices>();
