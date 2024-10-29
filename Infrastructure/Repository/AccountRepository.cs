@@ -74,5 +74,13 @@ public class AccountRepository : IAccountRepository
 		return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
 	}
 
+	public async Task<string> GetUserRoleAsync(int accountId)
+	{
+		var account = await GetUserByIdAsync(accountId);
+		if (account == null || account.RoleId == null) return "Guest"; // Default role
+
+		var role = await _context.Roles.FindAsync(account.RoleId);
+		return role?.Name ?? "Guest";
+	}
 	#endregion
 }

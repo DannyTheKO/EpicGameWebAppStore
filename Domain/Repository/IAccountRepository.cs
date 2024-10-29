@@ -22,7 +22,6 @@ public interface IAccountRepository
 
 	#endregion
 
-
 	#region == Function operation ==
 
 	// SELECT: Get User by AccountID From the Database
@@ -33,6 +32,9 @@ public interface IAccountRepository
 
 	// SELECT: Get "Email" value by specific Account
 	Task<Account> GetByEmailAsync(string email);
+
+	// SELECT: Get specific user role by Account id
+	Task<string> GetUserRoleAsync(int accountId);
 
 	#endregion
 }

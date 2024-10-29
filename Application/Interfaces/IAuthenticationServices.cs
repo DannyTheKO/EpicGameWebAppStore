@@ -42,13 +42,10 @@ public interface IAuthenticationServices
 	Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword);
 
 	// ACTION: Login User
-	Task<(bool Success, string Result)> LoginUser(Account account);
+	Task<(bool Success, string Result, int AccountId)> LoginUser(Account account);
 
 	// ACTION: Update User
 	Task<Account> UpdateUser(Account account);
-
-	// ACTION: Claim Identity User
-	public ClaimsPrincipal CreateClaimsPrincipal(Account account);
 
 	#endregion
 }

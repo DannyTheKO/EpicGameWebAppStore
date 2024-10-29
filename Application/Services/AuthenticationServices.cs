@@ -123,35 +123,23 @@ public class AuthenticationServices : IAuthenticationServices
 	}
 
 	// ACTION: User Login
-	public async Task<(bool Success, string Result)> LoginUser(Account account)
+	public async Task<(bool Success, string Result, int AccountId)> LoginUser(Account account)
 	{
 		// Check if the username exists
 		var existingAccount = await GetAccountByUsername(account.Username);
 
-		if (existingAccount == null) return (false, "Username does not exist");
+		if (existingAccount == null) return (false, "Username does not exist", 0);
 
 		// Validate password
-		if (existingAccount.Password != account.Password) return (false, "Invalid password");
+		if (existingAccount.Password != account.Password) return (false, "Invalid password", 0);
 
 		// Generate token
 		var result = await GenerateTokenAsync(account.Username);
 
-		// Return success with token
-		return (true, result);
+		// Return success with token and AccountId
+		return (true, result, existingAccount.AccountId);
 	}
 
-
-	// Create claim principal when user is login
-	public ClaimsPrincipal CreateClaimsPrincipal(Account account)
-	{
-		var claims = new List<Claim>
-		{
-			new(ClaimTypes.Name, account.Username)
-		};
-
-		var identity = new ClaimsIdentity(claims, "CookieAuth");
-		return new ClaimsPrincipal(identity);
-	}
 
 	#endregion
 }

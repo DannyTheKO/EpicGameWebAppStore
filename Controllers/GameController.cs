@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class GameController : Controller
 {
 	private readonly IGameService _gameServices;

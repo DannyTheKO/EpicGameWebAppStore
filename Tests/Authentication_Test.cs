@@ -155,7 +155,7 @@ public class AuthenticationServicesTests
 		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(account.Username)).ReturnsAsync(account);
 
 		// Act
-		var (success, result) = await _authenticationServices.LoginUser(account);
+		var (success, result, accountId) = await _authenticationServices.LoginUser(account);
 
 		// Assert
 		Assert.True(success);

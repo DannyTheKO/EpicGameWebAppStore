@@ -15,10 +15,12 @@ namespace EpicGameWebAppStore.Controllers;
 public class AuthController : Controller
 {
 	private readonly IAuthenticationServices _authenticationServices;
+	private readonly IAuthorizationServices _authorizationServices;
 
-	public AuthController(IAuthenticationServices authenticationServices)
+	public AuthController(IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
 	{
 		_authenticationServices = authenticationServices;
+		_authorizationServices = authorizationServices;
 	}
 
 	#region == Logout ==
@@ -91,7 +93,7 @@ public class AuthController : Controller
 			Password = loginViewModel.Password
 		};
 
-		var (success, result) = await _authenticationServices.LoginUser(account);
+		var (success, result, accountId) = await _authenticationServices.LoginUser(account);
 
 		// If user fail to validate "success" return false
 		if (!success) // Return false
@@ -100,8 +102,8 @@ public class AuthController : Controller
 			return View("LoginPage", loginViewModel);
 		}
 
-		var principal = _authenticationServices.CreateClaimsPrincipal(account);
-		await HttpContext.SignInAsync("CookieAuth", principal);
+		var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
+		await HttpContext.SignInAsync("CookieAuth", await principal);
 
 		return RedirectToAction("Index", "Home");
 	}
