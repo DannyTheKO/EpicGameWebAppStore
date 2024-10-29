@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Infrastructure.DataAccess;
+using Application.Interfaces;
 
 namespace EpicGameWebAppStore.Controllers
 {
@@ -10,6 +11,7 @@ namespace EpicGameWebAppStore.Controllers
     public class CartController : Controller
     {
         private readonly EpicGameDbContext _context;
+        private readonly ICartService _cartService;
 
         public CartController(EpicGameDbContext context)
         {
@@ -58,7 +60,6 @@ namespace EpicGameWebAppStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AccountId,PaymentMethodId")] Cart cart)
         {
-            // Set default values
             cart.CreatedOn = DateTime.Now;
             cart.TotalAmount = 0;
 
@@ -66,7 +67,7 @@ namespace EpicGameWebAppStore.Controllers
             {
                 try
                 {
-                    _context.Add(cart);
+                    _cartService.AddCartAsync(cart);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -76,7 +77,6 @@ namespace EpicGameWebAppStore.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             ViewData["AccountId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Accounts, "AccountId", "Username", cart.AccountId);
             ViewData["PaymentMethodId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Paymentmethods, "PaymentMethodId", "Name", cart.PaymentMethodId);
             return View(cart);
