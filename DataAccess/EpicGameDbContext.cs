@@ -56,7 +56,7 @@ public partial class EpicGameDbContext : DbContext
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.IsAdmin).HasColumnType("enum('N','Y')");
+            entity.Property(e => e.IsAdmin).HasColumnType("tinyint(1)");
             entity.Property(e => e.Password).HasMaxLength(45);
             entity.Property(e => e.Username).HasMaxLength(45);
         });

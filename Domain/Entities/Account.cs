@@ -13,7 +13,7 @@ public partial class Account
 
     public string? Email { get; set; }
 
-    public string? IsAdmin { get; set; }
+    public bool IsAdmin { get; set; }  // Changed from string to bool
 
     public DateTime? CreatedOn { get; set; }
 

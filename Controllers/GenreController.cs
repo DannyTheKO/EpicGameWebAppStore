@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
@@ -6,24 +6,24 @@ using Infrastructure.DataAccess;
 
 namespace EpicGameWebAppStore.Controllers
 {
-    [Route("Publisher")] // Route gốc cho controller
-    public class PublisherController : Controller
+    [Route("Genre")] // Route gốc cho controller
+    public class GenreController : Controller
     {
         private readonly EpicGameDbContext _context;
 
-        public PublisherController(EpicGameDbContext context)
+        public GenreController(EpicGameDbContext context)
         {
             _context = context;
         }
 
-        // GET: publishers
+        // GET: genres
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Publishers.ToListAsync());
+            return View(await _context.Genres.ToListAsync());
         }
 
-        // GET: publishers/details/5
+        // GET: genres/details/5
         [HttpGet("details/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -32,38 +32,38 @@ namespace EpicGameWebAppStore.Controllers
                 return NotFound();
             }
 
-            var publisher = await _context.Publishers
-                .FirstOrDefaultAsync(m => m.PublisherId == id);
-            if (publisher == null)
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.GenreId == id);
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(publisher);
+            return View(genre);
         }
 
-        // GET: publishers/create
+        // GET: genres/create
         [HttpGet("create")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: publishers/create
+        // POST: genres/create
         [HttpPost("create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PublisherId,Name,Address,Email,Phone,Website")] Publisher publisher)
+        public async Task<IActionResult> Create([Bind("GenreId,Name")] Genre genre)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(publisher);
+                _context.Add(genre);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(publisher);
+            return View(genre);
         }
 
-        // GET: publishers/edit/5
+        // GET: genres/edit/5
         [HttpGet("edit/{id}")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -72,20 +72,20 @@ namespace EpicGameWebAppStore.Controllers
                 return NotFound();
             }
 
-            var publisher = await _context.Publishers.FindAsync(id);
-            if (publisher == null)
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
             {
                 return NotFound();
             }
-            return View(publisher);
+            return View(genre);
         }
 
-        // POST: publishers/edit/5
+        // POST: genres/edit/5
         [HttpPost("edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PublisherId,Name,Address,Email,Phone,Website")] Publisher publisher)
+        public async Task<IActionResult> Edit(int id, [Bind("GenreId,Name")] Genre genre)
         {
-            if (id != publisher.PublisherId)
+            if (id != genre.GenreId)
             {
                 return NotFound();
             }
@@ -94,12 +94,12 @@ namespace EpicGameWebAppStore.Controllers
             {
                 try
                 {
-                    _context.Update(publisher);
+                    _context.Update(genre);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PublisherExists(publisher.PublisherId))
+                    if (!GenreExists(genre.GenreId))
                     {
                         return NotFound();
                     }
@@ -110,10 +110,10 @@ namespace EpicGameWebAppStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(publisher);
+            return View(genre);
         }
 
-        // GET: publishers/delete/5
+        // GET: genres/delete/5
         [HttpGet("delete/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -122,30 +122,30 @@ namespace EpicGameWebAppStore.Controllers
                 return NotFound();
             }
 
-            var publisher = await _context.Publishers
-                .FirstOrDefaultAsync(m => m.PublisherId == id);
-            if (publisher == null)
+            var genre = await _context.Genres
+                .FirstOrDefaultAsync(m => m.GenreId == id);
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(publisher);
+            return View(genre);
         }
 
-        // POST: publishers/delete/5
-        [HttpPost("delete/{id}")]
+        // POST: genres/delete/5
+        [HttpPost("delete/{id}"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var publisher = await _context.Publishers.FindAsync(id);
-            _context.Publishers.Remove(publisher);
+            var genre = await _context.Genres.FindAsync(id);
+            _context.Genres.Remove(genre);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PublisherExists(int id)
+        private bool GenreExists(int id)
         {
-            return _context.Publishers.Any(e => e.PublisherId == id);
+            return _context.Genres.Any(e => e.GenreId == id);
         }
     }
 }

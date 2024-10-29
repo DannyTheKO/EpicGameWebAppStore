@@ -85,7 +85,5 @@ namespace Application.Services
                 throw new Exception("Failed to get specific genre id", ex);
             }
         }
-       
-
     }
 }

@@ -47,10 +47,10 @@
                         <td>@Html.DisplayFor(modelItem => item.Genre.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.Publisher.Name)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.GameId" class="btn btn-warning">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.GameId" class="btn btn-info">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.GameId" class="btn btn-danger"
-                               onclick="return confirm('Are you sure you want to delete this game?');">Delete</a>
+                            <div class="d-flex justify-content-around">
+                            <a asp-action="Update" asp-route-id="@item.GameId" class="btn btn-warning">Update</a> |
+                            <a asp-action="Delete" asp-route-id="@item.GameId" class="btn btn-danger">Delete</a>
+                            </div>
                         </td>
                     </tr>
                 }

@@ -106,5 +106,6 @@ namespace EpicGameWebAppStore.Controllers
             await _gameServices.DeleteGameAsync(id); // Assuming you have a DeleteGameAsync method
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
