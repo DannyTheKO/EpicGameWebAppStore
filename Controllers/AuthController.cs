@@ -57,7 +57,7 @@ public class AuthController : _BaseController
 			Email = registerViewModel.Email
 		};
 
-		var (success, message) = await _authenticationServices.RegisterUser(account, registerViewModel.ConfirmPassword);
+		var (success, message) = await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
 
 		if (!success)
 		{
@@ -95,7 +95,7 @@ public class AuthController : _BaseController
 			Password = loginViewModel.Password
 		};
 
-		var (success, result, accountId) = await _authenticationServices.LoginUser(account);
+		var (success, result, accountId) = await _authenticationServices.LoginAccount(account);
 
 		// If user fail to validate "success" return false
 		if (!success) // Return false

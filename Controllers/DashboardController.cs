@@ -7,12 +7,12 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Authorize(Roles = "Admin, Moderator")]
 [Route("Admin")]
-public class AdminController : _BaseController
+public class DashboardController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
 
-	public AdminController(
+	public DashboardController(
 		IAuthorizationServices authorizationServices, IAuthenticationServices authenticationServices, IAccountRepository accountRepository) 
 		: base(authenticationServices, authorizationServices)
 	{
@@ -23,7 +23,7 @@ public class AdminController : _BaseController
 	[HttpGet("Index")]
 	public async Task<IActionResult> Index()
 	{
-		var account = await _authenticationServices.GetAllUser();
+		var account = await _authenticationServices.GetAllAccounts();
 		return View(account);
 	}
 }

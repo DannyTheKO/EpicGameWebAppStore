@@ -21,30 +21,30 @@ public class AccountRepository : IAccountRepository
 
 	#region == Basic CRUD operation ==
 
-	// ACTION: Create User into Database
-	public async Task AddUserAsync(Account account)
+	// ACTION: Create User
+	public async Task Add(Account account)
 	{
 		_context.Accounts.Add(account);
 		await _context.SaveChangesAsync();
 	}
 
-	// SELECT: Get all User from the Database 
-	public async Task<IEnumerable<Account>> GetAllUserAsync()
+	// SELECT: Get all User 
+	public async Task<IEnumerable<Account>> GetAll()
 	{
 		return await _context.Accounts
 			.Include(a => a.Role)
 			.ToListAsync();
 	}
 
-	// ACTION: Update User From the Database
-	public async Task UpdateUserAsync(Account account)
+	// ACTION: Update User
+	public async Task Update(Account account)
 	{
 		_context.Accounts.Update(account);
 		await _context.SaveChangesAsync();
 	}
 
-	// ACTION: Delete User From the Database
-	public async Task DeleteUserAsync(int accountId)
+	// ACTION: Delete User
+	public async Task Delete(int accountId)
 	{
 		var account = await _context.Accounts.FindAsync(accountId);
 		if (account != null)
@@ -56,29 +56,29 @@ public class AccountRepository : IAccountRepository
 
 	#endregion
 
-	#region == Function operation ==
+	#region == Select Operation ==
 
-	// SELECT: Get User by AccountID From the Database
-	public async Task<Account> GetUserByIdAsync(int accountId)
+	// SELECT: Get Account by AccountID
+	public async Task<Account> GetId(int accountId)
 	{
 		return await _context.Accounts.FindAsync(accountId);
 	}
 
 	// Get "Username" from the Account table in the Database
-	public async Task<Account> GetByUsernameAsync(string username)
+	public async Task<Account> GetUsername(string username)
 	{
 		return await _context.Accounts.FirstOrDefaultAsync(a => a.Username == username);
 	}
 
 	// Get "Email" from the Account table in the Database
-	public async Task<Account> GetByEmailAsync(string email)
+	public async Task<Account> GetEmail(string email)
 	{
 		return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
 	}
 
 	public async Task<string> GetUserRoleAsync(int accountId)
 	{
-		var account = await GetUserByIdAsync(accountId);
+		var account = await GetId(accountId);
 		if (account == null || account.RoleId == null) return "Guest"; // Default role
 
 		var role = await _context.Roles.FindAsync(account.RoleId);

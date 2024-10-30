@@ -31,7 +31,7 @@ namespace EpicGameWebAppStore.Controllers
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
 				var accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
-				ViewData["Account_Role"] = await _authorizationServices.GetUserRole(accountId);
+				ViewData["Account_Role"] = await _authorizationServices.GetRoleById(accountId);
 			}
 			else
 			{

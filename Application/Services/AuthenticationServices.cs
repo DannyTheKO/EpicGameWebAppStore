@@ -19,84 +19,82 @@ public class AuthenticationServices : IAuthenticationServices
 
 	#region == Basic CRUB Function ==
 
+    public async Task<Account> AddAccount(Account account)
+    {
+        await _accountRepository.Add(account);
+        return account;
+    }
+
 	// SELECT: Get All User
-	public async Task<IEnumerable<Account>> GetAllUser()
+	public async Task<IEnumerable<Account>> GetAllAccounts()
 	{
-		return await _accountRepository.GetAllUserAsync();
+		return await _accountRepository.GetAll();
 	}
 
 	// ACTION: Update User
-	public async Task<Account> UpdateUser(Account account)
+	public async Task<Account> UpdateAccount(Account account)
 	{
 		if (account == null) // NOT FOUND!
 			throw new ArgumentNullException(nameof(account), "Account cannot be null");
 
 		// Retrieve the existing account from the database
-		var existingAccount = await _accountRepository.GetUserByIdAsync(account.AccountId);
+		var existingAccount = await _accountRepository.GetId(account.AccountId);
 		if (existingAccount == null) throw new Exception("Account not found");
 
 		// Update the account details
 		existingAccount.Username = account.Username;
-		existingAccount.Email = account.Email;
-		existingAccount.Password = account.Password; // Consider hashing the password
+        existingAccount.Role.RoleId = account.Role.RoleId;
 		existingAccount.IsActive = account.IsActive;
+		existingAccount.Password = account.Password; // Consider hashing the password
+		existingAccount.Email = account.Email;
 
 		// Save the updated account to the database
-		await _accountRepository.UpdateUserAsync(existingAccount);
+		await _accountRepository.Update(existingAccount);
 
 		return existingAccount;
 	}
 
 	// ACTION: Delete User
-	public async Task DeleteUser(int accountId)
+	public async Task DeleteAccount(int accountId)
 	{
-		var account = await _accountRepository.GetUserByIdAsync(accountId);
+		var account = await _accountRepository.GetId(accountId);
 		if (account != null) // FOUND!
-			await _accountRepository.DeleteUserAsync(accountId);
+			await _accountRepository.Delete(accountId);
 	}
 
 	#endregion
 
-	#region == Basic operation ==
+	#region == Select operation ==
 
-	// SELECT: Get specific Account using AccountID
-	public async Task<Account> GetUserId(int accountId)
+	// SELECT: Get Account by ID
+	public async Task<Account> GetAccountById(int accountId)
 	{
-		return await _accountRepository.GetUserByIdAsync(accountId);
+		return await _accountRepository.GetId(accountId);
 	}
 
-	// SELECT: Get "Username" value by specific Account
+	// SELECT: Get Account by Username
 	public async Task<Account> GetAccountByUsername(string username)
 	{
-		return await _accountRepository.GetByUsernameAsync(username);
+		return await _accountRepository.GetUsername(username);
 	}
 
-	// SELECT: Get "Email" value by specific Account
+	// SELECT: Get Account by Email
 	public async Task<Account> GetAccountByEmail(string email)
 	{
-		return await _accountRepository.GetByEmailAsync(email);
+		return await _accountRepository.GetEmail(email);
 	}
-
-	// ACTION: Validate User Credential
-	public async Task<bool> ValidateUserCredentialAsync(string username, string password)
-	{
-		var account = await _accountRepository.GetByUsernameAsync(username);
-		return account != null && account.Password == password;
-	}
-
-	// ACTION: Generate Token for user
-	public async Task<string> GenerateTokenAsync(string username)
-	{
-		// TODO: Implement logic to generate a JWT or other token
-		return await Task.FromResult("generated_token");
-	}
-
 	#endregion
 
 	#region == Service Application ==
+    // ACTION: Validate User Credential
+    public async Task<bool> ValidateAccountCredential(string username, string password)
+    {
+        var account = await _accountRepository.GetUsername(username);
+        return account != null && account.Password == password;
+    }
 
 	// ACTION: User Registration
-	public async Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword)
+	public async Task<(bool Success, string Result)> RegisterAccount(Account account, string confirmPassword)
 	{
 		// Check if the username and email already exist
 		var existingAccountUserName = await GetAccountByUsername(account.Username);
@@ -120,13 +118,13 @@ public class AuthenticationServices : IAuthenticationServices
 		// account.Password = HashPassword(account.Password);
 
 		// Save the account to the database
-		await _accountRepository.AddUserAsync(account);
+		await _accountRepository.Add(account);
 
 		return (true, string.Empty);
 	}
 
 	// ACTION: User Login
-	public async Task<(bool Success, string Result, int AccountId)> LoginUser(Account account)
+	public async Task<(bool Success, string Result, int AccountId)> LoginAccount(Account account)
 	{
 		// Check if the username exists
 		var existingAccount = await GetAccountByUsername(account.Username);
@@ -137,12 +135,10 @@ public class AuthenticationServices : IAuthenticationServices
 		if (existingAccount.Password != account.Password) return (false, "Invalid password", 0);
 
 		// Generate token
-		var result = await GenerateTokenAsync(account.Username);
+        var result = "Successfully login";
 
 		// Return success with token and AccountId
 		return (true, result, existingAccount.AccountId);
 	}
-
-
 	#endregion
 }

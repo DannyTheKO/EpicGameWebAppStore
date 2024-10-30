@@ -9,7 +9,7 @@ public interface IAuthorizationServices
 	// SELECT: Get all available roles
 	Task<IEnumerable<Role>> GetAllRoles();
 
-	Task<String> GetUserRole(int accountId);
+	Task<string> GetRoleById(int accountId);
 	#endregion
 
 	#region Service Function
