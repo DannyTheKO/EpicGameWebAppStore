@@ -11,7 +11,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="text-center align-baseline">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Username)
@@ -26,7 +26,7 @@
                 Is Active
             </th>
             <th>
-                Date
+                Creation Date
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -34,7 +34,7 @@
             <th>Action</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="text-center align-baseline">
 @foreach (var item in Model) {
         <tr>
             <td>
@@ -47,7 +47,14 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
+                @if (item.IsActive == "Y")
+                {
+	                <p class="btn btn-success m-0">Yes</p>
+                }
+                else
+                {
+	                <p class="btn btn-danger m-0">No</p>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedOn)
