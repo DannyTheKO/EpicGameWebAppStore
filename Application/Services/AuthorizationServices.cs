@@ -63,21 +63,21 @@ public class AuthorizationServices : IAuthorizationServices
 	}
 
 
-	// Create claim principal when user is login
+	// ACTION: Create claim principal when user is login
 	public async Task<ClaimsPrincipal> CreateClaimsPrincipal(int accountId)
 	{
 		var accountUsername = await _accountRepository.GetUserByIdAsync(accountId);
 		var accountRole = await _accountRepository.GetUserRoleAsync(accountId);
 		var claims = new List<Claim>
 		{
-			new(ClaimTypes.Name, accountUsername.Username),
-			new(ClaimTypes.Role, accountRole),
+			new(ClaimTypes.NameIdentifier, accountId.ToString()), // ID
+			new(ClaimTypes.Name, accountUsername.Username), // Username
+			new(ClaimTypes.Role, accountRole) // Role
 		};
 
 		var identity = new ClaimsIdentity(claims, "CookieAuth");
 		return await Task.FromResult(new ClaimsPrincipal(identity));
 	}
-	
 	#endregion
 
 }

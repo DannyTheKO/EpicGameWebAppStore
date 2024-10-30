@@ -31,7 +31,9 @@ public class AccountRepository : IAccountRepository
 	// SELECT: Get all User from the Database 
 	public async Task<IEnumerable<Account>> GetAllUserAsync()
 	{
-		return await _context.Accounts.ToListAsync();
+		return await _context.Accounts
+			.Include(a => a.Role)
+			.ToListAsync();
 	}
 
 	// ACTION: Update User From the Database

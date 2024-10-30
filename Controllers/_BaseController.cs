@@ -23,21 +23,15 @@ namespace EpicGameWebAppStore.Controllers
 
 		public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 		{
-			// Existing view data setup code
+			// Set authentication status and username for all views
 			ViewData["IsAuthenticated"] = User.Identity?.IsAuthenticated ?? false;
 			ViewData["Account_Username"] = User.Identity?.Name;
 
+			// Add role information if user is authenticated
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
-				var account = await _authenticationServices.GetAccountByUsername(User.Identity?.Name);
-				if (account != null)
-				{
-					ViewData["Account_Role"] = await _authorizationServices.GetUserRole(account.AccountId);
-				}
-				else
-				{
-					ViewData["Account_Role"] = "Guest";
-				}
+				var accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+				ViewData["Account_Role"] = await _authorizationServices.GetUserRole(accountId);
 			}
 			else
 			{
@@ -45,6 +39,12 @@ namespace EpicGameWebAppStore.Controllers
 			}
 
 			await base.OnActionExecutionAsync(context, next);
+		 }
+
+		// SELECT: Get current login account ID method
+		public int GetCurrentLoginAccountId()
+		{
+			return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
 		}
 	}
 

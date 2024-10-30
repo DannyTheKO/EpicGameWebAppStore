@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Application.Interfaces;
 using EpicGameWebAppStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
@@ -14,7 +15,6 @@ public class HomeController : _BaseController
 		: base(authenticationServices, authorizationServices)
 	{
 		_logger = logger;
-		_authenticationServices = authenticationServices;
 	}
 
 	public IActionResult Index()
