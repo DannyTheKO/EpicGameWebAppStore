@@ -9,8 +9,10 @@ public interface IAuthorizationServices
 	// SELECT: Get all available roles
 	Task<IEnumerable<Role>> GetAllRoles();
 
+	Task<String> GetUserRole(int accountId);
 	#endregion
 
+	#region Service Function
 	// ACTION: Assign role to user
 	Task<(bool Success, string Message)> AssignRoleToUser(int accountId, int roleId);
 
@@ -20,4 +22,6 @@ public interface IAuthorizationServices
 
 	// ACTION: Claim Identity User
 	Task<ClaimsPrincipal> CreateClaimsPrincipal(int accountId);
+
+		#endregion
 }

@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-public class HomeController : Controller
+public class HomeController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly ILogger<HomeController> _logger;
 
-	public HomeController(ILogger<HomeController> logger, IAuthenticationServices authenticationServices)
+	public HomeController(ILogger<HomeController> logger, IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
+		: base(authenticationServices, authorizationServices)
 	{
 		_logger = logger;
 		_authenticationServices = authenticationServices;
@@ -18,12 +19,6 @@ public class HomeController : Controller
 
 	public IActionResult Index()
 	{
-		// Check if the user is login in the homepage
-		var isAuthenticated = User.Identity.IsAuthenticated;
-		var accountUsername = User.Identity.Name;
-		ViewData["IsAuthenticated"] = isAuthenticated;
-		ViewData["Account_Username"] = accountUsername;
-
 		return View();
 	}
 

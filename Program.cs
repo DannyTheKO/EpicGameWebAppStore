@@ -28,6 +28,7 @@ builder.Services.AddAuthentication("CookieAuth")
 	{
 		config.Cookie.Name = "UserLoginCookie";
 		config.LoginPath = "/Auth/LoginPage";
+		config.AccessDeniedPath = "/Auth/AccessDenied";
 		config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 		config.SlidingExpiration = true;
 	});

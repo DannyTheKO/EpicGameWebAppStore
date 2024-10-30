@@ -8,11 +8,13 @@ namespace Application.Services;
 public class AuthenticationServices : IAuthenticationServices
 {
 	private readonly IAccountRepository _accountRepository;
+	private readonly IRoleRepository _roleRepository;
 	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
 
 	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
 	{
 		_accountRepository = accountRepository;
+		_roleRepository = roleRepository;
 	}
 
 	#region == Basic CRUB Function ==
@@ -111,7 +113,8 @@ public class AuthenticationServices : IAuthenticationServices
 
 		// Create a new account
 		account.CreatedOn = DateTime.UtcNow;
-		account.IsActive = "N"; // TODO: Implement authorization logic later
+		account.RoleId = 5; // Default Role is "Guest"
+		account.IsActive = "Y"; // TODO: Implement authorization logic later
 
 		// TODO: Hash the password before saving it
 		// account.Password = HashPassword(account.Password);

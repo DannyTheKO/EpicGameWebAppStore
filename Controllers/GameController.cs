@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace EpicGameWebAppStore.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class GameController : Controller
+public class GameController : _BaseController
 {
 	private readonly IGameService _gameServices;
 
-	public GameController(IGameService gameServices)
+	public GameController(IGameService gameServices, IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
+		: base(authenticationServices, authorizationServices)
 	{
 		_gameServices = gameServices;
 	}

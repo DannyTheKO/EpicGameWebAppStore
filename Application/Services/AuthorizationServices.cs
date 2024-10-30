@@ -26,7 +26,7 @@ public class AuthorizationServices : IAuthorizationServices
 	public async Task<String> GetUserRole(int accountId)
 	{
 		var account = await _accountRepository.GetUserByIdAsync(accountId);
-		if (account == null || account.Role == null) return "Guest";
+		if (account == null || account.RoleId == null) return "Guest";
 
 		var role = await _roleRepository.GetByIdAsync(account.RoleId.Value);
 		return role?.Name ?? "Guest";
@@ -71,7 +71,7 @@ public class AuthorizationServices : IAuthorizationServices
 		var claims = new List<Claim>
 		{
 			new(ClaimTypes.Name, accountUsername.Username),
-			new(ClaimTypes.Role, accountRole)
+			new(ClaimTypes.Role, accountRole),
 		};
 
 		var identity = new ClaimsIdentity(claims, "CookieAuth");

@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace EpicGameWebAppStore.Controllers;
 
 [Route("Auth")]
-public class AuthController : Controller
+public class AuthController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
 
-	public AuthController(IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
+	public AuthController(IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices) 
+		: base(authenticationServices, authorizationServices)
 	{
 		_authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;
@@ -73,6 +74,7 @@ public class AuthController : Controller
 
 	// GET: Auth/LoginPage
 	[HttpGet("LoginPage")]
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public IActionResult LoginPage()
 	{
 		return View();
@@ -108,5 +110,16 @@ public class AuthController : Controller
 		return RedirectToAction("Index", "Home");
 	}
 
+	#endregion
+
+	#region == Access Denied ==
+
+	[HttpGet("AccessDenied")]
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+	public IActionResult AccessDenied()
+	{
+		return View("403");
+	}
+	
 	#endregion
 }
