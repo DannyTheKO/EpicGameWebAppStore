@@ -4,17 +4,14 @@ using DataAccess.EpicGame;
 using Domain.Repository;
 using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
-// Application
-
-// Infrastructure
-
-// Domain
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// == Add scoped into services ==s
+// == Add scoped into services ==
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
@@ -52,20 +49,39 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 // Publisher Service
 
+// == Testing API ==
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Epic Game Web App Store API",
+        Version = "v1"
+    });
+});
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Home/Error");
-
-	app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Epic Game Web App Store API v1"));
 }
+
+
+//if (!app.Environment.IsDevelopment())
+//{
+//	app.UseExceptionHandler("/Home/Error");
+
+//	app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

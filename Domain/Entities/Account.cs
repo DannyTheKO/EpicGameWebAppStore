@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
 
@@ -16,6 +17,7 @@ public class Account
 
 	public string? Email { get; set; }
 
+	[Required(ErrorMessage = "Is this Account Active ?")]
 	public string? IsActive { get; set; }
 
 	public DateTime? CreatedOn { get; set; }
