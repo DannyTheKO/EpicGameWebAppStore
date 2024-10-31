@@ -1,0 +1,175 @@
+/* GamePage.css */
+
+.game-page {
+    background-color: #161b22;
+    color: #ffffff;
+    padding: 20px;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-details {
+    display: flex;
+    gap: 20px;
+}
+
+.game-details img {
+    width: 300px;
+    border-radius: 10px;
+}
+
+.game-info {
+    flex-grow: 1;
+}
+
+.game-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.game-info p {
+    line-height: 1.6;
+}
+
+.purchase-button,
+.add-to-cart-button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.purchase-button {
+    background-color: #ff4081;
+    margin-right: 10px;
+}
+
+.add-to-cart-button {
+    background-color: #28a745;
+}
+
+.purchase-button:hover {
+    background-color: #e63972;
+}
+
+.add-to-cart-button:hover {
+    background-color: #218838;
+}
+
+/* Phần yêu cầu cấu hình */
+.requirements {
+    margin-top: 30px;
+    background-color: #1c2025; /* Nền xám đậm như Epic Store */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.requirements h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+}
+
+.requirement-content {
+    display: flex;
+    justify-content: space-between; /* Căn đều 2 bên */
+    gap: 20px;
+}
+
+.requirement-category {
+    flex: 1;
+    background-color: #2c2f33; /* Nền xám cho mỗi cột */
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.requirement-category h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #ff4081;
+}
+
+.requirement-category p {
+    margin: 5px 0;
+}
+
+.review-section {
+    margin-top: 30px;
+    background-color: #1c2025;
+    padding: 20px;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+.review-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rating .star {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.2s;
+}
+
+.rating .star.selected {
+    color: #ffcc00; /* Màu vàng cho sao đã chọn */
+}
+
+textarea {
+    width: 100%;
+    min-height: 80px;
+    background-color: #2c2f33;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.submit-review {
+    background-color: #ff4081;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-review:hover {
+    background-color: #e63972;
+}
+
+.reviews-list {
+    margin-top: 20px;
+}
+
+.review-item {
+    background-color: #2c2f33;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.review-rating .star {
+    font-size: 1.2rem;
+    color: #ffcc00;
+}

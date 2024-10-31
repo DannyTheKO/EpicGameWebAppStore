@@ -1,0 +1,140 @@
+/* src/styles/pages/StorePage.css */
+.store-page {
+    background-color: #161b22; 
+    color: #ffffff; 
+    padding: 20px; 
+}
+
+.filter-container {
+    display: flex;
+    justify-content: space-between; /* Căn đều các phần tử */
+    align-items: center; /* Căn giữa dọc */
+    margin-bottom: 20px; /* Khoảng cách dưới cùng */
+}
+
+.filter-options, .genre-container, .search-container {
+    display: flex;
+    align-items: center; /* Căn giữa dọc */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
+}
+
+.filter-options {
+    border-radius: 5px; /* Bo góc */
+    padding: 8px; /* Padding cho phần filter */
+}
+
+.filter-options label {
+    color: #ffffff; /* Màu chữ trắng cho label */
+    margin-right: 10px; /* Khoảng cách bên phải của label */
+}
+
+.filter-options select {
+    padding: 8px; /* Padding cho select */
+    background-color: #333; /* Màu nền cho select */
+    color: #ffffff; /* Màu chữ trắng cho select */
+    border: 1px solid #444; /* Viền tối cho select */
+    border-radius: 5px; /* Bo góc cho select */
+    appearance: none; /* Ẩn các mũi tên mặc định (nếu cần) */
+}
+
+.filter-options select:focus {
+    outline: none; /* Ẩn viền khi chọn */
+    border-color: #00adee; /* Thay đổi màu viền khi chọn */
+}
+
+.search-container {
+    flex-grow: 1; /* Cho phép thanh tìm kiếm mở rộng */
+    max-width: 450px; /* Giảm chiều dài thanh lọc */
+    position: relative; /* Thêm position relative để định vị icon */
+}
+
+.search-container input {
+    padding: 10px 10px 10px 40px; /* Thêm padding bên trái để tạo khoảng cách cho icon */
+    border: 1px solid #444; /* Viền tối */
+    border-radius: 5px; /* Bo góc cho input */
+    width: 100%; /* Đặt chiều rộng 100% cho input */
+    background-color: #333; /* Màu nền cho input */
+    color: white; /* Màu chữ trắng */
+}
+
+.search-icon {
+    position: absolute; /* Định vị icon */
+    left: 10px; /* Đưa icon vào bên trái */
+    top: 50%; /* Căn giữa dọc */
+    transform: translateY(-50%); /* Căn giữa hoàn toàn */
+    color: white; /* Màu icon */
+}
+
+.genre-container {
+    display: flex; /* Sử dụng flexbox để căn giữa các phần tử */
+    align-items: center; /* Căn giữa dọc */
+}
+
+.genre-container label {
+    color: #ffffff; /* Màu chữ trắng cho label */
+    margin-right: 10px; /* Khoảng cách bên phải của label */
+}
+
+.genre-container select {
+    padding: 8px; /* Padding cho select */
+    background-color: #333; /* Màu nền cho select */
+    color: #ffffff; /* Màu chữ trắng cho select */
+    border: 1px solid #444; /* Viền tối cho select */
+    border-radius: 5px; /* Bo góc cho select */
+}
+
+.genre-container select:focus {
+    outline: none; /* Ẩn viền khi chọn */
+    border-color: #00adee; /* Thay đổi màu viền khi chọn */
+}
+
+
+h2 {
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    font-size: 2rem; /* Kích thước tiêu đề */
+}
+
+.games-list {
+    display: grid; /* Sử dụng grid để hiển thị danh sách game */
+    grid-template-columns: repeat(5, 1fr); /* 5 game trên 1 hàng */
+    gap: 20px; /* Khoảng cách giữa các game */
+    margin-top: 20px; /* Khoảng cách trên cùng */
+}
+
+.game-item {
+    background-color: #21262d; /* Nền cho từng game */
+    border: 1px solid #444; /* Viền tối */
+    border-radius: 8px; /* Bo góc */
+    padding: 10px; /* Padding cho game */
+    text-align: center; /* Căn giữa chữ trong game */
+    transition: transform 0.3s; /* Hiệu ứng khi hover */
+}
+
+.game-item img {
+    width: 100%; /* Đặt chiều rộng hình ảnh 100% */
+    height: auto; /* Tự động điều chỉnh chiều cao */
+    border-radius: 5px; /* Bo góc cho hình ảnh */
+}
+
+.game-item h3 {
+    margin: 10px 0 5px; /* Khoảng cách cho tên game */
+    color: white; /* Đặt màu chữ thành trắng */
+    text-decoration: none; 
+}
+
+.game-item p {
+    margin: 0; /* Không có margin cho giá */
+    color: #b3b3b3; /* Màu chữ cho giá */
+}
+
+.game-item:hover {
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+.game-item:nth-child(odd) {
+    background-color: #2b3036; /* Nền tối cho game lẻ */
+}
+a {
+    text-decoration: none; /* Bỏ gạch dưới cho tất cả các thẻ <Link> */
+    color: inherit; /* Để màu sắc của link giống như màu của text cha */
+}

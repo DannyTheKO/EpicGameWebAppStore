@@ -1,0 +1,72 @@
+/* src/styles/pages/LibraryPage.css */
+
+.library-page {
+    padding: 20px; /* Padding cho toàn trang */
+    background-color: #161b22; /* Màu nền tối */
+    color: #ffffff; /* Màu chữ trắng */
+}
+
+.search-container {
+    margin-bottom: 20px; /* Khoảng cách dưới thanh tìm kiếm */
+}
+
+.search-container input {
+    width: 100%; /* Chiều rộng 100% cho thanh tìm kiếm */
+    padding: 10px; /* Padding cho thanh tìm kiếm */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc cho thanh tìm kiếm */
+    font-size: 1rem; /* Kích thước chữ cho thanh tìm kiếm */
+}
+
+.games-list {
+    display: flex; /* Sử dụng flexbox để sắp xếp các game */
+    flex-wrap: wrap; /* Để cho các game xuống dòng khi không đủ chỗ */
+    gap: 20px; /* Khoảng cách giữa các game */
+}
+
+.game-item {
+    background-color: #2b2f33; /* Màu nền cho mỗi game */
+    border-radius: 8px; /* Bo góc cho mỗi game */
+    padding: 10px; /* Padding cho mỗi game */
+    width: 200px; /* Chiều rộng cố định cho mỗi game */
+}
+
+.game-image {
+    width: 100%; /* Chiều rộng 100% cho hình ảnh game */
+    border-radius: 8px; /* Bo góc cho hình ảnh game */
+}
+
+.game-title {
+    font-size: 1.2rem; /* Kích thước chữ cho tên game */
+    margin: 10px 0 5px 0; /* Khoảng cách trên, dưới cho tên game */
+}
+
+.game-description {
+    font-size: 0.9rem; /* Kích thước chữ cho mô tả game */
+    color: #bbbbbb; /* Màu chữ cho mô tả */
+}
+.search-container {
+    position: relative; /* Để có thể định vị biểu tượng kính lúp */
+    width: 100%; /* Đặt chiều rộng của container */
+}
+
+.search-bar {
+    display: flex; /* Sử dụng flexbox để sắp xếp input và icon */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.search-container input {
+    flex-grow: 1; /* Cho phép input chiếm hết chiều rộng có sẵn */
+    padding: 10px 40px; /* Padding cho input, thêm khoảng cách bên phải cho icon */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc cho thanh tìm kiếm */
+    font-size: 1rem; /* Kích thước chữ cho thanh tìm kiếm */
+}
+
+.search-icon {
+    position: absolute; /* Định vị tuyệt đối để biểu tượng nằm bên phải */
+    right: 10px; /* Khoảng cách bên phải */
+    color: #ffffff; /* Màu sắc cho biểu tượng */
+    font-size: 1.2rem; /* Kích thước biểu tượng */
+    pointer-events: none; /* Không cho phép tương tác với biểu tượng */
+}

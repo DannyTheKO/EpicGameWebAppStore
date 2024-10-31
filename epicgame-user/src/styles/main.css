@@ -1,0 +1,17 @@
+html, body {
+    height: 100%; /* Đặt chiều cao cho html và body */
+    margin: 0; /* Bỏ margin */
+}
+
+#root {
+    display: flex; /* Sử dụng flexbox */
+    flex-direction: column; /* Đặt chiều dọc */
+    min-height: 100vh; /* Đặt chiều cao tối thiểu là 100% chiều cao viewport */
+}
+
+main {
+    flex: 1; /* Cho phép nội dung chính chiếm không gian còn lại */
+    background-color: #161b22; /* Màu nền cho main */
+    padding: 20px; /* Thêm padding nếu cần thiết */
+    margin: 0; /* Bỏ margin */
+}

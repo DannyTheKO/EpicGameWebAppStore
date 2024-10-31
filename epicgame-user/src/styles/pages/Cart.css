@@ -1,0 +1,131 @@
+/* src/styles/pages/Cart.css */
+.cart-page {
+    padding: 20px;
+    color: #ffffff;
+    background-color: #161b22;
+    min-height: 100vh;
+}
+
+.cart-title {
+    text-align: left;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.cart-container {
+    display: flex;
+    gap: 20px;
+}
+
+.cart-items {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    background-color: #242b35;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.cart-item-image {
+    width: 150px;
+    height: 200px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.item-genre, .item-price {
+    font-size: 1rem;
+    color: #bbbbbb;
+    margin-top: 5px;
+}
+
+.remove-button {
+    background-color: #ff4081;
+    color: white;
+    width: 150px;
+    height: 50px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+    background-color: #e63972;
+}
+
+.cart-summary {
+    flex: 1;
+    background-color: #242b35;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cart-summary h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.checkout-button {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #ff4081;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+.checkout-button:hover {
+    background-color: #e63972;
+}
+
+
+.cart-item-info {
+    flex: 1; /* Cho phép phần thông tin mở rộng */
+    margin-left: 15px; /* Khoảng cách bên trái giữa hình ảnh và thông tin */
+}
+
+.item-name {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    font-weight: bold;
+    display: block; /* Đảm bảo tên game hiển thị trên một dòng riêng */
+}
+
+.item-description {
+    font-size: 0.9rem; /* Kích thước chữ cho mô tả */
+    color: #bbbbbb; /* Màu chữ cho mô tả */
+    margin-bottom: 30px;/* Khoảng cách trên và dưới mô tả */
+    display: block; /* Đảm bảo mô tả hiển thị trên một dòng riêng */
+}
+
+.item-price {
+    margin-top: 30px;
+    font-size: 1.5rem;
+    color: #ff4081; /* Thay đổi màu cho giá để nổi bật hơn */
+    margin-top: 5px; /* Khoảng cách trên cùng cho giá */
+    display: block; /* Đảm bảo giá hiển thị trên một dòng riêng */
+}

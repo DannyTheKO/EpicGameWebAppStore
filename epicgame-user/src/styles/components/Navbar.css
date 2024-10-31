@@ -1,0 +1,125 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px; /* Giữ padding hiện tại */
+    background-color: #1a1a1a; /* Màu nền navbar */
+    color: white;
+    height: 70px; /* Tăng chiều cao thanh navbar lên 10px */
+}
+
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Khoảng cách giữa các liên kết */
+    margin: 0; /* Đặt margin là 0 để căn trái sát nhất */
+    padding: 0; /* Đặt padding là 0 để căn trái sát nhất */
+    flex-grow: 1; /* Cho phép liên kết sử dụng không gian còn lại */
+    margin-left: 30px; /* Tạo khoảng cách với logo */
+}
+
+.navbar-links li {
+    flex-shrink: 0; /* Ngăn li tự co lại */
+}
+
+.navbar-links a {
+    text-decoration: none;
+    color: white; /* Đặt chữ liên kết là màu trắng */
+    font-size: 1rem;
+}
+
+.navbar-links a:hover {
+    color: #FFD700; /* Màu vàng đậm khi hover */
+}
+
+.navbar-search {
+    display: flex;
+    margin-right: 100px; /* Khoảng cách bên trái và bên phải */
+    border-radius: 5px; /* Bo góc cho thanh tìm kiếm */
+    overflow: hidden; /* Ẩn các phần thừa */
+    background-color: #333; /* Màu nền cho thanh tìm kiếm */
+    flex-grow: 1; /* Cho phép thanh tìm kiếm mở rộng */
+    max-width: 200px; /* Giới hạn chiều rộng tối đa của thanh tìm kiếm */
+}
+
+.navbar-search input {
+    padding: 10px; /* Padding cho input */
+    border: none;
+    border-radius: 5px 0 0 5px; /* Bo góc trái cho input */
+    outline: none; /* Không có viền khi chọn */
+    color: white; /* Chữ trắng */
+    background-color: #444; /* Nền cho input */
+    width: 100%; /* Đặt chiều rộng 100% cho input */
+}
+
+.search-button {
+    background-color: #333; /* Nền cho nút tìm kiếm */
+    border: none;
+    color: white;
+    padding: 10px 15px; /* Padding cho nút */
+    cursor: pointer;
+    border-radius: 0 5px 5px 0; /* Bo góc phải cho nút */
+    transition: background-color 0.3s; /* Hiệu ứng khi hover */
+}
+
+.search-button:hover {
+    background-color: #444; /* Màu nền khi hover */
+}
+
+/* Biểu tượng kính lúp */
+.search-button i {
+    font-size: 1rem; /* Kích thước biểu tượng */
+}
+
+/* Các nút khác */
+.navbar-buttons {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+.btn {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Nút Cart */
+.cart {
+    background-color: #1a1a1a; /* Nền giống navbar */
+    color: white; /* Chữ trắng */
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Không có gạch chân */
+}
+
+.cart:hover {
+    background-color: #555; /* Màu nền khi hover */
+}
+
+/* Nút Sign In */
+.sign-in {
+    background-color: #555; /* Nền xám */
+    color: white; /* Chữ trắng */
+}
+
+.sign-in:hover {
+    background-color: #666; /* Màu nền khi hover */
+}
+
+/* Nút Download */
+.download {
+    background-color: #00adee; /* Nền xanh */
+    color: black; /* Chữ đen */
+}
+
+.download:hover {
+    background-color: #0077a2; /* Màu nền khi hover */
+}

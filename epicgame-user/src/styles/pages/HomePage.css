@@ -1,0 +1,44 @@
+.home-page {
+    overflow: hidden; /* Ẩn các phần thừa */
+    margin: 0; /* Đặt margin là 0 */
+    padding: 0; /* Đặt padding là 0 */
+    width: 100vw; /* Chiều rộng 100% của viewport */
+    height: 100vh; /* Chiều cao 100% của viewport */
+    position: relative; /* Để có thể sử dụng position absolute cho banner */
+}
+
+.banner {
+    display: flex; /* Sử dụng flexbox để sắp xếp hình ảnh */
+    height: 100%;
+    animation: slide 15s infinite; /* Thay đổi thời gian ở đây để điều chỉnh tốc độ */
+}
+
+.banner-image {
+    width: 100vw; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng của viewport */
+    height: 100vh; /* Đảm bảo hình ảnh chiếm toàn bộ chiều cao của viewport */
+    object-fit: cover;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(0); /* Bắt đầu từ vị trí ban đầu */
+    }
+    20% {
+        transform: translateX(0); /* Giữ hình ảnh đầu tiên ở giữa */
+    }
+    25% {
+        transform: translateX(-100%); /* Di chuyển ra bên trái */
+    }
+    45% {
+        transform: translateX(-100%); /* Giữ hình ảnh thứ hai ở giữa */
+    }
+    50% {
+        transform: translateX(-200%); /* Di chuyển hình ảnh thứ hai ra ngoài bên trái */
+    }
+    70% {
+        transform: translateX(-200%); /* Giữ hình ảnh thứ ba ở giữa */
+    }
+    100% {
+        transform: translateX(0); /* Quay lại vị trí ban đầu */
+    }
+}

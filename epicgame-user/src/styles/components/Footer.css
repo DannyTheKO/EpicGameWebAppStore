@@ -1,0 +1,31 @@
+.footer {
+    left: 0;
+    bottom: 0;
+    width: 100%; /* Chiều rộng 100% */
+    background-color: #1a1a1a; /* Màu nền */
+    color: white; /* Màu chữ */
+    text-align: center; /* Căn giữa chữ */
+    padding: 10px 0; /* Padding trên và dưới */
+}
+
+.footer-content {
+    display: flex; /* Sử dụng flexbox để căn chỉnh nội dung */
+    justify-content: space-between; /* Căn đều nội dung */
+    align-items: center; /* Căn giữa dọc */
+    padding: 0 20px; /* Padding hai bên */
+}
+
+.footer-links {
+    list-style: none; /* Xóa dấu chấm của danh sách */
+    display: flex; /* Sử dụng flexbox cho danh sách liên kết */
+    gap: 15px; /* Khoảng cách giữa các liên kết */
+}
+
+.footer-links a {
+    color: white; /* Màu chữ liên kết */
+    text-decoration: none; /* Không có gạch chân */
+}
+
+.footer-links a:hover {
+    text-decoration: underline; /* Gạch chân khi hover */
+}
