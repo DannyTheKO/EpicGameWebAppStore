@@ -23,6 +23,7 @@ namespace Application.Services
             _gameRepository = gameRepository;
         }
 
+
         // == Basic CRUD Function ==
         public async Task<IEnumerable<Game>> GetAllGameAsync()
         {

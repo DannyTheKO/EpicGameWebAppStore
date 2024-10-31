@@ -1,4 +1,4 @@
-import { BellFilled, MailOutlined } from "@ant-design/icons";
+import { BellFilled } from "@ant-design/icons";
 import { Badge, Drawer, Image, List, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { getComments, getOrders } from "./API";
@@ -26,14 +26,7 @@ function Header() {
       ></Image>
       <Typography.Title>EPIC GAMING</Typography.Title>
       <Space>
-        <Badge count={comments.length} dot>
-          <MailOutlined
-            style={{ fontSize: 24 }}
-            onClick={() => {
-              setCommentsOpen(true);
-            }}
-          />
-        </Badge>
+        
         <Badge count={orders.length}>
           <BellFilled
             style={{ fontSize: 24 }}

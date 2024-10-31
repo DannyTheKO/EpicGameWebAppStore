@@ -36,8 +36,8 @@ import {
               key: "/",
             },
             {
-              label: "Inventory",
-              key: "/inventory",
+              label: "Game",
+              key: "/game",
               icon: <ShopOutlined />,
             },
             {

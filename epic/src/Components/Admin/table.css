@@ -6,3 +6,8 @@
 {
     width: 100%;
 }
+.form_addedit Input
+{
+    padding: 10px;
+    margin-top: 20px;
+}

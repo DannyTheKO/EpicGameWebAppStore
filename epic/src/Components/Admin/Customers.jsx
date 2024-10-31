@@ -1,6 +1,6 @@
-import { Button ,Avatar, Rate, Space, Table, Typography } from "antd";
+import { Button ,Avatar, Space, Table } from "antd";
 import { useEffect, useState } from "react";
-import { getCustomers, getInventory } from "./API";
+import { getCustomers } from "./API";
 import "./table.css";
 function Customers() {
   const [loading, setLoading] = useState(false);

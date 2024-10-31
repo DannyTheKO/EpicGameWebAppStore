@@ -1,8 +1,7 @@
-import AppRoutes from "./Dashboard";
+
 import Customers from "./Customers";
 import Dash from "./Dashboard";
-import Admin from './Admin';
-import Inventory from "./Inventory";
+import Game from "./Game";
 import Orders from "./Orders";
 import {  Routes, Route } from 'react-router-dom';
 function PageContent() {
@@ -11,7 +10,7 @@ function PageContent() {
       {/* Tại đây bạn có thể render các route con */}
       <Routes>
       <Route path="/" element={<Dash />} />
-        <Route path="/inventory" element={<Inventory />} />
+        <Route path="/game" element={<Game />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/customers" element={<Customers />} />
       </Routes>

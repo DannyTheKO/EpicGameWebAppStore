@@ -1,6 +1,6 @@
-import {Button , Avatar, Rate, Space, Table, Typography } from "antd";
+import {Button , Space, Table } from "antd";
 import { useEffect, useState } from "react";
-import { getInventory, getOrders } from "./API";
+import {  getOrders } from "./API";
 import "./table.css";
 
 function Orders() {
