@@ -62,5 +62,15 @@ namespace Infrastructure.Repository
                 .Include(c => c.PaymentMethod)
                 .ToListAsync();
         }
+
+        public async Task<Account> GetAccountById(int accountId)
+        {
+            return await _context.Accounts.FindAsync(accountId);
+        }
+
+        public async Task<Paymentmethod> GetPaymentMethodById(int paymentMethodId)
+        {
+            return await _context.Paymentmethods.FindAsync(paymentMethodId);
+        }
     }
 }

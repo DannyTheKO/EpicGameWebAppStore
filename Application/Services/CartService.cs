@@ -18,75 +18,49 @@ namespace Application.Services
 
         public async Task<IEnumerable<Cart>> GetAllCartsAsync()
         {
-            try
-            {
-                return await _cartRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get all the carts", ex);
-            }
+            return await _cartRepository.GetAll();
         }
 
         public async Task<Cart> AddCartAsync(Cart cart)
         {
-            try
-            {
-                await _cartRepository.Add(cart);
-                return cart;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to add the cart", ex);
-            }
+            await _cartRepository.Add(cart);
+            return cart;
         }
 
         public async Task<Cart> UpdateCartAsync(Cart cart)
         {
-            try
-            {
-                await _cartRepository.Update(cart);
-                return cart;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to update the cart", ex);
-            }
+            await _cartRepository.Update(cart);
+            return cart;
         }
 
         public async Task<Cart> DeleteCartAsync(int id)
         {
             var cart = await _cartRepository.GetById(id);
-            if (cart == null)
-            {
-                throw new Exception("Cart not found.");
-            }
+            if (cart == null) throw new Exception("Cart not found.");
             await _cartRepository.Delete(id);
             return cart;
         }
 
         public async Task<Cart> GetCartByIdAsync(int id)
         {
-            try
-            {
-                return await _cartRepository.GetById(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get specific cart id", ex);
-            }
+            return await _cartRepository.GetById(id);
         }
 
         public async Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId)
         {
-            try
-            {
-                return await _cartRepository.GetByAccountId(accountId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get carts for the specified account", ex);
-            }
+            return await _cartRepository.GetByAccountId(accountId);
+        }
+
+        public async Task<string> GetAccountNameByIdAsync(int accountId)
+        {
+            var account = await _cartRepository.GetAccountById(accountId);
+            return account?.Username ?? throw new Exception("Account not found.");
+        }
+
+        public async Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId)
+        {
+            var paymentMethod = await _cartRepository.GetPaymentMethodById(paymentMethodId);
+            return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
         }
     }
 }

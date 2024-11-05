@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
+using System.Text.Json;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 // The "EpicGameDBContext.cs" file acts as a bridge between the application and the database, 
 // providing an abstraction layer for performing database operations and managing the entities 
 // in the application.
 
-
 // Domain
-using Domain.Entities;
 
-namespace Infrastructure.DataAccess;
+namespace DataAccess.EpicGame;
 
 public partial class EpicGameDbContext : DbContext
 {
@@ -41,8 +41,10 @@ public partial class EpicGameDbContext : DbContext
 
     public virtual DbSet<Publisher> Publishers { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySQL("Server=localhost;User=root;Password=root;Database=epicgamewebapp");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,12 +55,17 @@ public partial class EpicGameDbContext : DbContext
 
             entity.ToTable("account");
 
+            entity.HasIndex(e => e.RoleId, "FK_Account_Role_idx");
+
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.IsAdmin).HasColumnType("tinyint(1)");
             entity.Property(e => e.Password).HasMaxLength(45);
             entity.Property(e => e.Username).HasMaxLength(45);
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK_Account_Role");
         });
 
         modelBuilder.Entity<Accountgame>(entity =>
@@ -214,6 +221,23 @@ public partial class EpicGameDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Phone).HasMaxLength(255);
             entity.Property(e => e.Website).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.RoleId).HasName("PRIMARY");
+
+            entity.ToTable("role");
+
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Permission)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null))
+                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
         });
 
         OnModelCreatingPartial(modelBuilder);

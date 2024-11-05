@@ -12,5 +12,8 @@ namespace Application.Interfaces
         Task<Cart> DeleteCartAsync(int id);
         Task<Cart> GetCartByIdAsync(int id);
         Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId);
+
+        Task<string> GetAccountNameByIdAsync(int accountId);
+        Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId);
     }
 }

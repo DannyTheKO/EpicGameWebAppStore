@@ -12,5 +12,7 @@ namespace Domain.Repository
         Task Update(Cart cart);
         Task Delete(int id);
         Task<IEnumerable<Cart>> GetByAccountId(int accountId);
+        Task<Account> GetAccountById(int accountId);
+        Task<Paymentmethod> GetPaymentMethodById(int paymentMethodId);
     }
 }

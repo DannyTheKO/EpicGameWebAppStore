@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 </head>
 
-<form asp-action="Create" class="container mt-4">
+<form asp-action="Create" method="POST" class="container mt-4">
     <div class="form-group">
         <label asp-for="AccountId">Account</label>
         <select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
@@ -28,7 +28,7 @@
         <span asp-validation-for="CreatedOn" class="text-danger"></span>
     </div>
     <div>
-        <input type="submit" asp-controller="Cart" asp-action="create" method="POST" value="Create" class="btn btn-primarty" />
+        <input type="submit" value="Create" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </form>
