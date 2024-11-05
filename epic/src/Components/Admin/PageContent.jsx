@@ -1,8 +1,10 @@
 
-import Customers from "./Customers";
+import Account from "./Account";
 import Dash from "./Dashboard";
 import Game from "./Game";
-import Orders from "./Orders";
+import AccountGame from "./AccountGame";
+import Discount from "./Discount.jsx";
+import Publisher from "./Publisher.jsx";
 import {  Routes, Route } from 'react-router-dom';
 function PageContent() {
   return (
@@ -11,8 +13,10 @@ function PageContent() {
       <Routes>
       <Route path="/" element={<Dash />} />
         <Route path="/game" element={<Game />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/customers" element={<Customers />} />
+        <Route path="/accountgame" element={<AccountGame />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/discount" element={<Discount />}/>
+      <Route path="/publisher" element={<Publisher />}/>
       </Routes>
     </div>
   );

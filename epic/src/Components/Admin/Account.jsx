@@ -1,4 +1,4 @@
-import { Button ,Avatar, Space, Table } from "antd";
+import { Button , Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import { getCustomers } from "./API";
 import "./table.css";
@@ -35,40 +35,28 @@ function Customers() {
         loading={loading}
         columns={[
           {
-            title: "Photo",
-            dataIndex: "image",
-            render: (link) => {
-              return <Avatar src={link} />;
-            },
+            title: "ID",
+            dataIndex: "AccountID",
+            
           },
           {
-            title: "First Name",
-            dataIndex: "firstName",
+            title: "ID Role",
+            dataIndex: "RoleId",
           },
           {
-            title: "LastName",
-            dataIndex: "lastName",
+            title: "Username",
+            dataIndex: "Usernam",
           },
           {
             title: "Email",
-            dataIndex: "email",
+            dataIndex: "Email",
           },
           {
-            title: "Phone",
-            dataIndex: "phone",
+            title: "Create On",
+            dataIndex: "Create on",
           },
 
-          {
-            title: "address",
-            dataIndex: "address",
-            render: (address) => {
-              return (
-                <span>
-                  {address.address}, {address.city}
-                </span>
-              );
-            },
-          },
+          
           {
             title: "Actions", // Cột chứa các nút
             render: (record) => {

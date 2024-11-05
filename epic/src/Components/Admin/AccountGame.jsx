@@ -36,27 +36,20 @@ function Orders() {
         loading={loading}
         columns={[
           {
-            title: "Title",
-            dataIndex: "title",
+            title: "ID Account",
+            dataIndex: "AccountID",
           },
           {
-            title: "Price",
-            dataIndex: "price",
-            render: (value) => <span>${value}</span>,
+            title: "ID Game",
+            dataIndex: "GaneID",
+           
           },
           {
-            title: "DiscountedPrice",
-            dataIndex: "discountedPrice",
-            render: (value) => <span>${value}</span>,
+            title: "Date Addrd",
+            dataIndex: "DateAdded",
+            
           },
-          {
-            title: "Quantity",
-            dataIndex: "quantity",
-          },
-          {
-            title: "Total",
-            dataIndex: "total",
-          },
+         
           {
             title: "Actions", // Cột chứa các nút
             render: (record) => {

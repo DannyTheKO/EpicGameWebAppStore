@@ -4,7 +4,7 @@ import {
     ShoppingCartOutlined,
     UserOutlined,
   } from "@ant-design/icons";
-  import { MdOutlineLogout } from "react-icons/md";
+  import { MdOutlineLogout ,MdDiscount, MdOutlineWarehouse  } from "react-icons/md";
   import { Menu } from "antd";
   import { useEffect, useState } from "react";
   import { useLocation, useNavigate } from "react-router-dom";
@@ -41,14 +41,24 @@ import {
               icon: <ShopOutlined />,
             },
             {
-              label: "Orders",
-              key: "/orders",
+              label: "Acount game",
+              key: "/accountgame",
               icon: <ShoppingCartOutlined />,
             },
             {
-              label: "Customers",
-              key: "/customers",
+              label: "Account",
+              key: "/account",
               icon: <UserOutlined />,
+            },
+            {
+              label: "Discount",
+              key: "/discount",
+              icon: <MdDiscount />,
+            },
+            {
+              label: "Publisher",
+              key: "/publisher",
+              icon: <MdOutlineWarehouse />,
             },
             {
               label: "Logout",

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
+using Application.Services;
 
 namespace Presentation.Controllers
 {
@@ -10,9 +11,9 @@ namespace Presentation.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly IGameServices _gameServices;
+        private readonly GameService _gameServices;
 
-        public GameController(IGameServices gameServices)
+        public GameController(GameService gameServices)
         {
             _gameServices = gameServices;
         }
@@ -61,6 +62,7 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Game>> DeleteGame(int id)
         {
+            Console.WriteLine(id);
             var deletedGame = await _gameServices.DeleteGameAsync(id);
             return Ok(deletedGame);
         }

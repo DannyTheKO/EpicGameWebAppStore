@@ -1,48 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.X509;
-
-// Application
+﻿using System.Security.Claims;
 using Application.Interfaces;
+using Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-// Domain
-using Domain.Entities;
+namespace EpicGameWebAppStore.Controllers;
 
-
-namespace EpicGameWebAppStore.Controllers
+[Authorize(Roles = "Admin, Moderator, Editor")]
+public class GameController : _BaseController
 {
-    public class GameController : Controller
-    {
-        private readonly IGameServices _gameServices;
+	private readonly IGameService _gameServices;
+	private readonly IAuthorizationServices _authorizationServices;
 
-        public GameController(IGameServices gameServices)
-        {
-            _gameServices = gameServices;
-        }
+	public GameController(IGameService gameServices, IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
+		: base(authenticationServices, authorizationServices)
+	{
+		_gameServices = gameServices;
+		_authorizationServices = authorizationServices;
+	}
 
-        // GET: Game/Index
-        public async Task<IActionResult> Index()
-        {
-            var games = await _gameServices.GetAllGameAsync();
-            return View(games);
-        }
+	// GET: Game/Index
+	public async Task<IActionResult> Index()
+	{
+		var games = await _gameServices.GetAllGameAsync();
+		return View(games);
+	}
 
-        // TODO: Create Function
-        // GET: Game/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+	// TODO: Create Function
+	// GET: Game/Create
+	public async Task<IActionResult> Create()
+	{
+		bool hasPermission = await _authorizationServices.UserHasPermission(GetCurrentLoginAccountId(), "delete");
 
-        // POST: Game/Create
-        
-        // TODO: Update Function 
-        // GET: Game/Update/{id}
-        // POST: Game/Update/{id}
+		if (!hasPermission) // Dont have permission of that role
+		{
+			return RedirectToAction("AccessDenied", "Auth");
+		}
 
-        // TODO: Delete Function
-        // GET: Game/Delete/{id}
-        // POST: Game/Delete/{id}
+		return View();
+	}
 
+	// POST: Game/Create
 
-    }
+	// TODO: Update Function 
+	// GET: Game/Update/{id}
+	// POST: Game/Update/{id}
+
+	// TODO: Delete Function
+	// GET: Game/Delete/{id}
+	// POST: Game/Delete/{id}
 }

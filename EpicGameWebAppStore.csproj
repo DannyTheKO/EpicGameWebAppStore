@@ -1,45 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-	  <TargetFramework>net8.0</TargetFramework>
-	  <Nullable>enable</Nullable>
-	  <ImplicitUsings>enable</ImplicitUsings>
-	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	</PropertyGroup>
-  
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
-	  <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
-	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
-	  <PackageReference Include="xunit" Version="2.9.2" />
-	</ItemGroup>
-  
-	<ItemGroup>
-	  <!-- Loại bỏ các thư mục cụ thể nếu cần thiết -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <Compile Remove="Application\**" />
 	  <Compile Remove="DataAccess\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Infrastructure\**" />
+	  <Compile Remove="obj\**\*.cs" />
 	  <Content Remove="Application\**" />
 	  <Content Remove="DataAccess\**" />
 	  <Content Remove="Domain\**" />
 	  <Content Remove="Infrastructure\**" />
+	  <Content Remove="Tests\**" />
+	  <Content Remove="_Resource\**" />
+
 	  <EmbeddedResource Remove="Application\**" />
 	  <EmbeddedResource Remove="DataAccess\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Infrastructure\**" />
+	  <EmbeddedResource Remove="Tests\**" />
+	  <EmbeddedResource Remove="_Resource\**" />
+	  
 	  <None Remove="Application\**" />
 	  <None Remove="DataAccess\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Infrastructure\**" />
+	  <None Remove="Tests\**" />
+	  <None Remove="_Resource\**" />
+
 	  <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
-	</ItemGroup>
-  
-  </Project>
-  
+  </ItemGroup>
+
+</Project>

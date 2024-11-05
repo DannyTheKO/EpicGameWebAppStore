@@ -5,8 +5,10 @@ import Register from './Components/Register/Register.jsx';
 import Forgotpass from './Components/Forgotpass/Forgotpass.jsx'
 import Admin from './Components/Admin/Admin.jsx';
 import Game from './Components/Admin/Game.jsx';
-import Orders from './Components/Admin/Orders.jsx';
-import Customers from './Components/Admin/Customers.jsx';
+import AccountGame from './Components/Admin/AccountGame.jsx';
+import Acount from './Components/Admin/Account.jsx';
+import Discount from "./Components/Admin/Discount.jsx";
+import Publisher from "./Components/Admin/Publisher.jsx";
 
 function App() {
   return (
@@ -18,8 +20,10 @@ function App() {
       <Route path="/forgot_pass" element={<Forgotpass />} />
       <Route path="/" element={<Admin />}>
       <Route path="/game" element={<Game />}/>
-      <Route path="/orders" element={<Orders />}/>
-      <Route path="/customers" element={<Customers />}/>
+      <Route path="/accountgame" element={<AccountGame />}/>
+      <Route path="/account" element={<Acount />}/>
+      <Route path="/discount" element={<Discount />}/>
+      <Route path="/publisher" element={<Publisher />}/>
     </Route>
     </Routes>
   </BrowserRouter>

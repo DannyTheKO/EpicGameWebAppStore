@@ -26,16 +26,19 @@
       return [];
     }
   };
-  // API.js
-export const Deletegame = async (gameId) => {
+  
+// API.js
+export const DeleteGame = async (gameId) => {
   try {
-      const response = await apiClient.delete(`/${gameId}`); // Điều chỉnh theo endpoint API của bạn
-      return response.data; // Trả về dữ liệu từ phản hồi
+    const response = await apiClient.delete(`/${gameId}`); // Xóa game dựa trên gameId
+    console.log("Xóa thành công gameId:", gameId);
+    return response.data; // Trả về dữ liệu phản hồi (có thể là game đã xóa)
   } catch (error) {
-      console.error("Lỗi khi xóa game:", error);
-      throw error; // Ném lỗi để xử lý ở nơi gọi hàm
+    console.error("Lỗi khi xóa sản phẩm:", error.response || error.message);
+    throw new Error("Xóa không thành công");
   }
 };
+
 
   
 

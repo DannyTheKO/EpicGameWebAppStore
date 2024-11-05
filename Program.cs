@@ -1,98 +1,94 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-// Application
+﻿using Application.Interfaces;
 using Application.Services;
-using Application.Interfaces;
-
-// Infrastructure
+using DataAccess.EpicGame;
+using Domain.Repository;
 using EpicGameWebAppStore.Infrastructure.Repository;
 using Infrastructure.DataAccess;
-
-// Domain
-using Domain.Repository;
+using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+builder.Services.AddControllersWithViews();
+
+// == Add scoped into services ==
 
 // Add connection into Database
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")!));
+    options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
 
-// CORS Policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", policy =>
+
+// Authentication Service
+builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", config =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-void ConfigureServices(IServiceCollection services)
-{
-    services.AddCors(options =>
-    {
-        options.AddDefaultPolicy(builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+        config.Cookie.Name = "UserLoginCookie";
+        config.LoginPath = "/Auth/LoginPage";
+        config.AccessDeniedPath = "/Auth/AccessDenied";
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        config.SlidingExpiration = true;
     });
 
-    services.AddControllers();
-}
+// Authorization Service
+builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
 
-void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-{
-    app.UseCors(); // Sử dụng cấu hình CORS đã thêm ở trên
-    app.UseRouting();
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
-}
+// Account And Role Service
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
-
-// Dependency Injection for Services and Repository
-builder.Services.AddScoped<IGameServices, GameServices>();
+// Game Service
+builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 
-// Swagger
-builder.Services.AddSwaggerGen();
+// Account Service
+
+// Discount Service
+
+// Genre Service
+
+// Publisher Service
+
+// == Testing API ==
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Epic Game Web App Store API",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "EpicGame API V1");
-        c.RoutePrefix = "swagger";
-    });
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Epic Game Web App Store API v1"));
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+
+
+//if (!app.Environment.IsDevelopment())
+//{
+//	app.UseExceptionHandler("/Home/Error");
+
+//	app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseCors("AllowAllOrigins");  // CORS before Routing
-
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

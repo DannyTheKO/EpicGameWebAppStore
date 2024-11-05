@@ -1,6 +1,6 @@
   import { Button, Rate, Space, Table, Typography, Modal, Input,Select } from "antd";
   import { useEffect, useState } from "react";
-  import { GetAllgame ,AddGame} from "./API";
+  import { GetAllgame ,AddGame,DeleteGame} from "./API";
   import "./table.css";
 
   const { Text } = Typography;
@@ -37,15 +37,47 @@
       setIsModalOpen(true); // Mở modal
     };
 
-    const handleDelete = async (record) => { // Chuyển tham số record vào ngay trong dấu ngoặc
-      try {
-          // await DeleteGame(record.gameId); // Gọi hàm DeleteGame với gameId
-          setDataSource(dataSource.filter((item) => item.gameId !== record.gameId)); // Cập nhật danh sách
-          console.log(`Xóa game với ID: ${record.gameId} thành công!`);
-      } catch (error) {
-          console.error("Lỗi khi xóa game:", error); // Xử lý lỗi nếu có
-      }
-  };
+    const handleDelete = (record) => {
+      Modal.confirm({
+        title: "Bạn có chắc chắn muốn xóa sản phẩm này không?",
+        content: "Hành động này không thể hoàn tác",
+        okText: "Xóa",
+        okType: "danger",
+        cancelText: "Hủy",
+        
+        onOk: () => {
+          console.log("Record:", record);
+
+          console.log("Original gameId:", record.gameId, "Type:", typeof record.gameId);
+
+          // Chuyển gameId về số nguyên
+          const gameId = parseInt(record.gameId, 10);
+    
+          // Kiểm tra giá trị và kiểu dữ liệu sau khi ép kiểu
+          console.log("Parsed gameId:", gameId, "Type:", typeof gameId);
+    
+          // Nếu gameId không phải là số hợp lệ, dừng lại và thông báo lỗi
+          if (isNaN(gameId)) {
+            console.error("gameId không phải là số hợp lệ:", record.gameId);
+            return;
+          }
+          DeleteGame(parseInt(record.gameId)) // Giả sử hàm deleteOrder yêu cầu AccountID
+            .then(() => {
+              // Cập nhật lại danh sách sản phẩm sau khi xóa
+              setDataSource((prevDataSource) =>
+                prevDataSource.filter((item) => item.gameId !== record.gameId)
+              );
+              console.log("Đã xóa sản phẩm: ", record.gameId);
+            })
+            .catch((error) => {
+              console.log("Đã xóa sản phẩm: ", (record.gameId).type);
+      
+              console.error("Lỗi khi xóa sản phẩm:", error);
+            });
+        },
+      });
+    };
+    
   const validateGameRecord = () => {
     const { title, author, price, rating, release, description } = gameRecord;
 
@@ -89,7 +121,7 @@
               dataIndex: "gameId",
               key: "gameId",
               render: (gameId) => <Text>{gameId}</Text>,
-              className: "text-center",
+              
             },
             {
               title: "Title",
@@ -151,7 +183,9 @@
           ]}
           dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
           rowKey="gameId"
-          pagination={{ pageSize: 15 }}
+
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
         />
 
         {/* Modal cho cả Thêm và Sửa */}

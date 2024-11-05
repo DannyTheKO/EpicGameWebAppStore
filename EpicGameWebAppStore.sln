@@ -11,15 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6F02338B-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{D97AAF99-248C-45D6-9663-2242C6549BEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{C5026CFD-D2B8-4FBC-A64D-850F9B8EDB55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{C5026CFD-D2B8-4FBC-A64D-850F9B8EDB55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{F2046755-E135-4692-8033-C7C2E93ABA1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{09C84CB2-FF97-4CDB-9236-B51069B94ECF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{09C84CB2-FF97-4CDB-9236-B51069B94ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C1532E28-C9E8-4F4D-B15A-92F73C10EE64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C1532E28-C9E8-4F4D-B15A-92F73C10EE64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{27FB28D7-477E-4BD4-9541-F58F77D4C67E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{27FB28D7-477E-4BD4-9541-F58F77D4C67E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

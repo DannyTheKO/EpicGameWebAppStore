@@ -1,21 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
 
-public partial class Account
+public class Account
 {
-    public int AccountId { get; set; }
+	public int AccountId { get; set; }
 
-    public string? Username { get; set; }
+	public int? RoleId { get; set; }
 
-    public string? Password { get; set; }
+	[Required(ErrorMessage = "Username is required.")]
+	public string? Username { get; set; }
 
-    public string? Email { get; set; }
+	[Required(ErrorMessage = "Password is required.")]
+	public string? Password { get; set; }
 
-    public string? IsAdmin { get; set; }
+	public string? Email { get; set; }
 
-    public DateTime? CreatedOn { get; set; }
+	[Required(ErrorMessage = "Is this Account Active ?")]
+	public string? IsActive { get; set; }
 
-    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+	public DateTime? CreatedOn { get; set; }
+
+	public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+	public virtual Role? Role { get; set; }
 }

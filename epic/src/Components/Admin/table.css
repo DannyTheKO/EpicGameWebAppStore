@@ -11,3 +11,13 @@
     padding: 10px;
     margin-top: 20px;
 }
+
+.data .ant-table-thead > tr > th {
+    text-align: center; /* Căn giữa tiêu đề cột */
+    width: auto; /* Chiều rộng tự động cho các cột */
+  }
+  
+  .data .ant-table-tbody > tr > td {
+    text-align: center; /* Căn giữa nội dung cột */
+  }
+  
