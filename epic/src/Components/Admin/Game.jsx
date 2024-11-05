@@ -1,11 +1,12 @@
-  import { Button, Rate, Space, Table, Typography, Modal, Input } from "antd";
+  import { Button, Rate, Space, Table, Typography, Modal, Input,Select } from "antd";
   import { useEffect, useState } from "react";
   import { GetAllgame ,AddGame} from "./API";
   import "./table.css";
 
   const { Text } = Typography;
-
+  const { Option } = Select;
   function Game() {
+
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -182,20 +183,42 @@
             value={gameRecord.rating}
             onChange={(e) => setGameRecord({ ...gameRecord, rating: e.target.value })}
           />
-    <Input
+          <Input
             type="date"
             placeholder="Release Date"
             value={gameRecord.release} // Hiển thị dữ liệu ngày
             onChange={(e) => setGameRecord({ ...gameRecord, release: e.target.value })} // Cập nhật giá trị
             style={{ width: "100%", height: "52px", marginTop: "20px" }}
           />
-
+           
           <Input
             placeholder="Description"
             type="string"
             value={gameRecord.description}
             onChange={(e) => setGameRecord({ ...gameRecord, description: e.target.value })}
           />
+          <Select
+          placeholder="Chọn nền tảng"
+          value={gameRecord.platform}
+          onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
+          style={{ width: "100%", marginTop: "20px",height:"47px"  }}
+        >
+          <Option value="pc">PC</Option>
+          <Option value="xbox">Xbox</Option>
+          <Option value="playstation">PlayStation</Option>
+          <Option value="mobile">Mobile</Option>
+        </Select>
+        <Select
+          placeholder="Chọn nền tảng"
+          value={gameRecord.platform}
+          onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
+          style={{ width: "100%", marginTop: "20px",height:"47px" }}
+        >
+          <Option value="pc">PC</Option>
+          <Option value="xbox">Xbox</Option>
+          <Option value="playstation">PlayStation</Option>
+          <Option value="mobile">Mobile</Option>
+        </Select>
         </Modal>
       </Space>
     );
