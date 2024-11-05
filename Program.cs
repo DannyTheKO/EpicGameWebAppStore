@@ -1,45 +1,52 @@
 using Application.Interfaces;
 using Application.Services;
-using DataAccess.EpicGame;
-using Domain.Repository;
 using Infrastructure.Repository;
+using Domain.Repository;
+using DataAccess.EpicGame;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// == Add scoped into services ==
-
 // Add connection into Database
+var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrEmpty(connectionString)) // This will check if the Default connection string
+{
+    throw new InvalidOperationException("Connection string 'Default' is not found.");
+}
+
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-	options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
+    options.UseMySQL(connectionString));
 
 
-// Authentication Service
-builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
-builder.Services.AddAuthentication("CookieAuth")
-	.AddCookie("CookieAuth", config =>
-	{
-		config.Cookie.Name = "UserLoginCookie";
-		config.LoginPath = "/Auth/LoginPage";
-		config.AccessDeniedPath = "/Auth/AccessDenied";
-		config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-		config.SlidingExpiration = true;
-	});
-
-// Authorization Service
-builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
-
-// Account And Role Service
+// == Repository registrations ==
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
-// Game Service
+// == Service registrations ==
+
+// Authentication && Authorization
+builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
+
+// Game
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
+
+// Authentication setup
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", config =>
+    {
+        config.Cookie.Name = "UserLoginCookie";
+        config.LoginPath = "/Auth/LoginPage";
+        config.AccessDeniedPath = "/Auth/AccessDenied";
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        config.SlidingExpiration = true;
+    });
+
 
 // Account Service
 
@@ -82,6 +89,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

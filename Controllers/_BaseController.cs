@@ -45,7 +45,7 @@ namespace EpicGameWebAppStore.Controllers
 		[HttpGet]
 		public int GetCurrentLoginAccountId()
 		{
-			return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+			return _authenticationServices.GetCurrentLoginAccountId(User);
 		}
 	}
 

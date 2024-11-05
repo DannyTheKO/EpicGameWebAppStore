@@ -15,7 +15,7 @@ public class AuthenticationServicesTests
 	{
 		_userRepositoryMock = new Mock<IAccountRepository>();
 		_roleRepositoryMock = new Mock<IRoleRepository>();
-		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object, _roleRepositoryMock.Object);
+		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object);
 	}
 
 	[Fact]
