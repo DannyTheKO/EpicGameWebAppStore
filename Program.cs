@@ -2,13 +2,15 @@
 using Application.Services;
 using DataAccess.EpicGame;
 using Domain.Repository;
-using EpicGameWebAppStore.Infrastructure.Repository;
-using Infrastructure.DataAccess;
+//using EpicGameWebAppStore.Infrastructure.Repository;
+//using Infrastructure.DataAccess;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore;
+
+//using Microsoft.OpenApi.Models;
+//using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
