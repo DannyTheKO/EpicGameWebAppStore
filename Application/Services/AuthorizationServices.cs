@@ -54,13 +54,13 @@ public class AuthorizationServices : IAuthorizationServices
 	}
 
 	// VALIDATE: Check that user has permission
-	public async Task<bool> UserHasPermission(int accountId, string permission)
+	public async Task<bool> UserHasPermission(int accountId, string requiredPermission)
 	{
 		var account = await _accountRepository.GetId(accountId);
 		if (account == null || account.Role == null) return false;
 
 		var role = await _roleRepository.GetById(account.Role.RoleId);
-		return role.Permission != null && role.Permission.Contains(permission);
+		return role.Permission != null && role.Permission.Contains(requiredPermission);
 	}
 
 

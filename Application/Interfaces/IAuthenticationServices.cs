@@ -33,6 +33,8 @@ public interface IAuthenticationServices
 	// SELECT: Get "Email" value from specific Account
 	Task<Account> GetAccountByEmail(string email);
 
+    public int GetCurrentLoginAccountId(ClaimsPrincipal User);
+
 	#endregion
 
 	#region == Service Application ==

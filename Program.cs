@@ -1,30 +1,42 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.Services;
-using DataAccess.EpicGame;
-using Domain.Repository;
-//using EpicGameWebAppStore.Infrastructure.Repository;
-//using Infrastructure.DataAccess;
 using Infrastructure.Repository;
-using Microsoft.AspNetCore.Authorization;
+using Domain.Repository;
+using DataAccess.EpicGame;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-
-//using Microsoft.OpenApi.Models;
-//using Swashbuckle.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// == Add scoped into services ==
-
 // Add connection into Database
+var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrEmpty(connectionString)) // This will check if the Default connection string
+{
+    throw new InvalidOperationException("Connection string 'Default' is not found.");
+}
+
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("Default")));
+    options.UseMySQL(connectionString));
 
 
-// Authentication Service
+// == Repository registrations ==
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+// == Service registrations ==
+
+// Authentication && Authorization
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
+
+// Game
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+
+// Authentication setup
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", config =>
     {
@@ -35,16 +47,6 @@ builder.Services.AddAuthentication("CookieAuth")
         config.SlidingExpiration = true;
     });
 
-// Authorization Service
-builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
-
-// Account And Role Service
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
-// Game Service
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 // Account Service
 
@@ -87,10 +89,11 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+	"default",
+	"{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

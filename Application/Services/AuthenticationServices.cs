@@ -8,13 +8,9 @@ namespace Application.Services;
 public class AuthenticationServices : IAuthenticationServices
 {
 	private readonly IAccountRepository _accountRepository;
-	private readonly IRoleRepository _roleRepository;
-	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
-
-	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
+	public AuthenticationServices(IAccountRepository accountRepository)
 	{
 		_accountRepository = accountRepository;
-		_roleRepository = roleRepository;
 	}
 
 	#region == Basic CRUB Function ==
@@ -83,6 +79,11 @@ public class AuthenticationServices : IAuthenticationServices
 	{
 		return await _accountRepository.GetEmail(email);
 	}
+
+    public int GetCurrentLoginAccountId(ClaimsPrincipal User)
+    {
+        return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+    }
 	#endregion
 
 	#region == Service Application ==

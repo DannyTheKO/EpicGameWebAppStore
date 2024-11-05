@@ -10,12 +10,14 @@ namespace EpicGameWebAppStore.Controllers;
 public class GameController : _BaseController
 {
 	private readonly IGameService _gameServices;
+    private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
 
 	public GameController(IGameService gameServices, IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
 		: base(authenticationServices, authorizationServices)
 	{
 		_gameServices = gameServices;
+        _authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;
 	}
 

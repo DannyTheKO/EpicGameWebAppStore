@@ -18,7 +18,7 @@ public interface IAuthorizationServices
 
 
 	// VALIDATE: Check if that user has that specific permission
-	Task<bool> UserHasPermission(int accountId, string permission);
+	Task<bool> UserHasPermission(int accountId, string requiredPermission);
 
 	// ACTION: Claim Identity User
 	Task<ClaimsPrincipal> CreateClaimsPrincipal(int accountId);
