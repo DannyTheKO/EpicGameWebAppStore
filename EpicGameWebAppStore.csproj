@@ -7,43 +7,71 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
-    <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
   <ItemGroup>
 	  <Compile Remove="Application\**" />
+	  <Compile Remove="Middleware\**" />
 	  <Compile Remove="DataAccess\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Infrastructure\**" />
-	  <Compile Remove="Tests\**"/>
+	  <Compile Remove="Tests\**" />
 
 	  <Compile Remove="obj\**\*.cs" />
 
+	  <Compile Remove="_Resource\**" />
+
 	  <Content Remove="Application\**" />
+	  <Content Remove="Middleware\**" />
 	  <Content Remove="DataAccess\**" />
 	  <Content Remove="Domain\**" />
 	  <Content Remove="Infrastructure\**" />
-	  <Content Remove="Tests\**"/>
+	  <Content Remove="Tests\**" />
+	  <Content Remove="_Resource\**" />
 
 	  <EmbeddedResource Remove="Application\**" />
+	  <EmbeddedResource Remove="Middleware\**" />
 	  <EmbeddedResource Remove="DataAccess\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Infrastructure\**" />
-	  <EmbeddedResource Remove="Tests\**"/>
+	  <EmbeddedResource Remove="Tests\**" />
+	  <EmbeddedResource Remove="_Resource\**" />
 	  
 	  <None Remove="Application\**" />
+	  <None Remove="Middleware\**" />
 	  <None Remove="DataAccess\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Infrastructure\**" />
-	  <None Remove="Tests\**"/>
+	  <None Remove="Tests\**" />
+	  <None Remove="_Resource\**" />
 
 	  <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
+
+	  <ProjectReference Include="Middleware\Middleware.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,39 @@
+﻿@{
+	ViewData["Title"] = "Login Page";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model LoginViewModel;
+
+<h2>@ViewData["Title"]</h2>
+<hr/>
+
+<div class="row align-content-center justify-content-center align-baseline">
+	<div class="col col-md-4 h-100">
+		<form asp-action="LoginConfirm" asp-controller="Auth">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+			<div class="my-3 flex d-flex flex-column justify-content-between">
+				<label asp-for="Username">Username</label>
+				<input asp-for="Username"/>
+				<span asp-validation-for="Username" class="text-danger"></span>
+			</div>
+
+			<div class="my-3 flex d-flex flex-column justify-content-between">
+				<label asp-for="Password">Password</label>
+				<input asp-for="Password" type="password"/>
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+
+			<button type="submit" class="btn btn-success">Login</button>
+			<a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+		</form>
+	</div>
+</div>
+
+@section Scripts
+{
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
