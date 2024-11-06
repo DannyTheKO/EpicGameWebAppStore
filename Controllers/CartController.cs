@@ -106,7 +106,7 @@ namespace EpicGameWebAppStore.Controllers
 
         private async Task PopulateAccountAndPaymentMethodDropDowns()
         {
-            var accounts = await _accountService.GetAllAccountsAsync(); // Giả sử có phương thức này
+            var accounts = await _accountService.GetAllAccounts(); // Giả sử có phương thức này
             ViewBag.AccountId = new SelectList(accounts, "AccountId", "AccountName"); // Thay đổi theo tên của thuộc tính tài khoản
 
             var paymentMethods = await _paymentMethodService.GetAllPaymentMethodsAsync(); // Giả sử có phương thức này
