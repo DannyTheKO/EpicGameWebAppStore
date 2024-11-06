@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 </head>
 
-<form asp-action="Create" method="POST" class="container mt-4">
+<form asp-action="Create" asp-controller="Cart" class="container mt-4">
     <div class="form-group">
         <label asp-for="AccountId">Account</label>
         <select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>

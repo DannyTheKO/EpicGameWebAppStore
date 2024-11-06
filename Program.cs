@@ -49,12 +49,22 @@ builder.Services.AddAuthentication("CookieAuth")
 
 
 // Account Service
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-// Discount Service
+// Cart Service
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+// PaymentMethod Service
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 
 // Genre Service
 
 // Publisher Service
+
+
 
 // == Testing API ==
 builder.Services.AddEndpointsApiExplorer();

@@ -3,16 +3,26 @@ using Application.Interfaces;
 using Domain.Entities;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Application.Services;
 
 namespace EpicGameWebAppStore.Controllers
 {
-    public class CartController : Controller
+    public class CartController : _BaseController
     {
+        private readonly IAuthenticationServices _authenticationServices;
+        private readonly IAuthorizationServices _authorizationServices;
+        
         private readonly ICartService _cartService;
         private readonly IAccountService _accountService; // Giả sử bạn có dịch vụ này
         private readonly IPaymentMethodService _paymentMethodService; // Giả sử bạn có dịch vụ này
 
-        public CartController(ICartService cartService, IAccountService accountService, IPaymentMethodService paymentMethodService)
+        public CartController(
+            ICartService cartService,
+            IAccountService accountService,
+            IPaymentMethodService paymentMethodService,
+            IAuthenticationServices authenticationServices,
+            IAuthorizationServices authorizationServices)
+            : base(authenticationServices, authorizationServices)
         {
             _cartService = cartService;
             _accountService = accountService;
@@ -25,22 +35,25 @@ namespace EpicGameWebAppStore.Controllers
             return View(carts);
         }
 
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public async Task<IActionResult> CreatePage()
         {
             await PopulateAccountAndPaymentMethodDropDowns();
-            return View(new Cart());
+            return View("Create");
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Cart cart)
         {
             if (ModelState.IsValid)
             {
                 await _cartService.AddCartAsync(cart);
                 TempData["Message"] = "Cart created successfully.";
-                return RedirectToAction(nameof(Index));
+                return View("Index");
             }
+
+            ModelState.AddModelError(String.Empty, "Error");
             await PopulateAccountAndPaymentMethodDropDowns();
             return View(cart);
         }
@@ -106,11 +119,11 @@ namespace EpicGameWebAppStore.Controllers
 
         private async Task PopulateAccountAndPaymentMethodDropDowns()
         {
-            var accounts = await _accountService.GetAllAccounts(); // Giả sử có phương thức này
-            ViewBag.AccountId = new SelectList(accounts, "AccountId", "AccountName"); // Thay đổi theo tên của thuộc tính tài khoản
+            var accounts = await _accountService.GetAllAccounts();
+            ViewBag.AccountId = new SelectList(accounts, "AccountId", "Username");
 
-            var paymentMethods = await _paymentMethodService.GetAllPaymentMethodsAsync(); // Giả sử có phương thức này
-            ViewBag.PaymentMethodId = new SelectList(paymentMethods, "PaymentMethodId", "PaymentMethodName"); // Thay đổi theo tên của thuộc tính phương thức thanh toán
+            var paymentMethods = await _paymentMethodService.GetAllPaymentMethodsAsync();
+            ViewBag.PaymentMethodId = new SelectList(paymentMethods, "PaymentMethodId", "Name");
         }
     }
 }
