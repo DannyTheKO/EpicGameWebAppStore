@@ -1,4 +1,5 @@
 using DataAccess;
+using DataAccess.EpicGame;
 using Domain.Entities;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
