@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
-using Infrastructure.DataAccess;
+using DataAccess.EpicGame;
 using Application.Interfaces;
 
 namespace EpicGameWebAppStore.Controllers

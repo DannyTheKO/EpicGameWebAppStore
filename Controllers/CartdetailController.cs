@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
-using Infrastructure.DataAccess;
+using DataAccess.EpicGame;
 
 namespace EpicGameWebAppStore.Controllers
 {

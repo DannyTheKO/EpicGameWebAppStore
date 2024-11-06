@@ -9,7 +9,7 @@ using Domain.Entities;
 using Domain.Repository;
 
 // Infrastructure
-using Infrastructure.DataAccess;
+using DataAccess.EpicGame;
 
 namespace Infrastructure.Repository
 {

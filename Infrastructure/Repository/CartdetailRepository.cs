@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Repository;
-using Infrastructure.DataAccess;
+using DataAccess.EpicGame;
 
 namespace Infrastructure.Repository
 {
