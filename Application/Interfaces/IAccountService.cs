@@ -31,7 +31,7 @@ namespace Application.Interfaces
         // SELECT: Get "Email" value from specific Account
         Task<Account> GetAccountByEmail(string email);
 
-        public int GetCurrentLoginAccountId(ClaimsPrincipal User);
+        public int GetLoginAccountId(ClaimsPrincipal User);
 
         #endregion
     }

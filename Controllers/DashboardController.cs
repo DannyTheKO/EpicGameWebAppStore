@@ -13,25 +13,32 @@ public class DashboardController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAccountService _accountService;
+    private readonly IRoleService _roleService;
 
 	public DashboardController(
-		IAuthorizationServices authorizationServices, IAuthenticationServices authenticationServices, IAccountRepository accountRepository) 
-		: base(authenticationServices, authorizationServices)
+		IAuthorizationServices authorizationServices, 
+        IAuthenticationServices authenticationServices, 
+        IAccountService accountService,
+        IRoleService roleService) 
+		: base(authenticationServices, authorizationServices, accountService, roleService)
 	{
 		_authorizationServices = authorizationServices;
 		_authenticationServices = authenticationServices;
-	}
+        _accountService = accountService;
+
+    }
 
 	[HttpGet("Index")]
 	public async Task<IActionResult> Index()
 	{
-		var account = await _authenticationServices.GetAllAccounts();
+		var account = await _accountService.GetAllAccounts();
 		return View(account);
 	}
 
     private async Task PopulateViewBags()
     {
-        var roles = await _authorizationServices.GetAllRoles();
+        var roles = await _roleService.GetAllRoles();
         ViewBag.RoleId = new SelectList(roles, "RoleId", "Name");
 
         var isActive = new List<SelectListItem>
@@ -54,8 +61,8 @@ public class DashboardController : _BaseController
     public async Task<IActionResult> CreateConfirm([Bind("RoleId", "Username", "Password", "Email", "IsActive")] Account account)
     {
         // Check if both Username and Email already exist
-        var flagUsername = await _authenticationServices.GetAccountByUsername(account.Username ?? string.Empty);
-        var flagEmail = await _authenticationServices.GetAccountByEmail(account.Email ?? string.Empty);
+        var flagUsername = await _accountService.GetAccountByUsername(account.Username ?? string.Empty);
+        var flagEmail = await _accountService.GetAccountByEmail(account.Email ?? string.Empty);
         if (flagUsername != null && flagEmail != null)
         {
             ModelState.AddModelError(string.Empty, "Username and Email already exist");
@@ -77,7 +84,7 @@ public class DashboardController : _BaseController
             return View("Create");
         }
 
-        await _authenticationServices.AddAccount(account);
+        await _accountService.AddAccount(account);
         return RedirectToAction("Index", "Dashboard");
     }
 }

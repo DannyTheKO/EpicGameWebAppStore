@@ -20,14 +20,16 @@ public class AuthMiddleware
         {
             var authorizationServices = scope.ServiceProvider.GetRequiredService<IAuthorizationServices>();
             var authenticationServices = scope.ServiceProvider.GetRequiredService<IAuthenticationServices>();
+            var accountServices = scope.ServiceProvider.GetRequiredService<IAccountService>();
+            var roleServices = scope.ServiceProvider.GetRequiredService<IRoleService>();
 
             if (context.User.Identity?.IsAuthenticated ?? false)
             {
-                var accountId = authenticationServices.GetCurrentLoginAccountId(context.User);
+                var accountId = accountServices.GetLoginAccountId(context.User);
 
-                context.Items["Account_Role"] = await authorizationServices.GetRoleById(accountId);
+                context.Items["Account_Role"] = await roleServices.GetRoleById(accountId);
                 context.Response.Headers.Add("X-User-Role",
-                    await authorizationServices.GetRoleById(accountId));
+                    await roleServices.GetRoleById(accountId));
             }
             else
             {

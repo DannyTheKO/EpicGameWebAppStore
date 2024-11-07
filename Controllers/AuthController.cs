@@ -17,8 +17,16 @@ public class AuthController : _BaseController
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
 
-	public AuthController(IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices) 
-		: base(authenticationServices, authorizationServices)
+	public AuthController(
+        IAuthorizationServices authorizationServices,
+        IAuthenticationServices authenticationServices, 
+        IAccountService accountService,
+        IRoleService roleService)
+		: base(
+            authenticationServices, 
+            authorizationServices, 
+            accountService,
+            roleService)
 	{
 		_authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;

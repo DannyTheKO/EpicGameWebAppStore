@@ -23,8 +23,10 @@ public class GameController : _BaseController
         IGenreService genreService, 
         IPublisherService publisherService,
         IAuthenticationServices authenticationServices, 
-        IAuthorizationServices authorizationServices)
-		: base(authenticationServices, authorizationServices)
+        IAuthorizationServices authorizationServices,
+        IAccountService accountService,
+        IRoleService roleService)
+		: base(authenticationServices, authorizationServices, accountService, roleService)
 	{
 		_gameServices = gameServices;
         _genreService = genreService;

@@ -81,7 +81,8 @@ namespace Application.Services
             return await _accountRepository.GetEmail(email);
         }
 
-        public int GetCurrentLoginAccountId(ClaimsPrincipal User)
+        // SELECT: Get current login in Account
+        public int GetLoginAccountId(ClaimsPrincipal User)
         {
             return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
         }

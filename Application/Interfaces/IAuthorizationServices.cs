@@ -5,15 +5,7 @@ namespace Application.Interfaces;
 
 public interface IAuthorizationServices
 {
-	#region Basic Funciton
-	// SELECT: Get all available roles
-	Task<IEnumerable<Role>> GetAllRoles();
-
-	Task<string> GetRoleById(int accountId);
-	#endregion
-
-	#region Service Function
-	// ACTION: Assign role to user
+    // ACTION: Assign role to user
 	Task<(bool Success, string Message)> AssignRoleToUser(int accountId, int roleId);
 
 
@@ -22,6 +14,4 @@ public interface IAuthorizationServices
 
 	// ACTION: Claim Identity User
 	Task<ClaimsPrincipal> CreateClaimsPrincipal(int accountId);
-
-		#endregion
 }

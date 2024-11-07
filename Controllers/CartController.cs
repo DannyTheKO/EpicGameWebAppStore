@@ -19,10 +19,15 @@ namespace EpicGameWebAppStore.Controllers
         public CartController(
             ICartService cartService,
             IAccountService accountService,
+            IRoleService roleService,
             IPaymentMethodService paymentMethodService,
             IAuthenticationServices authenticationServices,
             IAuthorizationServices authorizationServices)
-            : base(authenticationServices, authorizationServices)
+            : base(
+                authenticationServices, 
+                authorizationServices, 
+                accountService, 
+                roleService)
         {
             _cartService = cartService;
             _accountService = accountService;
@@ -53,7 +58,7 @@ namespace EpicGameWebAppStore.Controllers
                 return View("Index");
             }
 
-            ModelState.AddModelError(String.Empty, "Error");
+            ModelState.AddModelError(string.Empty, "Error");
             await PopulateAccountAndPaymentMethodDropDowns();
             return View(cart);
         }
