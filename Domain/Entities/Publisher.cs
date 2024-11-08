@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Publisher
 {
@@ -14,5 +16,6 @@ public class Publisher
 
     public string? Website { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Game> Games { get; set; } = new List<Game>();
 }

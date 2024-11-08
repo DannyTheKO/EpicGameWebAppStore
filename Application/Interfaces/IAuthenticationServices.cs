@@ -10,8 +10,8 @@ public interface IAuthenticationServices
     Task<bool> ValidateAccountCredential(string username, string password);
 
     // ACTION: Register Account
-    Task<(bool Success, string Result)> RegisterAccount(Account account, string confirmPassword);
+    Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword);
 
     // ACTION: Login Account
-    Task<(bool Success, string Result, int AccountId)> LoginAccount(Account account);
+    Task<(bool LoginState, string ResultMessage, int AccountId)> LoginAccount(Account account);
 }

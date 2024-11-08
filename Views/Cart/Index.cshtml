@@ -29,8 +29,8 @@
 			<td>@item.TotalAmount</td>
 			<td>@item.CreatedOn</td>
 			<td>
-				<a asp-action="Edit" asp-route-id="@item.CartId" class="btn btn-warning">Edit</a> |
-				<a asp-action="Delete" asp-route-id="@item.CartId" class="btn btn-danger">Delete</a>
+				<a asp-action="EditPage" asp-route-id="@item.CartId" class="btn btn-warning">Edit</a> |
+				<a asp-action="DeletePage" asp-route-id="@item.CartId" class="btn btn-danger">Delete</a>
 			</td>
 		</tr>
 	}

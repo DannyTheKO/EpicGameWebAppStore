@@ -13,7 +13,7 @@
 		<p>Total Amount: @Model.TotalAmount</p>
 		<p>Created On: @Model.CreatedOn</p>
 	</div>
-	<form asp-action="Delete" method="post">
+	<form asp-action="DeleteConfirm" method="post">
 		<input type="hidden" asp-for="CartId"/>
 		<div>
 			<input type="submit" value="Delete" class="btn btn-danger"/>

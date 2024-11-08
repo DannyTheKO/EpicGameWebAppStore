@@ -20,7 +20,7 @@ public class AuthenticationServices : IAuthenticationServices
     }
 
     // ACTION: User Registration
-    public async Task<(bool Success, string Result)> RegisterAccount(Account account, string confirmPassword)
+    public async Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword)
     {
         // Check if the username and email already exist
         var existingAccountUserName = await _accountService.GetAccountByUsername(account.Username);
@@ -50,7 +50,7 @@ public class AuthenticationServices : IAuthenticationServices
     }
 
     // ACTION: User Login
-    public async Task<(bool Success, string Result, int AccountId)> LoginAccount(Account account)
+    public async Task<(bool LoginState, string ResultMessage, int AccountId)> LoginAccount(Account account)
     {
         // Check if the username exists
         var existingAccount = await _accountService.GetAccountByUsername(account.Username);

@@ -8,7 +8,7 @@
 <h1 class="mt-4">Game List</h1>
 
 <p>
-	<a asp-action="Create" class="btn btn-success">Create New Game</a>
+	<a asp-action="CreatePage" class="btn btn-success">Create New Game</a>
 </p>
 
 <div class="table-responsive">
@@ -48,8 +48,8 @@
 					<td>@Html.DisplayFor(modelItem => item.Publisher.Name)</td>
 					<td>
 						<div class="d-flex justify-content-around">
-							<a asp-action="Update" asp-route-id="@item.GameId" class="btn btn-warning">Update</a> |
-							<a asp-action="Delete" asp-route-id="@item.GameId" class="btn btn-danger">Delete</a>
+							<a asp-action="UpdatePage" asp-route-id="@item.GameId" class="btn btn-warning">Update</a> |
+							<a asp-action="DeletePage" asp-route-id="@item.GameId" class="btn btn-danger">Delete</a>
 						</div>
 					</td>
 				</tr>

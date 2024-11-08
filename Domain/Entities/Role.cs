@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Role
 {
@@ -8,5 +10,6 @@ public class Role
 
     public List<string>? Permission { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 }

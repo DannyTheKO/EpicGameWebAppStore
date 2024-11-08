@@ -60,7 +60,7 @@ public class CartRepository : ICartRepository
             .ToListAsync();
     }
 
-    public async Task<Account> GetAccountById(int accountId)
+    public async Task<Account> GetCartById(int accountId)
     {
         return await _context.Accounts.FindAsync(accountId);
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
+[Route("Cart")]
 public class CartController : _BaseController
 {
     private readonly IAccountService _accountService; // Giả sử bạn có dịch vụ này
@@ -32,22 +33,22 @@ public class CartController : _BaseController
         _paymentMethodService = paymentMethodService;
     }
 
+    [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
         var carts = await _cartService.GetAllCartsAsync();
         return View(carts);
     }
 
-    [HttpGet]
+    [HttpGet("CreatePage")]
     public async Task<IActionResult> CreatePage()
     {
         await PopulateAccountAndPaymentMethodDropDowns();
         return View("Create");
     }
 
-    [HttpPost]
-    //[ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Cart cart)
+    [HttpPost("CreateConfirm")]
+    public async Task<IActionResult> CreateConfirm(Cart cart)
     {
         if (ModelState.IsValid)
         {
@@ -58,20 +59,20 @@ public class CartController : _BaseController
 
         ModelState.AddModelError(string.Empty, "Error");
         await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
+        return View("Create", cart);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    [HttpGet("EditPage/{id}")]
+    public async Task<IActionResult> EditPage(int id)
     {
         var cart = await _cartService.GetCartByIdAsync(id);
         if (cart == null) return NotFound();
         await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
+        return View("Edit", cart);
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Cart cart)
+    [HttpPut("EditConfirm/{id}")]
+    public async Task<IActionResult> EditConfirm(int id, Cart cart)
     {
         if (id != cart.CartId) return BadRequest();
 
@@ -83,19 +84,18 @@ public class CartController : _BaseController
         }
 
         await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
+        return View("Edit", cart);
     }
 
-    public async Task<IActionResult> Delete(int id)
+    [HttpGet("DeletePage/{id}")]
+    public async Task<IActionResult> DeletePage(int id)
     {
         var cart = await _cartService.GetCartByIdAsync(id);
         if (cart == null) return NotFound();
-        return View(cart);
+        return View("Delete", cart);
     }
 
-    [HttpPost]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [HttpDelete("DeleteConfirm/{id}")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         await _cartService.DeleteCartAsync(id);
@@ -103,6 +103,7 @@ public class CartController : _BaseController
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet("GetByAccount")]
     public async Task<IActionResult> GetByAccount(int accountId)
     {
         var carts = await _cartService.GetCartsByAccountIdAsync(accountId);
@@ -110,6 +111,7 @@ public class CartController : _BaseController
         return View("Index", carts);
     }
 
+    [HttpPatch("PopulateAccountAndPaymentMethodDropDowns")]
     private async Task PopulateAccountAndPaymentMethodDropDowns()
     {
         var accounts = await _accountService.GetAllAccounts();

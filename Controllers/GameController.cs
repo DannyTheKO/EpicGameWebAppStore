@@ -33,27 +33,28 @@ public class GameController : _BaseController
     }
 
     // GET: Game/Index
-    // GET: Game/Index
+    [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
         var games = await _gameServices.GetAllGameAsync();
         return View(games);
     }
 
-    // GET: Game/Create
-    public async Task<IActionResult> Create()
+    // GET: Game/CreatePage
+    [HttpGet("CreatePage")]
+    public async Task<IActionResult> CreatePage()
     {
         // Chờ kết quả từ các phương thức bất đồng bộ
         ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name");
         ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name");
 
-        return View();
+        return View("Create");
     }
 
-    // POST: Game/Create
-    [HttpPost]
+    // POST: Game/CreateConfirm
+    [HttpPost("CreateConfirm")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Game game)
+    public async Task<IActionResult> CreateConfirm(Game game)
     {
         if (ModelState.IsValid)
         {
@@ -62,27 +63,27 @@ public class GameController : _BaseController
         }
 
         ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name",
-            game.PublisherId);
-        return View(game);
+        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name", game.PublisherId);
+        return View("Index");
     }
 
-    // GET: Game/Update/{id}
-    public async Task<IActionResult> Update(int id)
+    // GET: Game/UpdatePage/{id}
+    [HttpGet("UpdatePage/{id}")]
+    public async Task<IActionResult> UpdatePage(int id)
     {
-        var game = await _gameServices.GetGameByIdAsync(id); // Assuming this method exists
+        var game = await _gameServices.GetGameByIdAsync(id);
         if (game == null) return NotFound();
 
         ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
         ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name",
             game.PublisherId);
-        return View(game);
+        return View("Update");
     }
 
-    // POST: Game/Update/{id}
-    [HttpPost]
+    // POST: Game/UpdateConfirm/{id}
+    [HttpPut("UpdateConfirm/{id}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(int id, Game game)
+    public async Task<IActionResult> UpdateConfirm(int id, Game game)
     {
         if (id != game.GameId) return BadRequest();
 
@@ -93,23 +94,22 @@ public class GameController : _BaseController
         }
 
         ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name",
-            game.PublisherId);
-        return View(game);
+        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name", game.PublisherId);
+        return View("Index");
     }
 
-    // GET: Game/Delete/{id}
-    public async Task<IActionResult> Delete(int id)
+    // GET: Game/DeletePage/{id}
+    [HttpGet("DeletePage/{id}")]
+    public async Task<IActionResult> DeletePage(int id)
     {
         var game = await _gameServices.GetGameByIdAsync(id); // Assuming this method exists
         if (game == null) return NotFound();
 
-        return View(game);
+        return View("Index");
     }
 
-    // POST: Game/Delete/{id}
-    [HttpPost]
-    [ActionName("Delete")]
+    // POST: Game/DeleteConfirm/{id}
+    [HttpDelete("DeleteConfirm/{id}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

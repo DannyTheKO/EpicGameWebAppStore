@@ -7,10 +7,12 @@ namespace Application.Services;
 public class CartService : ICartService
 {
     private readonly ICartRepository _cartRepository;
+    private readonly ICartdetailRepository _cartdetailRepository;
 
-    public CartService(ICartRepository cartRepository)
+    public CartService(ICartRepository cartRepository, ICartdetailRepository cartdetailRepository)
     {
         _cartRepository = cartRepository;
+        _cartdetailRepository = cartdetailRepository;
     }
 
     public async Task<IEnumerable<Cart>> GetAllCartsAsync()
@@ -50,7 +52,7 @@ public class CartService : ICartService
 
     public async Task<string> GetAccountNameByIdAsync(int accountId)
     {
-        var account = await _cartRepository.GetAccountById(accountId);
+        var account = await _cartRepository.GetCartById(accountId);
         return account?.Username ?? throw new Exception("Account not found.");
     }
 
@@ -59,4 +61,24 @@ public class CartService : ICartService
         var paymentMethod = await _cartRepository.GetPaymentMethodById(paymentMethodId);
         return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
     }
+
+    #region Services Function
+
+    // Calculate Total Amount from the AccountId and CartId
+    //public async Task<(int amount, string message)> GetTotalAmount(int accountId, int cartId)
+    //{
+	   // var accountCartDetail = await _cartdetailRepository.GetByCartId(cartId);
+	   // var getAccountId = await _cartRepository.GetById(accountId);
+	   // if (accountCartDetail == null) // NOT FOUND
+	   // {
+		  //  return (0, "NOT FOUND");
+	   // }
+
+	   // var totalAmount = accountCartDetail
+		  //  .Where(a => a.)
+		  //  .Sum(g => g.Price);
+    //}
+    
+    #endregion
+
 }

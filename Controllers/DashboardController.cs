@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Authorize(Roles = "Admin, Moderator")]
-[Route("Admin")]
+[Authorize(Roles = "Admin, Moderator, Editor")]
+[Route("Dashboard")]
 public class DashboardController : _BaseController
 {
-    private readonly IAccountService _accountService;
-    private readonly IAuthenticationServices _authenticationServices;
     private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAuthenticationServices _authenticationServices;
+    private readonly IAccountService _accountService;
     private readonly IRoleService _roleService;
-
+        
     public DashboardController(
         IAuthorizationServices authorizationServices,
         IAuthenticationServices authenticationServices,

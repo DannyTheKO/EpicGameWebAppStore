@@ -17,6 +17,8 @@ public class AuthController : _BaseController
 {
     private readonly IAuthenticationServices _authenticationServices;
     private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAccountService _accountService;
+    private readonly IRoleService _roleService;
 
     public AuthController(
         IAuthorizationServices authorizationServices,
@@ -31,6 +33,8 @@ public class AuthController : _BaseController
     {
         _authenticationServices = authenticationServices;
         _authorizationServices = authorizationServices;
+        _accountService = accountService;
+        _roleService = roleService;
     }
 
     #region == Logout ==
@@ -68,7 +72,18 @@ public class AuthController : _BaseController
     [HttpPost("RegisterConfirm")]
     public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
     {
-        if (!ModelState.IsValid) return View("RegisterPage", registerViewModel);
+	    if (!ModelState.IsValid)
+	    {
+		    return BadRequest(new
+		    {
+                registerState = false,
+                errors = ModelState.Values
+	                .SelectMany(v => v.Errors)
+	                .Select(e => e.ErrorMessage)
+		    });
+		    //return View("RegisterPage", registerViewModel);
+	    }
+
 
         var account = new Account
         {
@@ -77,16 +92,25 @@ public class AuthController : _BaseController
             Email = registerViewModel.Email
         };
 
-        var (success, message) =
-            await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
+        var (registerStage, resultMessage) = await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
 
-        if (!success)
+        if (!registerStage)
         {
-            ModelState.AddModelError(string.Empty, message);
-            return View("RegisterPage", registerViewModel);
+	        return BadRequest(new
+	        {
+                registerStageFlag = registerStage,
+                message = resultMessage
+	        });
+
+	        //ModelState.AddModelError(string.Empty, resultMessage);
+	        //return View("RegisterPage", registerViewModel);
         }
 
-        return RedirectToAction("Index", "Home");
+        return Ok( new
+        {
+            registerStageFlag = registerStage,
+            message = resultMessage
+        });
     }
 
     #endregion
@@ -108,7 +132,17 @@ public class AuthController : _BaseController
     {
         // Validate if user input is valid
         if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-            return View("LoginPage", loginViewModel);
+        {
+            return BadRequest(new
+            {
+                loginState = false,
+                errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+            });
+            
+            // return View("LoginPage", loginViewModel);
+        }
 
         var account = new Account
         {
@@ -116,19 +150,30 @@ public class AuthController : _BaseController
             Password = loginViewModel.Password
         };
 
-        var (success, result, accountId) = await _authenticationServices.LoginAccount(account);
+        var (loginState, resultMessage, accountId) = await _authenticationServices.LoginAccount(account);
 
         // If user fail to validate "success" return false
-        if (!success) // Return false
+        if (!loginState) // Return false
         {
-            ModelState.AddModelError(string.Empty, result);
-            return View("LoginPage", loginViewModel);
+            //ModelState.AddModelError(string.Empty, result);
+            //return View("LoginPage", loginViewModel);
+
+            return BadRequest(
+                new { loginStateFlag = loginState, message = resultMessage }
+            );
         }
 
         var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
         await HttpContext.SignInAsync("CookieAuth", await principal);
 
-        return RedirectToAction("Index", "Home");
+        //return RedirectToAction("Index", "Home");
+        return Ok(new
+        {
+            loginStateBool = loginState,
+            message = resultMessage,
+            accountDetail = await _accountService.GetAccountById(accountId),
+            role = await _roleService.GetRoleById(accountId)
+        });
     }
 
     #endregion
