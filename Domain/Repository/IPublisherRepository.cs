@@ -1,27 +1,21 @@
-﻿using System;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 // Domain
-using Domain.Entities;
 
-namespace Domain.Repository
+namespace Domain.Repository;
+
+public interface IPublisherRepository
 {
-    public interface IPublisherRepository
-    {
-        // == Basic CRUD Function ==
-        public Task<IEnumerable<Publisher>> GetAll();
-        public Task Add(Publisher publisher);
-        public Task Update(Publisher publisher);
-        public Task Delete(int id);
+    // == Basic CRUD Function ==
+    public Task<IEnumerable<Publisher>> GetAll();
+    public Task Add(Publisher publisher);
+    public Task Update(Publisher publisher);
+    public Task Delete(int id);
 
-        // == Feature Function ==
+    // == Feature Function ==
 
-        // Search by Publisher ID
-        public Task<Publisher> GetById(int id);
+    // Search by Publisher ID
+    public Task<Publisher> GetById(int id);
 
-        // TODO: Search By Name
-        // TODO: Search By Address
-    }
+    // TODO: Search By Name
+    // TODO: Search By Address
 }

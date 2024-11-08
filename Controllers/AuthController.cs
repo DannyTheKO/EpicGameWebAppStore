@@ -3,6 +3,7 @@ using Domain.Entities;
 using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+
 // Domain
 
 // Application
@@ -14,120 +15,121 @@ namespace EpicGameWebAppStore.Controllers;
 [Route("Auth")]
 public class AuthController : _BaseController
 {
-	private readonly IAuthenticationServices _authenticationServices;
-	private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAuthenticationServices _authenticationServices;
+    private readonly IAuthorizationServices _authorizationServices;
 
-	public AuthController(
+    public AuthController(
         IAuthorizationServices authorizationServices,
-        IAuthenticationServices authenticationServices, 
+        IAuthenticationServices authenticationServices,
         IAccountService accountService,
         IRoleService roleService)
-		: base(
-            authenticationServices, 
-            authorizationServices, 
+        : base(
+            authenticationServices,
+            authorizationServices,
             accountService,
             roleService)
-	{
-		_authenticationServices = authenticationServices;
-		_authorizationServices = authorizationServices;
-	}
+    {
+        _authenticationServices = authenticationServices;
+        _authorizationServices = authorizationServices;
+    }
 
-	#region == Logout ==
+    #region == Logout ==
 
-	[HttpGet("Logout")]
-	public async Task<IActionResult> Logout()
-	{
-		await HttpContext.SignOutAsync("CookieAuth");
-		return RedirectToAction("Index", "Home");
-	}
+    [HttpGet("Logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync("CookieAuth");
+        return RedirectToAction("Index", "Home");
+    }
 
-	#endregion
+    #endregion
 
-	#region == Register ==
+    #region == Access Denied ==
 
-	// GET: Auth/Register
-	[HttpGet("RegisterPage")]
-	public IActionResult RegisterPage()
-	{
-		return View();
-	}
+    [HttpGet("AccessDenied")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult AccessDenied()
+    {
+        return View("403");
+    }
 
-	// POST: Auth/RegisterConfirm
-	[HttpPost("RegisterConfirm")]
-	public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
-	{
-		if (!ModelState.IsValid) return View("RegisterPage", registerViewModel);
+    #endregion
 
-		var account = new Account
-		{
-			Username = registerViewModel.Username,
-			Password = registerViewModel.Password,
-			Email = registerViewModel.Email
-		};
+    #region == Register ==
 
-		var (success, message) = await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
+    // GET: Auth/Register
+    [HttpGet("RegisterPage")]
+    public IActionResult RegisterPage()
+    {
+        return View();
+    }
 
-		if (!success)
-		{
-			ModelState.AddModelError(string.Empty, message);
-			return View("RegisterPage", registerViewModel);
-		}
+    // POST: Auth/RegisterConfirm
+    [HttpPost("RegisterConfirm")]
+    public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
+    {
+        if (!ModelState.IsValid) return View("RegisterPage", registerViewModel);
 
-		return RedirectToAction("Index", "Home");
-	}
+        var account = new Account
+        {
+            Username = registerViewModel.Username,
+            Password = registerViewModel.Password,
+            Email = registerViewModel.Email
+        };
 
-	#endregion
+        var (success, message) =
+            await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
 
-	#region == Login ==
+        if (!success)
+        {
+            ModelState.AddModelError(string.Empty, message);
+            return View("RegisterPage", registerViewModel);
+        }
 
-	// GET: Auth/LoginPage
-	[HttpGet("LoginPage")]
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public IActionResult LoginPage()
-	{
-		return View();
-	}
+        return RedirectToAction("Index", "Home");
+    }
 
-	// POST: Auth/LoginConfirm
-	[HttpPost("LoginConfirm")]
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
-	{
-		// Validate if user input is valid
-		if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-			return View("LoginPage", loginViewModel);
+    #endregion
 
-		var account = new Account
-		{
-			Username = loginViewModel.Username,
-			Password = loginViewModel.Password
-		};
+    #region == Login ==
 
-		var (success, result, accountId) = await _authenticationServices.LoginAccount(account);
+    // GET: Auth/LoginPage
+    [HttpGet("LoginPage")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult LoginPage()
+    {
+        return View();
+    }
 
-		// If user fail to validate "success" return false
-		if (!success) // Return false
-		{
-			ModelState.AddModelError(string.Empty, result);
-			return View("LoginPage", loginViewModel);
-		}
+    // POST: Auth/LoginConfirm
+    [HttpPost("LoginConfirm")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
+    {
+        // Validate if user input is valid
+        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+            return View("LoginPage", loginViewModel);
 
-		var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
-		await HttpContext.SignInAsync("CookieAuth", await principal);
+        var account = new Account
+        {
+            Username = loginViewModel.Username,
+            Password = loginViewModel.Password
+        };
 
-		return RedirectToAction("Index", "Home");
-	}
+        var (success, result, accountId) = await _authenticationServices.LoginAccount(account);
 
-	#endregion
+        // If user fail to validate "success" return false
+        if (!success) // Return false
+        {
+            ModelState.AddModelError(string.Empty, result);
+            return View("LoginPage", loginViewModel);
+        }
 
-	#region == Access Denied ==
+        var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
+        await HttpContext.SignInAsync("CookieAuth", await principal);
 
-	[HttpGet("AccessDenied")]
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public IActionResult AccessDenied()
-	{
-		return View("403");
-	}
-	
-	#endregion
+        return RedirectToAction("Index", "Home");
+    }
+
+    #endregion
 }

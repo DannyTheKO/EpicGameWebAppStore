@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities;
+﻿using Domain.Entities;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IRoleService
 {
-    public interface IRoleService
-    {
-        // SELECT: Get all available roles
-        Task<IEnumerable<Role>> GetAllRoles();
+    // SELECT: Get all available roles
+    Task<IEnumerable<Role>> GetAllRoles();
 
-        // SELECT: Get Role by Account ID
-        Task<string> GetRoleById(int accountId);
-    }
+    // SELECT: Get Role by Account ID
+    Task<string> GetRoleById(int accountId);
 }

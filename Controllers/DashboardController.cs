@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using Domain.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,30 +10,29 @@ namespace EpicGameWebAppStore.Controllers;
 [Route("Admin")]
 public class DashboardController : _BaseController
 {
-	private readonly IAuthenticationServices _authenticationServices;
-	private readonly IAuthorizationServices _authorizationServices;
     private readonly IAccountService _accountService;
+    private readonly IAuthenticationServices _authenticationServices;
+    private readonly IAuthorizationServices _authorizationServices;
     private readonly IRoleService _roleService;
 
-	public DashboardController(
-		IAuthorizationServices authorizationServices, 
-        IAuthenticationServices authenticationServices, 
+    public DashboardController(
+        IAuthorizationServices authorizationServices,
+        IAuthenticationServices authenticationServices,
         IAccountService accountService,
-        IRoleService roleService) 
-		: base(authenticationServices, authorizationServices, accountService, roleService)
-	{
-		_authorizationServices = authorizationServices;
-		_authenticationServices = authenticationServices;
+        IRoleService roleService)
+        : base(authenticationServices, authorizationServices, accountService, roleService)
+    {
+        _authorizationServices = authorizationServices;
+        _authenticationServices = authenticationServices;
         _accountService = accountService;
-
     }
 
-	[HttpGet("Index")]
-	public async Task<IActionResult> Index()
-	{
-		var account = await _accountService.GetAllAccounts();
-		return View(account);
-	}
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index()
+    {
+        var account = await _accountService.GetAllAccounts();
+        return View(account);
+    }
 
     private async Task PopulateViewBags()
     {
@@ -58,7 +56,8 @@ public class DashboardController : _BaseController
     }
 
     [HttpPost("CreateConfirm")]
-    public async Task<IActionResult> CreateConfirm([Bind("RoleId", "Username", "Password", "Email", "IsActive")] Account account)
+    public async Task<IActionResult> CreateConfirm(
+        [Bind("RoleId", "Username", "Password", "Email", "IsActive")] Account account)
     {
         // Check if both Username and Email already exist
         var flagUsername = await _accountService.GetAccountByUsername(account.Username ?? string.Empty);

@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

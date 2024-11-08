@@ -1,88 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-// Domain
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
+// Domain
 
 // Application
-using Application.Interfaces;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class PublisherService : IPublisherService
 {
-    public class PublisherService : IPublisherService
+    private readonly IPublisherRepository _publisherRepository;
+
+    public PublisherService(IPublisherRepository publisherRepository)
     {
-        private readonly IPublisherRepository _publisherRepository;
+        _publisherRepository = publisherRepository;
+    }
 
-        public PublisherService(IPublisherRepository publisherRepository)
+    // == Basic CRUD Function ==
+    public async Task<IEnumerable<Publisher>> GetAllPublishersAsync()
+    {
+        try
         {
-            _publisherRepository = publisherRepository;
+            return await _publisherRepository.GetAll();
         }
-
-        // == Basic CRUD Function ==
-        public async Task<IEnumerable<Publisher>> GetAllPublishersAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                return await _publisherRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get all the publishers", ex);
-            }
+            throw new Exception("Failed to get all the publishers", ex);
         }
+    }
 
-        public async Task<Publisher> AddPublisherAsync(Publisher publisher)
+    public async Task<Publisher> AddPublisherAsync(Publisher publisher)
+    {
+        try
         {
-            try
-            {
-                await _publisherRepository.Add(publisher);
-                return publisher;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to add the publisher", ex);
-            }
-        }
-
-        public async Task<Publisher> UpdatePublisherAsync(Publisher publisher)
-        {
-            try
-            {
-                await _publisherRepository.Update(publisher);
-                return publisher;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to update the publisher", ex);
-            }
-        }
-
-        public async Task<Publisher> DeletePublisherAsync(int id)
-        {
-            var publisher = await _publisherRepository.GetById(id);
-            if (publisher == null)
-            {
-                throw new Exception("Publisher not found.");
-            }
-            await _publisherRepository.Delete(id);
+            await _publisherRepository.Add(publisher);
             return publisher;
         }
-
-        // == Feature Function ==
-
-        // Search by Publisher ID
-        public async Task<Publisher> GetPublisherByIdAsync(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _publisherRepository.GetById(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get specific publisher id", ex);
-            }
+            throw new Exception("Failed to add the publisher", ex);
+        }
+    }
+
+    public async Task<Publisher> UpdatePublisherAsync(Publisher publisher)
+    {
+        try
+        {
+            await _publisherRepository.Update(publisher);
+            return publisher;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to update the publisher", ex);
+        }
+    }
+
+    public async Task<Publisher> DeletePublisherAsync(int id)
+    {
+        var publisher = await _publisherRepository.GetById(id);
+        if (publisher == null) throw new Exception("Publisher not found.");
+        await _publisherRepository.Delete(id);
+        return publisher;
+    }
+
+    // == Feature Function ==
+
+    // Search by Publisher ID
+    public async Task<Publisher> GetPublisherByIdAsync(int id)
+    {
+        try
+        {
+            return await _publisherRepository.GetById(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to get specific publisher id", ex);
         }
     }
 }

@@ -1,92 +1,85 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
-using Application.Interfaces;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class CartdetailService : ICartdetailService
 {
-    public class CartdetailService : ICartdetailService
+    private readonly ICartdetailRepository _cartdetailRepository;
+
+    public CartdetailService(ICartdetailRepository cartdetailRepository)
     {
-        private readonly ICartdetailRepository _cartdetailRepository;
+        _cartdetailRepository = cartdetailRepository;
+    }
 
-        public CartdetailService(ICartdetailRepository cartdetailRepository)
+    public async Task<IEnumerable<Cartdetail>> GetAllCartdetailsAsync()
+    {
+        try
         {
-            _cartdetailRepository = cartdetailRepository;
+            return await _cartdetailRepository.GetAll();
         }
-
-        public async Task<IEnumerable<Cartdetail>> GetAllCartdetailsAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                return await _cartdetailRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get all the cart details", ex);
-            }
+            throw new Exception("Failed to get all the cart details", ex);
         }
+    }
 
-        public async Task<Cartdetail> AddCartdetailAsync(Cartdetail cartdetail)
+    public async Task<Cartdetail> AddCartdetailAsync(Cartdetail cartdetail)
+    {
+        try
         {
-            try
-            {
-                await _cartdetailRepository.Create(cartdetail);
-                return cartdetail;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to add the cart detail", ex);
-            }
-        }
-
-        public async Task<Cartdetail> UpdateCartdetailAsync(Cartdetail cartdetail)
-        {
-            try
-            {
-                await _cartdetailRepository.Update(cartdetail);
-                return cartdetail;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to update the cart detail", ex);
-            }
-        }
-
-        public async Task<Cartdetail> DeleteCartdetailAsync(int id)
-        {
-            var cartdetail = await _cartdetailRepository.GetById(id);
-            if (cartdetail == null)
-            {
-                throw new Exception("Cart detail not found.");
-            }
-            await _cartdetailRepository.Delete(id);
+            await _cartdetailRepository.Create(cartdetail);
             return cartdetail;
         }
-
-        public async Task<Cartdetail> GetCartdetailByIdAsync(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _cartdetailRepository.GetById(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get specific cart detail id", ex);
-            }
+            throw new Exception("Failed to add the cart detail", ex);
         }
+    }
 
-        public async Task<IEnumerable<Cartdetail>> GetCartdetailsByCartIdAsync(int cartId)
+    public async Task<Cartdetail> UpdateCartdetailAsync(Cartdetail cartdetail)
+    {
+        try
         {
-            try
-            {
-                return await _cartdetailRepository.GetByCartId(cartId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to get cart details for the specified cart", ex);
-            }
+            await _cartdetailRepository.Update(cartdetail);
+            return cartdetail;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to update the cart detail", ex);
+        }
+    }
+
+    public async Task<Cartdetail> DeleteCartdetailAsync(int id)
+    {
+        var cartdetail = await _cartdetailRepository.GetById(id);
+        if (cartdetail == null) throw new Exception("Cart detail not found.");
+        await _cartdetailRepository.Delete(id);
+        return cartdetail;
+    }
+
+    public async Task<Cartdetail> GetCartdetailByIdAsync(int id)
+    {
+        try
+        {
+            return await _cartdetailRepository.GetById(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to get specific cart detail id", ex);
+        }
+    }
+
+    public async Task<IEnumerable<Cartdetail>> GetCartdetailsByCartIdAsync(int cartId)
+    {
+        try
+        {
+            return await _cartdetailRepository.GetByCartId(cartId);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to get cart details for the specified cart", ex);
         }
     }
 }

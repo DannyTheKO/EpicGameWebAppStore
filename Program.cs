@@ -1,9 +1,8 @@
 using Application.Interfaces;
 using Application.Services;
-using Infrastructure.Repository;
-using Domain.Repository;
 using DataAccess.EpicGame;
-
+using Domain.Repository;
+using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -14,13 +13,10 @@ builder.Services.AddControllersWithViews();
 // Add connection into Database
 var connectionString = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrEmpty(connectionString)) // This will check if the Default connection string
-{
     throw new InvalidOperationException("Connection string 'Default' is not found.");
-}
 
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
     options.UseMySQL(connectionString));
-
 
 
 // == Service registrations ==
@@ -52,7 +48,6 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 
-
 // Account Service
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -72,7 +67,6 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 // Publisher Service
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
-
 
 
 // == Testing API ==
@@ -112,7 +106,7 @@ app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-	"default",
-	"{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

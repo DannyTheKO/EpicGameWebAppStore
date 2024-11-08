@@ -3,32 +3,32 @@
 <h1>Create Cart</h1>
 
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 
 <form asp-action="Create" asp-controller="Cart" class="container mt-4">
-    <div class="form-group">
-        <label asp-for="AccountId">Account</label>
-        <select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
-        <span asp-validation-for="AccountId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PaymentMethodId">Payment Method</label>
-        <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
-        <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="TotalAmount"></label>
-        <input asp-for="TotalAmount" class="form-control" />
-        <span asp-validation-for="TotalAmount" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CreatedOn"></label>
-        <input asp-for="CreatedOn" class="form-control" type="datetime-local" />
-        <span asp-validation-for="CreatedOn" class="text-danger"></span>
-    </div>
-    <div>
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
+	<div class="form-group">
+		<label asp-for="AccountId">Account</label>
+		<select asp-for="AccountId" class="form-control" asp-items="ViewBag.AccountId"></select>
+		<span asp-validation-for="AccountId" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="PaymentMethodId">Payment Method</label>
+		<select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
+		<span asp-validation-for="PaymentMethodId" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="TotalAmount"></label>
+		<input asp-for="TotalAmount" class="form-control"/>
+		<span asp-validation-for="TotalAmount" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="CreatedOn"></label>
+		<input asp-for="CreatedOn" class="form-control" type="datetime-local"/>
+		<span asp-validation-for="CreatedOn" class="text-danger"></span>
+	</div>
+	<div>
+		<input type="submit" value="Create" class="btn btn-primary"/>
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
 </form>

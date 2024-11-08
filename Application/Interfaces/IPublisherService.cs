@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 // Domain
-using Domain.Entities;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IPublisherService
 {
-    public interface IPublisherService
-    {
-        // == Basic CRUD Function ==
-        public Task<IEnumerable<Publisher>> GetAllPublishersAsync();
-        public Task<Publisher> AddPublisherAsync(Publisher publisher);
-        public Task<Publisher> UpdatePublisherAsync(Publisher publisher);
-        public Task<Publisher> DeletePublisherAsync(int id);
+    // == Basic CRUD Function ==
+    public Task<IEnumerable<Publisher>> GetAllPublishersAsync();
+    public Task<Publisher> AddPublisherAsync(Publisher publisher);
+    public Task<Publisher> UpdatePublisherAsync(Publisher publisher);
+    public Task<Publisher> DeletePublisherAsync(int id);
 
-        // == Feature Function ==
+    // == Feature Function ==
 
-        // Search by Publisher ID
-        public Task<Publisher> GetPublisherByIdAsync(int id);
+    // Search by Publisher ID
+    public Task<Publisher> GetPublisherByIdAsync(int id);
 
-        // TODO: Search By Name
-        // TODO: Search By Address
-
-    }
+    // TODO: Search By Name
+    // TODO: Search By Address
 }

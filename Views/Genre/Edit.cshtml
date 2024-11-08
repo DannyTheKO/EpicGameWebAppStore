@@ -1,20 +1,20 @@
 @model Domain.Entities.Genre
 
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 
 <h1>Edit Genre</h1>
 
 <form asp-action="Edit" class="container mt-4">
-    <input type="hidden" asp-for="GenreId" />
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div>
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
+	<input type="hidden" asp-for="GenreId"/>
+	<div class="form-group">
+		<label asp-for="Name"></label>
+		<input asp-for="Name" class="form-control"/>
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div>
+		<input type="submit" value="Save" class="btn btn-primary"/>
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
 </form>

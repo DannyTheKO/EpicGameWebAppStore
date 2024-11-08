@@ -1,38 +1,38 @@
 ﻿using System.Security.Claims;
 using Domain.Entities;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IAccountService
 {
-    public interface IAccountService
-    {
-        #region == Basic CRUB Function ==
-        //ACTION: Create Account
-        Task<Account> AddAccount(Account account);
+    #region == Basic CRUB Function ==
 
-        // SELECT: Get all Account
-        Task<IEnumerable<Account>> GetAllAccounts();
+    //ACTION: Create Account
+    Task<Account> AddAccount(Account account);
 
-        // ACTION: Update Account
-        Task<Account> UpdateAccount(Account account);
+    // SELECT: Get all Account
+    Task<IEnumerable<Account>> GetAllAccounts();
 
-        // ACTION: Delete Account
-        Task DeleteAccount(int accountId);
+    // ACTION: Update Account
+    Task<Account> UpdateAccount(Account account);
 
-        #endregion
+    // ACTION: Delete Account
+    Task DeleteAccount(int accountId);
 
-        #region == Basic operation ==
+    #endregion
 
-        // SELECT: Get Username by ID Account
-        Task<Account> GetAccountById(int accountId);
+    #region == Basic operation ==
 
-        // SELECT: Get "Username" value from specific Account
-        Task<Account> GetAccountByUsername(string username);
+    // SELECT: Get Username by ID Account
+    Task<Account> GetAccountById(int accountId);
 
-        // SELECT: Get "Email" value from specific Account
-        Task<Account> GetAccountByEmail(string email);
+    // SELECT: Get "Username" value from specific Account
+    Task<Account> GetAccountByUsername(string username);
 
-        public int GetLoginAccountId(ClaimsPrincipal User);
+    // SELECT: Get "Email" value from specific Account
+    Task<Account> GetAccountByEmail(string email);
 
-        #endregion
-    }
+    public int GetLoginAccountId(ClaimsPrincipal User);
+
+    #endregion
 }
