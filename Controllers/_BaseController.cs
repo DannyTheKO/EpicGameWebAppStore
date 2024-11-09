@@ -34,7 +34,7 @@ public abstract class _BaseController : Controller
         if (User.Identity?.IsAuthenticated ?? false)
         {
             var accountId = GetCurrentLoginAccountId();
-            ViewData["Account_Role"] = await _roleService.GetRoleById(accountId);
+            ViewData["Account_Role"] = await _roleService.GetRoleByAccountId(accountId);
         }
         else
         {

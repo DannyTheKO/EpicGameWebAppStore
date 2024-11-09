@@ -23,8 +23,14 @@ public class RoleService : IRoleService
         return await _roleRepository.GetAll();
     }
 
+    // SELECT: Get Role detail by RoleId
+    public async Task<Role> GetRoleById(int roleId)
+    {
+	    return await _roleRepository.GetById(roleId);
+    }
+
     // SELECT: Get Role by Account ID
-    public async Task<string> GetRoleById(int accountId)
+    public async Task<string> GetRoleByAccountId(int accountId)
     {
         var account = await _accountRepository.GetId(accountId);
         if (account == null || account.RoleId == null) return "Guest";

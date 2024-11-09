@@ -177,7 +177,7 @@ public class AuthController : _BaseController
             loginStateBool = loginState,
             message = resultMessage,
             accountDetail = await _accountService.GetAccountById(accountId),
-            role = await _roleService.GetRoleById(accountId)
+            role = await _roleService.GetRoleByAccountId(accountId)
         });
     }
 }
