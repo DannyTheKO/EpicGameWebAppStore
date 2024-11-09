@@ -84,7 +84,7 @@ public class AccountService : IAccountService
     // SELECT: Get current login in Account
     public int GetLoginAccountId(ClaimsPrincipal User)
     {
-        return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+        return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "-1");
     }
 
     #endregion

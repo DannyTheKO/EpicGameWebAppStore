@@ -85,16 +85,28 @@ public class CartdetailService : ICartdetailService
 		    throw new Exception("Failed to get cart details for the specified cart", ex);
 	    }
     }
-    
 
-    #endregion
 
-    #region Service
+	#endregion
 
-    //public int GetTotalAmount(int cartDetailId)
-    //{
+	#region Service
 
-    //}
+	// Calculate single session detail cart
+	public async Task<(decimal TotalPrice, bool Flag)> GetTotalAmount(int cartDetailId)
+	{
+		//Check if that cartDetail available
+		var existingCartDetail = await _cartdetailRepository.GetByCartId(cartDetailId);
+		if (existingCartDetail == null) // NOT FOUND
+		{
+			return (0, false);
+		}
 
-    #endregion
+		var totalPrice = existingCartDetail
+			.Sum(cd => cd.Price.GetValueOrDefault() * cd.Quantity.GetValueOrDefault() * 
+			           (1 - cd.Discount.GetValueOrDefault() / 100m));
+		
+		return (totalPrice, true);
+	}
+
+	#endregion
 }

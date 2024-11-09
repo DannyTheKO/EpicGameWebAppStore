@@ -37,29 +37,38 @@ public class AuthController : _BaseController
         _roleService = roleService;
     }
 
-    #region == Logout ==
-
     [HttpGet("Logout")]
     public async Task<IActionResult> Logout()
     {
+	    var checkLoginAccount = GetCurrentLoginAccountId();
+	    if (checkLoginAccount == -1) // NOT FOUND
+	    {
+		    return BadRequest(new
+		    {
+			    loginStateFlag = false,
+			    message = "Current Login Account Not Found!"
+		    });
+	    }
+
         await HttpContext.SignOutAsync("CookieAuth");
-        return RedirectToAction("Index", "Home");
+
+        return Ok(new
+        {
+	        loginStateFlag = false,
+	        message = "Successfully Logout"
+        });
     }
-
-    #endregion
-
-    #region == Access Denied ==
 
     [HttpGet("AccessDenied")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult AccessDenied()
+    public async Task<IActionResult> AccessDenied()
     {
-        return View("403");
+	    return StatusCode(403, new
+	    {
+		    accessFlag = false,
+		    message = "Access Denied: You don't have permission to access this resource"
+	    });
     }
-
-    #endregion
-
-    #region == Register ==
 
     // GET: Auth/Register
     [HttpGet("RegisterPage")]
@@ -67,7 +76,7 @@ public class AuthController : _BaseController
     {
         return View();
     }
-
+		
     // POST: Auth/RegisterConfirm
     [HttpPost("RegisterConfirm")]
     public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
@@ -112,10 +121,6 @@ public class AuthController : _BaseController
             message = resultMessage
         });
     }
-
-    #endregion
-
-    #region == Login ==
 
     // GET: Auth/LoginPage
     [HttpGet("LoginPage")]
@@ -175,6 +180,4 @@ public class AuthController : _BaseController
             role = await _roleService.GetRoleById(accountId)
         });
     }
-
-    #endregion
 }

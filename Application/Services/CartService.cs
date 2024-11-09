@@ -64,21 +64,21 @@ public class CartService : ICartService
 
     #region Services Function
 
-    // Calculate Total Amount from the AccountId and CartId
+    //Calculate Total Amount from the AccountId and CartId
     //public async Task<(int amount, string message)> GetTotalAmount(int accountId, int cartId)
     //{
-	   // var accountCartDetail = await _cartdetailRepository.GetByCartId(cartId);
-	   // var getAccountId = await _cartRepository.GetById(accountId);
-	   // if (accountCartDetail == null) // NOT FOUND
-	   // {
-		  //  return (0, "NOT FOUND");
-	   // }
+    //    var accountCartDetail = await _cartdetailRepository.GetByCartId(cartId);
+    //    var getAccountId = await _cartRepository.GetById(accountId);
+    //    if (accountCartDetail == null) // NOT FOUND
+    //    {
+    //        return (0, "NOT FOUND");
+    //    }
 
-	   // var totalAmount = accountCartDetail
-		  //  .Where(a => a.)
-		  //  .Sum(g => g.Price);
+    //    var totalAmount = accountCartDetail
+    //        .Where(a => a.)
+    //        .Sum(g => g.Price);
     //}
-    
+
     #endregion
 
 }

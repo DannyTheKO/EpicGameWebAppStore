@@ -7,15 +7,15 @@ namespace Application.Interfaces;
 public interface IGameService
 {
     // == Basic CRUD Function ==
-    public Task<IEnumerable<Game>> GetAllGameAsync();
-    public Task<Game> AddGameAsync(Game game);
-    public Task<Game> UpdateGameAsync(Game game);
-    public Task<Game> DeleteGameAsync(int id);
+    public Task<IEnumerable<Game>> GetAllGame();
+    public Task<Game> AddGame(Game game);
+    public Task<Game> UpdateGame(Game game);
+    public Task<Game> DeleteGame(int id);
 
     // == Feature Function ==
 
     // Search by Game ID
-    public Task<Game> GetGameByIdAsync(int id);
+    public Task<Game> GetGameById(int id);
 
     // TODO: Search By Publisher => Get Publisher By "ID"
     // TODO: Search By Genre => Get Genre By "ID"

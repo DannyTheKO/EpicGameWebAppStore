@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,26 +14,52 @@ public class DashboardController : _BaseController
 {
     private readonly IAuthorizationServices _authorizationServices;
     private readonly IAuthenticationServices _authenticationServices;
+
     private readonly IAccountService _accountService;
     private readonly IRoleService _roleService;
-        
+    private readonly IGameService _gameService;
+    private readonly ICartService _cartService;
+    
     public DashboardController(
         IAuthorizationServices authorizationServices,
         IAuthenticationServices authenticationServices,
         IAccountService accountService,
-        IRoleService roleService)
+        IRoleService roleService,
+        IGameService gameService,
+        ICartService cartService)
         : base(authenticationServices, authorizationServices, accountService, roleService)
     {
         _authorizationServices = authorizationServices;
         _authenticationServices = authenticationServices;
+
         _accountService = accountService;
+        _roleService = roleService;
+
+        _gameService = gameService;
+        _cartService = cartService;
     }
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
-        var account = await _accountService.GetAllAccounts();
-        return View(account);
+        var getAllAccount = await _accountService.GetAllAccounts();
+        var getAllGame= await _gameService.GetAllGame();
+
+        // select only Admin account
+        var onlyAdminAccount = getAllAccount.Where(a => a.Role.Name == "Admin");
+        var onlyGuestAccount = getAllAccount.Where(a => a.Role.Name == "Guest");
+
+        // select only Game from EA
+        var gameFromEA = getAllGame.Where(g => g.Publisher.Name == "Electronic Arts");
+
+
+        //return View(account);
+        return Ok(new
+        {
+	        adminAccount = onlyAdminAccount,
+	        guestAccount = onlyGuestAccount,
+            EAGame = gameFromEA,
+        });
     }
 
     private async Task PopulateViewBags()
@@ -47,6 +75,12 @@ public class DashboardController : _BaseController
 
         ViewBag.IsActive = new SelectList(isActive, "Value", "Text");
     }
+
+    #region Account
+
+    
+
+    #endregion
 
     [HttpGet("CreatePage")]
     public async Task<IActionResult> CreatePage()

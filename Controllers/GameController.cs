@@ -36,7 +36,7 @@ public class GameController : _BaseController
     [HttpGet("Index")]
     public async Task<IActionResult> Index()
     {
-        var games = await _gameServices.GetAllGameAsync();
+        var games = await _gameServices.GetAllGame();
         return View(games);
     }
 
@@ -58,7 +58,7 @@ public class GameController : _BaseController
     {
         if (ModelState.IsValid)
         {
-            await _gameServices.AddGameAsync(game); // Assuming you have an AddGameAsync method
+            await _gameServices.AddGame(game); // Assuming you have an AddGame method
             return RedirectToAction(nameof(Index));
         }
 
@@ -71,7 +71,7 @@ public class GameController : _BaseController
     [HttpGet("UpdatePage/{id}")]
     public async Task<IActionResult> UpdatePage(int id)
     {
-        var game = await _gameServices.GetGameByIdAsync(id);
+        var game = await _gameServices.GetGameById(id);
         if (game == null) return NotFound();
 
         ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
@@ -89,7 +89,7 @@ public class GameController : _BaseController
 
         if (ModelState.IsValid)
         {
-            await _gameServices.UpdateGameAsync(game); // Assuming you have an UpdateGameAsync method
+            await _gameServices.UpdateGame(game); // Assuming you have an UpdateGame method
             return RedirectToAction(nameof(Index));
         }
 
@@ -102,7 +102,7 @@ public class GameController : _BaseController
     [HttpGet("DeletePage/{id}")]
     public async Task<IActionResult> DeletePage(int id)
     {
-        var game = await _gameServices.GetGameByIdAsync(id); // Assuming this method exists
+        var game = await _gameServices.GetGameById(id); // Assuming this method exists
         if (game == null) return NotFound();
 
         return View("Index");
@@ -113,7 +113,7 @@ public class GameController : _BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _gameServices.DeleteGameAsync(id); // Assuming you have a DeleteGameAsync method
+        await _gameServices.DeleteGame(id); // Assuming you have a DeleteGame method
         return RedirectToAction(nameof(Index));
     }
 }

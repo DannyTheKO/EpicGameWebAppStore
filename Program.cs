@@ -56,6 +56,9 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
+builder.Services.AddScoped<ICartdetailService, CartdetailService>();
+builder.Services.AddScoped<ICartdetailRepository, CartdetailRepository>();
+
 // PaymentMethod Service
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();

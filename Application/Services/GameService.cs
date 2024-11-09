@@ -19,7 +19,7 @@ public class GameService : IGameService
     }
 
     // == Basic CRUD Function ==
-    public async Task<IEnumerable<Game>> GetAllGameAsync()
+    public async Task<IEnumerable<Game>> GetAllGame()
     {
         try
         {
@@ -31,7 +31,7 @@ public class GameService : IGameService
         }
     }
 
-    public async Task<Game> AddGameAsync(Game game)
+    public async Task<Game> AddGame(Game game)
     {
         try
         {
@@ -44,7 +44,7 @@ public class GameService : IGameService
         }
     }
 
-    public async Task<Game> UpdateGameAsync(Game game)
+    public async Task<Game> UpdateGame(Game game)
     {
         try
         {
@@ -57,7 +57,7 @@ public class GameService : IGameService
         }
     }
 
-    public async Task<Game> DeleteGameAsync(int id)
+    public async Task<Game> DeleteGame(int id)
     {
         var game = await _gameRepository.GetById(id);
         if (game == null) // Not Found
@@ -69,7 +69,7 @@ public class GameService : IGameService
     // == Feature Function ==
 
     // Search by Game ID
-    public async Task<Game> GetGameByIdAsync(int id)
+    public async Task<Game> GetGameById(int id)
     {
         try
         {
