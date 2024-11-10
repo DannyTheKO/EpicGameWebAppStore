@@ -50,7 +50,7 @@
       }, []);
     
       return (
-        <Space size={20} direction="vertical">
+        <Space size={5} direction="vertical">
           <Space direction="horizontal">
             <DashboardCard
               icon={
@@ -143,37 +143,36 @@
         });
       }, []);
     
-      return (
-        <>
-          <Typography.Text>Recent Orders</Typography.Text>
-          <Table className="table_recentorder"
-            columns={[
-              {
-                title: "Title",
-                dataIndex: "title",
-              },
-              {
-                title: "Quantity",
-                dataIndex: "quantity",
-              },
-              {
-                title: "Price",
-                dataIndex: "discountedPrice",
-              },
-            ]}
-            loading={loading}
-            dataSource={dataSource}
-            pagination={false}
-          ></Table>
-        </>
-      );
-    }
-    
-    function DashboardChart() {
+      // return (
+      //   <>
+      //     <Typography.Text>Recent Orders</Typography.Text>
+      //     <Table className="table_recentorder"
+      //       columns={[
+      //         {
+      //           title: "Title",
+      //           dataIndex: "title",
+      //         },
+      //         {
+      //           title: "Quantity",
+      //           dataIndex: "quantity",
+      //         },
+      //         {
+      //           title: "Price",
+      //           dataIndex: "discountedPrice",
+      //         },
+      //       ]}
+      //       loading={loading}
+      //       dataSource={dataSource}
+      //       pagination={false}
+      //     ></Table>
+      //   </>
+      // );
+    }function DashboardChart() {
       const [reveneuData, setReveneuData] = useState({
         labels: [],
         datasets: [],
       });
+      const [tableData, setTableData] = useState([]); // State để lưu dữ liệu bảng
     
       useEffect(() => {
         getRevenue().then((res) => {
@@ -196,6 +195,8 @@
           };
     
           setReveneuData(dataSource);
+    
+      
         });
       }, []);
     
@@ -212,11 +213,15 @@
         },
       };
     
+     
       return (
-        <Card style={{ width: 800, height: 400}}>
+        <Card style={{ width: 1200, height: 'auto' }}>
           <Bar options={options} data={reveneuData} />
+          
+            
         </Card>
       );
     }
+    
     export default Dashboard;
     

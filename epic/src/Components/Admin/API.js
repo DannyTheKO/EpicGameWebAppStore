@@ -15,6 +15,38 @@
       return null; // Hoặc bạn có thể xử lý theo cách khác
   }
 };
+export const GetAllGenre = () => {
+
+};
+export const GetAllDiscount = () => {
+
+};
+
+export const GetAllPublisher = () => {
+  // Code để lấy tất cả thể loại
+};
+
+
+export const GetAllAccountgame = () => {
+  // Code để lấy tất cả thể loại
+};
+
+
+export const GetAllUsername = () => {
+  // Code để lấy tất cả thể loại
+};
+
+export const GetAllTitle = () => {
+  // Code để lấy tất cả thể loại
+};
+
+export const GetAccount = () => {
+  // Code để lấy tất cả thể loại
+};
+
+export const GetRole = () => {
+
+};
 
   export const GetAllgame = async () => {
     try {

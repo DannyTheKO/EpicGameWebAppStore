@@ -1,6 +1,6 @@
   import { Button, Rate, Space, Table, Typography, Modal, Input,Select } from "antd";
   import { useEffect, useState } from "react";
-  import { GetAllgame ,AddGame,DeleteGame} from "./API";
+  import { GetAllgame,AddGame,DeleteGame,GetAllPublisher,GetAllGenre} from "./API";
   import "./table.css";
 
   const { Text } = Typography;
@@ -9,15 +9,29 @@
 
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+    const [dataNameGenre, setNameGenre] = useState([]);
+    const [dataNamePublisher, setNamePublisher] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [gameRecord, setGameRecord] = useState({ title: "", author: "", price: 0 ,rating:0,release:null ,description:""});
+    const [gameCount, setGameCount] = useState(0); 
+    const [gameRecord, setGameRecord] = useState({id:"", title: "", author: "", price: 0 ,rating:0,release:null ,description:"",  namegenre:"",namepublisher:""});
 
     useEffect(() => {
       const fetchGame = async () => {
         setLoading(true);
-        const res = await GetAllgame();
-        setDataSource(res || []);
+        try {
+          const [res, publisher, genre]=await Promise.all([
+            GetAllgame(),
+            GetAllPublisher(),
+            GetAllGenre()
+          ]);
+          setDataSource(res || []);
+          setNamePublisher(publisher || []);
+          setNameGenre(genre || []);
+          setGameCount(res.length); 
+        } catch (error) {
+          console.log("lỗi load data")
+        }
         setLoading(false);
       };
       fetchGame();
@@ -25,16 +39,14 @@
 
     const openModal = (record = null) => {
       if (record) {
-        record.release = record.release.split("T")[0]; // Lấy phần ngày
-        setGameRecord(record); // Dữ liệu cho game đang sửa
-        console.log(record)
-        console.log(record.release )
-        setIsEditing(true); // Chế độ sửa
+        record.release = record.release.split("T")[0];
+        setGameRecord(record); 
+        setIsEditing(true); 
       } else {
-        setGameRecord({ title: "", author: "", price: 0 }); // Dữ liệu trống cho thêm mới
-        setIsEditing(false); // Chế độ thêm
+        setGameRecord({id :gameCount, title: "", author: "", price: 0,rating:0,description:"" }); 
+        setIsEditing(false); 
       }
-      setIsModalOpen(true); // Mở modal
+      setIsModalOpen(true);
     };
 
     const handleDelete = (record) => {
@@ -44,34 +56,20 @@
         okText: "Xóa",
         okType: "danger",
         cancelText: "Hủy",
-        
         onOk: () => {
-          console.log("Record:", record);
-
-          console.log("Original gameId:", record.gameId, "Type:", typeof record.gameId);
-
-          // Chuyển gameId về số nguyên
           const gameId = parseInt(record.gameId, 10);
-    
-          // Kiểm tra giá trị và kiểu dữ liệu sau khi ép kiểu
-          console.log("Parsed gameId:", gameId, "Type:", typeof gameId);
-    
-          // Nếu gameId không phải là số hợp lệ, dừng lại và thông báo lỗi
           if (isNaN(gameId)) {
-            console.error("gameId không phải là số hợp lệ:", record.gameId);
+            console.error("Id  game không phải là số hợp lệ:", record.gameId);
             return;
           }
-          DeleteGame(parseInt(record.gameId)) // Giả sử hàm deleteOrder yêu cầu AccountID
+          DeleteGame(parseInt(record.gameId)) 
             .then(() => {
-              // Cập nhật lại danh sách sản phẩm sau khi xóa
               setDataSource((prevDataSource) =>
                 prevDataSource.filter((item) => item.gameId !== record.gameId)
               );
               console.log("Đã xóa sản phẩm: ", record.gameId);
             })
             .catch((error) => {
-              console.log("Đã xóa sản phẩm: ", (record.gameId).type);
-      
               console.error("Lỗi khi xóa sản phẩm:", error);
             });
         },
@@ -92,26 +90,22 @@
 
     return true;
 };
-    const handleSave = async () => { // Thêm 'async' vào đây
+    const handleSave = async () => { 
       if (!validateGameRecord()) {
-        return; // Nếu dữ liệu không hợp lệ, dừng lại
+        return;
     }
       if (isEditing) {
           console.log("Lưu dữ liệu đã sửa:", gameRecord);
           // Thêm logic lưu dữ liệu đã sửa ở đây
       } else {
           console.log("Thêm sản phẩm mới:", gameRecord);
-          const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
-          console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
+          const addedGame = await AddGame(gameRecord); // thêm mới game
+          console.log("Added Game:", addedGame);
       }
-      setIsModalOpen(false); // Đóng modal sau khi lưu
+      setIsModalOpen(false); 
   };
-  
-
-    return (
-      <Space className="size_table" size={20} direction="vertical">
-      
-
+      return (
+      <Space className="size_table" size={10} direction="vertical">
         <Table
           className="data"
           loading={loading}
@@ -121,6 +115,20 @@
               dataIndex: "gameId",
               key: "gameId",
               render: (gameId) => <Text>{gameId}</Text>,
+              
+            },
+            {
+              title: "Publisher",
+              dataIndex: "publisher",
+              key: "publisher",
+              render: (publisher) => <Text>{publisher}</Text>,
+              
+            },
+            {
+              title: "Genre",
+              dataIndex: "genre",
+              key: "genre",
+              render: (genre) => <Text>{genre}</Text>,
               
             },
             {
@@ -166,7 +174,6 @@
                   {description}
                 </Text>
               ),
-              className: "text-center",
             },
             {
               title: "Actions",
@@ -187,8 +194,6 @@
           pagination={{ pageSize: 10 }}
           scroll={{ x: 'max-content' }}
         />
-
-        {/* Modal cho cả Thêm và Sửa */}
         <Modal
           className="form_addedit"
           title={isEditing ? "Sửa thông tin game" : "Thêm Game mới"}
@@ -196,6 +201,12 @@
           onCancel={() => setIsModalOpen(false)}
           onOk={handleSave}
         >
+          <Input
+            placeholder="ID Game"
+            value={gameRecord.id}
+            onChange={(e) => setGameRecord({ ...gameRecord, id: e.target.value })}
+            disabled
+          />
           <Input
             placeholder="Title"
             value={gameRecord.title}
@@ -220,7 +231,7 @@
           <Input
             type="date"
             placeholder="Release Date"
-            value={gameRecord.release} // Hiển thị dữ liệu ngày
+            value={gameRecord.release} 
             onChange={(e) => setGameRecord({ ...gameRecord, release: e.target.value })} // Cập nhật giá trị
             style={{ width: "100%", height: "52px", marginTop: "20px" }}
           />
@@ -232,26 +243,30 @@
             onChange={(e) => setGameRecord({ ...gameRecord, description: e.target.value })}
           />
           <Select
-          placeholder="Chọn nền tảng"
-          value={gameRecord.platform}
-          onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
+          placeholder="Chọn nhà sản xuất"
+          value={gameRecord.namepublisher}
+          onChange={(value) => setGameRecord({ ...gameRecord, namepublisher: value })}
           style={{ width: "100%", marginTop: "20px",height:"47px"  }}
         >
-          <Option value="pc">PC</Option>
-          <Option value="xbox">Xbox</Option>
-          <Option value="playstation">PlayStation</Option>
-          <Option value="mobile">Mobile</Option>
+          {dataNamePublisher.map((publisher)=>(
+            <Option key ={publisher.id} value={publisher.name}>
+              {publisher.name}
+            </Option>
+          ))}
+          
         </Select>
         <Select
-          placeholder="Chọn nền tảng"
-          value={gameRecord.platform}
-          onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
-          style={{ width: "100%", marginTop: "20px",height:"47px" }}
+          placeholder="Chọn thể loại"
+          value={gameRecord.namegenre}
+          onChange={(value) => setGameRecord({ ...gameRecord, namegenre: value })}
+          style={{ width: "100%", marginTop: "20px",height:"47px"  }}
         >
-          <Option value="pc">PC</Option>
-          <Option value="xbox">Xbox</Option>
-          <Option value="playstation">PlayStation</Option>
-          <Option value="mobile">Mobile</Option>
+          {dataNameGenre.map((genre)=>(
+            <Option key ={genre.id} value={genre.name}>
+              {genre.name}
+            </Option>
+          ))}
+          
         </Select>
         </Modal>
       </Space>

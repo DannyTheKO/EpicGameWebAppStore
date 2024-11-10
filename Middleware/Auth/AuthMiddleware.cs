@@ -34,8 +34,7 @@ public class AuthMiddleware
                 context.Items["Account_Role"] = "Guest";
                 context.Response.Headers.Add("X-User-Role", "Guest");
             }
-
-            await _next(context);
+                await _next(context);
         }
     }
 }

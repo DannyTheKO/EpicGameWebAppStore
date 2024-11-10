@@ -1,6 +1,6 @@
-import { Button, Rate, Space, Table, Typography, Modal, Input,Select } from "antd";
+import { Button,  Space, Table, Typography, Modal, Input,Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllgame ,AddGame} from "./API";
+import { GetAllgame ,GetAllDiscount} from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -11,13 +11,23 @@ function Discount() {
   const [dataSource, setDataSource] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [gameRecord, setGameRecord] = useState({ title: "", author: "", price: 0 ,rating:0,release:null ,description:""});
-
+  const [Count, setCount] = useState([]);
+  const [discountRecord, setDiscountRecord] = useState({ id:"",gameid: "", percent: 0, code: "" ,starton:null,endon:null });
+  const [dataGame, setDataGame] = useState([]);
   useEffect(() => {
     const fetchGame = async () => {
       setLoading(true);
-      const res = await GetAllgame();
-      setDataSource(res || []);
+      try {
+        const [ res,game]=await Promise.all([
+          GetAllDiscount(),
+          GetAllgame()
+        ]);
+        setDataSource(res || []);
+        setDataGame(game || []);
+        setCount(res.length)
+      } catch (error) {
+        console.log("lỗi load data")
+      }
       setLoading(false);
     };
     fetchGame();
@@ -25,13 +35,12 @@ function Discount() {
 
   const openModal = (record = null) => {
     if (record) {
-      record.release = record.release.split("T")[0]; // Lấy phần ngày
-      setGameRecord(record); // Dữ liệu cho game đang sửa
-      console.log(record)
-      console.log(record.release )
+      record.starton = record.starton.split("T")[0]; // Lấy phần ngày
+      record.endon=record.endon.split("T")[0];
+      setDiscountRecord(record); // Dữ liệu cho game đang sửa
       setIsEditing(true); // Chế độ sửa
     } else {
-      setGameRecord({ title: "", author: "", price: 0 }); // Dữ liệu trống cho thêm mới
+      setDiscountRecord({ id:Count, gameid: "", percent: 0, code: "" ,starton:null,endon:null }); // Dữ liệu trống cho thêm mới
       setIsEditing(false); // Chế độ thêm
     }
     setIsModalOpen(true); // Mở modal
@@ -47,37 +56,37 @@ function Discount() {
     }
 };
 const validateGameRecord = () => {
-  const { title, author, price, rating, release, description } = gameRecord;
+  // const { title, author, price, rating, release, description } = gameRecord;
 
-  // Kiểm tra các trường bắt buộc
-  if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-      Modal.error({
-          title: 'Lỗi',
-          content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-      });
-      return false;
-  }
+  // // Kiểm tra các trường bắt buộc
+  // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
+  //     Modal.error({
+  //         title: 'Lỗi',
+  //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
+  //     });
+  //     return false;
+  // }
 
   return true;
 };
   const handleSave = async () => { // Thêm 'async' vào đây
-    if (!validateGameRecord()) {
-      return; // Nếu dữ liệu không hợp lệ, dừng lại
-  }
-    if (isEditing) {
-        console.log("Lưu dữ liệu đã sửa:", gameRecord);
-        // Thêm logic lưu dữ liệu đã sửa ở đây
-    } else {
-        console.log("Thêm sản phẩm mới:", gameRecord);
-        const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
-        console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
-    }
-    setIsModalOpen(false); // Đóng modal sau khi lưu
+  //   if (!validateGameRecord()) {
+  //     return; // Nếu dữ liệu không hợp lệ, dừng lại
+  // }
+  //   if (isEditing) {
+  //       console.log("Lưu dữ liệu đã sửa:", gameRecord);
+  //       // Thêm logic lưu dữ liệu đã sửa ở đây
+  //   } else {
+  //       console.log("Thêm sản phẩm mới:", gameRecord);
+  //       const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
+  //       console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
+  //   }
+  //   setIsModalOpen(false); // Đóng modal sau khi lưu
 };
 
 
   return (
-    <Space className="size_table" size={20} direction="vertical">
+    <Space className="size_table" size={10} direction="vertical">
     
 
       <Table
@@ -85,56 +94,42 @@ const validateGameRecord = () => {
         loading={loading}
         columns={[
           {
-            title: "Game ID",
-            dataIndex: "gameId",
-            key: "gameId",
-            render: (gameId) => <Text>{gameId}</Text>,
+            title: "Discout ID",
+            dataIndex: "discountid",
+            key: "discountid",
+            render: (discountid) => <Text>{discountid}</Text>,
             
           },
           {
-            title: "Title",
-            dataIndex: "title",
-            key: "title",
-            render: (title) => <Text>{title}</Text>,
-            className: "text-center",
+            title: "ID Game",
+            dataIndex: "gameid",
+            key: "gameid",
+            render: (gameid) => <Text>{gameid}</Text>,
           },
           {
-            title: "Author",
-            dataIndex: "author",
-            key: "author",
-            className: "text-center",
+            title: "Percent",
+            dataIndex: "Percent",
+            key: "Percent",
+            render: (Percent) => `$${Percent.toFixed(2)}`,
+          },
+         
+          {
+            title: "Code",
+            dataIndex: "code",
+            key: "code",
+            render: (code) => <Text>{code}</Text>,
           },
           {
-            title: "Price",
-            dataIndex: "price",
-            key: "price",
-            render: (price) => `$${price.toFixed(2)}`,
-            className: "text-center",
+            title: "Start on",
+            dataIndex: "starton",
+            key: "starton",
+            render: (starton) => new Date(starton).toLocaleDateString(),
           },
           {
-            title: "Rating",
-            dataIndex: "rating",
-            key: "rating",
-            render: (rating) => <Rate value={rating / 2} allowHalf disabled />,
-            className: "text-center",
-          },
-          {
-            title: "Release Date",
-            dataIndex: "release",
-            key: "release",
-            render: (release) => new Date(release).toLocaleDateString(),
-            className: "text-center",
-          },
-          {
-            title: "Description",
-            dataIndex: "description",
-            key: "description",
-            render: (description) => (
-              <Text ellipsis style={{ maxWidth: 200 }}>
-                {description}
-              </Text>
-            ),
-            className: "text-center",
+            title: "End on",
+            dataIndex: "endon",
+            key: "starton",
+            render: (starton) => new Date(starton).toLocaleDateString(),
           },
           {
             title: "Actions",
@@ -150,7 +145,7 @@ const validateGameRecord = () => {
           },
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-        rowKey="gameId"
+        rowKey="discountid"
 
         pagination={{ pageSize: 10 }}
         scroll={{ x: 'max-content' }}
@@ -165,62 +160,49 @@ const validateGameRecord = () => {
         onOk={handleSave}
       >
         <Input
-          placeholder="Title"
-          value={gameRecord.title}
-          onChange={(e) => setGameRecord({ ...gameRecord, title: e.target.value })}
+          placeholder="ID Discount"
+          value={discountRecord.id}
+          onChange={(e) => setDiscountRecord({ ...discountRecord, id: e.target.value })}
         />
+          <Select
+          placeholder="Chọn Game"
+          value={discountRecord.gameid}
+          onChange={(value) => setDiscountRecord({ ...discountRecord, gameid: value })}
+          style={{ width: "100%", marginTop: "20px", height: "47px" }}
+        >
+          {dataGame.map((game) => (
+            <Option key={game.id} value={game.id}>
+              {game.name}
+            </Option>
+          ))}
+        </Select>
         <Input
-          placeholder="Author"
-          value={gameRecord.author}
-          onChange={(e) => setGameRecord({ ...gameRecord, author: e.target.value })}
-        />
-        <Input
-          placeholder="Price"
+          placeholder="Percent"
           type="number"
-          value={gameRecord.price}
-          onChange={(e) => setGameRecord({ ...gameRecord, price: parseFloat(e.target.value) })}
+          value={discountRecord.percent}
+          onChange={(e) => setDiscountRecord({ ...discountRecord, percent: parseFloat(e.target.value) })}
         />
         <Input
-          placeholder="Rating"
-          value={gameRecord.rating}
-          onChange={(e) => setGameRecord({ ...gameRecord, rating: e.target.value })}
+          placeholder="Code"
+          value={discountRecord.code}
+          onChange={(e) => setDiscountRecord({ ...discountRecord, code: e.target.value })}
         />
         <Input
           type="date"
-          placeholder="Release Date"
-          value={gameRecord.release} // Hiển thị dữ liệu ngày
-          onChange={(e) => setGameRecord({ ...gameRecord, release: e.target.value })} // Cập nhật giá trị
+          placeholder="Start Date"
+          value={discountRecord.starton} // Hiển thị dữ liệu ngày
+          onChange={(e) => setDiscountRecord({ ...discountRecord, starton: e.target.value })} // Cập nhật giá trị
           style={{ width: "100%", height: "52px", marginTop: "20px" }}
         />
          
-        <Input
-          placeholder="Description"
-          type="string"
-          value={gameRecord.description}
-          onChange={(e) => setGameRecord({ ...gameRecord, description: e.target.value })}
+         <Input
+          type="date"
+          placeholder="End Date"
+          value={discountRecord.endon} // Hiển thị dữ liệu ngày
+          onChange={(e) => discountRecord({ ...discountRecord, endon: e.target.value })} // Cập nhật giá trị
+          style={{ width: "100%", height: "52px", marginTop: "20px" }}
         />
-        <Select
-        placeholder="Chọn nền tảng"
-        value={gameRecord.platform}
-        onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
-        style={{ width: "100%", marginTop: "20px",height:"47px"  }}
-      >
-        <Option value="pc">PC</Option>
-        <Option value="xbox">Xbox</Option>
-        <Option value="playstation">PlayStation</Option>
-        <Option value="mobile">Mobile</Option>
-      </Select>
-      <Select
-        placeholder="Chọn nền tảng"
-        value={gameRecord.platform}
-        onChange={(value) => setGameRecord({ ...gameRecord, platform: value })}
-        style={{ width: "100%", marginTop: "20px",height:"47px" }}
-      >
-        <Option value="pc">PC</Option>
-        <Option value="xbox">Xbox</Option>
-        <Option value="playstation">PlayStation</Option>
-        <Option value="mobile">Mobile</Option>
-      </Select>
+       
       </Modal>
     </Space>
   );
