@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Paymentmethod
 {
@@ -6,5 +8,6 @@ public class Paymentmethod
 
     public string? Name { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 }

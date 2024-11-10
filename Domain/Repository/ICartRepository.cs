@@ -9,7 +9,7 @@ public interface ICartRepository
     Task Add(Cart cart);
     Task Update(Cart cart);
     Task Delete(int id);
-    Task<IEnumerable<Cart>> GetByAccountId(int accountId);
-    Task<Account> GetCartById(int accountId);
+    Task<IEnumerable<Cart>> GetAllCartFromAccountId(int accountId);
+    Task<Account> GetAccountByCartId(int accountId);
     Task<Paymentmethod> GetPaymentMethodById(int paymentMethodId);
 }

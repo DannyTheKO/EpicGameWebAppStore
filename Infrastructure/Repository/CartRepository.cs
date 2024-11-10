@@ -17,8 +17,9 @@ public class CartRepository : ICartRepository
     public async Task<IEnumerable<Cart>> GetAll()
     {
         return await _context.Carts
-            .Include(c => c.Account)
+            .Include(c => c.Account).ThenInclude(a => a.Role)
             .Include(c => c.PaymentMethod)
+            .Include(c => c.Cartdetails).ThenInclude(cd => cd.Game)
             .ToListAsync();
     }
 
@@ -52,7 +53,7 @@ public class CartRepository : ICartRepository
         }
     }
 
-    public async Task<IEnumerable<Cart>> GetByAccountId(int accountId)
+    public async Task<IEnumerable<Cart>> GetAllCartFromAccountId(int accountId)
     {
         return await _context.Carts
             .Where(c => c.AccountId == accountId)
@@ -60,7 +61,7 @@ public class CartRepository : ICartRepository
             .ToListAsync();
     }
 
-    public async Task<Account> GetCartById(int accountId)
+    public async Task<Account> GetAccountByCartId(int accountId)
     {
         return await _context.Accounts.FindAsync(accountId);
     }

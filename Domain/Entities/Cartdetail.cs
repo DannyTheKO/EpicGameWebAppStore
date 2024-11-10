@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Cartdetail
 {
@@ -14,7 +16,8 @@ public class Cartdetail
 
     public decimal? Discount { get; set; }
 
+    [JsonIgnore]
     public virtual Cart Cart { get; set; } = null!;
-
+    [JsonIgnore]
     public virtual Game Game { get; set; } = null!;
 }

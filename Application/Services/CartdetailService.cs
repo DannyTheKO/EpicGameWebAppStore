@@ -15,8 +15,7 @@ public class CartdetailService : ICartdetailService
         _cartdetailRepository = cartdetailRepository;
     }
 
-    #region Temp
-    public async Task<IEnumerable<Cartdetail>> GetAllCartdetailsAsync()
+    public async Task<IEnumerable<Cartdetail>> GetAllCartdetails()
     {
 	    try
 	    {
@@ -28,7 +27,7 @@ public class CartdetailService : ICartdetailService
 	    }
     }
 
-    public async Task<Cartdetail> AddCartdetailAsync(Cartdetail cartdetail)
+    public async Task<Cartdetail> AddCartdetail(Cartdetail cartdetail)
     {
 	    try
 	    {
@@ -41,7 +40,7 @@ public class CartdetailService : ICartdetailService
 	    }
     }
 
-    public async Task<Cartdetail> UpdateCartdetailAsync(Cartdetail cartdetail)
+    public async Task<Cartdetail> UpdateCartdetail(Cartdetail cartdetail)
     {
 	    try
 	    {
@@ -54,7 +53,7 @@ public class CartdetailService : ICartdetailService
 	    }
     }
 
-    public async Task<Cartdetail> DeleteCartdetailAsync(int id)
+    public async Task<Cartdetail> DeleteCartdetail(int id)
     {
 	    var cartdetail = await _cartdetailRepository.GetById(id);
 	    if (cartdetail == null) throw new Exception("Cart detail not found.");
@@ -62,7 +61,7 @@ public class CartdetailService : ICartdetailService
 	    return cartdetail;
     }
 
-    public async Task<Cartdetail> GetCartdetailByIdAsync(int id)
+    public async Task<Cartdetail> GetCartdetailById(int id)
     {
 	    try
 	    {
