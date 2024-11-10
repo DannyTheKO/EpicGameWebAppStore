@@ -6,57 +6,103 @@ namespace Application.Services;
 
 public class CartService : ICartService
 {
-    private readonly ICartRepository _cartRepository;
+	private readonly ICartRepository _cartRepository;
 
-    public CartService(ICartRepository cartRepository)
-    {
-        _cartRepository = cartRepository;
-    }
+	public CartService(ICartRepository cartRepository)
+	{
+		_cartRepository = cartRepository;
+	}
 
-    public async Task<IEnumerable<Cart>> GetAllCartsAsync()
-    {
-        return await _cartRepository.GetAll();
-    }
+	#region == CRUB Operation ==
 
-    public async Task<Cart> AddCartAsync(Cart cart)
-    {
-        await _cartRepository.Add(cart);
-        return cart;
-    }
+	public async Task<IEnumerable<Cart>> GetAllCartsAsync()
+	{
+		return await _cartRepository.GetAll();
+	}
 
-    public async Task<Cart> UpdateCartAsync(Cart cart)
-    {
-        await _cartRepository.Update(cart);
-        return cart;
-    }
+	public async Task<Cart> AddCartAsync(Cart cart)
+	{
+		await _cartRepository.Add(cart);
+		return cart;
+	}
 
-    public async Task<Cart> DeleteCartAsync(int id)
-    {
-        var cart = await _cartRepository.GetById(id);
-        if (cart == null) throw new Exception("Cart not found.");
-        await _cartRepository.Delete(id);
-        return cart;
-    }
+	public async Task<Cart> UpdateCartAsync(Cart cart)
+	{
+		await _cartRepository.Update(cart);
+		return cart;
+	}
 
-    public async Task<Cart> GetCartByIdAsync(int id)
-    {
-        return await _cartRepository.GetById(id);
-    }
+	public async Task<Cart> DeleteCartAsync(int id)
+	{
+		var cart = await _cartRepository.GetById(id);
+		if (cart == null) throw new Exception("Cart not found.");
+		await _cartRepository.Delete(id);
+		return cart;
+	}
 
-    public async Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId)
-    {
-        return await _cartRepository.GetByAccountId(accountId);
-    }
+	public async Task<Cart> GetCartByIdAsync(int id)
+	{
+		return await _cartRepository.GetById(id);
+	}
 
-    public async Task<string> GetAccountNameByIdAsync(int accountId)
-    {
-        var account = await _cartRepository.GetAccountById(accountId);
-        return account?.Username ?? throw new Exception("Account not found.");
-    }
+	public async Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId)
+	{
+		return await _cartRepository.GetAllCartFromAccountId(accountId);
+	}
 
-    public async Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId)
-    {
-        var paymentMethod = await _cartRepository.GetPaymentMethodById(paymentMethodId);
-        return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
-    }
+	public async Task<string> GetAccountNameByIdAsync(int accountId)
+	{
+		var account = await _cartRepository.GetAccountByCartId(accountId);
+		return account?.Username ?? throw new Exception("Account not found.");
+	}
+
+	public async Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId)
+	{
+		var paymentMethod = await _cartRepository.GetPaymentMethodById(paymentMethodId);
+		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
+	}
+
+	#endregion
+
+
+	public async Task<Cart> AddToCart(int accountId, int gameId, int quantity)
+	{
+		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var existingCart = existingCarts.FirstOrDefault(); // Get most recent cart or create new one
+
+		if (existingCart == null) // Cart doesn't exist for that account
+		{
+			// Create new cart
+			var newCart = new Cart();
+			newCart.InitializeCart(accountId);
+
+			// Add new cart detail
+			var cartDetail = new Cartdetail
+			{
+				GameId = gameId,
+				Quantity = quantity
+			};
+
+			newCart.Cartdetails.Add(cartDetail);
+
+			// Save to database
+			await _cartRepository.Add(newCart);
+			return newCart;
+		}
+		else
+		{
+			// Add to existing cart
+			var cartDetail = new Cartdetail
+			{
+				CartId = existingCart.CartId,
+				GameId = gameId,
+				Quantity = quantity
+			};
+
+			existingCart.Cartdetails.Add(cartDetail);
+			await _cartRepository.Update(existingCart);
+			return existingCart;
+		}
+	}
+
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities;
 
@@ -21,7 +22,9 @@ public class Account
 
     public DateTime? CreatedOn { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
+    [JsonIgnore]
     public virtual Role? Role { get; set; }
 }

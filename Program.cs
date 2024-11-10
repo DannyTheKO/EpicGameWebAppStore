@@ -47,7 +47,6 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 
-
 // Account Service
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -55,6 +54,9 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 // Cart Service
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+builder.Services.AddScoped<ICartdetailService, CartdetailService>();
+builder.Services.AddScoped<ICartdetailRepository, CartdetailRepository>();
 
 // PaymentMethod Service
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();

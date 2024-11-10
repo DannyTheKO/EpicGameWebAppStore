@@ -5,117 +5,93 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
+[Route("[controller]")]
+[ApiController]
 public class CartController : _BaseController
 {
-    private readonly IAccountService _accountService; // Giả sử bạn có dịch vụ này
-    private readonly IAuthenticationServices _authenticationServices;
-    private readonly IAuthorizationServices _authorizationServices;
+	private readonly IAccountService _accountService;
+	private readonly IAuthenticationServices _authenticationServices;
+	private readonly IAuthorizationServices _authorizationServices;
+	private readonly ICartService _cartService;
+	private readonly IPaymentMethodService _paymentMethodService;
 
-    private readonly ICartService _cartService;
-    private readonly IPaymentMethodService _paymentMethodService; // Giả sử bạn có dịch vụ này
+	public CartController(
+		ICartService cartService,
+		IAccountService accountService,
+		IRoleService roleService,
+		IPaymentMethodService paymentMethodService,
+		IAuthenticationServices authenticationServices,
+		IAuthorizationServices authorizationServices)
+		: base(
+			authenticationServices,
+			authorizationServices,
+			accountService,
+			roleService)
+	{
+		_cartService = cartService;
+		_accountService = accountService;
+		_paymentMethodService = paymentMethodService;
+	}
 
-    public CartController(
-        ICartService cartService,
-        IAccountService accountService,
-        IRoleService roleService,
-        IPaymentMethodService paymentMethodService,
-        IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices)
-        : base(
-            authenticationServices,
-            authorizationServices,
-            accountService,
-            roleService)
-    {
-        _cartService = cartService;
-        _accountService = accountService;
-        _paymentMethodService = paymentMethodService;
-    }
+	// GET: api/Cart
+	[HttpGet("GetAllCarts")]
+	public async Task<IActionResult> GetAllCarts()
+	{
+		var carts = await _cartService.GetAllCartsAsync();
+		return Ok(carts);
+	}
 
-    public async Task<IActionResult> Index()
-    {
-        var carts = await _cartService.GetAllCartsAsync();
-        return View(carts);
-    }
+	// GET: api/Cart/5
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetCartById(int id)
+	{
+		var cart = await _cartService.GetCartByIdAsync(id);
+		if (cart == null) return NotFound();
+		return Ok(cart);
+	}
 
-    [HttpGet]
-    public async Task<IActionResult> CreatePage()
-    {
-        await PopulateAccountAndPaymentMethodDropDowns();
-        return View("Create");
-    }
+	// POST: api/Cart
+	[HttpPost]
+	public async Task<IActionResult> CreateCart([FromBody] Cart cart)
+	{
+		if (ModelState.IsValid)
+		{
+			await _cartService.AddCartAsync(cart);
+			return CreatedAtAction(nameof(GetCartById), new { id = cart.CartId }, cart);
+		}
 
-    [HttpPost]
-    //[ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Cart cart)
-    {
-        if (ModelState.IsValid)
-        {
-            await _cartService.AddCartAsync(cart);
-            TempData["Message"] = "Cart created successfully.";
-            return View("Index");
-        }
+		return BadRequest(ModelState);
+	}
 
-        ModelState.AddModelError(string.Empty, "Error");
-        await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
-    }
+	// PUT: api/Cart/5
+	[HttpPut("{id}")]
+	public async Task<IActionResult> UpdateCart(int id, [FromBody] Cart cart)
+	{
+		if (id != cart.CartId) return BadRequest();
 
-    public async Task<IActionResult> Edit(int id)
-    {
-        var cart = await _cartService.GetCartByIdAsync(id);
-        if (cart == null) return NotFound();
-        await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
-    }
+		if (ModelState.IsValid)
+		{
+			await _cartService.UpdateCartAsync(cart);
+			return NoContent();
+		}
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Cart cart)
-    {
-        if (id != cart.CartId) return BadRequest();
+		return BadRequest(ModelState);
+	}
 
-        if (ModelState.IsValid)
-        {
-            await _cartService.UpdateCartAsync(cart);
-            TempData["Message"] = "Cart updated successfully.";
-            return RedirectToAction(nameof(Index));
-        }
+	// DELETE: api/Cart/5
+	[HttpDelete("{id}")]
+	public async Task<IActionResult> DeleteCart(int id)
+	{
+		await _cartService.DeleteCartAsync(id);
+		return NoContent();
+	}
 
-        await PopulateAccountAndPaymentMethodDropDowns();
-        return View(cart);
-    }
-
-    public async Task<IActionResult> Delete(int id)
-    {
-        var cart = await _cartService.GetCartByIdAsync(id);
-        if (cart == null) return NotFound();
-        return View(cart);
-    }
-
-    [HttpPost]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        await _cartService.DeleteCartAsync(id);
-        TempData["Message"] = "Cart deleted successfully.";
-        return RedirectToAction(nameof(Index));
-    }
-
-    public async Task<IActionResult> GetByAccount(int accountId)
-    {
-        var carts = await _cartService.GetCartsByAccountIdAsync(accountId);
-        if (carts == null) return NotFound();
-        return View("Index", carts);
-    }
-
-    private async Task PopulateAccountAndPaymentMethodDropDowns()
-    {
-        var accounts = await _accountService.GetAllAccounts();
-        ViewBag.AccountId = new SelectList(accounts, "AccountId", "Username");
-
-        var paymentMethods = await _paymentMethodService.GetAllPaymentMethodsAsync();
-        ViewBag.PaymentMethodId = new SelectList(paymentMethods, "PaymentMethodId", "Name");
-    }
+	// GET: api/Cart/Account/5
+	[HttpGet("Account/{accountId}")]
+	public async Task<IActionResult> GetCartsByAccountId(int accountId)
+	{
+		var carts = await _cartService.GetCartsByAccountIdAsync(accountId);
+		if (carts == null) return NotFound();
+		return Ok(carts);
+	}
 }
