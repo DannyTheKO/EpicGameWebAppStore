@@ -59,16 +59,14 @@ public class CartController : _BaseController
 			await _cartService.AddCartAsync(cart);
 			return CreatedAtAction(nameof(GetCartById), new { id = cart.CartId }, cart);
 		}
-        }
 		return BadRequest(ModelState);
 	}
-    }
 	// PUT: api/Cart/5
 	[HttpPut("{id}")]
 	public async Task<IActionResult> UpdateCart(int id, [FromBody] Cart cart)
 	{
 		if (id != cart.CartId) return BadRequest();
-        if (id != cart.CartId) return BadRequest();
+		if (id != cart.CartId) return BadRequest();
 
 		if (ModelState.IsValid)
 		{
@@ -77,7 +75,7 @@ public class CartController : _BaseController
 		}
 		return BadRequest(ModelState);
 	}
-    }
+
 	// DELETE: api/Cart/5
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteCart(int id)
@@ -85,7 +83,8 @@ public class CartController : _BaseController
 		await _cartService.DeleteCartAsync(id);
 		return NoContent();
 	}
-        return RedirectToAction(nameof(Index));
+
+
 	// GET: api/Cart/Account/5
 	[HttpGet("Account/{accountId}")]
 	public async Task<IActionResult> GetCartsByAccountId(int accountId)
@@ -94,6 +93,4 @@ public class CartController : _BaseController
 		if (carts == null) return NotFound();
 		return Ok(carts);
 	}
-}
-    }
 }

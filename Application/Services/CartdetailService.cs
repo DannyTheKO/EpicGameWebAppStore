@@ -86,8 +86,6 @@ public class CartdetailService : ICartdetailService
     }
 
 
-	#endregion
-
 	#region Service
 
 	// Calculate single session detail cart
