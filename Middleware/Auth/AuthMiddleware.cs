@@ -49,8 +49,7 @@ public class AuthMiddleware
                 context.Response.Headers.Add("X-User-Name", string.Empty);
                 context.Response.Headers.Add("X-User-Permission", string.Empty);
             }
-
-            await _next(context);
+                await _next(context);
         }
     }
 }

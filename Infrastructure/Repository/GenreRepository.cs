@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Infrastructure.Repository;
+
+    public class  GenreRepository 
+    {
+    }
+=======
 ﻿using DataAccess.EpicGame;
 using Domain.Entities;
 using Domain.Repository;
@@ -49,3 +61,4 @@ public class GenreRepository : IGenreRepository
         }
     }
 }
+>>>>>>> Danny's_Branch
