@@ -17,12 +17,17 @@ const LoginForm = () => {
         event.preventDefault();
     
         const payload = {
-            Username: username,  // Kiểm tra tên biến phải giống với mô hình backend
-            Password: password   // Kiểm tra tên biến phải giống với mô hình backend
+            Username: "john_doe",  // Kiểm tra tên biến phải giống với mô hình backend
+            Password: "password123"   // Kiểm tra tên biến phải giống với mô hình backend
         };
     
         try {
-            const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload);
+            const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload,{
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
             console.log(response.data);  // Kiểm tra phản hồi từ server
         } catch (error) {
             console.error("Server responded with error: ", error.response.data);  // Xử lý lỗi nếu có

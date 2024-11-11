@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Authorize(Roles = "Admin, Moderator, Editor")]
+//[Authorize(Roles = "Admin, Moderator, Editor")]
+[Route("[controller]")]
 public class GameController : _BaseController
 {
     private readonly IAuthenticationServices _authenticationServices;
