@@ -1,10 +1,14 @@
+using System.Text;
 using Application.Interfaces;
 using Application.Services;
 using DataAccess.EpicGame;
 using Domain.Repository;
 using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Middleware.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,15 +29,30 @@ builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
 
 // Authentication setup
-builder.Services.AddAuthentication("CookieAuth")
-    .AddCookie("CookieAuth", config =>
-    {
-        config.Cookie.Name = "UserLoginCookie";
-        config.LoginPath = "/Auth/LoginPage";
-        config.AccessDeniedPath = "/Auth/AccessDenied";
-        config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        config.SlidingExpiration = true;
-    });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer = builder.Configuration["Jwt:Issuer"],
+			ValidAudience = builder.Configuration["Jwt:Audience"],
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+		};
+	});
+
+//builder.Services.AddCors(options =>
+//{
+//	options.AddPolicy("ReactPolicy",
+//		builder => builder
+//			.WithOrigins("http://localhost:3000")
+//			.AllowCredentials()
+//			.AllowAnyMethod()
+//			.AllowAnyHeader());
+//});
 
 // Account
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -104,7 +123,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseMiddleware<AuthMiddleware>();
+app.UseMiddleware<AuthHeader>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,15 +1,22 @@
-﻿using Application.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Services;
 
 public class AuthenticationServices : IAuthenticationServices
 {
     private readonly IAccountService _accountService;
+    private readonly IConfiguration _configuration;
 
-    public AuthenticationServices(IAccountService accountService)
+    public AuthenticationServices(IAccountService accountService, IConfiguration configuration)
     {
         _accountService = accountService;
+        _configuration = configuration;
     }
 
     // ACTION: Validate User Credential
@@ -50,20 +57,38 @@ public class AuthenticationServices : IAuthenticationServices
     }
 
     // ACTION: User Login
-    public async Task<(bool LoginState, string ResultMessage, int AccountId)> LoginAccount(Account account)
+    public async Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account)
     {
-        // Check if the username exists
-        var existingAccount = await _accountService.GetAccountByUsername(account.Username);
+	    var existingAccount = await _accountService.GetAccountByUsername(account.Username);
+	    if (existingAccount == null) return (false, null, "Username does not exist");
+	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password");
+    
+	    // Generate JWT token instead of cookie authentication
+	    var token = GenerateJwtToken(existingAccount);
+	    return (true, token, "Successfully login");
+    }
 
-        if (existingAccount == null) return (false, "Username does not exist", 0);
+    public string GenerateJwtToken(Account account)
+    {
+	    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+	    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        // Validate password
-        if (existingAccount.Password != account.Password) return (false, "Invalid password", 0);
+	    var claims = new[]
+	    {
+		    new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+		    new Claim(ClaimTypes.Name, account.Username),
+		    new Claim(ClaimTypes.Role, account.RoleId.ToString()),
+		    new Claim(ClaimTypes.Email, account.Email),
+	    };
 
-        // Generate token
-        var result = "Successfully login";
+	    var token = new JwtSecurityToken(
+		    issuer: _configuration["Jwt:Issuer"],
+		    audience: _configuration["Jwt:Audience"],
+		    claims: claims,
+		    expires: DateTime.UtcNow.AddMinutes(30),
+		    signingCredentials: credentials
+	    );
 
-        // Return success with token and AccountId
-        return (true, result, existingAccount.AccountId);
+	    return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
