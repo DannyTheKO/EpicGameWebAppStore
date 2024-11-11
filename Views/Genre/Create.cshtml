@@ -1,0 +1,19 @@
+@model Domain.Entities.Genre
+
+<h1>Create Genre</h1>
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+<form asp-action="Create" class="container mt-4">
+	<div class="form-group">
+		<label asp-for="Name"></label>
+		<input asp-for="Name" class="form-control"/>
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div>
+		<input type="submit" value="Create" class="btn btn-primary"/>
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
+</form>

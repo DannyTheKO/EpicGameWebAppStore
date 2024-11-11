@@ -1,0 +1,40 @@
+@model IEnumerable<Domain.Entities.Cartdetail>
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+<h1 class="mt-4">Cart Detail List</h1>
+<p>
+	<a asp-action="Create" class="btn btn-primary">Create New Cart Detail</a>
+</p>
+<table class="table">
+	<thead>
+	<tr>
+		<th>Cart Detail ID</th>
+		<th>Cart ID</th>
+		<th>Game</th>
+		<th>Quantity</th>
+		<th>Price</th>
+		<th>Discount</th>
+		<th>Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@item.CartDetailId</td>
+			<td>@item.CartId</td>
+			<td>@item.Game.Title</td>
+			<td>@item.Quantity</td>
+			<td>@item.Price</td>
+			<td>@item.Discount</td>
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.CartDetailId" class="btn btn-warning">Edit</a> |
+				<a asp-action="Delete" asp-route-id="@item.CartDetailId" class="btn btn-danger">Delete</a>
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>

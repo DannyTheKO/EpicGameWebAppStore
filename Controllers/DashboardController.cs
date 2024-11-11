@@ -1,37 +1,70 @@
-﻿using Application.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
-using Domain.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Authorize(Roles = "Admin, Moderator")]
-[Route("Admin")]
+[Authorize(Roles = "Admin, Moderator, Editor")]
+[Route("Dashboard")]
 public class DashboardController : _BaseController
 {
-	private readonly IAuthenticationServices _authenticationServices;
-	private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAuthenticationServices _authenticationServices;
 
-	public DashboardController(
-		IAuthorizationServices authorizationServices, IAuthenticationServices authenticationServices, IAccountRepository accountRepository) 
-		: base(authenticationServices, authorizationServices)
-	{
-		_authorizationServices = authorizationServices;
-		_authenticationServices = authenticationServices;
-	}
+    private readonly IAccountService _accountService;
+    private readonly IRoleService _roleService;
+    private readonly IGameService _gameService;
+    private readonly ICartService _cartService;
+    
+    public DashboardController(
+        IAuthorizationServices authorizationServices,
+        IAuthenticationServices authenticationServices,
+        IAccountService accountService,
+        IRoleService roleService,
+        IGameService gameService,
+        ICartService cartService)
+        : base(authenticationServices, authorizationServices, accountService, roleService)
+    {
+        _authorizationServices = authorizationServices;
+        _authenticationServices = authenticationServices;
 
-	[HttpGet("Index")]
-	public async Task<IActionResult> Index()
-	{
-		var account = await _authenticationServices.GetAllAccounts();
-		return View(account);
-	}
+        _accountService = accountService;
+        _roleService = roleService;
+
+        _gameService = gameService;
+        _cartService = cartService;
+    }
+
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index()
+    {
+        var getAllAccount = await _accountService.GetAllAccounts();
+        var getAllGame= await _gameService.GetAllGame();
+
+        // select only Admin account
+        var onlyAdminAccount = getAllAccount.Where(a => a.Role.Name == "Admin");
+        var onlyGuestAccount = getAllAccount.Where(a => a.Role.Name == "Guest");
+
+        // select only Game from EA
+        var gameFromEA = getAllGame.Where(g => g.Publisher.Name == "Electronic Arts");
+
+
+        //return View(account);
+        return Ok(new
+        {
+	        adminAccount = onlyAdminAccount,
+	        guestAccount = onlyGuestAccount,
+            EAGame = gameFromEA,
+        });
+    }
 
     private async Task PopulateViewBags()
     {
-        var roles = await _authorizationServices.GetAllRoles();
+        var roles = await _roleService.GetAllRoles();
         ViewBag.RoleId = new SelectList(roles, "RoleId", "Name");
 
         var isActive = new List<SelectListItem>
@@ -43,6 +76,12 @@ public class DashboardController : _BaseController
         ViewBag.IsActive = new SelectList(isActive, "Value", "Text");
     }
 
+    #region Account
+
+    
+
+    #endregion
+
     [HttpGet("CreatePage")]
     public async Task<IActionResult> CreatePage()
     {
@@ -51,11 +90,12 @@ public class DashboardController : _BaseController
     }
 
     [HttpPost("CreateConfirm")]
-    public async Task<IActionResult> CreateConfirm([Bind("RoleId", "Username", "Password", "Email", "IsActive")] Account account)
+    public async Task<IActionResult> CreateConfirm(
+        [Bind("RoleId", "Username", "Password", "Email", "IsActive")] Account account)
     {
         // Check if both Username and Email already exist
-        var flagUsername = await _authenticationServices.GetAccountByUsername(account.Username ?? string.Empty);
-        var flagEmail = await _authenticationServices.GetAccountByEmail(account.Email ?? string.Empty);
+        var flagUsername = await _accountService.GetAccountByUsername(account.Username ?? string.Empty);
+        var flagEmail = await _accountService.GetAccountByEmail(account.Email ?? string.Empty);
         if (flagUsername != null && flagEmail != null)
         {
             ModelState.AddModelError(string.Empty, "Username and Email already exist");
@@ -77,7 +117,7 @@ public class DashboardController : _BaseController
             return View("Create");
         }
 
-        await _authenticationServices.AddAccount(account);
+        await _accountService.AddAccount(account);
         return RedirectToAction("Index", "Dashboard");
     }
 }

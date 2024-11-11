@@ -7,14 +7,25 @@ namespace Infrastructure.Repository;
 
 public class RoleRepository : IRoleRepository
 {
-	private readonly EpicGameDbContext _context;
+    private readonly EpicGameDbContext _context;
 
-	public RoleRepository(EpicGameDbContext context)
-	{
-		_context = context;
-	}
+    public RoleRepository(EpicGameDbContext context)
+    {
+        _context = context;
+    }
+
+    #region == Select Operation ==
+
+    // SELECT: Get Role by ID
+    public async Task<Role> GetById(int id)
+    {
+        return await _context.Roles.FindAsync(id);
+    }
+
+    #endregion
 
     #region == Basic CRUB ==
+
     // ACTION: Add Role
     public async Task<Role> Add(Role role)
     {
@@ -46,14 +57,6 @@ public class RoleRepository : IRoleRepository
             await _context.SaveChangesAsync();
         }
     }
-    #endregion
 
-	#region == Select Operation ==
-	
-	// SELECT: Get Role by ID
-	public async Task<Role> GetById(int id)
-	{
-		return await _context.Roles.FindAsync(id);
-	}
     #endregion
 }

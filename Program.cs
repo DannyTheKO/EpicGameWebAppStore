@@ -1,9 +1,8 @@
 using Application.Interfaces;
 using Application.Services;
-using Infrastructure.Repository;
-using Domain.Repository;
 using DataAccess.EpicGame;
-
+using Domain.Repository;
+using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -14,27 +13,16 @@ builder.Services.AddControllersWithViews();
 // Add connection into Database
 var connectionString = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrEmpty(connectionString)) // This will check if the Default connection string
-{
     throw new InvalidOperationException("Connection string 'Default' is not found.");
-}
 
 builder.Services.AddDbContext<EpicGameDbContext>(options =>
     options.UseMySQL(connectionString));
 
 
-// == Repository registrations ==
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
 // == Service registrations ==
-
 // Authentication && Authorization
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
-
-// Game
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 // Authentication setup
 builder.Services.AddAuthentication("CookieAuth")
@@ -47,14 +35,41 @@ builder.Services.AddAuthentication("CookieAuth")
         config.SlidingExpiration = true;
     });
 
+// Account
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+// Role
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+// Game
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 // Account Service
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-// Discount Service
+// Cart Service
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+builder.Services.AddScoped<ICartdetailService, CartdetailService>();
+builder.Services.AddScoped<ICartdetailRepository, CartdetailRepository>();
+
+// PaymentMethod Service
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 
 // Genre Service
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 // Publisher Service
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+
 
 // == Testing API ==
 builder.Services.AddEndpointsApiExplorer();
@@ -93,7 +108,7 @@ app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-	"default",
-	"{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

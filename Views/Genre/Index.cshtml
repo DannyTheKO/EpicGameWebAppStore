@@ -1,0 +1,33 @@
+@model IEnumerable<Domain.Entities.Genre>
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+<h1 class="mt-4">Genre List</h1>
+<p>
+	<a asp-action="Create" class="btn btn-primary">Create New Genre</a>
+</p>
+<table class="table">
+	<thead>
+	<tr>
+		<th>Genre ID</th>
+		<th>Name</th>
+		<th>Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@item.GenreId</td>
+			<td>@item.Name</td>
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.GenreId" class="btn btn-warning">Edit</a> |
+				<a asp-action="Details" asp-route-id="@item.GenreId" class="btn btn-info">Details</a> |
+				<a asp-action="Delete" asp-route-id="@item.GenreId" class="btn btn-danger">Delete</a>
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>

@@ -1,0 +1,40 @@
+@model Domain.Entities.Discount
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+<h1>Edit Discount</h1>
+
+<form asp-action="Edit" class="container mt-4">
+	<input type="hidden" asp-for="DiscountId"/>
+	<div class="form-group">
+		<label asp-for="GameId">Game</label>
+		<select asp-for="GameId" class="form-control" asp-items="ViewBag.GameId"></select>
+		<span asp-validation-for="GameId" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Percent"></label>
+		<input asp-for="Percent" class="form-control"/>
+		<span asp-validation-for="Percent" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Code"></label>
+		<input asp-for="Code" class="form-control"/>
+		<span asp-validation-for="Code" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="StartOn"></label>
+		<input asp-for="StartOn" class="form-control" type="date"/>
+		<span asp-validation-for="StartOn" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="EndOn"></label>
+		<input asp-for="EndOn" class="form-control" type="date"/>
+		<span asp-validation-for="EndOn" class="text-danger"></span>
+	</div>
+	<div>
+		<input type="submit" value="Save" class="btn btn-primary"/>
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
+</form>
