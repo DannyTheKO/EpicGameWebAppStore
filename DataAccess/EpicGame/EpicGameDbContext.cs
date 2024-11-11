@@ -54,11 +54,7 @@ public partial class EpicGameDbContext : DbContext
 
             entity.ToTable("account");
 
-<<<<<<< HEAD
-			entity.HasIndex(e => e.Role, "FK_Account_Role_idx");
-=======
             entity.HasIndex(e => e.RoleId, "FK_Account_Role_idx");
->>>>>>> Danny's_Branch
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
