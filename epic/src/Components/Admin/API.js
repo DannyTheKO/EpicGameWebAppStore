@@ -1,7 +1,7 @@
   import axios from 'axios';
 
   const apiClient = axios.create({
-    baseURL: 'http://localhost:5084/api/Game', // Địa chỉ URL của ASP.NET Core API
+    baseURL: 'http://localhost:5084/Game', // Địa chỉ URL của ASP.NET Core API
     headers: {
       'Content-Type': 'application/json',
     },
@@ -50,7 +50,7 @@ export const GetRole = () => {
 
   export const GetAllgame = async () => {
     try {
-      const response = await apiClient.get('/'); // Đường dẫn chính xác đến endpoint
+      const response = await apiClient.get('/GetAll'); // Đường dẫn chính xác đến endpoint
       console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
       return response.data; // Trả về danh sách sản phẩm
     } catch (error) {
