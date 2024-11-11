@@ -2,6 +2,7 @@
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 // Domain
@@ -134,43 +135,10 @@ public class AuthController : _BaseController
     // POST: Auth/LoginConfirm
     [HttpPost("LoginConfirm")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
+    public async Task<IActionResult> LoginConfirm(string username, string password)
     {
-        // Validate if user input is valid
-        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-        {
-            return BadRequest(new
-            {
-                loginState = false,
-                errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-            });
-            
-            // return View("LoginPage", loginViewModel);
-        }
+            Console.WriteLine(username);
+        return Ok();
 
-        var account = new Account
-        {
-            Username = loginViewModel.Username,
-            Password = loginViewModel.Password
-        };
-
-        var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
-
-        // If user fail to validate "success" return false
-        if (!loginState) // Return false
-        {
-            return BadRequest(
-                new { loginStateFlag = loginState, message = resultMessage }
-            );
-        }
-
-        return Ok(new
-        {
-	        loginStateFlag = loginState,
-	        accountToken = token,
-	        message = resultMessage
-        });
     }
 }
