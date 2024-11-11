@@ -29,11 +29,23 @@ builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", config =>
     {
         config.Cookie.Name = "UserLoginCookie";
+        config.Cookie.SameSite = SameSiteMode.None;
+        config.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         config.LoginPath = "/Auth/LoginPage";
         config.AccessDeniedPath = "/Auth/AccessDenied";
         config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         config.SlidingExpiration = true;
     });
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("ReactPolicy",
+		builder => builder
+			.WithOrigins("http://localhost:3000")
+			.AllowCredentials()
+			.AllowAnyMethod()
+			.AllowAnyHeader());
+});
 
 // Account
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
