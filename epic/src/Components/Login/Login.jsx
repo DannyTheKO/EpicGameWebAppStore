@@ -15,34 +15,21 @@ const LoginForm = () => {
 
     const handleSignIn = async (event) => {
         event.preventDefault();
-
-        if (!username) {
-            setErrorMessage("Username không được để trống");
-        } else if (!password) {
-            setErrorMessage("Password không được để trống");
-        } else if (password.length < 6) {
-            setErrorMessage("Password phải có ít nhất 6 ký tự");
-        } else {
-            setErrorMessage(""); 
-            
-            try {
-                console.log(username + password)
-                const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', {
-                    Username :username,
-                    Password :password,
-                });
-                
-                const token = response.data.Token;
-                localStorage.setItem('token', token); 
-                console.log("Đăng nhập thành công");
-                alert("Đăng nhập thành công!");
-            } catch (error) {
-                setErrorMessage("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-                console.error(error);
-            }
+    
+        const payload = {
+            Username: username,  // Kiểm tra tên biến phải giống với mô hình backend
+            Password: password   // Kiểm tra tên biến phải giống với mô hình backend
+        };
+    
+        try {
+            const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload);
+            console.log(response.data);  // Kiểm tra phản hồi từ server
+        } catch (error) {
+            console.error("Server responded with error: ", error.response.data);  // Xử lý lỗi nếu có
         }
     };
-
+    
+    
     return (
         <div className="wrapper-login">
             <form onSubmit={handleSignIn}>
