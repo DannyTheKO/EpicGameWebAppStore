@@ -26,6 +26,7 @@ const LoginForm = () => {
             setErrorMessage(""); 
             
             try {
+                console.log(username + password)
                 const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', {
                     Username :username,
                     Password :password,
