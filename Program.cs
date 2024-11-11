@@ -44,15 +44,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
-builder.Services.AddCors(options =>
-{
-	options.AddPolicy("ReactPolicy",
-		builder => builder
-			.WithOrigins("http://localhost:3000")
-			.AllowCredentials()
-			.AllowAnyMethod()
-			.AllowAnyHeader());
-});
+//builder.Services.AddCors(options =>
+//{
+//	options.AddPolicy("ReactPolicy",
+//		builder => builder
+//			.WithOrigins("http://localhost:3000")
+//			.AllowCredentials()
+//			.AllowAnyMethod()
+//			.AllowAnyHeader());
+//});
 
 // Account
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
