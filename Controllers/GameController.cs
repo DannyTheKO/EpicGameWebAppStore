@@ -9,6 +9,7 @@ namespace EpicGameWebAppStore.Controllers;
 
 //[Authorize(Roles = "Admin, Moderator, Editor")]
 [Route("[controller]")]
+[ApiController]
 public class GameController : _BaseController
 {
     private readonly IAuthenticationServices _authenticationServices;
@@ -42,81 +43,78 @@ public class GameController : _BaseController
         return Ok(games);
     }
 
-    // GET: Game/CreatePage
-    [HttpGet("CreatePage")]
-    public async Task<IActionResult> CreatePage()
-    {
-        // Chờ kết quả từ các phương thức bất đồng bộ
-        ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name");
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name");
-
-        return View("Create");
-    }
-
     // POST: Game/CreateConfirm
-    [HttpPost("CreateConfirm")]
+    [HttpPost("CreateGame")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateConfirm(Game game)
+    public async Task<ActionResult<Game>> CreateGame(Game game)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            await _gameServices.AddGame(game); // Assuming you have an AddGame method
-            return RedirectToAction(nameof(Index));
+            return BadRequest(new
+            {
+                success = false,
+	            message = "Fail to add game"
+            });
         }
 
-        ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name", game.PublisherId);
-        return View("Index");
-    }
-
-    // GET: Game/UpdatePage/{id}
-    [HttpGet("UpdatePage/{id}")]
-    public async Task<IActionResult> UpdatePage(int id)
-    {
-        var game = await _gameServices.GetGameById(id);
-        if (game == null) return NotFound();
-
-        ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name",
-            game.PublisherId);
-        return View("Update");
-    }
-
-    // POST: Game/UpdateConfirm/{id}
-    [HttpPut("UpdateConfirm/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateConfirm(int id, Game game)
-    {
-        if (id != game.GameId) return BadRequest();
-
-        if (ModelState.IsValid)
+        await _gameServices.AddGame(game);
+        return Ok(new
         {
-            await _gameServices.UpdateGame(game); // Assuming you have an UpdateGame method
-            return RedirectToAction(nameof(Index));
-        }
-
-        ViewBag.GenreId = new SelectList(await _genreService.GetAllGenresAsync(), "GenreId", "Name", game.GenreId);
-        ViewBag.PublisherId = new SelectList(await _publisherService.GetAllPublishersAsync(), "PublisherId", "Name", game.PublisherId);
-        return View("Index");
+	        success = true,
+	        message = "Successfully to add game"
+        });
     }
 
-    // GET: Game/DeletePage/{id}
-    [HttpGet("DeletePage/{id}")]
-    public async Task<IActionResult> DeletePage(int id)
+    // PUT: Game/UpdateConfirm/{id}
+    [HttpPut("UpdateGame/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult<Game>> UpdateGame(Game game, int id)
     {
-        var game = await _gameServices.GetGameById(id); // Assuming this method exists
-        if (game == null) return NotFound();
+        // Check if that game ID user was looking for is available
+        if (id != game.GameId) 
+	        return BadRequest(new
+        {
+            success = false,
+            message = "ID game don't match with the database or the game is updated"
+        });
 
-        return View("Index");
+        // Check if the requirement is valid
+        if (!ModelState.IsValid)
+	        return BadRequest(new
+	        {
+		        success = false,
+		        message = "Missing Input Requirement"
+	        });
+
+        await _gameServices.AddGame(game);
+        return Ok(new
+        {
+	        success = true,
+	        message = "Add Game Success"
+        });
     }
 
-    // POST: Game/DeleteConfirm/{id}
+    // DELETE: Game/DeleteConfirm/{id}
     [HttpDelete("DeleteConfirm/{id}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<ActionResult> DeleteConfirmed(int id)
     {
-        await _gameServices.DeleteGame(id); // Assuming you have a DeleteGame method
-        return RedirectToAction(nameof(Index));
+	    var existingGame = await _gameServices.GetGameById(id);
+	    if (existingGame == null)
+	    {
+		    return BadRequest(new
+		    {
+			    success = false,
+			    message = "ID game don't match with the database or the game is deleted"
+		    });
+	    }
+
+	    await _gameServices.DeleteGame(id);
+	    return Ok(new
+	    {
+		    success = false,
+		    message = "Delete Game Success"
+	    });
     }
 }
 

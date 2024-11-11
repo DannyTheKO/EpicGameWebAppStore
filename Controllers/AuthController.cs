@@ -40,7 +40,7 @@ public class AuthController : _BaseController
     }
 
     [HttpGet("Logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<ActionResult> Logout()
     {
 	    var checkLoginAccount = GetCurrentLoginAccountId();
 	    if (checkLoginAccount == -1) // NOT FOUND
@@ -52,18 +52,21 @@ public class AuthController : _BaseController
 		    });
 	    }
 
-        await HttpContext.SignOutAsync("CookieAuth");
+	    // Sign out of cookie authentication
+	    await HttpContext.SignOutAsync("CookieAuth");
 
-        return Ok(new
-        {
-	        loginStateFlag = false,
-	        message = "Successfully Logout"
-        });
+	    // Return instruction to clear token
+	    return Ok(new
+	    {
+		    loginStateFlag = false,
+		    message = "Successfully Logout",
+		    action = "CLEAR_TOKEN" // Frontend should handle this to remove token from storage
+	    });
     }
 
     [HttpGet("AccessDenied")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public async Task<IActionResult> AccessDenied()
+    public ActionResult AccessDenied()
     {
 	    return StatusCode(403, new
 	    {
@@ -71,17 +74,10 @@ public class AuthController : _BaseController
 		    message = "Access Denied: You don't have permission to access this resource"
 	    });
     }
-
-    // GET: Auth/Register
-    [HttpGet("RegisterPage")]
-    public IActionResult RegisterPage()
-    {
-        return View();
-    }
 		
     // POST: Auth/RegisterConfirm
     [HttpPost("RegisterConfirm")]
-    public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
+    public async Task<ActionResult<RegisterViewModel>> RegisterConfirm(RegisterViewModel registerViewModel)
     {
 	    if (!ModelState.IsValid)
 	    {
@@ -92,9 +88,7 @@ public class AuthController : _BaseController
 	                .SelectMany(v => v.Errors)
 	                .Select(e => e.ErrorMessage)
 		    });
-		    //return View("RegisterPage", registerViewModel);
 	    }
-
 
         var account = new Account
         {
@@ -112,9 +106,6 @@ public class AuthController : _BaseController
                 registerStageFlag = registerStage,
                 message = resultMessage
 	        });
-
-	        //ModelState.AddModelError(string.Empty, resultMessage);
-	        //return View("RegisterPage", registerViewModel);
         }
 
         return Ok( new
@@ -124,21 +115,46 @@ public class AuthController : _BaseController
         });
     }
 
-    // GET: Auth/LoginPage
-    [HttpGet("LoginPage")]
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult LoginPage()
-    {
-        return View();
-    }
-
     // POST: Auth/LoginConfirm
     [HttpPost("LoginConfirm")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public async Task<IActionResult> LoginConfirm(string username, string password)
+    public async Task<ActionResult<LoginViewModel>> LoginConfirm(LoginViewModel loginViewModel)
     {
-            Console.WriteLine(username);
-        return Ok();
+	    // Validate if user input is valid
+	    if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+	    {
+		    return BadRequest(new
+		    {
+			    loginState = false,
+			    errors = ModelState.Values
+				    .SelectMany(v => v.Errors)
+				    .Select(e => e.ErrorMessage)
+		    });
+            
+		    // return View("LoginPage", loginViewModel);
+	    }
 
+	    var account = new Account
+	    {
+		    Username = loginViewModel.Username,
+		    Password = loginViewModel.Password
+	    };
+
+	    var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
+
+	    // If user fail to validate "success" return false
+	    if (!loginState) // Return false
+	    {
+		    return BadRequest(
+			    new { loginStateFlag = loginState, message = resultMessage }
+		    );
+	    }
+
+	    return Ok(new
+	    {
+		    loginStateFlag = loginState,
+		    accountToken = token,
+		    message = resultMessage
+	    });
     }
 }
