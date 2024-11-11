@@ -13,5 +13,7 @@ public interface IAuthenticationServices
     Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword);
 
     // ACTION: Login Account
-    Task<(bool LoginState, string ResultMessage, int AccountId)> LoginAccount(Account account);
+    Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account);
+
+    public string GenerateJwtToken(Account account);
 }

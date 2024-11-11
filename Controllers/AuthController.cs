@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Auth")]
+[Route("[controller]")]
+//[ApiController]
 public class AuthController : _BaseController
 {
     private readonly IAuthenticationServices _authenticationServices;
@@ -155,29 +156,21 @@ public class AuthController : _BaseController
             Password = loginViewModel.Password
         };
 
-        var (loginState, resultMessage, accountId) = await _authenticationServices.LoginAccount(account);
+        var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
 
         // If user fail to validate "success" return false
         if (!loginState) // Return false
         {
-            //ModelState.AddModelError(string.Empty, result);
-            //return View("LoginPage", loginViewModel);
-
             return BadRequest(
                 new { loginStateFlag = loginState, message = resultMessage }
             );
         }
 
-        var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
-        await HttpContext.SignInAsync("CookieAuth", await principal);
-
-        //return RedirectToAction("Index", "Home");
         return Ok(new
         {
-            loginStateBool = loginState,
-            message = resultMessage,
-            accountDetail = await _accountService.GetAccountById(accountId),
-            role = await _roleService.GetRoleByAccountId(accountId)
+	        loginStateFlag = loginState,
+	        accountToken = token,
+	        message = resultMessage
         });
     }
 }
