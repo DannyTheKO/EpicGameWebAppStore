@@ -10,7 +10,7 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Authorize(Roles = "Admin, Moderator, Editor")]
 [Route("Dashboard")]
-public class DashboardController : _BaseController
+public class DashboardController : Controller
 {
     private readonly IAuthorizationServices _authorizationServices;
     private readonly IAuthenticationServices _authenticationServices;
@@ -27,7 +27,6 @@ public class DashboardController : _BaseController
         IRoleService roleService,
         IGameService gameService,
         ICartService cartService)
-        : base(authenticationServices, authorizationServices, accountService, roleService)
     {
         _authorizationServices = authorizationServices;
         _authenticationServices = authenticationServices;

@@ -17,7 +17,7 @@ public class CartRepository : ICartRepository
     public async Task<IEnumerable<Cart>> GetAll()
     {
         return await _context.Carts
-            .Include(c => c.Account).ThenInclude(a => a.Role)
+            .Include(c => c.Account)
             .Include(c => c.PaymentMethod)
             .Include(c => c.Cartdetails).ThenInclude(cd => cd.Game)
             .ToListAsync();
@@ -25,10 +25,11 @@ public class CartRepository : ICartRepository
 
     public async Task<Cart> GetById(int id)
     {
-        return await _context.Carts
-            .Include(c => c.Account)
-            .Include(c => c.PaymentMethod)
-            .FirstOrDefaultAsync(c => c.CartId == id);
+	    return await _context.Carts
+		    .Include(c => c.Account)
+		    .Include(c => c.PaymentMethod)
+		    .Include(c => c.Cartdetails).ThenInclude(cd => cd.Game)
+		    .FirstOrDefaultAsync(c => c.CartId == id);
     }
 
     public async Task Add(Cart cart)

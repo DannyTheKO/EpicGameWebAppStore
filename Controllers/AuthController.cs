@@ -15,7 +15,7 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 //[ApiController]
-public class AuthController : _BaseController
+public class AuthController : Controller
 {
     private readonly IAuthenticationServices _authenticationServices;
     private readonly IAuthorizationServices _authorizationServices;
@@ -27,11 +27,6 @@ public class AuthController : _BaseController
         IAuthenticationServices authenticationServices,
         IAccountService accountService,
         IRoleService roleService)
-        : base(
-            authenticationServices,
-            authorizationServices,
-            accountService,
-            roleService)
     {
         _authenticationServices = authenticationServices;
         _authorizationServices = authorizationServices;
@@ -42,7 +37,7 @@ public class AuthController : _BaseController
     [HttpGet("Logout")]
     public async Task<ActionResult> Logout()
     {
-	    var checkLoginAccount = GetCurrentLoginAccountId();
+	    var checkLoginAccount = _accountService.GetLoginAccountId(User);
 	    if (checkLoginAccount == -1) // NOT FOUND
 	    {
 		    return BadRequest(new
@@ -130,8 +125,6 @@ public class AuthController : _BaseController
 				    .SelectMany(v => v.Errors)
 				    .Select(e => e.ErrorMessage)
 		    });
-            
-		    // return View("LoginPage", loginViewModel);
 	    }
 
 	    var account = new Account
@@ -146,7 +139,11 @@ public class AuthController : _BaseController
 	    if (!loginState) // Return false
 	    {
 		    return BadRequest(
-			    new { loginStateFlag = loginState, message = resultMessage }
+			    new { 
+				    loginStateFlag = loginState, 
+				    accountToken = "NULL",
+				    message = resultMessage,
+			    }
 		    );
 	    }
 

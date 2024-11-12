@@ -60,7 +60,9 @@ public class AuthenticationServices : IAuthenticationServices
     public async Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account)
     {
 	    var existingAccount = await _accountService.GetAccountByUsername(account.Username);
+        // Check Username exist in Account database
 	    if (existingAccount == null) return (false, null, "Username does not exist");
+	    // If Username exists, check if the password is correct
 	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password");
     
 	    // Generate JWT token instead of cookie authentication

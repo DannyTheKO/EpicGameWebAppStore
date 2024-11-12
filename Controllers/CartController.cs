@@ -7,26 +7,16 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CartController : _BaseController
+public class CartController : Controller
 {
 	private readonly IAccountService _accountService;
-	private readonly IAuthenticationServices _authenticationServices;
-	private readonly IAuthorizationServices _authorizationServices;
 	private readonly ICartService _cartService;
 	private readonly IPaymentMethodService _paymentMethodService;
 
 	public CartController(
 		ICartService cartService,
 		IAccountService accountService,
-		IRoleService roleService,
-		IPaymentMethodService paymentMethodService,
-		IAuthenticationServices authenticationServices,
-		IAuthorizationServices authorizationServices)
-		: base(
-			authenticationServices,
-			authorizationServices,
-			accountService,
-			roleService)
+		IPaymentMethodService paymentMethodService)
 	{
 		_cartService = cartService;
 		_accountService = accountService;
@@ -34,36 +24,64 @@ public class CartController : _BaseController
 	}
 
 	// GET: api/Cart
-	[HttpGet("GetAllCarts")]
-	public async Task<IActionResult> GetAllCarts()
+	[HttpGet("GetAll")]
+	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
 		var carts = await _cartService.GetAllCartsAsync();
 		return Ok(carts);
 	}
 
 	// GET: api/Cart/5
-	[HttpGet("{id}")]
-	public async Task<IActionResult> GetCartById(int id)
+	[HttpGet("GetCart/{id}")]
+	public async Task<ActionResult<Cart>> GetCartById(int id)
 	{
 		var cart = await _cartService.GetCartByIdAsync(id);
 		if (cart == null) return NotFound();
 		return Ok(cart);
 	}
 
-	// POST: api/Cart
-	[HttpPost]
-	public async Task<IActionResult> CreateCart([FromBody] Cart cart)
+	// POST: Cart/CreateCart
+	[HttpPost("CreateCart")]
+	public async Task<ActionResult<Cart>> CreateCart(Cart cart)
 	{
-		if (ModelState.IsValid)
+		//bool hasPermission = await _authorizationServices.UserHasPermission(GetCurrentLoginAccountId(), "create");
+
+		//if (!hasPermission)
+		//{
+		//	return StatusCode(403, new { 
+		//		success = false,
+		//		message = "Access Denied: Insufficient permissions to create cart" 
+		//	});
+		//}
+
+		if (!ModelState.IsValid)
 		{
-			await _cartService.AddCartAsync(cart);
-			return CreatedAtAction(nameof(GetCartById), new { id = cart.CartId }, cart);
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
 		}
-		return BadRequest(ModelState);
+
+		await _cartService.AddCartAsync(cart);
+
+		return CreatedAtAction(
+			nameof(GetCartById),
+			new { id = cart.CartId },
+			new
+			{
+				success = true,
+				message = "Cart created successfully",
+				data = cart
+			}
+		);
 	}
-	// PUT: api/Cart/5
-	[HttpPut("{id}")]
-	public async Task<IActionResult> UpdateCart(int id, [FromBody] Cart cart)
+
+	// PUT: Cart/UpdateCart/{id}
+	[HttpPut("UpdateCart/{id}")]
+	public async Task<ActionResult<Cart>> UpdateCart(int id, Cart cart)
 	{
 		if (id != cart.CartId) return BadRequest();
 		if (id != cart.CartId) return BadRequest();
@@ -76,16 +94,15 @@ public class CartController : _BaseController
 		return BadRequest(ModelState);
 	}
 
-	// DELETE: api/Cart/5
-	[HttpDelete("{id}")]
-	public async Task<IActionResult> DeleteCart(int id)
+	// DELETE: Cart/DeleteCart/{id}
+	[HttpDelete("DeleteCart/{id}")]
+	public async Task<ActionResult> DeleteCart(int id)
 	{
 		await _cartService.DeleteCartAsync(id);
 		return NoContent();
 	}
 
-
-	// GET: api/Cart/Account/5
+	// GET: Cart/Account/5
 	[HttpGet("Account/{accountId}")]
 	public async Task<IActionResult> GetCartsByAccountId(int accountId)
 	{

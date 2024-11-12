@@ -24,7 +24,7 @@ public partial class EpicGameDbContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<Accountgame> Accountgames { get; set; }
+    public virtual DbSet<AccountGame> AccountGames { get; set; }
 
     public virtual DbSet<Cart> Carts { get; set; }
 
@@ -67,7 +67,7 @@ public partial class EpicGameDbContext : DbContext
                 .HasConstraintName("FK_Account_Role");
         });
 
-        modelBuilder.Entity<Accountgame>(entity =>
+        modelBuilder.Entity<AccountGame>(entity =>
         {
             entity
                 .HasNoKey()

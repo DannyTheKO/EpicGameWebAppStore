@@ -59,6 +59,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+// AccountGame
+builder.Services.AddScoped<IAccountGameService, AccountGameService>();
+builder.Services.AddScoped<IAccountGameRepository, AccountGameRepository>();
+
 // Role
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();

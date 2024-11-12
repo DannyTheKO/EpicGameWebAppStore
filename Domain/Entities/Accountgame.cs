@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities;
 
-public class Accountgame
+public class AccountGame
 {
     public int AccountId { get; set; }
 

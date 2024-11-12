@@ -10,7 +10,7 @@ namespace EpicGameWebAppStore.Controllers;
 //[Authorize(Roles = "Admin, Moderator, Editor")]
 [Route("[controller]")]
 [ApiController]
-public class GameController : _BaseController
+public class GameController : Controller
 {
     private readonly IAuthenticationServices _authenticationServices;
     private readonly IAuthorizationServices _authorizationServices;
@@ -23,10 +23,7 @@ public class GameController : _BaseController
         IGenreService genreService,
         IPublisherService publisherService,
         IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices,
-        IAccountService accountService,
-        IRoleService roleService)
-        : base(authenticationServices, authorizationServices, accountService, roleService)
+        IAuthorizationServices authorizationServices)
     {
         _gameServices = gameServices;
         _genreService = genreService;
