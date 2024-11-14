@@ -17,8 +17,8 @@ const LoginForm = () => {
         event.preventDefault();
     
         const payload = {
-            Username: "john_doe",  // Kiểm tra tên biến phải giống với mô hình backend
-            Password: "password123"   // Kiểm tra tên biến phải giống với mô hình backend
+            Username: username,  // Kiểm tra tên biến phải giống với mô hình backend
+            Password: password   // Kiểm tra tên biến phải giống với mô hình backend
         };
     
         try {

@@ -1,7 +1,6 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
@@ -27,22 +26,22 @@ public class CartController : Controller
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
-		var carts = await _cartService.GetAllCartsAsync();
+		var carts = await _cartService.GetAllCarts();
 		return Ok(carts);
 	}
 
 	// GET: api/Cart/5
-	[HttpGet("GetCart/{id}")]
-	public async Task<ActionResult<Cart>> GetCartById(int id)
+	[HttpGet("GetCart/{cartId}")]
+	public async Task<ActionResult<Cart>> GetCartById([FromBody] int cartId)
 	{
-		var cart = await _cartService.GetCartByIdAsync(id);
+		var cart = await _cartService.GetCartById(cartId);
 		if (cart == null) return NotFound();
 		return Ok(cart);
 	}
 
 	// POST: Cart/CreateCart
 	[HttpPost("CreateCart")]
-	public async Task<ActionResult<Cart>> CreateCart(Cart cart)
+	public async Task<ActionResult> CreateCart([FromBody] Cart cart)
 	{
 		//bool hasPermission = await _authorizationServices.UserHasPermission(GetCurrentLoginAccountId(), "create");
 
@@ -65,7 +64,7 @@ public class CartController : Controller
 			});
 		}
 
-		await _cartService.AddCartAsync(cart);
+		await _cartService.AddCart(cart);
 
 		return CreatedAtAction(
 			nameof(GetCartById),
@@ -74,40 +73,83 @@ public class CartController : Controller
 			{
 				success = true,
 				message = "Cart created successfully",
-				data = cart
+				cartList = cart
 			}
 		);
 	}
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{id}")]
-	public async Task<ActionResult<Cart>> UpdateCart(int id, Cart cart)
+	public async Task<ActionResult> UpdateCart([FromBody] int id, Cart cart)
 	{
-		if (id != cart.CartId) return BadRequest();
-		if (id != cart.CartId) return BadRequest();
-
-		if (ModelState.IsValid)
+		if (id != cart.CartId) return NotFound(new
 		{
-			await _cartService.UpdateCartAsync(cart);
-			return NoContent();
+			sucess = false,
+			message = "Requested Cart do not existed!"
+		});
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
 		}
-		return BadRequest(ModelState);
+
+		await _cartService.UpdateCart(cart);
+		return Ok(new
+		{
+			sucess = true,
+			message = "Updated cart successfully"
+		});
 	}
 
 	// DELETE: Cart/DeleteCart/{id}
 	[HttpDelete("DeleteCart/{id}")]
-	public async Task<ActionResult> DeleteCart(int id)
+	public async Task<ActionResult> DeleteCart([FromBody] int id)
 	{
-		await _cartService.DeleteCartAsync(id);
-		return NoContent();
+		var cart = await _cartService.GetCartById(id);
+
+		if (cart == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Requested Cart do not existed or already deleted"
+			});
+
+		}
+
+		return Ok(new
+		{
+			success = true,
+			message = "Successfully Deleted Cart"
+		});
 	}
 
 	// GET: Cart/Account/5
-	[HttpGet("Account/{accountId}")]
-	public async Task<IActionResult> GetCartsByAccountId(int accountId)
+	[HttpGet("GetCartsByAccountId/{accountId}")]
+	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
 	{
-		var carts = await _cartService.GetCartsByAccountIdAsync(accountId);
-		if (carts == null) return NotFound();
-		return Ok(carts);
+		var cart = _cartService.GetCartsByAccountId(accountId);
+
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Cart Empty"
+			});
+		}
+
+		return Ok(new
+		{
+			success = true,
+			message = "Cart Found",
+			cartList = cart
+		}); 
 	}
 }

@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Discount")]
+[Route("[controller]")]
+[ApiController]
 public class DiscountController : Controller
 {
     private readonly IDiscountService _discountService;

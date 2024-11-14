@@ -1,6 +1,4 @@
-﻿// Domain
-
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
 
@@ -10,80 +8,83 @@ namespace Application.Services;
 
 public class GameService : IGameService
 {
-    // Create Constructor
-    private readonly IGameRepository _gameRepository;
+	private readonly IGameRepository _gameRepository;
 
-    public GameService(IGameRepository gameRepository)
-    {
-        _gameRepository = gameRepository;
-    }
+	public GameService(IGameRepository gameRepository)
+	{
+		_gameRepository = gameRepository;
+	}
 
-    // == Basic CRUD Function ==
-    public async Task<IEnumerable<Game>> GetAllGame()
-    {
-        try
-        {
-            return await _gameRepository.GetAll();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to get all the games", ex);
-        }
-    }
+	// == Basic CRUD Function ==
+	public async Task<IEnumerable<Game>> GetAllGame()
+	{
+		return await _gameRepository.GetAll();
+	}
 
-    public async Task<Game> AddGame(Game game)
-    {
-        try
-        {
-            await _gameRepository.Add(game);
-            return game;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to add the game", ex);
-        }
-    }
+	public async Task<Game> AddGame(Game game)
+	{
+		await _gameRepository.Add(game);
+		return game;
+	}
 
-    public async Task<Game> UpdateGame(Game game)
-    {
-        try
-        {
-            await _gameRepository.Update(game);
-            return game;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to update the game", ex);
-        }
-    }
+	public async Task<Game> UpdateGame(Game game)
+	{
+		await _gameRepository.Update(game);
+		return game;
+	}
 
-    public async Task<Game> DeleteGame(int id)
-    {
-        var game = await _gameRepository.GetById(id);
-        if (game == null) // Not Found
-            throw new Exception("Game not found.");
-        await _gameRepository.Delete(id);
-        return game;
-    }
+	public async Task<Game> DeleteGame(int id)
+	{
+		var game = await _gameRepository.GetById(id);
+		if (game == null) throw new Exception("Game not found.");
+		await _gameRepository.Delete(id);
+		return game;
+	}
 
-    // == Feature Function ==
+	// == Feature Function ==
+	// Search name by Game ID
+	public async Task<Game> GetGameById(int id)
+	{
+		return await _gameRepository.GetById(id);
+	}
 
-    // Search by Game ID
-    public async Task<Game> GetGameById(int id)
-    {
-        try
-        {
-            return await _gameRepository.GetById(id);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to get specific game id", ex);
-        }
-    }
+	// Search games by Publisher ID
+	public async Task<IEnumerable<Game>> GetGameByPublisherId(int publisherId)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.PublisherId == publisherId);
+		return filteredGame;
+	}
 
-    // TODO: Search By Publisher => Get Publisher By "ID"
-    // TODO: Search By Genre => Get Genre By "ID"
-    // TODO: Search By Name
-    // TODO: Search By Publisher
-    // TODO: Search By Rating
+	// Search games by Genre ID
+	public async Task<IEnumerable<Game>> GetGameByGenreId(int genreId)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.GenreId == genreId);
+		return filteredGame;
+	}
+
+	// Search games by Title
+	public async Task<IEnumerable<Game>> GetGameByTitle(string title)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Title == title);
+		return filteredGame;
+	}
+
+	// Search games by Publisher Name
+	public async Task<IEnumerable<Game>> GetGameByPublisher(string publisher)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Publisher.Name == publisher);
+		return filteredGame;
+	}
+
+	// Search games by Rating
+	public async Task<IEnumerable<Game>> GetGameByRating(int rating)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Rating == rating);
+		return filteredGame;
+	}
 }

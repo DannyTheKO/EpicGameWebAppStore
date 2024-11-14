@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using System.Text.Json.Nodes;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
 
@@ -39,5 +40,11 @@ public class RoleService : IRoleService
         return role?.Name ?? "Guest";
     }
 
-    #endregion
+    // SELECT: Get Role by Name
+    public async Task<Role> GetRoleByName(string roleName)
+    {
+	    var roleList = await _roleRepository.GetAll();
+	    return roleList.FirstOrDefault();
+    }
+	#endregion
 }

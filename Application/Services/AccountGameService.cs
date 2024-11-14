@@ -30,12 +30,6 @@ namespace Application.Services
 
 		public async Task<AccountGame> UpdateAccountGame(AccountGame accountGame)
 		{
-			// Check if accountGame exists (null check)
-			if (accountGame == null)
-			{
-				throw new ArgumentNullException(nameof(accountGame));
-			}
-    
 			// Update the AccountGame using repository
 			await _accountGameRepository.Update(accountGame);
     
@@ -55,6 +49,5 @@ namespace Application.Services
 			var filteredAccount = accountGameList.Where(f => f.AccountId == accountId);
 			return filteredAccount;
 		}
-
 	}
 }

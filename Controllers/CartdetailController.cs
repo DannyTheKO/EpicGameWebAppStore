@@ -1,13 +1,12 @@
 using Application.Interfaces;
-using DataAccess.EpicGame;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Cartdetail")]
+[Route("[controller]")]
+[ApiController]
 public class CartdetailController : Controller
 {
 	private readonly ICartdetailService _cartdetailService;
@@ -21,7 +20,7 @@ public class CartdetailController : Controller
 	[HttpGet]
 	public async Task<IActionResult> Index()
 	{
-		return View(await _cartdetailService.GetAllCartdetails());
+		return View(await _cartdetailService.GetAllCartDetails());
 	}
 
 	// GET: Cartdetail/details/5
@@ -30,7 +29,7 @@ public class CartdetailController : Controller
 	{
 		if (id == null) return NotFound();
 
-		var cartDetail = await _cartdetailService.GetCartdetailById(id);
+		var cartDetail = await _cartdetailService.GetCartDetailById(id);
 
 		if (cartDetail == null) return NotFound();
 
@@ -41,8 +40,8 @@ public class CartdetailController : Controller
 	[HttpGet("Create")]
 	public async Task<IActionResult> Create()
 	{
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId");
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title");
+		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "CartId", "CartId");
+		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "GameId", "Title");
 		return View();
 	}
 
@@ -54,12 +53,12 @@ public class CartdetailController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			_cartdetailService.AddCartdetail(cartdetail);
+			_cartdetailService.AddCartDetail(cartdetail);
 			return RedirectToAction(nameof(Index));
 		}
 
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
+		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "CartId", "CartId", cartdetail.CartId);
+		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "GameId", "Title", cartdetail.GameId);
 		return View(cartdetail);
 	}
 
@@ -69,10 +68,10 @@ public class CartdetailController : Controller
 	{
 		if (id == null) return NotFound();
 
-		var cartdetail = await _cartdetailService.GetCartdetailById(id);
+		var cartdetail = await _cartdetailService.GetCartDetailById(id);
 		if (cartdetail == null) return NotFound();
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
+		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "CartId", "CartId", cartdetail.CartId);
+		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "GameId", "Title", cartdetail.GameId);
 		return View(cartdetail);
 	}
 
@@ -82,14 +81,14 @@ public class CartdetailController : Controller
 	public async Task<IActionResult> Edit(int id,
 		[Bind("CartDetailId,CartId,GameId,Quantity,Price,Discount")] Cartdetail cartdetail)
 	{
-		var cartDetailExisting = await _cartdetailService.GetCartdetailById(cartdetail.CartId);
+		var cartDetailExisting = await _cartdetailService.GetCartDetailById(cartdetail.CartId);
 		if (cartDetailExisting != null) // FOUND
 		{
-			await _cartdetailService.UpdateCartdetail(cartdetail);
+			await _cartdetailService.UpdateCartDetail(cartdetail);
 		}
 
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
+		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "CartId", "CartId", cartdetail.CartId);
+		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartDetails(), "GameId", "Title", cartdetail.GameId);
 		return View(cartdetail);
 	}
 
@@ -99,7 +98,7 @@ public class CartdetailController : Controller
 	{
 		if (id == null) return NotFound();
 
-		var cartDetail = await _cartdetailService.GetCartdetailById(id);
+		var cartDetail = await _cartdetailService.GetCartDetailById(id);
 
 		if (cartDetail == null) return NotFound();
 
@@ -112,14 +111,14 @@ public class CartdetailController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		var cartDetail = await _cartdetailService.DeleteCartdetail(id);
+		var cartDetail = await _cartdetailService.DeleteCartDetail(id);
 		return RedirectToAction(nameof(Index));
 	}
 
 	// Populate ViewBag
 	//private async Task PopulateViewBag()
 	//{
-	//	var cartDetail = await _cartdetailService.GetAllCartdetails();
+	//	var cartDetail = await _cartdetailService.GetAllCartDetails();
 	//	ViewBag.CartId = new SelectList(cartDetail, "CartDetailId", "");
 		
 	//}

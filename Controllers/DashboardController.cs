@@ -75,11 +75,6 @@ public class DashboardController : Controller
         ViewBag.IsActive = new SelectList(isActive, "Value", "Text");
     }
 
-    #region Account
-
-    
-
-    #endregion
 
     [HttpGet("CreatePage")]
     public async Task<IActionResult> CreatePage()
