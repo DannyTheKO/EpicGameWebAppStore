@@ -14,8 +14,6 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
     }
 
-    #region == Basic CRUB Function ==
-
     public async Task<Account> AddAccount(Account account)
     {
         await _accountRepository.Add(account);
@@ -59,10 +57,6 @@ public class AccountService : IAccountService
             await _accountRepository.Delete(accountId);
     }
 
-    #endregion
-
-    #region == Select operation ==
-
     // SELECT: Get Account by ID
     public async Task<Account> GetAccountById(int accountId)
     {
@@ -86,6 +80,4 @@ public class AccountService : IAccountService
     {
 	    return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
     }
-
-    #endregion
 }

@@ -13,5 +13,5 @@ public interface IRoleService
     // SELECT: Get Role by Account ID
     Task<string> GetRoleByAccountId(int accountId);
 
-    Task<Role> GetRoleByName(string roleName);
+    Task<IEnumerable<Role>> GetRoleByName(string roleName);
 }

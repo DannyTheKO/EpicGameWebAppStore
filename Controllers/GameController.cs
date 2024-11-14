@@ -40,8 +40,16 @@ public class GameController : Controller
         return Ok(games);
     }
 
-    // POST: Game/CreateConfirm
-    [HttpPost("CreateGame")]
+    [HttpGet("GetGame/{gameId}")]
+    public async Task<ActionResult<Game>> GetGameById([FromBody]int gameId)
+	{
+		var game = await _gameServices.GetGameById(gameId);
+		if (game == null) return NotFound();
+		return Ok(game);
+	}
+
+	// POST: Game/CreateConfirm
+	[HttpPost("CreateGame")]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult<Game>> CreateGame(Game game)
     {

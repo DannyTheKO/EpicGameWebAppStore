@@ -1,10 +1,12 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
+//[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class AuthController : Controller
@@ -29,7 +31,7 @@ public class AuthController : Controller
 	[HttpGet("Logout")]
 	public async Task<ActionResult> Logout()
 	{
-		var checkLoginAccount = _accountService.GetLoginAccountId(User);
+		var checkLoginAccount = _authenticationServices.GetLoginAccountId(User);
 		if (checkLoginAccount == 0) // NOT FOUND
 		{
 			return BadRequest(new

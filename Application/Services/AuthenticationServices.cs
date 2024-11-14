@@ -93,4 +93,9 @@ public class AuthenticationServices : IAuthenticationServices
 
 	    return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+	public int GetLoginAccountId(ClaimsPrincipal User)
+	{
+		return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+	}
 }

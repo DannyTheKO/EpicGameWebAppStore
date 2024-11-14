@@ -18,8 +18,12 @@ public class AccountGameController : Controller
 	[HttpGet("AddAccountGame")]
 	public async Task<ActionResult<AccountGame>> AddAccountGame([FromBody] AccountGame accountGame)
 	{
-		var newAccountGame = await _accountGameService.AddAccountGame(accountGame);
-		return Ok(newAccountGame);
+		await _accountGameService.AddAccountGame(accountGame);
+		return Ok(new
+		{
+			success = true,
+			message = "AccountGame added successfully",
+		});
 	}
 
 	[HttpGet("GetAllAccountGame")]
@@ -54,6 +58,8 @@ public class AccountGameController : Controller
 			});
 		}
 
+
+		await _accountGameService.UpdateAccountGame(accountGame);
 		return Ok(new
 		{
 			success = true,
@@ -63,7 +69,7 @@ public class AccountGameController : Controller
 	}
 
 	[HttpGet("GetAccountGameByGameId/{gameId}")]
-	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByGameId(int gameId)
+	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByGameId([FromBody]int gameId)
 	{
 		var accountGameList = await _accountGameService.GetAccountGameByGameId(gameId);
 
@@ -85,7 +91,7 @@ public class AccountGameController : Controller
 	}
 
 	[HttpGet("GetAccountGameByAccountId/{accountId}")]
-	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByAccountId(int accountId)
+	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByAccountId([FromBody]int accountId)
 	{
 		var accountGameList = await _accountGameService.GetAccountGameByAccountId(accountId);
 		

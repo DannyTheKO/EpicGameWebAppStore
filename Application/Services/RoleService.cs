@@ -16,8 +16,6 @@ public class RoleService : IRoleService
         _accountRepository = accountRepository;
     }
 
-    #region == Basic Funciton ==
-
     // SELECT: Get all Role
     public async Task<IEnumerable<Role>> GetAllRoles()
     {
@@ -41,10 +39,10 @@ public class RoleService : IRoleService
     }
 
     // SELECT: Get Role by Name
-    public async Task<Role> GetRoleByName(string roleName)
+    public async Task<IEnumerable<Role>> GetRoleByName(string roleName)
     {
 	    var roleList = await _roleRepository.GetAll();
-	    return roleList.FirstOrDefault();
-    }
-	#endregion
+	    var filteredRole = roleList.Where(f => f.Name == roleName);
+        return filteredRole;
+	}
 }
