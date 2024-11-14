@@ -51,8 +51,8 @@ public class AuthorizationServicesTests
 			Permission = new List<string> { "ReadData", "WriteData" }
 		};
 
-		_mockAccountRepository.Setup(repo => repo.GetUserByIdAsync(accountId)).ReturnsAsync(account);
-		_mockRoleRepository.Setup(repo => repo.GetByIdAsync(roleId)).ReturnsAsync(role);
+		_mockAccountRepository.Setup(repo => repo.GetId(accountId)).ReturnsAsync(account);
+		_mockRoleRepository.Setup(repo => repo.GetById(roleId)).ReturnsAsync(role);
 
 		// Act
 		var result = await _authorizationServices.UserHasPermission(accountId, permission);
@@ -94,8 +94,8 @@ public class AuthorizationServicesTests
 			Permission = new List<string> { "ReadData", "WriteData" }
 		};
 
-		_mockAccountRepository.Setup(repo => repo.GetUserByIdAsync(accountId)).ReturnsAsync(account);
-		_mockRoleRepository.Setup(repo => repo.GetByIdAsync(roleId)).ReturnsAsync(role);
+		_mockAccountRepository.Setup(repo => repo.GetId(accountId)).ReturnsAsync(account);
+		_mockRoleRepository.Setup(repo => repo.GetById(roleId)).ReturnsAsync(role);
 
 		// Act
 		var result = await _authorizationServices.UserHasPermission(accountId, permission);
@@ -111,7 +111,7 @@ public class AuthorizationServicesTests
 		var accountId = 1;
 		var permission = "ReadData";
 
-		_mockAccountRepository.Setup(repo => repo.GetUserByIdAsync(accountId)).ReturnsAsync((Account)null);
+		_mockAccountRepository.Setup(repo => repo.GetId(accountId)).ReturnsAsync((Account)null);
 
 		// Act
 		var result = await _authorizationServices.UserHasPermission(accountId, permission);
@@ -121,3 +121,4 @@ public class AuthorizationServicesTests
 	}
 
 }
+

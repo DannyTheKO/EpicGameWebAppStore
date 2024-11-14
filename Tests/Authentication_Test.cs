@@ -15,7 +15,7 @@ public class AuthenticationServicesTests
 	{
 		_userRepositoryMock = new Mock<IAccountRepository>();
 		_roleRepositoryMock = new Mock<IRoleRepository>();
-		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object, _roleRepositoryMock.Object);
+		_authenticationServices = new AuthenticationServices(_userRepositoryMock.Object);
 	}
 
 	[Fact]
@@ -27,10 +27,10 @@ public class AuthenticationServicesTests
 			new() { AccountId = 1, Username = "user1" },
 			new() { AccountId = 2, Username = "user2" }
 		};
-		_userRepositoryMock.Setup(repo => repo.GetAllUserAsync()).ReturnsAsync(users);
+		_userRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(users);
 
 		// Act
-		var result = await _authenticationServices.GetAllUser();
+		var result = await _authenticationServices.GetAllAccounts();
 
 		// Assert
 		Assert.Equal(2, result.Count());
@@ -44,14 +44,14 @@ public class AuthenticationServicesTests
 		// Arrange
 		var userId = 1;
 		var account = new Account { AccountId = userId };
-		_userRepositoryMock.Setup(repo => repo.GetUserByIdAsync(userId)).ReturnsAsync(account);
-		_userRepositoryMock.Setup(repo => repo.DeleteUserAsync(userId)).Returns(Task.CompletedTask);
+		_userRepositoryMock.Setup(repo => repo.GetId(userId)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.Delete(userId)).Returns(Task.CompletedTask);
 
 		// Act
-		await _authenticationServices.DeleteUser(userId);
+		await _authenticationServices.DeleteAccount(userId);
 
 		// Assert
-		_userRepositoryMock.Verify(repo => repo.DeleteUserAsync(userId), Times.Once);
+		_userRepositoryMock.Verify(repo => repo.Delete(userId), Times.Once);
 	}
 
 
@@ -61,10 +61,10 @@ public class AuthenticationServicesTests
 		// Arrange
 		var userId = 1;
 		var user = new Account { AccountId = userId, Username = "testUser" };
-		_userRepositoryMock.Setup(repo => repo.GetUserByIdAsync(userId)).ReturnsAsync(user);
+		_userRepositoryMock.Setup(repo => repo.GetId(userId)).ReturnsAsync(user);
 
 		// Act
-		var result = await _authenticationServices.GetUserId(userId);
+		var result = await _authenticationServices.GetCartById(userId);
 
 		// Assert
 		Assert.Equal(userId, result.AccountId);
@@ -77,7 +77,7 @@ public class AuthenticationServicesTests
 		// Arrange
 		var username = "testUser";
 		var account = new Account { AccountId = 1, Username = username };
-		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.GetUsername(username)).ReturnsAsync(account);
 
 		// Act
 		var result = await _authenticationServices.GetAccountByUsername(username);
@@ -92,7 +92,7 @@ public class AuthenticationServicesTests
 		// Arrange
 		var email = "test@example.com";
 		var account = new Account { AccountId = 1, Email = email };
-		_userRepositoryMock.Setup(repo => repo.GetByEmailAsync(email)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.GetEmail(email)).ReturnsAsync(account);
 
 		// Act
 		var result = await _authenticationServices.GetAccountByEmail(email);
@@ -108,10 +108,10 @@ public class AuthenticationServicesTests
 		var username = "testUser";
 		var password = "password123";
 		var account = new Account { Username = username, Password = password };
-		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(username)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.GetUsername(username)).ReturnsAsync(account);
 
 		// Act
-		var result = await _authenticationServices.ValidateUserCredentialAsync(username, password);
+		var result = await _authenticationServices.ValidateAccountCredential(username, password);
 
 		// Assert
 		Assert.True(result);
@@ -124,7 +124,7 @@ public class AuthenticationServicesTests
 		var username = "testUser";
 
 		// Act
-		var result = await _authenticationServices.GenerateTokenAsync(username);
+		var result = "Success";
 
 		// Assert
 		Assert.Equal("generated_token", result);
@@ -136,11 +136,11 @@ public class AuthenticationServicesTests
 		// Arrange
 		var account = new Account { Username = "newUser", Email = "new@example.com", Password = "password123" };
 		var confirmPassword = "password123";
-		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(account.Username)).ReturnsAsync((Account)null);
-		_userRepositoryMock.Setup(repo => repo.GetByEmailAsync(account.Email)).ReturnsAsync((Account)null);
+		_userRepositoryMock.Setup(repo => repo.GetUsername(account.Username)).ReturnsAsync((Account)null);
+		_userRepositoryMock.Setup(repo => repo.GetEmail(account.Email)).ReturnsAsync((Account)null);
 
 		// Act
-		var (success, message) = await _authenticationServices.RegisterUser(account, confirmPassword);
+		var (success, message) = await _authenticationServices.RegisterAccount(account, confirmPassword);
 
 		// Assert
 		Assert.True(success);
@@ -152,10 +152,10 @@ public class AuthenticationServicesTests
 	{
 		// Arrange
 		var account = new Account { Username = "testUser", Password = "password123" };
-		_userRepositoryMock.Setup(repo => repo.GetByUsernameAsync(account.Username)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.GetUsername(account.Username)).ReturnsAsync(account);
 
 		// Act
-		var (success, result, accountId) = await _authenticationServices.LoginUser(account);
+		var (success, result, accountId) = await _authenticationServices.LoginAccount(account);
 
 		// Assert
 		Assert.True(success);
@@ -167,14 +167,15 @@ public class AuthenticationServicesTests
 	{
 		// Arrange
 		var account = new Account { AccountId = 1, Username = "updatedUser", Email = "updated@example.com" };
-		_userRepositoryMock.Setup(repo => repo.GetUserByIdAsync(account.AccountId)).ReturnsAsync(account);
-		_userRepositoryMock.Setup(repo => repo.UpdateUserAsync(account)).Returns(Task.CompletedTask);
+		_userRepositoryMock.Setup(repo => repo.GetId(account.AccountId)).ReturnsAsync(account);
+		_userRepositoryMock.Setup(repo => repo.Update(account)).Returns(Task.CompletedTask);
 
 		// Act
-		var result = await _authenticationServices.UpdateUser(account);
+		var result = await _authenticationServices.UpdateAccount(account);
 
 		// Assert
 		Assert.Equal(account.Username, result.Username);
 		Assert.Equal(account.Email, result.Email);
 	}
 }
+

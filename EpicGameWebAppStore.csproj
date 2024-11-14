@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -15,10 +16,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
   <ItemGroup>
 	  <Compile Remove="Application\**" />
+	  <Compile Remove="Middleware\**" />
 	  <Compile Remove="DataAccess\**" />
 	  <Compile Remove="Domain\**" />
 	  <Compile Remove="Infrastructure\**" />
@@ -29,6 +32,7 @@
 	  <Compile Remove="_Resource\**" />
 
 	  <Content Remove="Application\**" />
+	  <Content Remove="Middleware\**" />
 	  <Content Remove="DataAccess\**" />
 	  <Content Remove="Domain\**" />
 	  <Content Remove="Infrastructure\**" />
@@ -36,6 +40,7 @@
 	  <Content Remove="_Resource\**" />
 
 	  <EmbeddedResource Remove="Application\**" />
+	  <EmbeddedResource Remove="Middleware\**" />
 	  <EmbeddedResource Remove="DataAccess\**" />
 	  <EmbeddedResource Remove="Domain\**" />
 	  <EmbeddedResource Remove="Infrastructure\**" />
@@ -43,6 +48,7 @@
 	  <EmbeddedResource Remove="_Resource\**" />
 	  
 	  <None Remove="Application\**" />
+	  <None Remove="Middleware\**" />
 	  <None Remove="DataAccess\**" />
 	  <None Remove="Domain\**" />
 	  <None Remove="Infrastructure\**" />
@@ -50,6 +56,8 @@
 	  <None Remove="_Resource\**" />
 
 	  <ProjectReference Include="Infrastructure\Infrastructure.csproj" />
+
+	  <ProjectReference Include="Middleware\Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>

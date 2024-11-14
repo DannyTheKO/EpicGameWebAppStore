@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 // Domain
 
@@ -7,45 +6,14 @@ namespace Application.Interfaces;
 
 public interface IAuthenticationServices
 {
-	#region == Basic CRUB Function ==
+    // ACTION: Validate Account Credential
+    Task<bool> ValidateAccountCredential(string username, string password);
 
-	// SELECT: Get all user
-	Task<IEnumerable<Account>> GetAllUser();
+    // ACTION: Register Account
+    Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword);
 
-	// ACTION: Delete User
-	Task DeleteUser(int AccountId);
+    // ACTION: Login Account
+    Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account);
 
-	#endregion
-
-	#region == Basic operation ==
-
-	// SELECT: Get Username by ID Account
-	Task<Account> GetUserId(int accountId);
-
-	// SELECT: Get "Username" value from specific Account
-	Task<Account> GetAccountByUsername(string username);
-
-	// SELECT: Get "Email" value from specific Account
-	Task<Account> GetAccountByEmail(string email);
-
-	// ACTION: Validate User Credential
-	Task<bool> ValidateUserCredentialAsync(string username, string password);
-
-	// ACTION: Generate Token for User
-	Task<string> GenerateTokenAsync(string username);
-
-	#endregion
-
-	#region == Service Application ==
-
-	// ACTION: Register User
-	Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword);
-
-	// ACTION: Login User
-	Task<(bool Success, string Result, int AccountId)> LoginUser(Account account);
-
-	// ACTION: Update User
-	Task<Account> UpdateUser(Account account);
-
-	#endregion
+    public string GenerateJwtToken(Account account);
 }

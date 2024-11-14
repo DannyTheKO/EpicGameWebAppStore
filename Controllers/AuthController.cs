@@ -2,7 +2,9 @@
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+
 // Domain
 
 // Application
@@ -11,102 +13,148 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Auth")]
-public class AuthController : Controller
+[Route("[controller]")]
+//[ApiController]
+public class AuthController : _BaseController
 {
-	private readonly IAuthenticationServices _authenticationServices;
-	private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAuthenticationServices _authenticationServices;
+    private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAccountService _accountService;
+    private readonly IRoleService _roleService;
 
-	public AuthController(IAuthenticationServices authenticationServices, IAuthorizationServices authorizationServices)
-	{
-		_authenticationServices = authenticationServices;
-		_authorizationServices = authorizationServices;
-	}
+    public AuthController(
+        IAuthorizationServices authorizationServices,
+        IAuthenticationServices authenticationServices,
+        IAccountService accountService,
+        IRoleService roleService)
+        : base(
+            authenticationServices,
+            authorizationServices,
+            accountService,
+            roleService)
+    {
+        _authenticationServices = authenticationServices;
+        _authorizationServices = authorizationServices;
+        _accountService = accountService;
+        _roleService = roleService;
+    }
 
-	#region == Logout ==
+    [HttpGet("Logout")]
+    public async Task<ActionResult> Logout()
+    {
+	    var checkLoginAccount = GetCurrentLoginAccountId();
+	    if (checkLoginAccount == -1) // NOT FOUND
+	    {
+		    return BadRequest(new
+		    {
+			    loginStateFlag = false,
+			    message = "Current Login Account Not Found!"
+		    });
+	    }
 
-	[HttpGet("Logout")]
-	public async Task<IActionResult> Logout()
-	{
-		await HttpContext.SignOutAsync("CookieAuth");
-		return RedirectToAction("Index", "Home");
-	}
+	    // Sign out of cookie authentication
+	    await HttpContext.SignOutAsync("CookieAuth");
 
-	#endregion
+	    // Return instruction to clear token
+	    return Ok(new
+	    {
+		    loginStateFlag = false,
+		    message = "Successfully Logout",
+		    action = "CLEAR_TOKEN" // Frontend should handle this to remove token from storage
+	    });
+    }
 
-	#region == Register ==
+    [HttpGet("AccessDenied")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public ActionResult AccessDenied()
+    {
+	    return StatusCode(403, new
+	    {
+		    accessFlag = false,
+		    message = "Access Denied: You don't have permission to access this resource"
+	    });
+    }
+		
+    // POST: Auth/RegisterConfirm
+    [HttpPost("RegisterConfirm")]
+    public async Task<ActionResult<RegisterViewModel>> RegisterConfirm(RegisterViewModel registerViewModel)
+    {
+	    if (!ModelState.IsValid)
+	    {
+		    return BadRequest(new
+		    {
+                registerState = false,
+                errors = ModelState.Values
+	                .SelectMany(v => v.Errors)
+	                .Select(e => e.ErrorMessage)
+		    });
+	    }
 
-	// GET: Auth/Register
-	[HttpGet("RegisterPage")]
-	public IActionResult RegisterPage()
-	{
-		return View();
-	}
+        var account = new Account
+        {
+            Username = registerViewModel.Username,
+            Password = registerViewModel.Password,
+            Email = registerViewModel.Email
+        };
 
-	// POST: Auth/RegisterConfirm
-	[HttpPost("RegisterConfirm")]
-	public async Task<IActionResult> RegisterConfirm(RegisterViewModel registerViewModel)
-	{
-		if (!ModelState.IsValid) return View("RegisterPage", registerViewModel);
+        var (registerStage, resultMessage) = await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
 
-		var account = new Account
-		{
-			Username = registerViewModel.Username,
-			Password = registerViewModel.Password,
-			Email = registerViewModel.Email
-		};
+        if (!registerStage)
+        {
+	        return BadRequest(new
+	        {
+                registerStageFlag = registerStage,
+                message = resultMessage
+	        });
+        }
 
-		var (success, message) = await _authenticationServices.RegisterUser(account, registerViewModel.ConfirmPassword);
+        return Ok( new
+        {
+            registerStageFlag = registerStage,
+            message = resultMessage
+        });
+    }
 
-		if (!success)
-		{
-			ModelState.AddModelError(string.Empty, message);
-			return View("RegisterPage", registerViewModel);
-		}
+    // POST: Auth/LoginConfirm
+    [HttpPost("LoginConfirm")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public async Task<ActionResult<LoginViewModel>> LoginConfirm(LoginViewModel loginViewModel)
+    {
+	    // Validate if user input is valid
+	    if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+	    {
+		    return BadRequest(new
+		    {
+			    loginState = false,
+			    errors = ModelState.Values
+				    .SelectMany(v => v.Errors)
+				    .Select(e => e.ErrorMessage)
+		    });
+            
+		    // return View("LoginPage", loginViewModel);
+	    }
 
-		return RedirectToAction("Index", "Home");
-	}
+	    var account = new Account
+	    {
+		    Username = loginViewModel.Username,
+		    Password = loginViewModel.Password
+	    };
 
-	#endregion
+	    var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
 
-	#region == Login ==
+	    // If user fail to validate "success" return false
+	    if (!loginState) // Return false
+	    {
+		    return BadRequest(
+			    new { loginStateFlag = loginState, message = resultMessage }
+		    );
+	    }
 
-	// GET: Auth/LoginPage
-	[HttpGet("LoginPage")]
-	public IActionResult LoginPage()
-	{
-		return View();
-	}
-
-	// POST: Auth/LoginConfirm
-	[HttpPost("LoginConfirm")]
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public async Task<IActionResult> LoginConfirm(LoginViewModel loginViewModel)
-	{
-		// Validate if user input is valid
-		if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-			return View("LoginPage", loginViewModel);
-
-		var account = new Account
-		{
-			Username = loginViewModel.Username,
-			Password = loginViewModel.Password
-		};
-
-		var (success, result, accountId) = await _authenticationServices.LoginUser(account);
-
-		// If user fail to validate "success" return false
-		if (!success) // Return false
-		{
-			ModelState.AddModelError(string.Empty, result);
-			return View("LoginPage", loginViewModel);
-		}
-
-		var principal = _authorizationServices.CreateClaimsPrincipal(accountId);
-		await HttpContext.SignInAsync("CookieAuth", await principal);
-
-		return RedirectToAction("Index", "Home");
-	}
-
-	#endregion
+	    return Ok(new
+	    {
+		    loginStateFlag = loginState,
+		    accountToken = token,
+		    message = resultMessage
+	    });
+    }
 }

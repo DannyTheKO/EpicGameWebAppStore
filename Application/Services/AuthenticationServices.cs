@@ -1,145 +1,94 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Application.Interfaces;
 using Domain.Entities;
-using Domain.Repository;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Services;
 
 public class AuthenticationServices : IAuthenticationServices
 {
-	private readonly IAccountRepository _accountRepository;
-	private readonly string _secretKey = "Empty"; // TODO: Apply secret key
+    private readonly IAccountService _accountService;
+    private readonly IConfiguration _configuration;
 
-	public AuthenticationServices(IAccountRepository accountRepository, IRoleRepository roleRepository)
-	{
-		_accountRepository = accountRepository;
-	}
+    public AuthenticationServices(IAccountService accountService, IConfiguration configuration)
+    {
+        _accountService = accountService;
+        _configuration = configuration;
+    }
 
-	#region == Basic CRUB Function ==
+    // ACTION: Validate User Credential
+    public async Task<bool> ValidateAccountCredential(string username, string password)
+    {
+        var account = await _accountService.GetAccountByUsername(username);
+        return account != null && account.Password == password;
+    }
 
-	// SELECT: Get All User
-	public async Task<IEnumerable<Account>> GetAllUser()
-	{
-		return await _accountRepository.GetAllUserAsync();
-	}
+    // ACTION: User Registration
+    public async Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword)
+    {
+        // Check if the username and email already exist
+        var existingAccountUserName = await _accountService.GetAccountByUsername(account.Username);
+        var existingAccountEmail = await _accountService.GetAccountByEmail(account.Email);
+        if (existingAccountUserName != null && existingAccountEmail != null)
+            return (false, "Username and Email already exist");
 
-	// ACTION: Update User
-	public async Task<Account> UpdateUser(Account account)
-	{
-		if (account == null) // NOT FOUND!
-			throw new ArgumentNullException(nameof(account), "Account cannot be null");
+        if (existingAccountEmail != null) return (false, "Email already exists");
 
-		// Retrieve the existing account from the database
-		var existingAccount = await _accountRepository.GetUserByIdAsync(account.AccountId);
-		if (existingAccount == null) throw new Exception("Account not found");
+        if (existingAccountUserName != null) return (false, "Username already exists");
 
-		// Update the account details
-		existingAccount.Username = account.Username;
-		existingAccount.Email = account.Email;
-		existingAccount.Password = account.Password; // Consider hashing the password
-		existingAccount.IsActive = account.IsActive;
+        // Check if the "Password" and the "Confirm Password" are correct
+        if (account.Password != confirmPassword) return (false, "Password and Confirm Password are not the same");
 
-		// Save the updated account to the database
-		await _accountRepository.UpdateUserAsync(existingAccount);
+        // Create a new account
+        account.CreatedOn = DateTime.UtcNow;
+        account.RoleId = 5; // Default Role is "Guest"
+        account.IsActive = "Y"; // TODO: Implement authorization logic later
 
-		return existingAccount;
-	}
+        // TODO: Hash the password before saving it
+        // account.Password = HashPassword(account.Password);
 
-	// ACTION: Delete User
-	public async Task DeleteUser(int accountId)
-	{
-		var account = await _accountRepository.GetUserByIdAsync(accountId);
-		if (account != null) // FOUND!
-			await _accountRepository.DeleteUserAsync(accountId);
-	}
+        // Save the account to the database
+        await _accountService.AddAccount(account);
 
-	#endregion
+        return (true, string.Empty);
+    }
 
-	#region == Basic operation ==
+    // ACTION: User Login
+    public async Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account)
+    {
+	    var existingAccount = await _accountService.GetAccountByUsername(account.Username);
+	    if (existingAccount == null) return (false, null, "Username does not exist");
+	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password");
+    
+	    // Generate JWT token instead of cookie authentication
+	    var token = GenerateJwtToken(existingAccount);
+	    return (true, token, "Successfully login");
+    }
 
-	// SELECT: Get specific Account using AccountID
-	public async Task<Account> GetUserId(int accountId)
-	{
-		return await _accountRepository.GetUserByIdAsync(accountId);
-	}
+    public string GenerateJwtToken(Account account)
+    {
+	    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+	    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-	// SELECT: Get "Username" value by specific Account
-	public async Task<Account> GetAccountByUsername(string username)
-	{
-		return await _accountRepository.GetByUsernameAsync(username);
-	}
+	    var claims = new[]
+	    {
+		    new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+		    new Claim(ClaimTypes.Name, account.Username),
+		    new Claim(ClaimTypes.Role, account.RoleId.ToString()),
+		    new Claim(ClaimTypes.Email, account.Email),
+	    };
 
-	// SELECT: Get "Email" value by specific Account
-	public async Task<Account> GetAccountByEmail(string email)
-	{
-		return await _accountRepository.GetByEmailAsync(email);
-	}
+	    var token = new JwtSecurityToken(
+		    issuer: _configuration["Jwt:Issuer"],
+		    audience: _configuration["Jwt:Audience"],
+		    claims: claims,
+		    expires: DateTime.UtcNow.AddMinutes(30),
+		    signingCredentials: credentials
+	    );
 
-	// ACTION: Validate User Credential
-	public async Task<bool> ValidateUserCredentialAsync(string username, string password)
-	{
-		var account = await _accountRepository.GetByUsernameAsync(username);
-		return account != null && account.Password == password;
-	}
-
-	// ACTION: Generate Token for user
-	public async Task<string> GenerateTokenAsync(string username)
-	{
-		// TODO: Implement logic to generate a JWT or other token
-		return await Task.FromResult("generated_token");
-	}
-
-	#endregion
-
-	#region == Service Application ==
-
-	// ACTION: User Registration
-	public async Task<(bool Success, string Result)> RegisterUser(Account account, string confirmPassword)
-	{
-		// Check if the username and email already exist
-		var existingAccountUserName = await GetAccountByUsername(account.Username);
-		var existingAccountEmail = await GetAccountByEmail(account.Email);
-		if (existingAccountUserName != null && existingAccountEmail != null)
-			return (false, "Username and Email already exist");
-
-		if (existingAccountEmail != null) return (false, "Email already exists");
-
-		if (existingAccountUserName != null) return (false, "Username already exists");
-
-		// Check if the "Password" and the "Confirm Password" are correct
-		if (account.Password != confirmPassword) return (false, "Password and Confirm Password are not the same");
-
-		// Create a new account
-		account.CreatedOn = DateTime.UtcNow;
-		account.IsActive = "N"; // TODO: Implement authorization logic later
-
-		// TODO: Hash the password before saving it
-		// account.Password = HashPassword(account.Password);
-
-		// Save the account to the database
-		await _accountRepository.AddUserAsync(account);
-
-		return (true, string.Empty);
-	}
-
-	// ACTION: User Login
-	public async Task<(bool Success, string Result, int AccountId)> LoginUser(Account account)
-	{
-		// Check if the username exists
-		var existingAccount = await GetAccountByUsername(account.Username);
-
-		if (existingAccount == null) return (false, "Username does not exist", 0);
-
-		// Validate password
-		if (existingAccount.Password != account.Password) return (false, "Invalid password", 0);
-
-		// Generate token
-		var result = await GenerateTokenAsync(account.Username);
-
-		// Return success with token and AccountId
-		return (true, result, existingAccount.AccountId);
-	}
-
-
-	#endregion
+	    return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 }

@@ -1,10 +1,13 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Paymentmethod
 {
-	public int PaymentMethodId { get; set; }
+    public int PaymentMethodId { get; set; }
 
-	public string? Name { get; set; }
+    public string? Name { get; set; }
 
-	public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+    [JsonIgnore]
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 }

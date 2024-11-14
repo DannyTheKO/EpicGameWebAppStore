@@ -1,5 +1,3 @@
-/* GamePage.css */
-
 .game-page {
     background-color: #161b22;
     color: #ffffff;
@@ -9,6 +7,8 @@
 .game-header {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .game-details {
@@ -16,24 +16,34 @@
     gap: 20px;
 }
 
-.game-details img {
-    width: 300px;
-    border-radius: 10px;
-}
+    .game-details img {
+        width: 300px;
+        border-radius: 10px;
+    }
 
 .game-info {
     flex-grow: 1;
 }
 
-.game-info h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
+    .game-info h2 {
+        font-size: 1.3rem; 
+        margin-bottom: 10px;
+    }
 
-.game-info p {
-    line-height: 1.6;
-}
+    .game-info p {
+        color:rgba(255, 255, 255, 0.65)!important;
+        font-weight:bold;
+        font-size: 1.2rem;
+        line-height: 1.6;
+    }
+    .game-info h3 {
+        color: white;
+        font-size: 1.3rem;
+    }
 
+        .game-info h3 span {
+            color: aqua; /* Màu aqua cho giá tiền */
+        }
 .purchase-button,
 .add-to-cart-button {
     padding: 10px 20px;
@@ -63,43 +73,41 @@
     background-color: #218838;
 }
 
-/* Phần yêu cầu cấu hình */
-.requirements {
-    margin-top: 30px;
-    background-color: #1c2025; /* Nền xám đậm như Epic Store */
+.game-metadata {
+    width: 350px;
+    background-color: #1c2025;
     padding: 20px;
-    border-radius: 10px;
-}
-
-.requirements h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #444;
-    padding-bottom: 10px;
-}
-
-.requirement-content {
-    display: flex;
-    justify-content: space-between; /* Căn đều 2 bên */
-    gap: 20px;
-}
-
-.requirement-category {
-    flex: 1;
-    background-color: #2c2f33; /* Nền xám cho mỗi cột */
-    padding: 15px;
     border-radius: 8px;
+    color: #dddddd;
+    font-size: 1rem;
+    font-weight:bold;
 }
 
-.requirement-category h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: #ff4081;
-}
+    .game-metadata p {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        margin: 10px 0;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #444;
+    }
 
-.requirement-category p {
-    margin: 5px 0;
-}
+        .game-metadata p:last-child {
+            border-bottom: none;
+        }
+
+    .game-metadata .label {
+        color: #ffffff; /* Màu trắng cho tiêu đề */
+        font-weight: bold; /* Chữ đậm cho tiêu đề */
+    }
+
+    .game-metadata .value {
+        color: aqua; /* Màu aqua cho giá trị */
+        text-align: right; /* Căn lề phải cho giá trị */
+    }
+
+
+
 
 .review-section {
     margin-top: 30px;
@@ -109,10 +117,10 @@
     color: #ffffff;
 }
 
-.review-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-}
+    .review-section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
 
 .rating {
     display: flex;
@@ -121,16 +129,16 @@
     margin-bottom: 10px;
 }
 
-.rating .star {
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #888;
-    transition: color 0.2s;
-}
+    .rating .star {
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #888;
+        transition: color 0.2s;
+    }
 
-.rating .star.selected {
-    color: #ffcc00; /* Màu vàng cho sao đã chọn */
-}
+        .rating .star.selected {
+            color: #ffcc00; /* Màu vàng cho sao đã chọn */
+        }
 
 textarea {
     width: 100%;
@@ -154,9 +162,9 @@ textarea {
     transition: background-color 0.3s;
 }
 
-.submit-review:hover {
-    background-color: #e63972;
-}
+    .submit-review:hover {
+        background-color: #e63972;
+    }
 
 .reviews-list {
     margin-top: 20px;
@@ -172,4 +180,42 @@ textarea {
 .review-rating .star {
     font-size: 1.2rem;
     color: #ffcc00;
+}
+
+
+.game-rating h3 {
+    color: white; 
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+
+    .game-rating h3 .rating-value {
+        color: aqua; 
+        margin-left: 5px; 
+    }
+
+    /* Màu vàng cho ngôi sao */
+    .game-rating h3 .star {
+        color: #ffcc00; /* Màu vàng cho ngôi sao */
+        margin-left: 5px;
+    }
+/* Căn chỉnh Overall Rating và Price */
+.game-rating, .game-price {
+    display: flex;
+    justify-content: space-between; /* Căn đều hai bên */
+    align-items: center;
+    font-size: 1.4rem;
+    color: white;
+}
+/* Màu aqua cho số rating và giá */
+.rating-value, .price-value {
+    color: aqua; /* Aqua cho số */
+    font-weight: bold;
+}
+
+/* Màu vàng cho ngôi sao */
+.star {
+    color: #ffcc00; /* Màu vàng cho ngôi sao */
 }

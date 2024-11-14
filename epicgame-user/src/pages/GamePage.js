@@ -1,11 +1,68 @@
-// src/pages/GamePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import '../styles/pages/GamePage.css';
 
 const GamePage = () => {
+    const { id } = useParams();
+    const [game, setGame] = useState(null);
+    const [publisherName, setPublisherName] = useState(null);
+    const [genreName, setGenreName] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [reviews, setReviews] = useState([]);
+
+    useEffect(() => {
+        const fetchGameDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:5084/Game/GetById/${id}`);
+                if (!response.ok) {
+                    throw new Error("Failed to load game details.");
+                }
+                const data = await response.json();
+                setGame(data);
+
+                // Log game data for debugging
+                console.log("Game data:", data);
+
+                // Check and fetch publisher name
+                if (!data.publisher && data.publisherId) {
+                    console.log("Fetching publisher with ID:", data.publisherId); // Log publisherId
+                    const publisherResponse = await fetch(`http://localhost:5084/Publisher/GetById/${data.publisherId}`);
+                    if (publisherResponse.ok) {
+                        const publisherData = await publisherResponse.json();
+                        setPublisherName(publisherData.name);
+                        console.log("Publisher data:", publisherData); // Log publisher response data
+                    } else {
+                        console.log("Failed to fetch publisher data");
+                    }
+                } else {
+                    setPublisherName(data.publisher);
+                }
+
+                // Check and fetch genre name
+                if (!data.genre && data.genreId) {
+                    console.log("Fetching genre with ID:", data.genreId); // Log genreId
+                    const genreResponse = await fetch(`http://localhost:5084/Genre/GetById/${data.genreId}`);
+                    if (genreResponse.ok) {
+                        const genreData = await genreResponse.json();
+                        setGenreName(genreData.name);
+                        console.log("Genre data:", genreData); // Log genre response data
+                    } else {
+                        console.log("Failed to fetch genre data");
+                    }
+                } else {
+                    setGenreName(data.genre);
+                }
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchGameDetails();
+    }, [id]);
 
     const handleRatingChange = (newRating) => {
         setRating(newRating);
@@ -20,56 +77,51 @@ const GamePage = () => {
         }
     };
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+    if (!game) return <div>No game details available</div>;
+
     return (
         <div className="game-page">
             <div className="game-header">
-                <h1>Game Title</h1>
+                <h1>{game.title || "Game Title"}</h1>
             </div>
+
             <div className="game-details">
-                <img src={require('../assets/game1.png')} alt="Game Cover" />
+                <img src={game.coverUrl || "default-cover-url.jpg"} alt="Game Cover" className="game-cover" />
                 <div className="game-info">
                     <h2>Description</h2>
-                    <p>This is a detailed description of the game. It includes information about the gameplay, features, and other details.</p>
-                    <h3>Price: $19.99</h3>
+                    <p>{game.description || "No description available."}</p>
+                    <div className="game-rating">
+                        <h3>Overall Rating:</h3>
+                        <span><span className="rating-value">{game.rating || "N/A"}</span> <span className="star">★</span></span>
+                    </div>
+                    <div className="game-price">
+                        <h3>Price:</h3>
+                        <span className="price-value">${game.price || "N/A"}</span>
+                    </div>
                     <button className="purchase-button">Purchase Now</button>
                     <button className="add-to-cart-button">Add to Cart</button>
                 </div>
-            </div>
 
-            {/* Phần yêu cầu cấu hình */}
-            <div className="requirements">
-                <h2>Requirements</h2>
-                <div className="requirement-content">
-                    <div className="requirement-category">
-                        <h3>Minimum</h3>
-                        <p><strong>OS:</strong> Windows 10 x64</p>
-                        <p><strong>Processor:</strong> Intel Core i5-4590 (4 * 3300) or AMD FX-8350 (4 * 4000) or equivalent</p>
-                        <p><strong>Memory:</strong> 8 GB RAM</p>
-                        <p><strong>Storage:</strong> 65GB SSD</p>
-                        <p><strong>DirectX:</strong> 11</p>
-                        <p><strong>Graphics:</strong> GeForce GTX 960 (4096 MB) or Radeon RX 480 (8192 MB) or Intel Arc A380 (8192 MB)</p>
-                    </div>
-                    <div className="requirement-category">
-                        <h3>Recommended</h3>
-                        <p><strong>OS:</strong> Windows 10 x64</p>
-                        <p><strong>Processor:</strong> Intel Core i9-9900k (8 * 3600) or AMD Ryzen 5 5600X (6 * 3700 ) or equivalent</p>
-                        <p><strong>Memory:</strong> 16 GB RAM</p>
-                        <p><strong>Storage:</strong> 65GB SSD</p>
-                        <p><strong>DirectX:</strong> 12</p>
-                        <p><strong>Graphics:</strong> GeForce RTX 2070 Super (8192 MB) or Radeon RX 6800 XT (16384 MB) or Intel Arc A770 (16384 MB)</p>
-                    </div>
+                {/* Additional Information */}
+                <div className="game-metadata">
+                    <p><span className="label">Author:</span> <span className="value">{game.author}</span></p>
+                    <p><span className="label">Publisher:</span> <span className="value">{publisherName || "N/A"}</span></p>
+                    <p><span className="label">Genre:</span> <span className="value">{genreName || "N/A"}</span></p>
+                    <p><span className="label">Release Date:</span> <span className="value">{game.release}</span></p>
                 </div>
             </div>
 
-            {/* Phần đánh giá và review */}
+            {/* Ratings and Reviews Section */}
             <div className="review-section">
                 <h2>User Ratings and Reviews</h2>
-                <form onSubmit={handleReviewSubmit}>
+                <form onSubmit={handleReviewSubmit} className="review-form">
                     <div className="rating">
                         <label>Rating:</label>
                         {[1, 2, 3, 4, 5].map((star) => (
-                            <span 
-                                key={star} 
+                            <span
+                                key={star}
                                 onClick={() => handleRatingChange(star)}
                                 className={`star ${star <= rating ? 'selected' : ''}`}
                             >

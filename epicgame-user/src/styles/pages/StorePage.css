@@ -1,15 +1,23 @@
 /* src/styles/pages/StorePage.css */
 .store-page {
-    background-color: #161b22; 
-    color: #ffffff; 
-    padding: 20px; 
+    color: #ffffff; /* Màu chữ trắng */
+    padding: 20px;
+    font-family: Arial, sans-serif; /* Đặt font chữ dễ nhìn */
+}
+
+.store-page h2 {
+    font-size: 2rem; /* Kích thước tiêu đề */
+    color: aqua; /* Màu chữ nổi bật */
+    margin-bottom: 15px; /* Giảm khoảng cách dưới */
+    text-align: center; /* Căn giữa tiêu đề */
 }
 
 .filter-container {
     display: flex;
-    justify-content: space-between; /* Căn đều các phần tử */
-    align-items: center; /* Căn giữa dọc */
-    margin-bottom: 20px; /* Khoảng cách dưới cùng */
+    flex-wrap: wrap; /* Cho phép các phần tử xếp hàng mới nếu cần */
+    gap: 15px; /* Khoảng cách giữa các phần tử */
+    justify-content: center; /* Căn giữa các phần tử */
+    margin-bottom: 20px;
 }
 
 .filter-options, .genre-container, .search-container {
@@ -42,32 +50,39 @@
     border-color: #00adee; /* Thay đổi màu viền khi chọn */
 }
 
-.search-container {
-    flex-grow: 1; /* Cho phép thanh tìm kiếm mở rộng */
-    max-width: 450px; /* Giảm chiều dài thanh lọc */
-    position: relative; /* Thêm position relative để định vị icon */
+.search-container, .genre-container {
+    position: relative;
 }
 
-.search-container input {
-    padding: 10px 10px 10px 40px; /* Thêm padding bên trái để tạo khoảng cách cho icon */
-    border: 1px solid #444; /* Viền tối */
-    border-radius: 5px; /* Bo góc cho input */
-    width: 100%; /* Đặt chiều rộng 100% cho input */
-    background-color: #333; /* Màu nền cho input */
-    color: white; /* Màu chữ trắng */
-}
-
+    .search-container input {
+        padding: 10px 15px; /* Tăng padding cho input và select */
+        border-radius: 25px; /* Bo góc tròn cho input và select */
+        border: 1px solid #555; /* Viền tối */
+        background-color: #333; /* Màu nền tối */
+        color: white;
+        font-size: 1rem;
+    }
+    .genre-container select {
+        padding: 10px 15px; /* Tăng padding cho input và select */
+        border-radius: 25px; /* Bo góc tròn cho input và select */
+        border: 1px solid #555; /* Viền tối */
+        background-color: #333; /* Màu nền tối */
+        color: white;
+        font-size: 1rem;
+    }
 .search-icon {
-    position: absolute; /* Định vị icon */
-    left: 10px; /* Đưa icon vào bên trái */
-    top: 50%; /* Căn giữa dọc */
-    transform: translateY(-50%); /* Căn giữa hoàn toàn */
-    color: white; /* Màu icon */
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bbb; /* Màu icon nhạt hơn */
 }
 
-.genre-container {
-    display: flex; /* Sử dụng flexbox để căn giữa các phần tử */
-    align-items: center; /* Căn giữa dọc */
+
+.genre-container label {
+    font-size: 1rem;
+    color: #b3b3b3; /* Màu chữ nhẹ nhàng hơn */
+    margin-right: 8px;
 }
 
 .genre-container label {
@@ -95,46 +110,84 @@ h2 {
 }
 
 .games-list {
-    display: grid; /* Sử dụng grid để hiển thị danh sách game */
-    grid-template-columns: repeat(5, 1fr); /* 5 game trên 1 hàng */
-    gap: 20px; /* Khoảng cách giữa các game */
-    margin-top: 20px; /* Khoảng cách trên cùng */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Tự điều chỉnh số cột */
+    gap: 20px;
+    padding: 0 20px;
 }
 
 .game-item {
-    background-color: #21262d; /* Nền cho từng game */
-    border: 1px solid #444; /* Viền tối */
-    border-radius: 8px; /* Bo góc */
-    padding: 10px; /* Padding cho game */
-    text-align: center; /* Căn giữa chữ trong game */
-    transition: transform 0.3s; /* Hiệu ứng khi hover */
+    background-color: #1e1e1e; /* Màu nền hơi sáng hơn */
+    border: 1px solid #444;
+    border-radius: 10px;
+    overflow: hidden; /* Ẩn phần bo góc của hình ảnh */
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s; /* Hiệu ứng mượt */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.game-item img {
-    width: 100%; /* Đặt chiều rộng hình ảnh 100% */
-    height: auto; /* Tự động điều chỉnh chiều cao */
-    border-radius: 5px; /* Bo góc cho hình ảnh */
+    .game-item img {
+        width: 100%;
+        height: 180px; /* Định chiều cao cho hình ảnh */
+        object-fit: cover;
+    }
+
+    .game-item h3 {
+        margin: 12px 0 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #e0e0e0; /* Màu chữ sáng hơn */
+    }
+
+    .game-item p {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        color: aqua; /* Màu xanh cho giá */
+        font-weight: bold;
+    }
+
+    .game-item:hover {
+        transform: translateY(-5px); /* Nhích lên khi hover */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Đổ bóng lớn hơn */
+    }
+
+    .game-item:nth-child(odd) {
+        background-color: #252525;
+    }
+
+.no-games {
+    text-align: center;
+    color: #888;
+    font-size: 1.2rem;
+    margin-top: 20px;
 }
 
-.game-item h3 {
-    margin: 10px 0 5px; /* Khoảng cách cho tên game */
-    color: white; /* Đặt màu chữ thành trắng */
-    text-decoration: none; 
-}
-
-.game-item p {
-    margin: 0; /* Không có margin cho giá */
-    color: #b3b3b3; /* Màu chữ cho giá */
-}
-
-.game-item:hover {
-    transform: scale(1.05); /* Phóng to khi hover */
-}
-
-.game-item:nth-child(odd) {
-    background-color: #2b3036; /* Nền tối cho game lẻ */
-}
 a {
-    text-decoration: none; /* Bỏ gạch dưới cho tất cả các thẻ <Link> */
-    color: inherit; /* Để màu sắc của link giống như màu của text cha */
+    text-decoration: none;
+    color: inherit;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+    .pagination button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: black;
+        font-weight:bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .pagination button.active {
+            background-color: aqua;
+        }
+
+        .pagination button:hover {
+            background-color: rgba(255, 255, 255, 0.65) !important;
+        }

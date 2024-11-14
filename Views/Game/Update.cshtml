@@ -1,0 +1,82 @@
+﻿@model Domain.Entities.Game
+
+@{
+	ViewData["Title"] = "Update Game";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Update Game</h1>
+
+<form asp-action="UpdateConfirm" method="post">
+	<input type="hidden" asp-for="GameId"/>
+
+	<div class="form-group">
+		<label asp-for="Title" class="control-label"></label>
+		<input asp-for="Title" class="form-control"/>
+		<span asp-validation-for="Title" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Price" class="control-label"></label>
+		<input asp-for="Price" class="form-control"/>
+		<span asp-validation-for="Price" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Author" class="control-label"></label>
+		<input asp-for="Author" class="form-control"/>
+		<span asp-validation-for="Author" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Release" class="control-label"></label>
+		<input asp-for="Release" class="form-control" type="date"/>
+		<span asp-validation-for="Release" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Rating" class="control-label"></label>
+		<input asp-for="Rating" class="form-control" type="number" min="0" max="10"/>
+		<span asp-validation-for="Rating" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Description" class="control-label"></label>
+		<textarea asp-for="Description" class="form-control"></textarea>
+		<span asp-validation-for="Description" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="GenreId" class="control-label">Genre</label>
+		<select asp-for="GenreId" class="form-control" asp-items="ViewBag.GenreId"></select>
+		<span asp-validation-for="GenreId" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="PublisherId" class="control-label">Publisher</label>
+		<select asp-for="PublisherId" class="form-control" asp-items="ViewBag.PublisherId"></select>
+		<span asp-validation-for="PublisherId" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<input type="submit" value="Update Game" class="btn btn-primary"/>
+		<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+	</div>
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+
+<script>
+    function validateRating() {
+        var rating = document.getElementById('Rating').value;
+        if (rating > 10) {
+            alert('Rating không được vượt quá 10!');
+            return false;
+        }
+        return true;
+    }
+</script>

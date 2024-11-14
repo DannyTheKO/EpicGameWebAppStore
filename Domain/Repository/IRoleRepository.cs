@@ -4,9 +4,9 @@ namespace Domain.Repository;
 
 public interface IRoleRepository
 {
-	Task<Role> GetByIdAsync(int id);
-	Task<IEnumerable<Role>> GetAllAsync();
-	Task<Role> AddAsync(Role role);
-	Task UpdateAsync(Role role);
-	Task DeleteAsync(int id);
+    Task<Role> GetById(int id);
+    Task<IEnumerable<Role>> GetAll();
+    Task<Role> Add(Role role);
+    Task Update(Role role);
+    Task Delete(int id);
 }
