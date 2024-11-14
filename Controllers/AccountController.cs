@@ -24,8 +24,8 @@ public class AccountController : Controller
 	}
 
 	// GET: Get account by accountID
-	[HttpGet("GetById/{accountId}")]
-	public async Task<ActionResult<Account>> GetAccountById([FromBody] int accountId)
+	[HttpGet("GetById")]
+	public async Task<ActionResult<Account>> GetAccountById([FromQuery] int accountId)
 	{
 		// Get Account by accountId
 		var account = await _accountService.GetAccountById(accountId);
@@ -50,12 +50,12 @@ public class AccountController : Controller
 
 	// PUT: Update specific account base on accountID
 	[HttpPut("UpdateAccount/{accountId}")]
-	public async Task<ActionResult> UpdateAccount([FromBody] int accountId)
+	public async Task<ActionResult> UpdateAccount([FromQuery] int accountId, [FromBody] Account account)
 	{
 		// Get Account by accountId
-		var account = await _accountService.GetAccountById(accountId);
+		var checkAccount = await _accountService.GetAccountById(accountId);
 
-		if (account == null) // if that account is empty
+		if (checkAccount == null) // if that account is empty
 		{
 			return BadRequest(new
 			{
@@ -75,8 +75,8 @@ public class AccountController : Controller
 
 
 	// DELETE: Delete account base on accountID
-	[HttpDelete("DeleteAccount/{accountId}")]
-	public async Task<ActionResult> DeleteAccount([FromBody] int accountId)
+	[HttpDelete("DeleteAccount")]
+	public async Task<ActionResult> DeleteAccount([FromQuery] int accountId)
 	{
 		var account = await _accountService.GetAccountById(accountId);
 

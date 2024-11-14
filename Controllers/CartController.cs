@@ -65,7 +65,6 @@ public class CartController : Controller
 		}
 
 		await _cartService.AddCart(cart);
-
 		return CreatedAtAction(
 			nameof(GetCartById),
 			new { id = cart.CartId },

@@ -41,7 +41,7 @@ public class GameController : Controller
     }
 
     [HttpGet("GetGame/{gameId}")]
-    public async Task<ActionResult<Game>> GetGameById([FromBody]int gameId)
+    public async Task<ActionResult<Game>> GetGameById([FromBody] int gameId)
 	{
 		var game = await _gameServices.GetGameById(gameId);
 		if (game == null) return NotFound();
