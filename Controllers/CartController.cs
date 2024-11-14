@@ -80,7 +80,7 @@ public class CartController : Controller
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{id}")]
-	public async Task<ActionResult> UpdateCart([FromBody] int id, Cart cart)
+	public async Task<ActionResult> UpdateCart([FromQuery] int id, [FromBody] Cart cart)
 	{
 		if (id != cart.CartId) return NotFound(new
 		{

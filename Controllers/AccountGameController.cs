@@ -33,8 +33,8 @@ public class AccountGameController : Controller
 		return Ok(accountGameList);
 	}
 
-	[HttpPost("UpdateAccountGame")]
-	public async Task<ActionResult> UpdateAccountGame([FromBody] int accountId, AccountGame accountGame)
+	[HttpPost("UpdateAccountGame/{accountId}")]
+	public async Task<ActionResult> UpdateAccountGame([FromQuery] int accountId, [FromBody] AccountGame accountGame)
 	{
 		var getAccountGame = await _accountGameService.GetAccountGameByAccountId(accountId);
 
@@ -69,7 +69,7 @@ public class AccountGameController : Controller
 	}
 
 	[HttpGet("GetAccountGameByGameId/{gameId}")]
-	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByGameId([FromBody]int gameId)
+	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByGameId([FromBody] int gameId)
 	{
 		var accountGameList = await _accountGameService.GetAccountGameByGameId(gameId);
 
@@ -91,7 +91,7 @@ public class AccountGameController : Controller
 	}
 
 	[HttpGet("GetAccountGameByAccountId/{accountId}")]
-	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByAccountId([FromBody]int accountId)
+	public async Task<ActionResult<IEnumerable<AccountGame>>> GetAccountGameByAccountId([FromBody] int accountId)
 	{
 		var accountGameList = await _accountGameService.GetAccountGameByAccountId(accountId);
 		
