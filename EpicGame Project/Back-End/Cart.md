@@ -1,9 +1,11 @@
-#### Cartdetail
-- [ ] Chưa làm xong
-#### GetUserByID
-- [ ] Lỗi xem 1 tài khoản
-#### Cart
-- [ ] Create lỗi 
+
+
+#Bug/Error
+
+
+#Fix
+### POST: CreateCart
+- [x] Create lỗi ✅ 2024-11-15
 ```json
 {
   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
@@ -21,9 +23,7 @@
 }
 ```
 
-- /Cart/GetCart/{cartId}: 
-
+- [x] /Cart/GetCart/{cartId}: ✅ 2024-11-15
+```shell
+TypeError: Failed to execute 'fetch' on 'Window': Request with GET/HEAD method cannot have body.
 ```
-|TypeError: Failed to execute 'fetch' on 'Window': Request with GET/HEAD method cannot have body.|
-```
-

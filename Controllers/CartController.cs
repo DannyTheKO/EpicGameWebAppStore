@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
@@ -8,16 +9,19 @@ namespace EpicGameWebAppStore.Controllers;
 [ApiController]
 public class CartController : Controller
 {
-	private readonly IAccountService _accountService;
 	private readonly ICartService _cartService;
+	private readonly IGameService _gameService;
+	private readonly IAccountService _accountService;
 	private readonly IPaymentMethodService _paymentMethodService;
 
 	public CartController(
 		ICartService cartService,
+		IGameService gameService,
 		IAccountService accountService,
 		IPaymentMethodService paymentMethodService)
 	{
 		_cartService = cartService;
+		_gameService = gameService;
 		_accountService = accountService;
 		_paymentMethodService = paymentMethodService;
 	}
@@ -31,28 +35,18 @@ public class CartController : Controller
 	}
 
 	// GET: api/Cart/5
-	[HttpGet("GetCart/{cartId}")]
-	public async Task<ActionResult<Cart>> GetCartById([FromBody] int cartId)
+	[HttpGet("GetCart")]
+	public async Task<ActionResult<Cart>> GetCartById([FromQuery] int cartId)
 	{
 		var cart = await _cartService.GetCartById(cartId);
 		if (cart == null) return NotFound();
 		return Ok(cart);
 	}
 
-	// POST: Cart/CreateCart
+
 	[HttpPost("CreateCart")]
-	public async Task<ActionResult> CreateCart([FromBody] Cart cart)
+	public async Task<ActionResult> CreateCart([FromBody] CartCreateFormModel cartCreateFormModel)
 	{
-		//bool hasPermission = await _authorizationServices.UserHasPermission(GetCurrentLoginAccountId(), "create");
-
-		//if (!hasPermission)
-		//{
-		//	return StatusCode(403, new { 
-		//		success = false,
-		//		message = "Access Denied: Insufficient permissions to create cart" 
-		//	});
-		//}
-
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -64,18 +58,32 @@ public class CartController : Controller
 			});
 		}
 
+		// Check if that AccountId exist
+		if (cartCreateFormModel.AccountId == null)
+		{
+			return Ok(new { success = false, message = "Account do not exist!" });
+		}
+
+		// Check if that PaymentMethod exist
+		if (cartCreateFormModel.PaymentMethodId == null)
+		{
+			return Ok(new { success = false, message = "Payment do not exist!" });
+		}
+
+		// Create a new cart first
+		var cart = new Cart
+		{
+			AccountId = cartCreateFormModel.AccountId,
+			PaymentMethodId = cartCreateFormModel.PaymentMethodId,
+			CreatedOn = DateTime.UtcNow,
+			TotalAmount = 0
+		};
+
 		await _cartService.AddCart(cart);
-		return CreatedAtAction(
-			nameof(GetCartById),
-			new { id = cart.CartId },
-			new
-			{
-				success = true,
-				message = "Cart created successfully",
-				cartList = cart
-			}
-		);
+		return Ok(new { success = true, message = "Cart created successfully" });
 	}
+
+
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{id}")]
@@ -149,6 +157,6 @@ public class CartController : Controller
 			success = true,
 			message = "Cart Found",
 			cartList = cart
-		}); 
+		});
 	}
 }

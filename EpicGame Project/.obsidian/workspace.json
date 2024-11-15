@@ -4,24 +4,74 @@
     "type": "split",
     "children": [
       {
-        "id": "98f1ae336141abdb",
-        "type": "tabs",
+        "id": "e1ccb12c8089b081",
+        "type": "split",
         "children": [
           {
-            "id": "d1c5061052c96735",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "testBackend.md",
-                "mode": "source",
-                "source": false
+            "id": "98f1ae336141abdb",
+            "type": "tabs",
+            "dimension": 57.66752577319587,
+            "children": [
+              {
+                "id": "d1c5061052c96735",
+                "type": "leaf",
+                "state": {
+                  "type": "kanban",
+                  "state": {
+                    "file": "Back-End/Back-End Progress.md",
+                    "kanbanViewState": {
+                      "kanban-plugin": "board",
+                      "list-collapse": [
+                        false,
+                        false,
+                        false
+                      ]
+                    }
+                  },
+                  "icon": "lucide-trello",
+                  "title": "Back-End Progress"
+                }
+              }
+            ]
+          },
+          {
+            "id": "7fc33f1517d5cf06",
+            "type": "tabs",
+            "dimension": 42.33247422680412,
+            "children": [
+              {
+                "id": "546ef9940b84f1a4",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Back-End/Account.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Account"
+                }
               },
-              "icon": "lucide-file",
-              "title": "testBackend"
-            }
+              {
+                "id": "847e17ca6517673a",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Back-End/Cart.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Cart"
+                }
+              }
+            ],
+            "currentTab": 1
           }
-        ]
+        ],
+        "direction": "vertical"
       }
     ],
     "direction": "vertical"
@@ -77,7 +127,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 262.5
   },
   "right": {
     "id": "35bec777194f21c3",
@@ -159,9 +209,18 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "obsidian-kanban:Create new board": false
     }
   },
   "active": "d1c5061052c96735",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "Back-End/Cart.md",
+    "Back-End/Back-End Progress.md",
+    "Back-End/Account.md",
+    "Back-End Todo List.md",
+    "Back-End/CartDetail.md",
+    "Back-End",
+    "testFrontend.md"
+  ]
 }
