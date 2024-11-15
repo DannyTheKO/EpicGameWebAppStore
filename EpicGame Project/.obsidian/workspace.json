@@ -11,21 +11,14 @@
             "id": "847e17ca6517673a",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Back-End/Back-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Back-End/CartDetail.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "Back-End Progress"
+              "icon": "lucide-file",
+              "title": "CartDetail"
             }
           }
         ]
@@ -172,9 +165,10 @@
   },
   "active": "847e17ca6517673a",
   "lastOpenFiles": [
+    "Back-End/Back-End Progress.md",
+    "Tasks Plugin - Review and check your Statuses 2024-11-15 12-39-47.md",
     "Back-End/Cart.md",
     "Back-End/CartDetail.md",
-    "Back-End/Back-End Progress.md",
     "Back-End/Account.md",
     "Back-End Todo List.md",
     "Back-End",
