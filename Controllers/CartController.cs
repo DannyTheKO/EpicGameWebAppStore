@@ -45,7 +45,7 @@ public class CartController : Controller
 
 
 	[HttpPost("CreateCart")]
-	public async Task<ActionResult> CreateCart([FromBody] CartCreateFormModel cartCreateFormModel)
+	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -59,13 +59,13 @@ public class CartController : Controller
 		}
 
 		// Check if that AccountId exist
-		if (cartCreateFormModel.AccountId == null)
+		if (cartFormModel.AccountId == null)
 		{
 			return Ok(new { success = false, message = "Account do not exist!" });
 		}
 
 		// Check if that PaymentMethod exist
-		if (cartCreateFormModel.PaymentMethodId == null)
+		if (cartFormModel.PaymentMethodId == null)
 		{
 			return Ok(new { success = false, message = "Payment do not exist!" });
 		}
@@ -73,8 +73,8 @@ public class CartController : Controller
 		// Create a new cart first
 		var cart = new Cart
 		{
-			AccountId = cartCreateFormModel.AccountId,
-			PaymentMethodId = cartCreateFormModel.PaymentMethodId,
+			AccountId = cartFormModel.AccountId,
+			PaymentMethodId = cartFormModel.PaymentMethodId,
 			CreatedOn = DateTime.UtcNow,
 			TotalAmount = 0
 		};
@@ -87,7 +87,7 @@ public class CartController : Controller
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{id}")]
-	public async Task<ActionResult> UpdateCart([FromQuery] int id, [FromBody] Cart cart)
+	public async Task<ActionResult<Cart>> UpdateCart([FromQuery] int id, [FromBody] Cart cart)
 	{
 		if (id != cart.CartId) return NotFound(new
 		{

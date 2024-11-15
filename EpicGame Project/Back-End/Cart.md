@@ -1,9 +1,3 @@
-
-
-#Bug/Error
-
-
-#Fix
 ### POST: CreateCart
 - [x] Create lỗi ✅ 2024-11-15
 ```json

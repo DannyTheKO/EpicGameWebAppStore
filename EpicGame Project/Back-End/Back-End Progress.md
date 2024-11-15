@@ -6,6 +6,10 @@ kanban-plugin: board
 
 ## Todo
 
+
+
+## Working
+
 - [ ] [[CartDetail]]
 
 
@@ -13,6 +17,7 @@ kanban-plugin: board
 
 - [ ] [[Cart]]
 - [ ] [[Account]]
+- [ ] Populate more data in the database
 
 
 ## Done
@@ -23,6 +28,6 @@ kanban-plugin: board
 
 %% kanban:settings
 ```
-{"kanban-plugin":"board","list-collapse":[false,false,false]}
+{"kanban-plugin":"board","list-collapse":[false,false,false,false]}
 ```
 %%

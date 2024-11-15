@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace EpicGameWebAppStore.Models
 {
-	public class CartCreateFormModel
+	public class CartFormModel
 	{
 		[Required(ErrorMessage = "Account ID is required")]
 		public int AccountId { get; set; }
