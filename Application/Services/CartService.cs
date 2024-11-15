@@ -20,30 +20,43 @@ public class CartService : ICartService
 		return await _cartRepository.GetAll();
 	}
 
-	public async Task<Cart> AddCart(Cart cart)
+	public async Task AddCart(Cart cart)
 	{
+		// Retrieve the existing cart from the database
+		var existingCart = await _cartRepository.GetById(cart.CartId);
+		if (existingCart != null) throw new Exception("Cart already exists.");
+
+		// Add the new cart to the database
 		await _cartRepository.Add(cart);
-		return cart;
 	}
 
-	public async Task<Cart> UpdateCart(Cart cart)
+	public async Task UpdateCart(Cart cart)
 	{
-		await _cartRepository.Update(cart);
-		return cart;
+		// Retrieve the existing cart from the database
+		var existingCart = await _cartRepository.GetById(cart.CartId);
+		if (existingCart == null) throw new Exception("Cart not found.");
+
+		// Update the cart details
+		existingCart.AccountId = cart.AccountId;
+		existingCart.PaymentMethodId = cart.PaymentMethodId;
+
+		await _cartRepository.Update(existingCart);
 	}
 
-	public async Task<Cart> DeleteCart(int id)
+	public async Task DeleteCart(int id)
 	{
-		var cart = await _cartRepository.GetById(id);
-		if (cart == null) throw new Exception("Cart not found.");
+		// Retrieve the existing cart from the database
+		var existingCart = await _cartRepository.GetById(id);
+		if (existingCart == null) throw new Exception("Cart not found.");
+
 		await _cartRepository.Delete(id);
-		return cart;
 	}
 
 	public async Task<Cart> GetCartById(int id)
 	{
 		return await _cartRepository.GetById(id);
 	}
+	#endregion
 
 	public async Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId)
 	{
@@ -62,7 +75,8 @@ public class CartService : ICartService
 		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
 	}
 
-	#endregion
+
+
 
 
 	public async Task<Cart> AddToCart(int accountId, int gameId, int quantity)
@@ -105,4 +119,18 @@ public class CartService : ICartService
 		}
 	}
 
+	// ACTION: Calculate Total Amount of all CartDetail with Discount and Price
+	public async Task<decimal> CalculateTotalAmount(int cartId)
+	{
+		var cart = await _cartRepository.GetById(cartId);
+		if (cart == null) throw new Exception("Cart not found.");
+
+		decimal totalAmount = cart.Cartdetails.Sum(cd => 
+			cd.Price.GetValueOrDefault() * 
+			cd.Quantity.GetValueOrDefault() * 
+			(1 - cd.Discount.GetValueOrDefault() / 100)
+		);
+
+		return totalAmount;
+	}
 }

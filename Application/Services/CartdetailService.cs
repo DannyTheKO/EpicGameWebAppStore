@@ -45,8 +45,10 @@ public class CartdetailService : ICartdetailService
 		return await _cartdetailRepository.GetById(id);
 	}
 
-	public async Task<IEnumerable<Cartdetail>> GetCartdetailsByCartIdAsync(int cartId)
+	public async Task<IEnumerable<Cartdetail>> GetAllCartDetailByCartId(int cartId)
 	{
-		return await _cartdetailRepository.GetByCartId(cartId);
+		var listCartDetail = await _cartdetailRepository.GetAll();
+		return listCartDetail.Where(x => x.CartId == cartId);
 	}
+
 }

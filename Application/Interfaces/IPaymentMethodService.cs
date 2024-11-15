@@ -4,9 +4,9 @@ namespace Application.Interfaces;
 
 public interface IPaymentMethodService
 {
-    Task<IEnumerable<Paymentmethod>> GetAllPaymentMethodsAsync();
-    Task<Paymentmethod> AddPaymentMethodAsync(Paymentmethod paymentMethod);
-    Task<Paymentmethod> UpdatePaymentMethodAsync(Paymentmethod paymentMethod);
-    Task<Paymentmethod> DeletePaymentMethodAsync(int id);
-    Task<Paymentmethod> GetPaymentMethodByIdAsync(int id);
+    Task<IEnumerable<Paymentmethod>> GetAllPaymentMethods();
+    Task<Paymentmethod> AddPaymentMethod(Paymentmethod paymentMethod);
+    Task<Paymentmethod> UpdatePaymentMethod(Paymentmethod paymentMethod);
+    Task<Paymentmethod> DeletePaymentMethod(int id);
+    Task<Paymentmethod> GetPaymentMethodById(int id);
 }

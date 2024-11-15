@@ -1,4 +1,4 @@
-### POST: CreateCart
+### POST: Cart/CreateCart
 - [x] Create lỗi ✅ 2024-11-15
 ```json
 {
@@ -22,9 +22,9 @@
 TypeError: Failed to execute 'fetch' on 'Window': Request with GET/HEAD method cannot have body.
 ```
 
-### GET: Update Cart
+### PUT: Update Cart
 
-- [ ] Cart/UpdateCart/{id}
+- [x] Cart/UpdateCart/{id} ✅ 2024-11-15
 ```
 Error: response status is 400
 
@@ -55,8 +55,8 @@ Download
 }
 ```
 
-### Delete Cart
-- [ ] /Cart/DeleteCart/{id}: 
+### DELETE: Delete Cart
+- [x] /Cart/DeleteCart/{id}: ✅ 2024-11-15
  ```
  Error: response status is 400
   ```json

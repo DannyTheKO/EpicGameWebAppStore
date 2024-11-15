@@ -13,24 +13,24 @@ public class PaymentMethodService : IPaymentMethodService
         _paymentMethodRepository = paymentMethodRepository;
     }
 
-    public async Task<IEnumerable<Paymentmethod>> GetAllPaymentMethodsAsync()
+    public async Task<IEnumerable<Paymentmethod>> GetAllPaymentMethods()
     {
         return await _paymentMethodRepository.GetAll();
     }
 
-    public async Task<Paymentmethod> AddPaymentMethodAsync(Paymentmethod paymentMethod)
+    public async Task<Paymentmethod> AddPaymentMethod(Paymentmethod paymentMethod)
     {
         await _paymentMethodRepository.Add(paymentMethod);
         return paymentMethod;
     }
 
-    public async Task<Paymentmethod> UpdatePaymentMethodAsync(Paymentmethod paymentMethod)
+    public async Task<Paymentmethod> UpdatePaymentMethod(Paymentmethod paymentMethod)
     {
         await _paymentMethodRepository.Update(paymentMethod);
         return paymentMethod;
     }
 
-    public async Task<Paymentmethod> DeletePaymentMethodAsync(int id)
+    public async Task<Paymentmethod> DeletePaymentMethod(int id)
     {
         var paymentMethod = await _paymentMethodRepository.GetById(id);
         if (paymentMethod == null) throw new Exception("Payment method not found.");
@@ -38,7 +38,7 @@ public class PaymentMethodService : IPaymentMethodService
         return paymentMethod;
     }
 
-    public async Task<Paymentmethod> GetPaymentMethodByIdAsync(int id)
+    public async Task<Paymentmethod> GetPaymentMethodById(int id)
     {
         return await _paymentMethodRepository.GetById(id);
     }

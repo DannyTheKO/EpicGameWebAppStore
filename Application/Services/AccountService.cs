@@ -29,16 +29,13 @@ public class AccountService : IAccountService
     // ACTION: Update User
     public async Task<Account> UpdateAccount(Account account)
     {
-        if (account == null) // NOT FOUND!
-            throw new ArgumentNullException(nameof(account), "Account cannot be null");
-
-        // Retrieve the existing account from the database
+		// Retrieve the existing account from the database
         var existingAccount = await _accountRepository.GetId(account.AccountId);
         if (existingAccount == null) throw new Exception("Account not found");
 
         // Update the account details
         existingAccount.Username = account.Username;
-        existingAccount.Role.RoleId = account.Role.RoleId;
+        existingAccount.Role.RoleId = account.RoleId;
         existingAccount.IsActive = account.IsActive;
         existingAccount.Password = account.Password; // Consider hashing the password
         existingAccount.Email = account.Email;

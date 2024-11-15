@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "7fc33f1517d5cf06",
+        "id": "a3d0b1605f929d84",
         "type": "tabs",
         "children": [
           {
-            "id": "847e17ca6517673a",
+            "id": "bfd47478603314f6",
             "type": "leaf",
             "state": {
               "type": "kanban",
@@ -170,13 +170,15 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "847e17ca6517673a",
+  "active": "bfd47478603314f6",
   "lastOpenFiles": [
-    "Back-End/CartDetail.md",
-    "Back-End/Back-End Progress.md",
-    "Tasks Plugin - Review and check your Statuses 2024-11-15 12-39-47.md",
     "Back-End/Cart.md",
+    "Back-End/Back-End Progress.md",
     "Back-End/Account.md",
+    "Back-End/img/Pasted image 20241115132340.png",
+    "Back-End/CartDetail.md",
+    "Back-End/img",
+    "Tasks Plugin - Review and check your Statuses 2024-11-15 12-39-47.md",
     "Back-End Todo List.md",
     "Back-End",
     "testFrontend.md"

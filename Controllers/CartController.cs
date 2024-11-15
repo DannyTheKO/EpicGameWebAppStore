@@ -10,17 +10,20 @@ namespace EpicGameWebAppStore.Controllers;
 public class CartController : Controller
 {
 	private readonly ICartService _cartService;
+	private readonly ICartdetailService _cartdetailService;
 	private readonly IGameService _gameService;
 	private readonly IAccountService _accountService;
 	private readonly IPaymentMethodService _paymentMethodService;
 
 	public CartController(
 		ICartService cartService,
+		ICartdetailService cartdetailService,
 		IGameService gameService,
 		IAccountService accountService,
 		IPaymentMethodService paymentMethodService)
 	{
 		_cartService = cartService;
+		_cartdetailService = cartdetailService;
 		_gameService = gameService;
 		_accountService = accountService;
 		_paymentMethodService = paymentMethodService;
@@ -76,7 +79,7 @@ public class CartController : Controller
 			AccountId = cartFormModel.AccountId,
 			PaymentMethodId = cartFormModel.PaymentMethodId,
 			CreatedOn = DateTime.UtcNow,
-			TotalAmount = 0
+			TotalAmount = 0,
 		};
 
 		await _cartService.AddCart(cart);
@@ -86,13 +89,15 @@ public class CartController : Controller
 
 
 	// PUT: Cart/UpdateCart/{id}
-	[HttpPut("UpdateCart/{id}")]
-	public async Task<ActionResult<Cart>> UpdateCart([FromQuery] int id, [FromBody] Cart cart)
+	[HttpPut("UpdateCart/{cartId}")]
+	public async Task<ActionResult<CartFormModel>> UpdateCart(int cartId, [FromBody] CartFormModel cartFormModel)
 	{
-		if (id != cart.CartId) return NotFound(new
+		// Check if CartId exist
+		var checkCartId = await _cartService.GetCartById(cartId);
+		if (checkCartId == null) return NotFound(new
 		{
 			sucess = false,
-			message = "Requested Cart do not existed!"
+			message = "Requested Cart do not exist!"
 		});
 
 		if (!ModelState.IsValid)
@@ -106,21 +111,57 @@ public class CartController : Controller
 			});
 		}
 
+		// Check if AccountId exist
+		var checkAccountId = await _accountService.GetAccountById(cartFormModel.AccountId);
+		if (checkAccountId == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Requested Account do not exist!"
+			});
+		}
+
+		// Check if PaymentMethodId exist
+		var checkPaymentMethodId = await _paymentMethodService.GetPaymentMethodById(cartFormModel.PaymentMethodId);
+		if (checkPaymentMethodId == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Requested Payment Method do not exist!"
+			});
+		}
+
+		// Create a new cart
+		var cart = new Cart()
+		{
+			CartId = cartId,
+			AccountId = cartFormModel.AccountId,
+			PaymentMethodId = cartFormModel.PaymentMethodId,
+			TotalAmount = await _cartService.CalculateTotalAmount(cartId),
+			CreatedOn = DateTime.UtcNow,
+			Cartdetails = (await _cartdetailService.GetAllCartDetailByCartId(cartId)).ToList()
+		};
+
+		// Update Cart
 		await _cartService.UpdateCart(cart);
+		
 		return Ok(new
 		{
 			sucess = true,
-			message = "Updated cart successfully"
+			message = "Updated cart successfully",
+			data = cart
 		});
 	}
 
 	// DELETE: Cart/DeleteCart/{id}
-	[HttpDelete("DeleteCart/{id}")]
-	public async Task<ActionResult> DeleteCart([FromBody] int id)
+	[HttpDelete("DeleteCart/{cartId}")]
+	public async Task<ActionResult> DeleteCart(int cartId)
 	{
-		var cart = await _cartService.GetCartById(id);
+		var existingCart = await _cartService.GetCartById(cartId);
 
-		if (cart == null)
+		if (existingCart == null)
 		{
 			return BadRequest(new
 			{
@@ -130,10 +171,12 @@ public class CartController : Controller
 
 		}
 
+		await _cartService.DeleteCart(cartId);
+
 		return Ok(new
 		{
 			success = true,
-			message = "Successfully Deleted Cart"
+			message = "Successfully Deleted Cart",
 		});
 	}
 

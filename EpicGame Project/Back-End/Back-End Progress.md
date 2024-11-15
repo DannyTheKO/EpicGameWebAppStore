@@ -14,9 +14,9 @@ kanban-plugin: board
 
 ## Testing
 
-- [ ] [[Account]]
-- [ ] [[Cart]]
 - [ ] [[CartDetail]]
+- [ ] [[Cart]]
+- [ ] [[Account]]
 
 
 ## Done

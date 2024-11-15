@@ -88,9 +88,16 @@ public class CartdetailController : Controller
 		});
 	}
 
-	[HttpPut("UpdateCartDetail")]
-	public async Task<ActionResult<CartDetailFormModel>> UpdateCartDetail([FromBody] CartDetailFormModel cartDetailFormModel)
+	[HttpPut("UpdateCartDetail/{cartDetailId}")]
+	public async Task<ActionResult<CartDetailFormModel>> UpdateCartDetail(int cartDetailId, [FromBody] CartDetailFormModel cartDetailFormModel)
 	{
+		// Check if that CartDetailId is exist
+		var checkCartDetail = await _cartdetailService.GetCartDetailById(cartDetailId);
+		if (checkCartDetail == null)
+		{
+			return NotFound(new { success = false, message = "Cart detail not found" });
+		}
+
 		// Check if the user input is valid
 		if (!ModelState.IsValid)
 		{
