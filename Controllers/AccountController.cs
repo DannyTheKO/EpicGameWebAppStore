@@ -119,6 +119,7 @@ public class AccountController : Controller
 			Password = accountFormModel.Password,
 			Email = accountFormModel.Email,
 			RoleId = accountFormModel.RoleId,
+			Role = await _roleService.GetRoleById(accountFormModel.RoleId),
 			IsActive = accountFormModel.IsActive,
 			CreatedOn = DateTime.UtcNow
 		};

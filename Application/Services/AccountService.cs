@@ -35,7 +35,7 @@ public class AccountService : IAccountService
 
         // Update the account details
         existingAccount.Username = account.Username;
-        existingAccount.Role.RoleId = account.RoleId;
+        existingAccount.RoleId = account.RoleId;
         existingAccount.IsActive = account.IsActive;
         existingAccount.Password = account.Password; // Consider hashing the password
         existingAccount.Email = account.Email;
