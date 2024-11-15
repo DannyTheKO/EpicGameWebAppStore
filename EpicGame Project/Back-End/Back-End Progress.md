@@ -6,6 +6,11 @@ kanban-plugin: board
 
 ## Todo
 
+- [ ] Genre: not done
+- [ ] Discount: not done
+- [ ] AccountGame: not done
+- [ ] Lỗi database khi update cartdetail
+- [ ] Dư trường cartdetail trong create, update game
 
 
 ## Working
@@ -15,13 +20,14 @@ kanban-plugin: board
 ## Testing
 
 - [ ] [[CartDetail]]
-- [ ] [[Cart]]
-- [ ] [[Account]]
+- [ ] [[Game]]
 
 
 ## Done
 
 - [ ] Populate more data in the database
+- [ ] [[Cart]]
+- [ ] [[Account]]
 
 
 
