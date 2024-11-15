@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Cart.md",
+                "file": "CartDetail.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Cart"
+              "title": "CartDetail"
             }
           }
         ],
@@ -179,9 +179,9 @@
   },
   "active": "cf9c6537a67fe480",
   "lastOpenFiles": [
-    "Back-End Progress.md",
     "Cart.md",
     "CartDetail.md",
+    "Back-End Progress.md",
     "Account.md",
     "Pasted image 20241115132340.png",
     "Account",
