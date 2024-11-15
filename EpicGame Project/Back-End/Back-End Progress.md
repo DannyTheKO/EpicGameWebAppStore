@@ -10,18 +10,18 @@ kanban-plugin: board
 
 ## Working
 
-- [ ] [[CartDetail]]
 
 
 ## Testing
 
-- [ ] [[Cart]]
 - [ ] [[Account]]
-- [ ] Populate more data in the database
+- [ ] [[Cart]]
+- [ ] [[CartDetail]]
 
 
 ## Done
 
+- [ ] Populate more data in the database
 
 
 
