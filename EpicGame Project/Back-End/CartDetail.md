@@ -7,7 +7,7 @@
 	- [x] PUT: UpdateCartDetail ✅ 2024-11-15
 	- [x] DELETE: DeleteCartDetail/{id} ✅ 2024-11-15
 	- [ ] POST:Cartdetail/UpdateCartDetail
-	- Lỗi khi sửa 1 cartdetailID, vì không có trường trường nhập cartdetailID nên project tự thêm một cartdetailId vào database
+	- Lỗi khi sửa 1 cartdetailID, vì không có trường trường nhập cartdetailID nên project tự thêm một cartdetailId vào database![[Pasted image 20241115151103.png]]
 
 - Service Function
 	- [ ] 
