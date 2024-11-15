@@ -32,7 +32,7 @@ public class AccountService : IAccountService
 		// Retrieve the existing account from the database
         var existingAccount = await _accountRepository.GetId(account.AccountId);
         if (existingAccount == null) throw new Exception("Account not found");
-
+			
         // Update the account details
         existingAccount.Username = account.Username;
         existingAccount.RoleId = account.RoleId;

@@ -13,12 +13,14 @@ public class CartdetailController : Controller
 	private readonly ICartdetailService _cartdetailService;
 	private readonly ICartService _cartService;
 	private readonly IGameService _gameService;
+	private readonly IDiscountService _discountService;
 
-	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService)
+	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService, IDiscountService discountService)
 	{
 		_cartdetailService = cartdetailService;
 		_gameService = gameService;
 		_cartService = cartService;
+		_discountService = discountService;
 	}
 
 	[HttpGet("GetAllCartDetail")]
@@ -124,14 +126,17 @@ public class CartdetailController : Controller
 			return NotFound(new { success = false, message = "Game not found" });
 		}
 
+		// Get the discount for the game
+		var discount = (await _discountService.GetDiscountByGameId(cartDetailFormModel.GameId)).FirstOrDefault()?.Percent ?? 0;
+
 		// Create a new cart detail
 		var cartDetail = new Cartdetail()
 		{
-			CartId = cartDetailFormModel.CartId,
+			CartDetailId = cartDetailId,
 			GameId = cartDetailFormModel.GameId,
 			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
-			Discount = cartDetailFormModel.Discount
+			Discount = discount
 		};
 
 		// Update the cart detail to the database
