@@ -132,7 +132,8 @@ public class CartdetailController : Controller
 		// Create a new cart detail
 		var cartDetail = new Cartdetail()
 		{
-			CartDetailId = cartDetailId,
+			CartDetailId = checkCartDetail.CartDetailId,
+			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
 			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,

@@ -28,9 +28,22 @@ public class CartdetailService : ICartdetailService
 
 	public async Task<Cartdetail> UpdateCartDetail(Cartdetail cartDetail)
 	{
-		await _cartdetailRepository.Update(cartDetail);
-		return cartDetail;
+		var existingCartDetail = await _cartdetailRepository.GetById(cartDetail.CartDetailId);
+		if (existingCartDetail == null) throw new Exception("Cart detail not found");
+    
+		// Update the properties of existing entity
+		existingCartDetail.CartDetailId = cartDetail.CartDetailId;
+		existingCartDetail.CartId = cartDetail.CartId;
+		existingCartDetail.GameId = cartDetail.GameId;
+		existingCartDetail.Quantity = cartDetail.Quantity;
+		existingCartDetail.Price = cartDetail.Price;
+		existingCartDetail.Discount = cartDetail.Discount;
+    
+		// Update using the existing tracked entity
+		await _cartdetailRepository.Update(existingCartDetail);
+		return existingCartDetail;
 	}
+
 
     public async Task<Cartdetail> DeleteCartDetail(int id)
     {
