@@ -1,7 +1,6 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 import '../styles/components/Navbar.css';
 import EpicGamesLogo from '../assets/EpicGames_Logo.png';
 
@@ -13,14 +12,27 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState("User");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
+    const [isNavbarVisible, setIsNavbarVisible] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('accountToken');
         if (token) {
             setIsLoggedIn(true);
-            setUsername("YourUserName"); // Thay thế bằng tên người dùng thực tế từ API
+            setUsername("Gamer");
         }
     }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollPos = window.pageYOffset;
+            setIsNavbarVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
+            setPrevScrollPos(currentScrollPos);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [prevScrollPos]);
 
     const handleLogout = () => {
         localStorage.removeItem('accountToken');
@@ -29,20 +41,22 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar">
-            <Link to="/" className="navbar-logo">
-                <img src={EpicGamesLogo} alt="Epic Games Logo" className="logo-image" />
-            </Link>
-            <ul className="navbar-links">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/store">Store</Link></li>
-                <li><Link to="/library">Library</Link></li>
-            </ul>
+        <nav className={`navbar ${isNavbarVisible ? 'visible' : 'hidden'}`}>
+            <div className="navbar-left">
+                <Link to="/" className="navbar-logo">
+                    <img src={EpicGamesLogo} alt="Epic Games Logo" />
+                </Link>
+                <ul className="navbar-links">
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/store">Store</Link></li>
+                    <li><Link to="/library">Library</Link></li>
+                </ul>
+            </div>
 
             <div className="navbar-buttons">
                 {!isHomePage && (
                     <Link to="/cart" className="btn cart">
-                        <FaShoppingCart size={20} color="white" />
+                        <FaShoppingCart size={20} />
                     </Link>
                 )}
                 {isLoggedIn ? (

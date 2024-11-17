@@ -1,9 +1,31 @@
 /* src/styles/pages/LibraryPage.css */
 
 .library-page {
-    padding: 20px; /* Padding cho toàn trang */
-    background-color: #161b22; /* Màu nền tối */
-    color: #ffffff; /* Màu chữ trắng */
+    padding: 20px;
+    background-color: #161b22;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+    .library-page h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #0066ff, 0 0 40px #0066ff;
+    }
+
+    to {
+        text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 25px #0066ff, 0 0 35px #0066ff;
+    }
 }
 
 .search-container {
@@ -48,25 +70,31 @@
 .search-container {
     position: relative; /* Để có thể định vị biểu tượng kính lúp */
     width: 100%; /* Đặt chiều rộng của container */
+    max-width: 600px;
 }
 
-.search-bar {
-    display: flex; /* Sử dụng flexbox để sắp xếp input và icon */
-    align-items: center; /* Căn giữa theo chiều dọc */
-}
+    .search-container input {
+        width: 100%;
+        padding: 15px 50px; /* Thêm padding để phù hợp với biểu tượng */
+        border-radius: 25px; /* Bo góc lớn hơn */
+        font-size: 1rem;
+        background: linear-gradient(90deg, #1e242b, #2b2f33); /* Màu nền gradient */
+        color: #ffffff;
+        outline: none;
+        transition: all 0.3s ease;
+    }
 
-.search-container input {
-    flex-grow: 1; /* Cho phép input chiếm hết chiều rộng có sẵn */
-    padding: 10px 40px; /* Padding cho input, thêm khoảng cách bên phải cho icon */
-    border: none; /* Bỏ viền */
-    border-radius: 5px; /* Bo góc cho thanh tìm kiếm */
-    font-size: 1rem; /* Kích thước chữ cho thanh tìm kiếm */
-}
+        .search-container input:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 10px #0066ff;
+        }
 
-.search-icon {
-    position: absolute; /* Định vị tuyệt đối để biểu tượng nằm bên phải */
-    right: 10px; /* Khoảng cách bên phải */
-    color: #ffffff; /* Màu sắc cho biểu tượng */
-    font-size: 1.2rem; /* Kích thước biểu tượng */
-    pointer-events: none; /* Không cho phép tương tác với biểu tượng */
-}
+    .search-container .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #00ffff;
+        font-size: 1.5rem;
+        pointer-events: none;
+    }

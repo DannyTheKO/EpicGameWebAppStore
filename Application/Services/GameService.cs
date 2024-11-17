@@ -80,7 +80,36 @@ public class GameService : IGameService
             throw new Exception("Failed to get specific game id", ex);
         }
     }
+    public async Task<IEnumerable<Game>> GetTopTrendingGames(int count)
+    {
+        try
+        {
+            var games = await _gameRepository.GetAll();
+            return games
+                .OrderByDescending(g => g.Rating) // Sắp xếp giảm dần theo Rating
+                .Take(count); // Lấy số lượng cần thiết
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to get top trending games", ex);
+        }
+    }
 
+    // Lấy các game có ngày phát hành mới nhất
+    public async Task<IEnumerable<Game>> GetTopNewReleases(int count)
+    {
+        try
+        {
+            var games = await _gameRepository.GetAll();
+            return games
+                .OrderByDescending(g => g.Release) // Sắp xếp giảm dần theo ReleaseDate
+                .Take(count); // Lấy số lượng cần thiết
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to get top new releases", ex);
+        }
+    }
     // TODO: Search By Publisher => Get Publisher By "ID"
     // TODO: Search By Genre => Get Genre By "ID"
     // TODO: Search By Name

@@ -88,13 +88,17 @@ const GamePage = () => {
             </div>
 
             <div className="game-details">
-                <img src={game.coverUrl || "default-cover-url.jpg"} alt="Game Cover" className="game-cover" />
+                <img
+                    src={game.image ? `data:image/png;base64,${game.image}` : game.coverUrl || "default-cover-url.jpg"}
+                    alt="Game Cover"
+                    className="game-cover"
+                />
                 <div className="game-info">
                     <h2>Description</h2>
                     <p>{game.description || "No description available."}</p>
                     <div className="game-rating">
                         <h3>Overall Rating:</h3>
-                        <span><span className="rating-value">{game.rating || "N/A"}</span> <span className="star">★</span></span>
+                        <span><span className="rating-value">{game.rating || "N/A"}</span> <span className="star"></span></span>
                     </div>
                     <div className="game-price">
                         <h3>Price:</h3>

@@ -42,53 +42,53 @@ public class AuthController : _BaseController
     [HttpGet("Logout")]
     public async Task<ActionResult> Logout()
     {
-	    var checkLoginAccount = GetCurrentLoginAccountId();
-	    if (checkLoginAccount == -1) // NOT FOUND
-	    {
-		    return BadRequest(new
-		    {
-			    loginStateFlag = false,
-			    message = "Current Login Account Not Found!"
-		    });
-	    }
+        var checkLoginAccount = GetCurrentLoginAccountId();
+        if (checkLoginAccount == -1) // NOT FOUND
+        {
+            return BadRequest(new
+            {
+                loginStateFlag = false,
+                message = "Current Login Account Not Found!"
+            });
+        }
 
-	    // Sign out of cookie authentication
-	    await HttpContext.SignOutAsync("CookieAuth");
+        // Sign out of cookie authentication
+        await HttpContext.SignOutAsync("CookieAuth");
 
-	    // Return instruction to clear token
-	    return Ok(new
-	    {
-		    loginStateFlag = false,
-		    message = "Successfully Logout",
-		    action = "CLEAR_TOKEN" // Frontend should handle this to remove token from storage
-	    });
+        // Return instruction to clear token
+        return Ok(new
+        {
+            loginStateFlag = false,
+            message = "Successfully Logout",
+            action = "CLEAR_TOKEN" // Frontend should handle this to remove token from storage
+        });
     }
 
     [HttpGet("AccessDenied")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public ActionResult AccessDenied()
     {
-	    return StatusCode(403, new
-	    {
-		    accessFlag = false,
-		    message = "Access Denied: You don't have permission to access this resource"
-	    });
+        return StatusCode(403, new
+        {
+            accessFlag = false,
+            message = "Access Denied: You don't have permission to access this resource"
+        });
     }
-		
+
     // POST: Auth/RegisterConfirm
     [HttpPost("RegisterConfirm")]
     public async Task<ActionResult<RegisterViewModel>> RegisterConfirm(RegisterViewModel registerViewModel)
     {
-	    if (!ModelState.IsValid)
-	    {
-		    return BadRequest(new
-		    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
                 registerState = false,
                 errors = ModelState.Values
-	                .SelectMany(v => v.Errors)
-	                .Select(e => e.ErrorMessage)
-		    });
-	    }
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+            });
+        }
 
         var account = new Account
         {
@@ -101,14 +101,14 @@ public class AuthController : _BaseController
 
         if (!registerStage)
         {
-	        return BadRequest(new
-	        {
+            return BadRequest(new
+            {
                 registerStageFlag = registerStage,
                 message = resultMessage
-	        });
+            });
         }
 
-        return Ok( new
+        return Ok(new
         {
             registerStageFlag = registerStage,
             message = resultMessage
@@ -120,41 +120,41 @@ public class AuthController : _BaseController
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public async Task<ActionResult<LoginViewModel>> LoginConfirm(LoginViewModel loginViewModel)
     {
-	    // Validate if user input is valid
-	    if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
-	    {
-		    return BadRequest(new
-		    {
-			    loginState = false,
-			    errors = ModelState.Values
-				    .SelectMany(v => v.Errors)
-				    .Select(e => e.ErrorMessage)
-		    });
-            
-		    // return View("LoginPage", loginViewModel);
-	    }
+        // Validate if user input is valid
+        if (!ModelState.IsValid) // Requirement is not satisfied => FAIL
+        {
+            return BadRequest(new
+            {
+                loginState = false,
+                errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+            });
 
-	    var account = new Account
-	    {
-		    Username = loginViewModel.Username,
-		    Password = loginViewModel.Password
-	    };
+            // return View("LoginPage", loginViewModel);
+        }
 
-	    var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
+        var account = new Account
+        {
+            Username = loginViewModel.Username,
+            Password = loginViewModel.Password
+        };
 
-	    // If user fail to validate "success" return false
-	    if (!loginState) // Return false
-	    {
-		    return BadRequest(
-			    new { loginStateFlag = loginState, message = resultMessage }
-		    );
-	    }
+        var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
 
-	    return Ok(new
-	    {
-		    loginStateFlag = loginState,
-		    accountToken = token,
-		    message = resultMessage
-	    });
+        // If user fail to validate "success" return false
+        if (!loginState) // Return false
+        {
+            return BadRequest(
+                new { loginStateFlag = loginState, message = resultMessage }
+            );
+        }
+
+        return Ok(new
+        {
+            loginStateFlag = loginState,
+            accountToken = token,
+            message = resultMessage
+        });
     }
 }

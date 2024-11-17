@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import EpicGamesLogo from '../assets/EpicGames_Logo.png';
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [username, setUsername] = useState("");
@@ -16,6 +16,7 @@ const LoginForm = ({ onLogin }) => {
 
     const handleSignIn = async (event) => {
         event.preventDefault();
+        setErrorMessage(""); // Reset lỗi cũ
 
         const payload = {
             Username: username,
@@ -28,19 +29,27 @@ const LoginForm = ({ onLogin }) => {
             });
 
             const { loginStateFlag, accountToken, message } = response.data;
+
             if (loginStateFlag) {
-                localStorage.setItem('token', accountToken);
-                localStorage.setItem('username', username); // lưu tên người dùng để hiển thị trên Navbar
-                onLogin(username); // Cập nhật trạng thái đăng nhập
-                navigate('/'); // Điều hướng về trang Home
+                localStorage.setItem('authToken', accountToken);
+                alert("Login successful!");
+                navigate("/store");
             } else {
-                setErrorMessage(message || "Đăng nhập không thành công. Vui lòng thử lại!");
+                setErrorMessage(message || "Login failed. Please try again.");
             }
         } catch (error) {
-            console.error("Server responded with error: ", error.response.data);
-            setErrorMessage("Đăng nhập không thành công. Vui lòng thử lại!");
+            const statusCode = error.response?.status || 500;
+            const serverError = error.response?.data?.message || "Server error occurred. Please try again later.";
+
+            console.error(`Error ${statusCode}:`, serverError);
+            setErrorMessage(
+                statusCode === 401
+                    ? "Invalid credentials. Please check your username or password."
+                    : "Server error occurred. Please try again later."
+            );
         }
     };
+
 
     return (
         <div className="login-container">

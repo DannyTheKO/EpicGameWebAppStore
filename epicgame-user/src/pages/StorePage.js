@@ -8,7 +8,7 @@ const StorePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedGenre, setSelectedGenre] = useState('all');
     const [currentPage, setCurrentPage] = useState(1); // Thêm state để quản lý trang hiện tại
-    const gamesPerPage = 20; // Số trò chơi mỗi trang
+    const gamesPerPage = 15; // Số trò chơi mỗi trang
 
     const genres = {
         all: null,
@@ -89,14 +89,19 @@ const StorePage = () => {
                     paginatedGames.map(game => (
                         <Link to={`/game/${game.gameId}`} key={game.gameId}>
                             <div className="game-item">
-                                <img src={game.image} alt={game.title} />
+                                {/* Sử dụng dữ liệu Base64 để hiển thị ảnh */}
+                                <img
+                                    src={game.image ? `data:image/png;base64,${game.image}` : '/path/to/default-image.png'}
+                                    alt={game.title}
+                                />
                                 <h3>{game.title}</h3>
-                                <p>${game.price}</p>
+                                <p>${game.price.toFixed(2)}</p>
                             </div>
                         </Link>
                     ))
                 )}
             </div>
+
             {/* Hiển thị các nút chuyển trang */}
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, index) => (

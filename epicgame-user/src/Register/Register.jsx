@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { FaUserAlt, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EpicGamesLogo from '../assets/EpicGames_Logo.png';
 import "./register.css";
 
@@ -10,12 +10,18 @@ const RegisterForm = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
     const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
     const handleRegister = (e) => {
         e.preventDefault();
-        // Handle register logic here
+
+        // Giả sử đăng ký thành công
+        console.log("Register button clicked");
+
+        // Chuyển hướng người dùng đến trang Login
+        navigate("/login");
     };
 
     return (

@@ -16,7 +16,9 @@ public interface IGameService
 
     // Search by Game ID
     public Task<Game> GetGameById(int id);
+    public Task<IEnumerable<Game>> GetTopTrendingGames(int count);
 
+    public Task<IEnumerable<Game>> GetTopNewReleases(int count);
     // TODO: Search By Publisher => Get Publisher By "ID"
     // TODO: Search By Genre => Get Genre By "ID"
     // TODO: Search By Name

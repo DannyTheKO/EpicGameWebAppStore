@@ -1,6 +1,7 @@
 // src/pages/Cart.js
 import React, { useState } from 'react';
 import '../styles/pages/Cart.css';
+import Payment from './Payment'; // Đúng đường dẫn vì Payment nằm cùng thư mục với Cart
 
 const initialCart = [
     { id: 1, name: "Game 1", description: "An exciting action game.", price: 19.99, genre: "Action", image: require('../assets/game1.png') },
@@ -19,29 +20,32 @@ const Cart = () => {
 
     return (
         <div className="cart-page">
-            <h1 className="cart-title">My Cart</h1>
+            <h1 className="cart-title">Your Shopping Cart</h1>
             <div className="cart-container">
-                {/* Div bên trái: Danh sách game */}
                 <div className="cart-items">
                     {cart.map(item => (
                         <div key={item.id} className="cart-item">
                             <img src={item.image} alt={item.name} className="cart-item-image" />
                             <div className="cart-item-info">
                                 <span className="item-name">{item.name}</span>
-                                <span className="item-description">{item.description}</span> {/* Mô tả game */}
+                                <span className="item-description">{item.description}</span>
                                 <span className="item-price">${item.price.toFixed(2)}</span>
                             </div>
-                            <button className="remove-button" onClick={() => handleRemoveItem(item.id)}>Remove</button>
+                            <button className="remove-button" onClick={() => handleRemoveItem(item.id)}>
+                                Remove
+                            </button>
                         </div>
                     ))}
                 </div>
-                {/* Div bên phải: Tổng giá */}
                 <div className="cart-summary">
                     <h3>Total: ${totalPrice}</h3>
                     <button className="checkout-button">Proceed to Checkout</button>
+                    <Payment />
                 </div>
+
             </div>
         </div>
+
     );
 };
 

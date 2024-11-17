@@ -179,6 +179,8 @@ public partial class EpicGameDbContext : DbContext
             entity.Property(e => e.Release).HasColumnType("datetime");
             entity.Property(e => e.Title).HasMaxLength(255);
 
+            entity.Property(e => e.Image).HasColumnType("longblob");
+
             entity.HasOne(d => d.Genre).WithMany(p => p.Games)
                 .HasForeignKey(d => d.GenreId)
                 .HasConstraintName("FK_Game_Genre");

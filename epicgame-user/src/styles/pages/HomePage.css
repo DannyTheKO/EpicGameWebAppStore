@@ -25,13 +25,18 @@
     padding: 20px;
 }
 
-.game-section h2 {
-    color: #fff; /* Màu chữ trắng */
-    text-align: left; /* Căn lề trái */
-    font-size: 24px;
-    padding-left: 20px;
-    margin-bottom: 40px;
-}
+    .game-section h2 {
+        font-size: 2.5rem;
+        color: aqua;
+        margin-bottom: 35px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
 
 .game-grid {
     display: flex;
@@ -48,14 +53,23 @@
 
 .game-item img {
     width: 100%;
-    height: auto;
+    height: 160px; /* Chiều cao cố định cho hình ảnh */
     object-fit: cover;
+    border-bottom: 2px solid #00ffff; /* Đường kẻ dưới hình */
 }
 
-.game-item h3 {
-    margin: 10px 0 5px;
-    font-size: 16px;
-}
+    .game-item h3 {
+        margin: 10px 0 5px;
+        font-size: 18px;
+        color: #ffffff; /* Màu chữ trắng */
+        text-transform: capitalize; /* Viết hoa chữ cái đầu */
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 1 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
 
 .game-item p {
     color: #888;
