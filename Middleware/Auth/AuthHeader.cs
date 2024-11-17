@@ -23,8 +23,9 @@ public class AuthHeader
 		
 		using var scope = _scopeFactory.CreateScope();
 		
-		// Create a scope to resolve IAccountService
+		// Create a scope to resolve IAccountService and IRoleService
 		var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
+		var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
 
 
 		if (token != null)
@@ -40,14 +41,14 @@ public class AuthHeader
 				var username = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 				var role = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 				var email = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-				//var permission = int.Parse(await accountService.GetAccountById(accountId));
+				var permission = await roleService.GetRoleByAccountId(int.Parse(accountId));
 
 				// Add to HttpContext for easy access in controllers
 				context.Items["AccountId"] = accountId;
 				context.Items["Username"] = username;
 				context.Items["Role"] = role;
 				context.Items["Email"] = email;
-				//context.Items["Permission"] = permission;
+				context.Items["Permission"] = permission;
 			}
 		}
 

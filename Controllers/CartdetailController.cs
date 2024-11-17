@@ -1,119 +1,151 @@
 using Application.Interfaces;
 using DataAccess.EpicGame;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Cartdetail")]
+[Route("[controller]")]
+[ApiController]
 public class CartdetailController : Controller
 {
 	private readonly ICartdetailService _cartdetailService;
+	private readonly ICartService _cartService;
+	private readonly IGameService _gameService;
 
-	public CartdetailController(ICartdetailService cartdetailService)
+	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService)
 	{
 		_cartdetailService = cartdetailService;
+		_gameService = gameService;
+		_cartService = cartService;
 	}
 
-	// GET: Cartdetail/Index
-	[HttpGet]
-	public async Task<IActionResult> Index()
+	[HttpGet("GetAllCartDetail")]
+	public async Task<ActionResult<IEnumerable<Cartdetail>>> GetAllCartDetail()
 	{
-		return View(await _cartdetailService.GetAllCartdetails());
+		var cartDetail = await _cartdetailService.GetAllCartDetails();
+		return Ok(cartDetail);
 	}
 
-	// GET: Cartdetail/details/5
-	[HttpGet("Detail/{id}")]
-	public async Task<IActionResult> Details(int id)
+	[HttpGet("GetCartDetail/{id}")]
+	public async Task<ActionResult<Cartdetail>> GetCartDetail(int id)
 	{
-		if (id == null) return NotFound();
-
-		var cartDetail = await _cartdetailService.GetCartdetailById(id);
-
-		if (cartDetail == null) return NotFound();
-
-		return View(cartDetail);
+		var cartDetail = await _cartdetailService.GetCartDetailById(id);
+		if (cartDetail == null)
+			return NotFound(new { success = false, message = "Cart detail not found" });
+		return Ok(cartDetail);
 	}
 
-	// GET: Cartdetail/Create
-	[HttpGet("Create")]
-	public async Task<IActionResult> Create()
+	[HttpPost("AddCartDetail")]
+	public async Task<ActionResult<CartDetailFormModel>> AddCartDetail([FromBody] CartDetailFormModel cartDetailFormModel)
 	{
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId");
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title");
-		return View();
-	}
-
-	// POST: Cartdetail/Create
-	[HttpPost("Create")]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create(
-		[Bind("CartDetailId,CartId,GameId,Quantity,Price,Discount")] Cartdetail cartdetail)
-	{
-		if (ModelState.IsValid)
+		// Check if the user input is valid
+		if (!ModelState.IsValid)
 		{
-			_cartdetailService.AddCartdetail(cartdetail);
-			return RedirectToAction(nameof(Index));
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
 		}
 
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
-		return View(cartdetail);
-	}
-
-	// GET: cartdetails/edit/5
-	[HttpGet("edit/{id}")]
-	public async Task<IActionResult> Edit(int id)
-	{
-		if (id == null) return NotFound();
-
-		var cartdetail = await _cartdetailService.GetCartdetailById(id);
-		if (cartdetail == null) return NotFound();
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
-		return View(cartdetail);
-	}
-
-	// POST: cartdetails/edit/5
-	[HttpPost("edit/{id}")]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id,
-		[Bind("CartDetailId,CartId,GameId,Quantity,Price,Discount")] Cartdetail cartdetail)
-	{
-		var cartDetailExisting = await _cartdetailService.GetCartdetailById(cartdetail.CartId);
-		if (cartDetailExisting != null) // FOUND
+		// Check if that CartId is exist
+		var checkCart = await _cartService.GetCartById(cartDetailFormModel.CartId);
+		if (checkCart == null)
 		{
-			await _cartdetailService.UpdateCartdetail(cartdetail);
+			return NotFound(new { success = false, message = "Cart not found" });
 		}
 
-		ViewData["CartId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "CartId", "CartId", cartdetail.CartId);
-		ViewData["GameId"] = new SelectList(await _cartdetailService.GetAllCartdetails(), "GameId", "Title", cartdetail.GameId);
-		return View(cartdetail);
+		// Check if that GameId is exist
+		var checkGame = await _gameService.GetGameById(cartDetailFormModel.GameId);
+		if (checkGame == null)
+		{
+			return NotFound(new { success = false, message = "Game not found" });
+		}
+
+		// Create a new cart detail
+		var cartDetail = new Cartdetail()
+		{
+			CartId = cartDetailFormModel.CartId,
+			GameId = cartDetailFormModel.GameId,
+			Quantity = cartDetailFormModel.Quantity,
+			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
+			Discount = cartDetailFormModel.Discount
+		};
+
+		// Add the cart detail to the database
+		await _cartdetailService.AddCartDetail(cartDetail);
+
+		// Return the result
+		return Ok(new
+		{
+			success = true,
+			message = "Cart detail added successfully",
+			data = cartDetail
+		});
 	}
 
-	// GET: cartdetails/delete/5
-	[HttpGet("delete/{id}")]
-	public async Task<IActionResult> Delete(int id)
+	[HttpPut("UpdateCartDetail")]
+	public async Task<ActionResult<CartDetailFormModel>> UpdateCartDetail([FromBody] CartDetailFormModel cartDetailFormModel)
 	{
-		if (id == null) return NotFound();
+		// Check if the user input is valid
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
+		}
 
-		var cartDetail = await _cartdetailService.GetCartdetailById(id);
+		// Check if that CartId is exist
+		var checkCart = await _cartService.GetCartById(cartDetailFormModel.CartId);
+		if (checkCart == null)
+		{
+			return NotFound(new { success = false, message = "Cart not found" });
+		}
 
-		if (cartDetail == null) return NotFound();
+		// Check if that GameId is exist
+		var checkGame = await _gameService.GetGameById(cartDetailFormModel.GameId);
+		if (checkGame == null)
+		{
+			return NotFound(new { success = false, message = "Game not found" });
+		}
 
-		return View(cartDetail);
+		// Create a new cart detail
+		var cartDetail = new Cartdetail()
+		{
+			CartId = cartDetailFormModel.CartId,
+			GameId = cartDetailFormModel.GameId,
+			Quantity = cartDetailFormModel.Quantity,
+			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
+			Discount = cartDetailFormModel.Discount
+		};
+
+		// Update the cart detail to the database
+		await _cartdetailService.UpdateCartDetail(cartDetail);
+
+		// Return the result
+		return Ok(new
+		{
+			success = true,
+			message = "Cart detail updated successfully",
+			data = cartDetail
+		});
 	}
 
-	// POST: cartdetails/delete/5
-	[HttpPost("delete/{id}")]
-	[ActionName("Delete")]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> DeleteConfirmed(int id)
+	[HttpDelete("DeleteCartDetail/{id}")]
+	public async Task<ActionResult<Cartdetail>> DeleteCartDetail(int id)
 	{
-		var cartDetail = await _cartdetailService.DeleteCartdetail(id);
-		return RedirectToAction(nameof(Index));
+		var result = await _cartdetailService.DeleteCartDetail(id);
+		return Ok(new { success = true, message = "Cart detail deleted successfully", data = result });
 	}
 
 	// Populate ViewBag

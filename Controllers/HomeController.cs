@@ -10,13 +10,7 @@ public class HomeController : _BaseController
     private readonly IAuthenticationServices _authenticationServices;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(
-        ILogger<HomeController> logger,
-        IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices,
-        IAccountService accountService,
-        IRoleService roleService)
-        : base(authenticationServices, authorizationServices, accountService, roleService)
+    public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
     }

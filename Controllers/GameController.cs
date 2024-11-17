@@ -10,7 +10,7 @@ namespace EpicGameWebAppStore.Controllers;
 //[Authorize(Roles = "Admin, Moderator, Editor")]
 [Route("[controller]")]
 [ApiController]
-public class GameController : _BaseController
+public class GameController : Controller
 {
     private readonly IAuthenticationServices _authenticationServices;
     private readonly IAuthorizationServices _authorizationServices;
@@ -23,10 +23,7 @@ public class GameController : _BaseController
         IGenreService genreService,
         IPublisherService publisherService,
         IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices,
-        IAccountService accountService,
-        IRoleService roleService)
-        : base(authenticationServices, authorizationServices, accountService, roleService)
+        IAuthorizationServices authorizationServices)
     {
         _gameServices = gameServices;
         _genreService = genreService;
@@ -34,7 +31,6 @@ public class GameController : _BaseController
         _authenticationServices = authenticationServices;
         _authorizationServices = authorizationServices;
     }
-
     // GET: Game/GetTrending
     [HttpGet("GetTrendingGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
@@ -66,7 +62,6 @@ public class GameController : _BaseController
             return StatusCode(500, new { message = ex.Message });
         }
     }
-
     // GET: Game/Index
     [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<Game>>> GetAll()
@@ -74,21 +69,17 @@ public class GameController : _BaseController
         var games = await _gameServices.GetAllGame();
         return Ok(games);
     }
-    // GET: Game/GetById/{id}
-    [HttpGet("GetById/{id}")]
-    public async Task<ActionResult<Game>> GetById(int id)
-    {
-        var game = await _gameServices.GetGameById(id);
-        if (game == null)
-        {
-            return NotFound(new { message = "Game not found." });
-        }
-        return Ok(game);
-    }
 
+    [HttpGet("GetGame/{gameId}")]
+    public async Task<ActionResult<Game>> GetGameById([FromBody] int gameId)
+	{
+		var game = await _gameServices.GetGameById(gameId);
+		if (game == null) return NotFound();
+		return Ok(game);
+	}
 
-    // POST: Game/CreateConfirm
-    [HttpPost("CreateGame")]
+	// POST: Game/CreateConfirm
+	[HttpPost("CreateGame")]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult<Game>> CreateGame(Game game)
     {

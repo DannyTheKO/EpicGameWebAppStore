@@ -17,44 +17,23 @@ public class DiscountService : IDiscountService
         _discountRepository = discountRepository;
     }
 
-    // == Basic CRUD Function ==
-    public async Task<IEnumerable<Discount>> GetAllDiscountAsync()
-    {
-        try
-        {
-            return await _discountRepository.GetAll();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to get all the discounts", ex);
-        }
-    }
+	// == Basic CRUD Function ==
+	public async Task<IEnumerable<Discount>> GetAllDiscountAsync()
+	{
+		return await _discountRepository.GetAll();
+	}
 
-    public async Task<Discount> AddDiscountAsync(Discount discount)
-    {
-        try
-        {
-            await _discountRepository.Add(discount);
-            return discount;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to add the discount", ex);
-        }
-    }
+	public async Task<Discount> AddDiscountAsync(Discount discount)
+	{
+		await _discountRepository.Add(discount);
+		return discount;
+	}
 
-    public async Task<Discount> UpdateDiscountAsync(Discount discount)
-    {
-        try
-        {
-            await _discountRepository.Update(discount);
-            return discount;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to update the discount", ex);
-        }
-    }
+	public async Task<Discount> UpdateDiscountAsync(Discount discount)
+	{
+		await _discountRepository.Update(discount);
+		return discount;
+	}
 
     public async Task<Discount> DeleteDiscountAsync(int id)
     {
@@ -67,16 +46,24 @@ public class DiscountService : IDiscountService
 
     // == Feature Function ==
 
-    // Search by Discount ID
-    public async Task<Discount> GetDiscountByIdAsync(int id)
-    {
-        try
-        {
-            return await _discountRepository.GetById(id);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to get the discount", ex);
-        }
-    }
+	// Search by Discount ID
+	public async Task<Discount> GetDiscountByIdAsync(int id)
+	{
+		return await _discountRepository.GetById(id);
+	}
+
+	// Search Code by Discount Code
+	public async Task<IEnumerable<Discount>> GetDiscountByCode(string code)
+	{
+        var discountList = await _discountRepository.GetAll();
+        discountList = discountList.Where(d => d.Code == code);
+        return discountList.ToList();
+	}
+
+    public async Task<IEnumerable<Discount>> GetDiscountByGameId(int gameId)
+	{
+		var discountList = await _discountRepository.GetAll();
+		discountList = discountList.Where(d => d.GameId == gameId);
+		return discountList.ToList();
+	}
 }

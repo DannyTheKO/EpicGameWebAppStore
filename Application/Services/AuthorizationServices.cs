@@ -42,21 +42,4 @@ public class AuthorizationServices : IAuthorizationServices
         var role = await _roleRepository.GetById(account.Role.RoleId);
         return role.Permission != null && role.Permission.Contains(requiredPermission);
     }
-
-
-    // ACTION: Create claim principal when user is login
-    public async Task<ClaimsPrincipal> CreateClaimsPrincipal(int accountId)
-    {
-        var accountUsername = await _accountRepository.GetId(accountId);
-        var accountRole = await _accountRepository.GetUserRoleAsync(accountId);
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, accountId.ToString()), // ID
-            new(ClaimTypes.Name, accountUsername.Username), // Username
-            new(ClaimTypes.Role, accountRole) // Role
-        };
-
-        var identity = new ClaimsIdentity(claims, "CookieAuth");
-        return await Task.FromResult(new ClaimsPrincipal(identity));
-    }
 }

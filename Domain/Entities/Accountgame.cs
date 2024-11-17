@@ -1,9 +1,13 @@
-﻿namespace Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class Accountgame
+namespace Domain.Entities;
+
+public class AccountGame
 {
+    [Required(ErrorMessage = "AccountID is required")]
     public int AccountId { get; set; }
 
+    [Required(ErrorMessage = "GameID is required")]
     public int GameId { get; set; }
 
     public DateTime? DateAdded { get; set; }

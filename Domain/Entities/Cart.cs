@@ -17,7 +17,7 @@ public class Cart
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
-
+    
     public virtual Paymentmethod PaymentMethod { get; set; } = null!;
 
 

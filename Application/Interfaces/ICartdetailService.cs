@@ -4,10 +4,9 @@ namespace Application.Interfaces;
 
 public interface ICartdetailService
 {
-    Task<IEnumerable<Cartdetail>> GetAllCartdetails();
-    Task<Cartdetail> AddCartdetail(Cartdetail cartdetail);
-    Task<Cartdetail> UpdateCartdetail(Cartdetail cartdetail);
-    Task<Cartdetail> DeleteCartdetail(int id);
-    Task<Cartdetail> GetCartdetailById(int id);
-    Task<IEnumerable<Cartdetail>> GetCartdetailsByCartIdAsync(int cartId);
+    Task<IEnumerable<Cartdetail>> GetAllCartDetails();
+    Task<Cartdetail> AddCartDetail(Cartdetail cartDetail);
+    Task<Cartdetail> UpdateCartDetail(Cartdetail cartDetail);
+    Task<Cartdetail> DeleteCartDetail(int id);
+    Task<Cartdetail> GetCartDetailById(int id);
 }

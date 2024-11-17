@@ -20,7 +20,6 @@ public class Game
 
     public string? Description { get; set; }
     public byte[]? Image { get; set; }
-
     public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
@@ -28,6 +27,4 @@ public class Game
     public virtual Genre? Genre { get; set; }
 
     public virtual Publisher? Publisher { get; set; }
-
-
 }

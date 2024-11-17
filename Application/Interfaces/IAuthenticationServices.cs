@@ -6,8 +6,11 @@ namespace Application.Interfaces;
 
 public interface IAuthenticationServices
 {
-    // ACTION: Validate Account Credential
-    Task<bool> ValidateAccountCredential(string username, string password);
+	// ACTION: Get current login Account
+	public int GetLoginAccountId(ClaimsPrincipal User);
+
+	// ACTION: Validate Account Credential
+	Task<bool> ValidateAccountCredential(string username, string password);
 
     // ACTION: Register Account
     Task<(bool RegisterStage, string ResultMessage)> RegisterAccount(Account account, string confirmPassword);
@@ -15,5 +18,6 @@ public interface IAuthenticationServices
     // ACTION: Login Account
     Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account);
 
-    public string GenerateJwtToken(Account account);
+	// ACTION: Generate JWT Token
+	public string GenerateJwtToken(Account account);
 }

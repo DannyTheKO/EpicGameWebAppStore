@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{27FB28D7-477E-4BD4-9541-F58F77D4C67E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Middleware", "Middleware\Middleware.csproj", "{13FE0B63-F022-41E9-8A61-9FBE1D73B4F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Middleware", "Middleware\Middleware.csproj", "{13FE0B63-F022-41E9-8A61-9FBE1D73B4F6}"
 EndProject
@@ -51,10 +51,6 @@ Global
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27FB28D7-477E-4BD4-9541-F58F77D4C67E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E38EEF8-DBDA-4E1C-A9A7-7F6C70B76598}.Release|Any CPU.Build.0 = Release|Any CPU
 		{13FE0B63-F022-41E9-8A61-9FBE1D73B4F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{13FE0B63-F022-41E9-8A61-9FBE1D73B4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13FE0B63-F022-41E9-8A61-9FBE1D73B4F6}.Release|Any CPU.ActiveCfg = Release|Any CPU

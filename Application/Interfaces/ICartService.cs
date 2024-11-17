@@ -4,13 +4,13 @@ namespace Application.Interfaces;
 
 public interface ICartService
 {
-    Task<IEnumerable<Cart>> GetAllCartsAsync();
-    Task<Cart> AddCartAsync(Cart cart);
-    Task<Cart> UpdateCartAsync(Cart cart);
-    Task<Cart> DeleteCartAsync(int id);
-    Task<Cart> GetCartByIdAsync(int id);
-    Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId);
+    Task<IEnumerable<Cart>> GetAllCarts();
+    Task<Cart> AddCart(Cart cart);
+    Task<Cart> UpdateCart(Cart cart);
+    Task<Cart> DeleteCart(int id);
+    Task<Cart> GetCartById(int id);
+    Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId);
 
-    Task<string> GetAccountNameByIdAsync(int accountId);
-    Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId);
+    Task<string> GetAccountByCartId(int accountId);
+    Task<string> GetPaymentMethodNameById(int paymentMethodId);
 }

@@ -24,11 +24,9 @@ builder.Services.AddDbContext<EpicGameDbContext>(options =>
 
 
 // == Service registrations ==
-// Authentication && Authorization
+// Authentication & Authorization
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IAuthorizationServices, AuthorizationServices>();
-
-// Authentication setup
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	.AddJwtBearer(options =>
 	{
@@ -38,9 +36,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateAudience = true,
 			ValidateLifetime = true,
 			ValidateIssuerSigningKey = true,
-			 ValidIssuer = builder.Configuration["Jwt:Issuer"],  // Đọc từ appsettings.json
-            ValidAudience = builder.Configuration["Jwt:Audience"],  // Đọc từ appsettings.json
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))  // Đọc từ appsettings.json
+			ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     
 		};
 	});
@@ -52,43 +50,36 @@ builder.Services.AddCors(options =>
 		.WithOrigins("http://localhost:3000")
 		.AllowCredentials()
 		.AllowAnyMethod()
-			.AllowAnyHeader());
+		.AllowAnyHeader());
 });
 
-// Account
+// Account Related Service
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAccountGameService, AccountGameService>();
+builder.Services.AddScoped<IAccountGameRepository, AccountGameRepository>();
 
-// Role
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
-// Game
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-
-// Account Service
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
-// Cart Service
+// Shopping Related Service
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-
 builder.Services.AddScoped<ICartdetailService, CartdetailService>();
 builder.Services.AddScoped<ICartdetailRepository, CartdetailRepository>();
 
-// PaymentMethod Service
-builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
-
-// Genre Service
+// Game Related Service
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-
-// Publisher Service
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+
+// Other services
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 
 // == Testing API ==

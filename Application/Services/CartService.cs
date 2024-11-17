@@ -15,24 +15,24 @@ public class CartService : ICartService
 
 	#region == CRUB Operation ==
 
-	public async Task<IEnumerable<Cart>> GetAllCartsAsync()
+	public async Task<IEnumerable<Cart>> GetAllCarts()
 	{
 		return await _cartRepository.GetAll();
 	}
 
-	public async Task<Cart> AddCartAsync(Cart cart)
+	public async Task<Cart> AddCart(Cart cart)
 	{
 		await _cartRepository.Add(cart);
 		return cart;
 	}
 
-	public async Task<Cart> UpdateCartAsync(Cart cart)
+	public async Task<Cart> UpdateCart(Cart cart)
 	{
 		await _cartRepository.Update(cart);
 		return cart;
 	}
 
-	public async Task<Cart> DeleteCartAsync(int id)
+	public async Task<Cart> DeleteCart(int id)
 	{
 		var cart = await _cartRepository.GetById(id);
 		if (cart == null) throw new Exception("Cart not found.");
@@ -40,23 +40,23 @@ public class CartService : ICartService
 		return cart;
 	}
 
-	public async Task<Cart> GetCartByIdAsync(int id)
+	public async Task<Cart> GetCartById(int id)
 	{
 		return await _cartRepository.GetById(id);
 	}
 
-	public async Task<IEnumerable<Cart>> GetCartsByAccountIdAsync(int accountId)
+	public async Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId)
 	{
 		return await _cartRepository.GetAllCartFromAccountId(accountId);
 	}
 
-	public async Task<string> GetAccountNameByIdAsync(int accountId)
+	public async Task<string> GetAccountByCartId(int accountId)
 	{
 		var account = await _cartRepository.GetAccountByCartId(accountId);
 		return account?.Username ?? throw new Exception("Account not found.");
 	}
 
-	public async Task<string> GetPaymentMethodNameByIdAsync(int paymentMethodId)
+	public async Task<string> GetPaymentMethodNameById(int paymentMethodId)
 	{
 		var paymentMethod = await _cartRepository.GetPaymentMethodById(paymentMethodId);
 		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");

@@ -24,7 +24,7 @@ public partial class EpicGameDbContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<Accountgame> Accountgames { get; set; }
+    public virtual DbSet<AccountGame> AccountGames { get; set; }
 
     public virtual DbSet<Cart> Carts { get; set; }
 
@@ -67,7 +67,7 @@ public partial class EpicGameDbContext : DbContext
                 .HasConstraintName("FK_Account_Role");
         });
 
-        modelBuilder.Entity<Accountgame>(entity =>
+        modelBuilder.Entity<AccountGame>(entity =>
         {
             entity
                 .HasNoKey()
@@ -178,9 +178,7 @@ public partial class EpicGameDbContext : DbContext
             entity.Property(e => e.Rating).HasPrecision(2, 1);
             entity.Property(e => e.Release).HasColumnType("datetime");
             entity.Property(e => e.Title).HasMaxLength(255);
-
             entity.Property(e => e.Image).HasColumnType("longblob");
-
             entity.HasOne(d => d.Genre).WithMany(p => p.Games)
                 .HasForeignKey(d => d.GenreId)
                 .HasConstraintName("FK_Game_Genre");

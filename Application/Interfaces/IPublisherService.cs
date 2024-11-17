@@ -17,5 +17,8 @@ public interface IPublisherService
     public Task<Publisher> GetPublisherByIdAsync(int id);
 
     // TODO: Search By Name
-    // TODO: Search By Address
+    public Task<IEnumerable<Publisher>> GetPublisherByNameAsync(string name);
+
+	// TODO: Search By Address
+    public Task<IEnumerable<Publisher>> GetPublisherByAddressAsync(string address);
 }
