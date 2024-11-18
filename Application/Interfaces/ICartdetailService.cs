@@ -11,4 +11,4 @@ public interface ICartdetailService
     Task<Cartdetail> DeleteCartDetail(int id);
 
     Task<IEnumerable<Cartdetail>> GetAllCartDetailByCartId(int cartId);
-}
+}   

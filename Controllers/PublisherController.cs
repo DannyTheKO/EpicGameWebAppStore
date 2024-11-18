@@ -17,7 +17,7 @@ public class PublisherController : Controller
 	// GET: Publisher/Index
 	public async Task<IActionResult> Index()
 	{
-		var publishers = await _publisherService.GetAllPublishersAsync();
+		var publishers = await _publisherService.GetAllPublishers();
 		return View(publishers);
 	}
 
@@ -34,7 +34,7 @@ public class PublisherController : Controller
 	{
 		if (ModelState.IsValid)
 		{
-			await _publisherService.AddPublisherAsync(publisher);
+			await _publisherService.AddPublisher(publisher);
 			TempData["Message"] = "Publisher created successfully.";
 			return RedirectToAction(nameof(Index));
 		}
@@ -45,7 +45,7 @@ public class PublisherController : Controller
 	// GET: Publisher/Edit/{id}
 	public async Task<IActionResult> Edit(int id)
 	{
-		var publisher = await _publisherService.GetPublisherByIdAsync(id);
+		var publisher = await _publisherService.GetPublisherById(id);
 		if (publisher == null) return NotFound();
 		return View(publisher);
 	}
@@ -59,7 +59,7 @@ public class PublisherController : Controller
 
 		if (ModelState.IsValid)
 		{
-			await _publisherService.UpdatePublisherAsync(publisher);
+			await _publisherService.UpdatePublisher(publisher);
 			TempData["Message"] = "Publisher updated successfully.";
 			return RedirectToAction(nameof(Index));
 		}
@@ -70,7 +70,7 @@ public class PublisherController : Controller
 	// GET: Publisher/Delete/{id}
 	public async Task<IActionResult> Delete(int id)
 	{
-		var publisher = await _publisherService.GetPublisherByIdAsync(id);
+		var publisher = await _publisherService.GetPublisherById(id);
 		if (publisher == null) return NotFound();
 		return View(publisher);
 	}
@@ -81,7 +81,7 @@ public class PublisherController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> DeleteConfirmed(int id)
 	{
-		await _publisherService.DeletePublisherAsync(id);
+		await _publisherService.DeletePublisher(id);
 		TempData["Message"] = "Publisher deleted successfully.";
 		return RedirectToAction(nameof(Index));
 	}

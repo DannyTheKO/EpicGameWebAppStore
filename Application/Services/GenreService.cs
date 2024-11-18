@@ -1,6 +1,9 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
+using Org.BouncyCastle.Asn1.Cmp;
+using ZstdSharp.Unsafe;
+
 // Domain
 
 // Application
@@ -30,8 +33,16 @@ public class GenreService : IGenreService
 
 	public async Task<Genre> UpdateGenre(Genre genre)
 	{
-		await _genreRepository.Update(genre);
-		return genre;
+		var existingGenre = await _genreRepository.GetById(genre.GenreId);
+		if (existingGenre == null) throw new Exception("Genre Not Found!");
+
+
+		// Update Genre Value
+		existingGenre.GenreId = genre.GenreId;
+		existingGenre.Name = genre.Name;
+
+		await _genreRepository.Update(existingGenre);
+		return existingGenre;
 	}
 
 	public async Task<Genre> DeleteGenre(int id)
@@ -50,10 +61,10 @@ public class GenreService : IGenreService
 		return await _genreRepository.GetById(id);
 	}
 
-	public async Task<IEnumerable<Genre>> GetGenreByName(string name)
+	public async Task<IEnumerable<Genre>> GetGenreByName(string genreName)
 	{
 		var genreList = await _genreRepository.GetAll();
-		var filteredGenre = genreList.Where(f => f.Name == name);
+		var filteredGenre = genreList.Where(f => f.Name == genreName);
 		return filteredGenre;
 	}
 }

@@ -6,19 +6,17 @@ namespace Application.Interfaces;
 public interface IPublisherService
 {
     // == Basic CRUD Function ==
-    public Task<IEnumerable<Publisher>> GetAllPublishersAsync();
-    public Task<Publisher> AddPublisherAsync(Publisher publisher);
-    public Task<Publisher> UpdatePublisherAsync(Publisher publisher);
-    public Task<Publisher> DeletePublisherAsync(int id);
+    public Task<IEnumerable<Publisher>> GetAllPublishers();
+    public Task<Publisher> AddPublisher(Publisher publisher);
+    public Task<Publisher> UpdatePublisher(Publisher publisher);
+    public Task<Publisher> DeletePublisher(int id);
 
     // == Feature Function ==
 
     // Search by Publisher ID
-    public Task<Publisher> GetPublisherByIdAsync(int id);
+    public Task<Publisher> GetPublisherById(int id);
 
-    // TODO: Search By Name
-    public Task<IEnumerable<Publisher>> GetPublisherByNameAsync(string name);
+    public Task<IEnumerable<Publisher>> GetPublisherByName(string name);
 
-	// TODO: Search By Address
-    public Task<IEnumerable<Publisher>> GetPublisherByAddressAsync(string address);
+    public Task<IEnumerable<Publisher>> GetPublisherByAddress(string address);
 }

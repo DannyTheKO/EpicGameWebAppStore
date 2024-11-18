@@ -1,127 +1,144 @@
-using DataAccess.EpicGame;
+using Application.Interfaces;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Genre")] // Route gốc cho controller
+[Route("[controller]")]
+[ApiController]
 public class GenreController : Controller
 {
-    private readonly EpicGameDbContext _context;
+	private readonly IGenreService _genreService;
 
-    public GenreController(EpicGameDbContext context)
-    {
-        _context = context;
-    }
+	public GenreController(IGenreService genreService)
+	{
+		_genreService = genreService;
+	}
 
-    // GET: genres
-    [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        return View(await _context.Genres.ToListAsync());
-    }
+	//GET: Genre/GetAllGenre
+	[HttpGet("GetAllGenre")]
+	public async Task<ActionResult<IEnumerable<Genre>>> GetAll()
+	{
+		var genre = await _genreService.GetAllGenres();
+		return Ok(genre);
+	}
 
-    // GET: genres/details/5
-    [HttpGet("details/{id}")]
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null) return NotFound();
+	// GET: Genre/GetGenre/{genreId}
+	[HttpGet("GetGenre/{genreId}")]
+	public async Task<ActionResult<Genre>> GetGenre(int genreId)
+	{
+		// Check if Genre is existed
+		var checkGenre = await _genreService.GetGenreById(genreId);
+		if (checkGenre == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Requested Genre do not exist!"
+			});
+		}
 
-        var genre = await _context.Genres
-            .FirstOrDefaultAsync(m => m.GenreId == id);
-        if (genre == null) return NotFound();
+		return Ok(new
+		{
+			success = true,
+			data = checkGenre
+		});
+	}
 
-        return View(genre);
-    }
+	// POST: Genre/CreateGenre
+	[HttpPost("CreateGenre")]
+	public async Task<ActionResult> CreateGenre([FromBody] GenreFormModel genreFormModel)
+	{
+		// Check if Genre already in the database
+		var checkGenre = await _genreService.GetGenreByName(genreFormModel.Name);
+		if (checkGenre.SingleOrDefault() != null) // FOUND
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Genre is already existed."
+			});
+		}
 
-    // GET: genres/create
-    [HttpGet("create")]
-    public IActionResult Create()
-    {
-        return View();
-    }
+		// Create Genre
+		var genre = new Genre()
+		{
+			Name = genreFormModel.Name
+		};
 
-    // POST: genres/create
-    [HttpPost("create")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("GenreId,Name")] Genre genre)
-    {
-        if (ModelState.IsValid)
-        {
-            _context.Add(genre);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+		await _genreService.AddGenre(genre);
+		return Ok(new
+		{
+			success = true,
+			message = "Genre is successfully added",
+			data = genre
+		});
 
-        return View(genre);
-    }
+	}
 
-    // GET: genres/edit/5
-    [HttpGet("edit/{id}")]
-    public async Task<IActionResult> Edit(int? id)
-    {
-        if (id == null) return NotFound();
+	// PUT: Genre/UpdateGenre/{genreId}
+	[HttpPut("UpdateGenre/{genreId}")]
+	public async Task<ActionResult> UpdateGenre([FromBody] GenreFormModel genreFormModel, int genreId)
+	{
+		var checkGenre = await _genreService.GetGenreById(genreId);
 
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null) return NotFound();
-        return View(genre);
-    }
+		// Check if genre ID exist
+		if (checkGenre == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Requested Genre do not exist!"
+			});
+		}
 
-    // POST: genres/edit/5
-    [HttpPost("edit/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("GenreId,Name")] Genre genre)
-    {
-        if (id != genre.GenreId) return NotFound();
+		// Check if genre name exist
+		var checkGenreName = await _genreService.GetGenreByName(genreFormModel.Name);
+		if (checkGenreName.SingleOrDefault() != null) // FOUND
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Genre name already exists!"
+			});
+		}
 
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                _context.Update(genre);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GenreExists(genre.GenreId))
-                    return NotFound();
-                throw;
-            }
+		// Create new Genre
+		var genre = new Genre()
+		{
+			GenreId = checkGenre.GenreId,
+			Name = genreFormModel.Name,
+		};
 
-            return RedirectToAction(nameof(Index));
-        }
+		await _genreService.UpdateGenre(genre);
+		return Ok(new
+		{
+			success = true,
+			message = "Successfully Updated Genre",
+			data = genre
+		});
+	}
 
-        return View(genre);
-    }
+	// DELETE: Genre/DeleteGenre/{genreId}
+	[HttpDelete("DeleteGenre/{genreId}")]
+	public async Task<ActionResult> DeleteGenre(int genreId)
+	{
+		var checkGenre = await _genreService.GetGenreById(genreId);
+		if (checkGenre == null)
+		{
+			return BadRequest(new
+			{
+				sucess = false,
+				message = "Request Genre already delete or not exist!"
+			});
+		}
 
-    // GET: genres/delete/5
-    [HttpGet("delete/{id}")]
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (id == null) return NotFound();
-
-        var genre = await _context.Genres
-            .FirstOrDefaultAsync(m => m.GenreId == id);
-        if (genre == null) return NotFound();
-
-        return View(genre);
-    }
-
-    // POST: genres/delete/5
-    [HttpPost("delete/{id}")]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var genre = await _context.Genres.FindAsync(id);
-        _context.Genres.Remove(genre);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
-    private bool GenreExists(int id)
-    {
-        return _context.Genres.Any(e => e.GenreId == id);
-    }
+		await _genreService.DeleteGenre(genreId);
+		return Ok(new
+		{
+			success = true,
+			message = "Genre Successfully Deleted."
+		});
+	}
 }
