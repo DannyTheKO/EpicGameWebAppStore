@@ -14,8 +14,6 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
     }
 
-    #region == Basic CRUB Function ==
-
     public async Task<Account> AddAccount(Account account)
     {
         await _accountRepository.Add(account);
@@ -31,16 +29,13 @@ public class AccountService : IAccountService
     // ACTION: Update User
     public async Task<Account> UpdateAccount(Account account)
     {
-        if (account == null) // NOT FOUND!
-            throw new ArgumentNullException(nameof(account), "Account cannot be null");
-
-        // Retrieve the existing account from the database
+		// Retrieve the existing account from the database
         var existingAccount = await _accountRepository.GetId(account.AccountId);
         if (existingAccount == null) throw new Exception("Account not found");
-
+			
         // Update the account details
         existingAccount.Username = account.Username;
-        existingAccount.Role.RoleId = account.Role.RoleId;
+        existingAccount.RoleId = account.RoleId;
         existingAccount.IsActive = account.IsActive;
         existingAccount.Password = account.Password; // Consider hashing the password
         existingAccount.Email = account.Email;
@@ -58,10 +53,6 @@ public class AccountService : IAccountService
         if (account != null) // FOUND!
             await _accountRepository.Delete(accountId);
     }
-
-    #endregion
-
-    #region == Select operation ==
 
     // SELECT: Get Account by ID
     public async Task<Account> GetAccountById(int accountId)
@@ -86,6 +77,4 @@ public class AccountService : IAccountService
     {
 	    return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
     }
-
-    #endregion
 }

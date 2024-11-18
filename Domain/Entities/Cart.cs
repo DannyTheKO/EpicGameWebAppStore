@@ -14,10 +14,12 @@ public class Cart
 
     public DateTime? CreatedOn { get; set; }
 
+    [JsonIgnore]
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
     
+    [JsonIgnore]
     public virtual Paymentmethod PaymentMethod { get; set; } = null!;
 
 

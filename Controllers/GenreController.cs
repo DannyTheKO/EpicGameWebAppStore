@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
-
 [Route("Genre")] // Route gốc cho controller
 public class GenreController : Controller
 {
@@ -14,17 +13,6 @@ public class GenreController : Controller
     public GenreController(EpicGameDbContext context)
     {
         _context = context;
-    }
-
-    [HttpGet("GetById/{id}")]
-    public async Task<ActionResult<Genre>> GetById(int id)
-    {
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null)
-        {
-            return NotFound(new { message = "Genre not found." });
-        }
-        return Ok(genre);
     }
 
     // GET: genres

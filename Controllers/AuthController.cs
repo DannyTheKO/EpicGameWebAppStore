@@ -75,12 +75,12 @@ public class AuthController : Controller
 			});
 		}
 
-        var account = new Account
-        {
-            Username = registerViewModel.Username,
-            Password = registerViewModel.Password,
-            Email = registerViewModel.Email
-        };
+		var account = new Account
+		{
+			Username = registerViewModel.Username,
+			Password = registerViewModel.Password,
+			Email = registerViewModel.Email
+		};
 
 		var (registerStage, resultMessage) = await _authenticationServices.RegisterAccount(account, registerViewModel.ConfirmPassword);
 
@@ -117,11 +117,11 @@ public class AuthController : Controller
 			});
 		}
 
-        var account = new Account
-        {
-            Username = loginViewModel.Username,
-            Password = loginViewModel.Password
-        };
+		var account = new Account
+		{
+			Username = loginViewModel.Username,
+			Password = loginViewModel.Password
+		};
 
 		var (loginState, token, resultMessage) = await _authenticationServices.LoginAccount(account);
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-public class HomeController : _BaseController
+public class HomeController : Controller
 {
     private readonly IAuthenticationServices _authenticationServices;
     private readonly ILogger<HomeController> _logger;

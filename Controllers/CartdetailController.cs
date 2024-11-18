@@ -1,10 +1,8 @@
 using Application.Interfaces;
-using DataAccess.EpicGame;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace EpicGameWebAppStore.Controllers;
 
@@ -15,12 +13,14 @@ public class CartdetailController : Controller
 	private readonly ICartdetailService _cartdetailService;
 	private readonly ICartService _cartService;
 	private readonly IGameService _gameService;
+	private readonly IDiscountService _discountService;
 
-	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService)
+	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService, IDiscountService discountService)
 	{
 		_cartdetailService = cartdetailService;
 		_gameService = gameService;
 		_cartService = cartService;
+		_discountService = discountService;
 	}
 
 	[HttpGet("GetAllCartDetail")]
@@ -90,9 +90,16 @@ public class CartdetailController : Controller
 		});
 	}
 
-	[HttpPut("UpdateCartDetail")]
-	public async Task<ActionResult<CartDetailFormModel>> UpdateCartDetail([FromBody] CartDetailFormModel cartDetailFormModel)
+	[HttpPut("UpdateCartDetail/{cartDetailId}")]
+	public async Task<ActionResult<CartDetailFormModel>> UpdateCartDetail(int cartDetailId, [FromBody] CartDetailFormModel cartDetailFormModel)
 	{
+		// Check if that CartDetailId is exist
+		var checkCartDetail = await _cartdetailService.GetCartDetailById(cartDetailId);
+		if (checkCartDetail == null)
+		{
+			return NotFound(new { success = false, message = "Cart detail not found" });
+		}
+
 		// Check if the user input is valid
 		if (!ModelState.IsValid)
 		{
@@ -119,14 +126,18 @@ public class CartdetailController : Controller
 			return NotFound(new { success = false, message = "Game not found" });
 		}
 
+		// Get the discount for the game
+		var discount = (await _discountService.GetDiscountByGameId(cartDetailFormModel.GameId)).FirstOrDefault()?.Percent ?? 0;
+
 		// Create a new cart detail
 		var cartDetail = new Cartdetail()
 		{
+			CartDetailId = checkCartDetail.CartDetailId,
 			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
 			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
-			Discount = cartDetailFormModel.Discount
+			Discount = discount
 		};
 
 		// Update the cart detail to the database
@@ -147,21 +158,4 @@ public class CartdetailController : Controller
 		var result = await _cartdetailService.DeleteCartDetail(id);
 		return Ok(new { success = true, message = "Cart detail deleted successfully", data = result });
 	}
-
-	// Populate ViewBag
-	//private async Task PopulateViewBag()
-	//{
-	//	var cartDetail = await _cartdetailService.GetAllCartdetails();
-	//	ViewBag.CartId = new SelectList(cartDetail, "CartDetailId", "");
-		
-	//}
-
-	//private async Task PopulateAccountAndPaymentMethodDropDowns()
-	//{
-	//	var accounts = await _accountService.GetAllAccounts();
-	//	ViewBag.AccountId = new SelectList(accounts, "AccountId", "Username");
-
-	//	var paymentMethods = await _paymentMethodService.GetAllPaymentMethodsAsync();
-	//	ViewBag.PaymentMethodId = new SelectList(paymentMethods, "PaymentMethodId", "Name");
-	//}
 }

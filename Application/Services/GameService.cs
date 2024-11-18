@@ -10,10 +10,10 @@ public class GameService : IGameService
 {
 	private readonly IGameRepository _gameRepository;
 
-    public GameService(IGameRepository gameRepository)
-    {
-        _gameRepository = gameRepository;
-    }
+	public GameService(IGameRepository gameRepository)
+	{
+		_gameRepository = gameRepository;
+	}
 
 	// == Basic CRUD Function ==
 	public async Task<IEnumerable<Game>> GetAllGame()
@@ -63,6 +63,30 @@ public class GameService : IGameService
 		var filteredGame = gameList.Where(f => f.GenreId == genreId);
 		return filteredGame;
 	}
+
+	// Search games by Title
+	public async Task<IEnumerable<Game>> GetGameByTitle(string title)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Title == title);
+		return filteredGame;
+	}
+
+	// Search games by Publisher Name
+	public async Task<IEnumerable<Game>> GetGameByPublisher(string publisher)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Publisher.Name == publisher);
+		return filteredGame;
+	}
+
+	// Search games by Rating
+	public async Task<IEnumerable<Game>> GetGameByRating(int rating)
+	{
+		var gameList = await _gameRepository.GetAll();
+		var filteredGame = gameList.Where(f => f.Rating == rating);
+		return filteredGame;
+	}
     public async Task<IEnumerable<Game>> GetTopTrendingGames(int count)
     {
         try
@@ -93,27 +117,4 @@ public class GameService : IGameService
             throw new Exception("Failed to get top new releases", ex);
         }
     }
-    // Search games by Title
-    public async Task<IEnumerable<Game>> GetGameByTitle(string title)
-	{
-		var gameList = await _gameRepository.GetAll();
-		var filteredGame = gameList.Where(f => f.Title == title);
-		return filteredGame;
-	}
-
-	// Search games by Publisher Name
-	public async Task<IEnumerable<Game>> GetGameByPublisher(string publisher)
-	{
-		var gameList = await _gameRepository.GetAll();
-		var filteredGame = gameList.Where(f => f.Publisher.Name == publisher);
-		return filteredGame;
-	}
-
-	// Search games by Rating
-	public async Task<IEnumerable<Game>> GetGameByRating(int rating)
-	{
-		var gameList = await _gameRepository.GetAll();
-		var filteredGame = gameList.Where(f => f.Rating == rating);
-		return filteredGame;
-	}
 }

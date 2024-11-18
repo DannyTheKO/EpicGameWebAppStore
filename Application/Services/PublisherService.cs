@@ -19,41 +19,20 @@ public class PublisherService : IPublisherService
 	// == Basic CRUD Function ==
 	public async Task<IEnumerable<Publisher>> GetAllPublishersAsync()
 	{
-        try
-        {
 		return await _publisherRepository.GetAll();
 	}
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to get all the publishers", ex);
-        }
-    }
 
 	public async Task<Publisher> AddPublisherAsync(Publisher publisher)
 	{
-        try
-        {
 		await _publisherRepository.Add(publisher);
 		return publisher;
 	}
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to add the publisher", ex);
-        }
-    }
 
 	public async Task<Publisher> UpdatePublisherAsync(Publisher publisher)
 	{
-        try
-        {
 		await _publisherRepository.Update(publisher);
 		return publisher;
 	}
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to update the publisher", ex);
-        }
-    }
 
     public async Task<Publisher> DeletePublisherAsync(int id)
     {
@@ -68,8 +47,6 @@ public class PublisherService : IPublisherService
 	// Search by Publisher ID
 	public async Task<Publisher> GetPublisherByIdAsync(int id)
 	{
-        try
-        {
 		return await _publisherRepository.GetById(id);
 	}
 

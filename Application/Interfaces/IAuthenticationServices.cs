@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Security.Claims;
+using Domain.Entities;
 
 // Domain
 

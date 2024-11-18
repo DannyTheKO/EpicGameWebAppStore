@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Route("Publisher")]
 public class PublisherController : Controller
 {
 	private readonly IPublisherService _publisherService;
@@ -14,17 +13,6 @@ public class PublisherController : Controller
 	{
 		_publisherService = publisherService;
 	}
-
-    [HttpGet("GetById/{id}")]
-    public async Task<ActionResult<Publisher>> GetById(int id)
-    {
-        var publisher = await _publisherService.GetPublisherByIdAsync(id);
-        if (publisher == null)
-        {
-            return NotFound(new { message = "Publisher not found." });
-        }
-        return Ok(publisher);
-    }
 
 	// GET: Publisher/Index
 	public async Task<IActionResult> Index()

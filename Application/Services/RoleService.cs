@@ -16,8 +16,6 @@ public class RoleService : IRoleService
         _accountRepository = accountRepository;
     }
 
-    #region == Basic Funciton ==
-
     // SELECT: Get all Role
     public async Task<IEnumerable<Role>> GetAllRoles()
     {
@@ -31,13 +29,13 @@ public class RoleService : IRoleService
     }
 
     // SELECT: Get Role by Account ID
-    public async Task<string> GetRoleByAccountId(int accountId)
+    public async Task<Role> GetRoleByAccountId(int accountId)
     {
         var account = await _accountRepository.GetId(accountId);
-        if (account == null || account.RoleId == null) return "Guest";
+		if (account == null || account.RoleId == null) throw new Exception("Account not found or RoleId is null");
 
-        var role = await _roleRepository.GetById(account.RoleId.Value);
-        return role?.Name ?? "Guest";
+        var role = await _roleRepository.GetById(account.RoleId);
+        return role;
     }
 
     // SELECT: Get Role by Name

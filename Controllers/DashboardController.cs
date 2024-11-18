@@ -27,7 +27,6 @@ public class DashboardController : Controller
         IRoleService roleService,
         IGameService gameService,
         ICartService cartService)
-        : base(authenticationServices, authorizationServices, accountService, roleService)
     {
         _authorizationServices = authorizationServices;
         _authenticationServices = authenticationServices;
@@ -76,11 +75,6 @@ public class DashboardController : Controller
         ViewBag.IsActive = new SelectList(isActive, "Value", "Text");
     }
 
-    #region Account
-
-    
-
-    #endregion
 
     [HttpGet("CreatePage")]
     public async Task<IActionResult> CreatePage()

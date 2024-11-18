@@ -31,7 +31,6 @@ public class GameController : Controller
         _authenticationServices = authenticationServices;
         _authorizationServices = authorizationServices;
     }
-    // GET: Game/GetTrending
     [HttpGet("GetTrendingGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
     {
@@ -62,12 +61,23 @@ public class GameController : Controller
             return StatusCode(500, new { message = ex.Message });
         }
     }
+
     // GET: Game/Index
     [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<Game>>> GetAll()
     {
         var games = await _gameServices.GetAllGame();
         return Ok(games);
+    }
+    [HttpGet("GetById/{id}")]
+    public async Task<ActionResult<Game>> GetById(int id)
+    {
+        var game = await _gameServices.GetGameById(id);
+        if (game == null)
+        {
+            return NotFound(new { message = "Game not found." });
+        }
+        return Ok(game);
     }
 
     [HttpGet("GetGame/{gameId}")]
