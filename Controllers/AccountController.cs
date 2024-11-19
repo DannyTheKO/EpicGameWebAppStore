@@ -27,8 +27,8 @@ public class AccountController : Controller
 	}
 
 	// GET: Get account by accountID
-	[HttpGet("GetById")]
-	public async Task<ActionResult<Account>> GetAccountById([FromQuery] int accountId)
+	[HttpGet("GetById/{accountId}")]
+	public async Task<ActionResult<Account>> GetAccountById(int accountId)
 	{
 		// Get Account by accountId
 		var account = await _accountService.GetAccountById(accountId);

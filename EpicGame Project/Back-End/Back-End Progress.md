@@ -6,16 +6,16 @@ kanban-plugin: board
 
 ## Todo
 
-- [ ] [[Discount]]
 
 
 ## Working
 
-- [ ] [[AccountGame]]
+- [ ] [[Discount]]
 
 
 ## Testing
 
+- [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Game]]
 - [ ] [[CartDetail]]

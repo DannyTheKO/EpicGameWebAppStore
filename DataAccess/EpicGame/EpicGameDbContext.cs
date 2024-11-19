@@ -69,25 +69,26 @@ public partial class EpicGameDbContext : DbContext
 
         modelBuilder.Entity<AccountGame>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("accountgame");
+	        entity.HasKey(e => e.AccountGameId).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_INDEX");
+	        entity.ToTable("accountgame");
 
-            entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_INDEX");
+	        entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_INDEX");
 
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
-            entity.Property(e => e.DateAdded).HasColumnType("datetime");
-            entity.Property(e => e.GameId).HasColumnName("GameID");
+	        entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_INDEX");
 
-            entity.HasOne(d => d.Account).WithMany()
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK_AccountGame_Account");
+	        entity.Property(e => e.AccountGameId).HasColumnName("AccountGameID");
+	        entity.Property(e => e.AccountId).HasColumnName("AccountID");
+	        entity.Property(e => e.DateAdded).HasColumnType("datetime");
+	        entity.Property(e => e.GameId).HasColumnName("GameID");
 
-            entity.HasOne(d => d.Game).WithMany()
-                .HasForeignKey(d => d.GameId)
-                .HasConstraintName("FK_AccountGame_Game");
+	        entity.HasOne(d => d.Account).WithMany(p => p.AccountGames)
+		        .HasForeignKey(d => d.AccountId)
+		        .HasConstraintName("FK_AccountGame_Account");
+
+	        entity.HasOne(d => d.Game).WithMany(p => p.AccountGames)
+		        .HasForeignKey(d => d.GameId)
+		        .HasConstraintName("FK_AccountGame_Game");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -135,7 +136,7 @@ public partial class EpicGameDbContext : DbContext
                 .HasForeignKey(d => d.CartId)
                 .HasConstraintName("FK_CartDetail_Cart");
 
-            entity.HasOne(d => d.Game).WithMany(p => p.Cartdetails)
+            entity.HasOne(d => d.Game).WithMany(p => p.CartDetails)
                 .HasForeignKey(d => d.GameId)
                 .HasConstraintName("FK_CartDetail_Game");
         });
