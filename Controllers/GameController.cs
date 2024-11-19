@@ -50,8 +50,7 @@ public class GameController : Controller
 
 	// POST: Game/CreateConfirm
 	[HttpPost("CreateGame")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult<Game>> CreateGame(Game game)
+    public async Task<ActionResult<Game>> CreateGame([FromBody] Game game)
     {
         if (!ModelState.IsValid)
         {
@@ -72,8 +71,7 @@ public class GameController : Controller
 
     // PUT: Game/UpdateConfirm/{id}
     [HttpPut("UpdateGame/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult<Game>> UpdateGame(Game game, int id)
+    public async Task<ActionResult<Game>> UpdateGame([FromBody] Game game, int id)
     {
         // Check if that game ID user was looking for is available
         if (id != game.GameId) 
@@ -84,12 +82,7 @@ public class GameController : Controller
         });
 
         // Check if the requirement is valid
-        if (!ModelState.IsValid)
-	        return BadRequest(new
-	        {
-		        success = false,
-		        message = "Missing Input Requirement"
-	        });
+       
 
         await _gameServices.AddGame(game);
         return Ok(new
@@ -101,7 +94,7 @@ public class GameController : Controller
 
     // DELETE: Game/DeleteConfirm/{id}
     [HttpDelete("DeleteConfirm/{id}")]
-    [ValidateAntiForgeryToken]
+
     public async Task<ActionResult> DeleteConfirmed(int id)
     {
 	    var existingGame = await _gameServices.GetGameById(id);
@@ -117,7 +110,7 @@ public class GameController : Controller
 	    await _gameServices.DeleteGame(id);
 	    return Ok(new
 	    {
-		    success = false,
+		    success = true,
 		    message = "Delete Game Success"
 	    });
     }

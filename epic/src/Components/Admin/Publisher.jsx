@@ -1,6 +1,6 @@
 import { Button,Space, Table, Typography, Modal, Input,Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllgame } from "./API";
+import { GetAllPublisher } from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -17,7 +17,7 @@ function Publisher() {
   useEffect(() => {
     const fetchGame = async () => {
       setLoading(true);
-      const res = await GetAllgame();
+      const res = await GetAllPublisher();
       setDataSource(res || []);
       setCount(res.length);
       setLoading(false);
@@ -85,27 +85,28 @@ const validateGameRecord = () => {
         columns={[
           {
             title: "Publisher ID",
-            dataIndex: "PublisherID",
-            key: "PublisherID",
+            dataIndex: "publisherId",
+            key: "publisherId",
             render: (PublisherID) => <Text>{PublisherID}</Text>,
             
           },
           {
             title: "Name",
-            dataIndex: "Name",
-            key: "Name",
+            dataIndex: "name",
+            key: "name",
             render: (Name) => <Text>{Name}</Text>,
           },
           {
             title: "Address",
-            dataIndex: "Address",
-            key: "Address",
+            dataIndex: "address",
+            key: "address",
             render: (Address) => <Text>{Address}</Text>,
+            width:200,
           },
           {
             title: "Email",
-            dataIndex: "Email",
-            key: "Email",
+            dataIndex: "email",
+            key: "email",
             render: (Email) => <Text>{Email}</Text>,
           },
           {
@@ -116,8 +117,8 @@ const validateGameRecord = () => {
           },
           {
             title: "Website",
-            dataIndex: "Website",
-            key: "Website",
+            dataIndex: "website",
+            key: "website",
             render: (Website) => <Text>{Website}</Text>,
           },
           {

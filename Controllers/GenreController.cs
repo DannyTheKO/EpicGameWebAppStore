@@ -1,127 +1,102 @@
-using DataAccess.EpicGame;
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace EpicGameWebAppStore.Controllers;
-
-[Route("Genre")] // Route gốc cho controller
-public class GenreController : Controller
+namespace EpicGameWebAppStore.Controllers
 {
-    private readonly EpicGameDbContext _context;
-
-    public GenreController(EpicGameDbContext context)
+    [ApiController]
+    [Route("[controller]")]
+    public class GenreController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly IGenreService _genreService;
 
-    // GET: genres
-    [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        return View(await _context.Genres.ToListAsync());
-    }
-
-    // GET: genres/details/5
-    [HttpGet("details/{id}")]
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null) return NotFound();
-
-        var genre = await _context.Genres
-            .FirstOrDefaultAsync(m => m.GenreId == id);
-        if (genre == null) return NotFound();
-
-        return View(genre);
-    }
-
-    // GET: genres/create
-    [HttpGet("create")]
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: genres/create
-    [HttpPost("create")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("GenreId,Name")] Genre genre)
-    {
-        if (ModelState.IsValid)
+        public GenreController(IGenreService genreService)
         {
-            _context.Add(genre);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _genreService = genreService;
         }
 
-        return View(genre);
-    }
-
-    // GET: genres/edit/5
-    [HttpGet("edit/{id}")]
-    public async Task<IActionResult> Edit(int? id)
-    {
-        if (id == null) return NotFound();
-
-        var genre = await _context.Genres.FindAsync(id);
-        if (genre == null) return NotFound();
-        return View(genre);
-    }
-
-    // POST: genres/edit/5
-    [HttpPost("edit/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("GenreId,Name")] Genre genre)
-    {
-        if (id != genre.GenreId) return NotFound();
-
-        if (ModelState.IsValid)
+        // == Get All Genres ==
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllGenres()
         {
             try
             {
-                _context.Update(genre);
-                await _context.SaveChangesAsync();
+                var genres = await _genreService.GetAllGenres();
+                return Ok(genres);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!GenreExists(genre.GenreId))
-                    return NotFound();
-                throw;
+                return StatusCode(500, new { message = "Failed to retrieve genres", details = ex.Message });
             }
-
-            return RedirectToAction(nameof(Index));
         }
 
-        return View(genre);
-    }
+        // == Get Genre by ID ==
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetGenreById(int id)
+        {
+            try
+            {
+                var genre = await _genreService.GetGenreById(id);
+                if (genre == null)
+                    return NotFound(new { message = "Genre not found." });
 
-    // GET: genres/delete/5
-    [HttpGet("delete/{id}")]
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (id == null) return NotFound();
+                return Ok(genre);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to retrieve genre by ID", details = ex.Message });
+            }
+        }
 
-        var genre = await _context.Genres
-            .FirstOrDefaultAsync(m => m.GenreId == id);
-        if (genre == null) return NotFound();
+        // == Add a Genre ==
+        [HttpPost]
+        public async Task<IActionResult> AddGenre([FromBody] Genre genre)
+        {
+            if (genre == null)
+                return BadRequest(new { message = "Invalid genre data." });
 
-        return View(genre);
-    }
+            try
+            {
+                var createdGenre = await _genreService.AddGenre(genre);
+                return CreatedAtAction(nameof(GetGenreById), new { id = createdGenre.GenreId }, createdGenre);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to add genre", details = ex.Message });
+            }
+        }
 
-    // POST: genres/delete/5
-    [HttpPost("delete/{id}")]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var genre = await _context.Genres.FindAsync(id);
-        _context.Genres.Remove(genre);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
+        // == Update a Genre ==
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateGenre(int id, [FromBody] Genre genre)
+        {
+            if (genre == null || genre.GenreId != id)
+                return BadRequest(new { message = "Genre ID mismatch or invalid data." });
 
-    private bool GenreExists(int id)
-    {
-        return _context.Genres.Any(e => e.GenreId == id);
+            try
+            {
+                var updatedGenre = await _genreService.UpdateGenre(genre);
+                return Ok(updatedGenre);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to update genre", details = ex.Message });
+            }
+        }
+
+        // == Delete a Genre ==
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteGenre(int id)
+        {
+            try
+            {
+                var deletedGenre = await _genreService.DeleteGenre(id);
+                return Ok(deletedGenre);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to delete genre", details = ex.Message });
+            }
+        }
     }
 }

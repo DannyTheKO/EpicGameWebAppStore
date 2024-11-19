@@ -85,51 +85,54 @@ function Account() {
         columns={[
           {
             title: "ID",
-            dataIndex: "AccountID",
-            key: "AccountID",
+            dataIndex: "accountId",
+            key: "accountId",
             render: (AccountID) => <Text>{AccountID}</Text>,
             
           },
           {
             title: "ID Role",
-            dataIndex: "RoleId",
-            key: "RoleId",
+            dataIndex: "roleId",
+            key: "roleId",
             render: (RoleId) => <Text>{RoleId}</Text>,
           },
           {
             title: "Username",
-            dataIndex: "Username",
-            key: "Username",
+            dataIndex: "username",
+            key: "username",
             render: (Username) => <Text>{Username}</Text>,
           },
           {
             title: "Email",
-            dataIndex: "Email",
-            key: "Email",
+            dataIndex: "email",
+            key: "email",
             render: (Email) => <Text>{Email}</Text>,
           },
           {
             title: "Create On",
-            dataIndex: "Createon",
-            key: "Createon",
+            dataIndex: "createdOn",
+            key: "createdOn",
               render: (Createon) => new Date(Createon).toLocaleDateString(),
           },
           {
             title: "Is Active",
-            dataIndex: "IsActive",
-            key: "IsActive",
+            dataIndex: "isActive",
+            key: "isActive",
             render: (IsActive) => <Text>{IsActive}</Text>,
           },
           {
             title: "Actions", // Cột chứa các nút
             render: (record) => {
-              <Space size="middle">
-                  <Button type="primary" onClick={() => openModal()}>Thêm </Button>
+              return (
+                <Space size="middle">
+                  <Button type="primary" onClick={() => openModal()}>Thêm</Button>
                   <Button onClick={() => openModal(record)}>Sửa</Button>
                   <Button danger onClick={() => handleDelete(record)}>Xóa</Button>
                 </Space>
+              );
             },
-          },
+          }
+          
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
           rowKey="AccountID"
