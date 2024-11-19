@@ -15,6 +15,5 @@ public class Discount
 
     public DateTime? EndOn { get; set; }
 
-    [JsonIgnore]
     public virtual Game? Game { get; set; }
 }
