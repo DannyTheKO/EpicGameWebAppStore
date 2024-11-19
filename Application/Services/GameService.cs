@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
+using Org.BouncyCastle.Asn1.X509;
 
 // Application
 
@@ -29,16 +30,35 @@ public class GameService : IGameService
 
 	public async Task<Game> UpdateGame(Game game)
 	{
-		await _gameRepository.Update(game);
-		return game;
+		// Retrieve game from database
+		var existingGame = await _gameRepository.GetById(game.GameId);
+		if (existingGame == null) throw new Exception("Game not found.");
+
+		// Update game into the database
+		existingGame.GameId = game.GameId;
+		existingGame.PublisherId = game.PublisherId;
+		existingGame.GenreId = game.GenreId;
+		existingGame.Title = game.Title;
+		existingGame.Price = game.Price;
+		existingGame.Author = game.Author;
+		existingGame.Rating = game.Rating;
+		existingGame.Description = game.Description;
+
+		existingGame.Release = game.Release;
+		existingGame.Publisher = game.Publisher;
+		existingGame.Genre = game.Genre;
+
+		// Call method to update
+		await _gameRepository.Update(existingGame);
+		return existingGame;
 	}
 
 	public async Task<Game> DeleteGame(int id)
 	{
-		var game = await _gameRepository.GetById(id);
-		if (game == null) throw new Exception("Game not found.");
+		var existingGame = await _gameRepository.GetById(id);
+		if (existingGame == null) throw new Exception("Game not found.");
 		await _gameRepository.Delete(id);
-		return game;
+		return existingGame;
 	}
 
 	// == Feature Function ==

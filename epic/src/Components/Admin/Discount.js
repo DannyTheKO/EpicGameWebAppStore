@@ -95,21 +95,21 @@ const validateGameRecord = () => {
         columns={[
           {
             title: "Discout ID",
-            dataIndex: "discountid",
-            key: "discountid",
+            dataIndex: "discountId",
+            key: "discountId",
             render: (discountid) => <Text>{discountid}</Text>,
             
           },
           {
             title: "ID Game",
-            dataIndex: "gameid",
-            key: "gameid",
+            dataIndex: "gameId",
+            key: "gameId",
             render: (gameid) => <Text>{gameid}</Text>,
           },
           {
             title: "Percent",
-            dataIndex: "Percent",
-            key: "Percent",
+            dataIndex: "percent",
+            key: "percent",
             render: (Percent) => `$${Percent.toFixed(2)}`,
           },
          
@@ -121,14 +121,14 @@ const validateGameRecord = () => {
           },
           {
             title: "Start on",
-            dataIndex: "starton",
-            key: "starton",
+            dataIndex: "startOn",
+            key: "startOn",
             render: (starton) => new Date(starton).toLocaleDateString(),
           },
           {
             title: "End on",
-            dataIndex: "endon",
-            key: "starton",
+            dataIndex: "endOn",
+            key: "endOn",
             render: (starton) => new Date(starton).toLocaleDateString(),
           },
           {

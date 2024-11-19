@@ -1,0 +1,100 @@
+/* src/styles/pages/LibraryPage.css */
+
+.library-page {
+    padding: 20px;
+    background-color: #161b22;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+    .library-page h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #0066ff, 0 0 40px #0066ff;
+    }
+
+    to {
+        text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 25px #0066ff, 0 0 35px #0066ff;
+    }
+}
+
+.search-container {
+    margin-bottom: 20px; /* Khoảng cách dưới thanh tìm kiếm */
+}
+
+.search-container input {
+    width: 100%; /* Chiều rộng 100% cho thanh tìm kiếm */
+    padding: 10px; /* Padding cho thanh tìm kiếm */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc cho thanh tìm kiếm */
+    font-size: 1rem; /* Kích thước chữ cho thanh tìm kiếm */
+}
+
+.games-list {
+    display: flex; /* Sử dụng flexbox để sắp xếp các game */
+    flex-wrap: wrap; /* Để cho các game xuống dòng khi không đủ chỗ */
+    gap: 20px; /* Khoảng cách giữa các game */
+}
+
+.game-item {
+    background-color: #2b2f33; /* Màu nền cho mỗi game */
+    border-radius: 8px; /* Bo góc cho mỗi game */
+    padding: 10px; /* Padding cho mỗi game */
+    width: 200px; /* Chiều rộng cố định cho mỗi game */
+}
+
+.game-image {
+    width: 100%; /* Chiều rộng 100% cho hình ảnh game */
+    border-radius: 8px; /* Bo góc cho hình ảnh game */
+}
+
+.game-title {
+    font-size: 1.2rem; /* Kích thước chữ cho tên game */
+    margin: 10px 0 5px 0; /* Khoảng cách trên, dưới cho tên game */
+}
+
+.game-description {
+    font-size: 0.9rem; /* Kích thước chữ cho mô tả game */
+    color: #bbbbbb; /* Màu chữ cho mô tả */
+}
+.search-container {
+    position: relative; /* Để có thể định vị biểu tượng kính lúp */
+    width: 100%; /* Đặt chiều rộng của container */
+    max-width: 600px;
+}
+
+    .search-container input {
+        width: 100%;
+        padding: 15px 50px; /* Thêm padding để phù hợp với biểu tượng */
+        border-radius: 25px; /* Bo góc lớn hơn */
+        font-size: 1rem;
+        background: linear-gradient(90deg, #1e242b, #2b2f33); /* Màu nền gradient */
+        color: #ffffff;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+        .search-container input:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 10px #0066ff;
+        }
+
+    .search-container .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #00ffff;
+        font-size: 1.5rem;
+        pointer-events: none;
+    }

@@ -1,5 +1,13 @@
+### Basic Function
+- [x] Create ✅ 2024-11-18
+- [x] Read ✅ 2024-11-18
+- [x] Read specific game by selecting game ID ✅ 2024-11-18
+- [x] Update ✅ 2024-11-18
+- [x] Delete ✅ 2024-11-18
+
+
 ### BUG
-- Game/CreateGame, Game/UpdateGame/{id}
+- [x] Game/CreateGame, Game/UpdateGame/{id} ✅ 2024-11-18
 ```
 {
   "gameId": 0,
@@ -48,7 +56,7 @@
 }
 ```
 
- - [ ] Game/DeleteConfirm/{id}
+ - [x] Game/DeleteConfirm/{id} ✅ 2024-11-18
  ```json
  Error: response status is 400
 

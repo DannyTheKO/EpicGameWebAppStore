@@ -33,31 +33,31 @@ import {
             {
               label: "Dashboard",
               icon: <AppstoreOutlined />,
-              key: "/",
+              key: "/admin",
             },
             {
               label: "Game",
-              key: "/game",
+              key: "/admin/admingame",
               icon: <ShopOutlined />,
             },
             {
               label: "Acount game",
-              key: "/accountgame",
+              key: "/admin/adminaccountgame",
               icon: <ShoppingCartOutlined />,
             },
             {
               label: "Account",
-              key: "/account",
+              key: "/admin/adminaccount",
               icon: <UserOutlined />,
             },
             {
               label: "Discount",
-              key: "/discount",
+              key: "/admin/admindiscount",
               icon: <MdDiscount />,
             },
             {
               label: "Publisher",
-              key: "/publisher",
+              key: "/admin/adminpublisher",
               icon: <MdOutlineWarehouse />,
             },
             {
@@ -71,4 +71,5 @@ import {
     );
   }
   export default SideMenu;
+
   

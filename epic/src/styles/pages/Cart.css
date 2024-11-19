@@ -1,0 +1,136 @@
+.cart-page {
+    padding: 20px;
+    color: #ffffff;
+    background-color: #161b22;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+}
+
+.cart-title {
+    text-align: left;
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #00d4ff; /* Aqua highlight */
+    text-shadow: 1px 1px 3px #00d4ff;
+}
+
+.cart-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap; /* Đảm bảo bố cục không bị vỡ trên màn hình nhỏ */
+}
+
+.cart-items {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    background-color: #1f2731;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .cart-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+.cart-item-image {
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 2px solid #00d4ff; /* Aqua highlight border */
+}
+
+.cart-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.item-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00d4ff; /* Aqua highlight */
+    margin-bottom: 10px;
+}
+
+.item-description {
+    font-size: 0.95rem;
+    color: #bbbbbb;
+    line-height: 1.5;
+}
+
+.item-price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ff4081; /* Highlight price */
+    margin-top: 10px;
+}
+
+.remove-button {
+    background-color: #ff4081;
+    color: white;
+    width: 120px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .remove-button:hover {
+        background-color: #e63972;
+        transform: scale(1.05);
+    }
+
+.cart-summary {
+    flex: 1;
+    background-color: #1f2731;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+    .cart-summary h3 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #00d4ff; /* Aqua highlight */
+        text-shadow: 1px 1px 3px #00d4ff;
+    }
+
+.checkout-button {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #00d4ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .checkout-button:hover {
+        background-color: #00b3e6;
+        transform: scale(1.05);
+    }

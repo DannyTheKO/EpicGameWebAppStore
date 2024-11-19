@@ -19,7 +19,7 @@ namespace EpicGameWebAppStore.Controllers;
 
         // GET: api/Discount
         [HttpGet("GetAllDiscount")]
-        public async Task<ActionResult<IEnumerable<Discount>>> GetAllDiscounts()
+        public async Task<IActionResult> GetAllDiscounts()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace EpicGameWebAppStore.Controllers;
 
         // GET: api/Discount/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Discount>> GetDiscountById(int id)
+        public async Task<IActionResult> GetDiscountById(int id)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace EpicGameWebAppStore.Controllers;
 
         // POST: api/Discount
         [HttpPost]
-        public async Task<ActionResult<Discount>> AddDiscount([FromBody] Discount discount)
+        public async Task<IActionResult> AddDiscount([FromBody] Discount discount)
         {
             if (discount == null)
             {
@@ -71,7 +71,7 @@ namespace EpicGameWebAppStore.Controllers;
 
         // PUT: api/Discount/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<Discount>> UpdateDiscount(int id, [FromBody] Discount discount)
+        public async Task<IActionResult> UpdateDiscount(int id, [FromBody] Discount discount)
         {
             if (id != discount.DiscountId)
             {
@@ -91,7 +91,7 @@ namespace EpicGameWebAppStore.Controllers;
 
         // DELETE: api/Discount/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Discount>> DeleteDiscount(int id)
+        public async Task<IActionResult> DeleteDiscount(int id)
         {
             try
             {
@@ -103,5 +103,31 @@ namespace EpicGameWebAppStore.Controllers;
                 return StatusCode(500, ex.Message);
             }
         }
+    
+
+
+    // Search by discount code
+    [HttpGet("search/code/{code}")]
+    public async Task<IActionResult> GetDiscountByCode(string code)
+    {
+        var discounts = await _discountService.GetDiscountByCode(code);
+        if (!discounts.Any())
+        {
+            return NotFound("No discounts found with the specified code");
+        }
+        return Ok(discounts);
     }
+
+    // Search by game ID
+    [HttpGet("search/game/{gameId}")]
+    public async Task<IActionResult> GetDiscountByGameId(int gameId)
+    {
+        var discounts = await _discountService.GetDiscountByGameId(gameId);
+        if (!discounts.Any())
+        {
+            return NotFound("No discounts found for the specified game");
+        }
+        return Ok(discounts);
+    }
+}
 

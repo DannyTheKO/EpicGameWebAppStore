@@ -18,9 +18,4 @@ public interface IGameRepository
     // Search by Game ID
     public Task<Game> GetById(int id);
 
-    // TODO: Search By Publisher => Get Publisher By "ID"
-    // TODO: Search By Genre => Get Genre By "ID"
-    // TODO: Search By Name
-    // TODO: Search By Publisher
-    // TODO: Search By Rating
 }

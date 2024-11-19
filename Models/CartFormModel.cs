@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-using Domain.Entities;
-using Newtonsoft.Json;
 
 namespace EpicGameWebAppStore.Models
 {

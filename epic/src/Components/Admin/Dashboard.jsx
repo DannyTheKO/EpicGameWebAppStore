@@ -215,7 +215,7 @@
     
      
       return (
-        <Card style={{ width: 1200, height: 'auto' }}>
+        <Card style={{ width: 1200, height: 'auto',marginLeft:150 }}>
           <Bar options={options} data={reveneuData} />
           
             

@@ -25,8 +25,15 @@ try {
   return [];
 }
 };
-export const GetAllDiscount = () => {
-
+export const GetAllDiscount =  async () => {
+  try {
+    const response = await apiClient.get('/Discount/GetAllDiscount'); // Đường dẫn chính xác đến endpoint
+    console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
+    return response.data; // Trả về danh sách sản phẩm
+  } catch (error) {
+    console.error("Error :", error.response || error.message);
+    return [];
+  }
 };
 
 export const GetAllPublisher = async() => {

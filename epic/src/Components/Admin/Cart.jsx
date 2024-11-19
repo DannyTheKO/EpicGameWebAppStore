@@ -5,7 +5,7 @@ import "./table.css";
 const { Text } = Typography;
 const { Option }=Select;
 
-function Cart() {
+function Orders() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [dataNameAccount, setNameAccount] = useState([]);

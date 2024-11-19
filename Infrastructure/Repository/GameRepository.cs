@@ -31,7 +31,10 @@ public class GameRepository : IGameRepository
 
     public async Task<Game> GetById(int id)
     {
-        return await _context.Games.FindAsync(id);
+        return await _context.Games
+	        .Include(g => g.Genre)
+	        .Include(p => p.Publisher)
+	        .FirstOrDefaultAsync(g => g.GameId == id);
     }
 
     public async Task Add(Game game)

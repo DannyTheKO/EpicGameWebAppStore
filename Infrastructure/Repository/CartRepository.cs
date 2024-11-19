@@ -59,6 +59,7 @@ public class CartRepository : ICartRepository
         return await _context.Carts
             .Where(c => c.AccountId == accountId)
             .Include(c => c.PaymentMethod)
+            .Include(cd => cd.Cartdetails)
             .ToListAsync();
     }
 
