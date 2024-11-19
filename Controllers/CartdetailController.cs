@@ -75,7 +75,7 @@ public class CartdetailController : Controller
 			GameId = cartDetailFormModel.GameId,
 			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
-			Discount = cartDetailFormModel.Discount
+			Discount = cartDetailFormModel.Discount,
 		};
 
 		// Add the cart detail to the database
