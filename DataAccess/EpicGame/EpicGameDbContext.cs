@@ -143,22 +143,24 @@ public partial class EpicGameDbContext : DbContext
 
         modelBuilder.Entity<Discount>(entity =>
         {
-            entity.HasKey(e => e.DiscountId).HasName("PRIMARY");
+	        entity.HasKey(e => e.DiscountId).HasName("PRIMARY");
 
-            entity.ToTable("discount");
+	        entity.ToTable("discount");
 
-            entity.HasIndex(e => e.GameId, "GameID_INDEX");
+	        entity.HasIndex(e => e.Code, "Code_UNIQUE").IsUnique();
 
-            entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
-            entity.Property(e => e.Code).HasMaxLength(45);
-            entity.Property(e => e.EndOn).HasColumnType("datetime");
-            entity.Property(e => e.GameId).HasColumnName("GameID");
-            entity.Property(e => e.Percent).HasPrecision(5);
-            entity.Property(e => e.StartOn).HasColumnType("datetime");
+	        entity.HasIndex(e => e.GameId, "GameID_INDEX");
 
-            entity.HasOne(d => d.Game).WithMany(p => p.Discounts)
-                .HasForeignKey(d => d.GameId)
-                .HasConstraintName("FK_Discount_Game");
+	        entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
+	        entity.Property(e => e.Code).HasMaxLength(45);
+	        entity.Property(e => e.EndOn).HasColumnType("datetime");
+	        entity.Property(e => e.GameId).HasColumnName("GameID");
+	        entity.Property(e => e.Percent).HasPrecision(5);
+	        entity.Property(e => e.StartOn).HasColumnType("datetime");
+
+	        entity.HasOne(d => d.Game).WithMany(p => p.Discounts)
+		        .HasForeignKey(d => d.GameId)
+		        .HasConstraintName("FK_Discount_Game");
         });
 
         modelBuilder.Entity<Game>(entity =>
