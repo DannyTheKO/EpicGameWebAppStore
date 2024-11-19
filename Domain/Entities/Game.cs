@@ -22,8 +22,11 @@ public class Game
 
     public string? Description { get; set; }
 
+    [JsonIgnore] 
+    public virtual ICollection<AccountGame> AccountGames { get; set; } = new List<AccountGame>();
+
     [JsonIgnore]
-    public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
+    public virtual ICollection<Cartdetail> CartDetails { get; set; } = new List<Cartdetail>();
     
     [JsonIgnore]
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
