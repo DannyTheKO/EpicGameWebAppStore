@@ -24,7 +24,7 @@ public class GameRepository : IGameRepository
         var game = await _context.Games
             .Include(g => g.Genre)
             .Include(g => g.Publisher)
-            .Include(g => g.Images)
+            .Include(g => g.ImageGame)
             .ToListAsync();
 
         return game;

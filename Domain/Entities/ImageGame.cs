@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public partial class ImageGame
+public class ImageGame
 {
     public int ImageId { get; set; }
 

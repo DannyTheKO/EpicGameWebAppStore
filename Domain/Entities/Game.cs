@@ -33,8 +33,9 @@ public class Game
     [JsonIgnore]
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
+    public virtual ICollection<ImageGame> ImageGame { get; set; } = new List<ImageGame>();
+    
     public virtual Genre? Genre { get; set; }
 
-    public virtual ICollection<ImageGame> Images { get; set; } = new List<ImageGame>();
     public virtual Publisher? Publisher { get; set; }
 }

@@ -37,6 +37,8 @@ public partial class EpicGameDbContext : DbContext
 
 	public virtual DbSet<Genre> Genres { get; set; }
 
+	public virtual DbSet<ImageGame> ImageGames { get; set; }
+
 	public virtual DbSet<Paymentmethod> Paymentmethods { get; set; }
 
 	public virtual DbSet<Publisher> Publishers { get; set; }
@@ -196,31 +198,27 @@ public partial class EpicGameDbContext : DbContext
 				.HasConstraintName("FK_Game_Publisher");
 		});
 
-        modelBuilder.Entity<ImageGame>(entity =>
-        {
-            entity.HasKey(e => e.ImageId).HasName("PRIMARY");
-
-            entity.ToTable("image");
-
-            entity.HasIndex(e => e.GameId, "GameID_INDEX");
-
-            entity.Property(e => e.ImageId).HasColumnName("ImageID");
-            entity.Property(e => e.CreateAt)
-                .HasColumnType("datetime")
-                .HasColumnName("create_at");
-            entity.Property(e => e.FileName)
-                .HasMaxLength(255)
-                .HasColumnName("file_name");
-            entity.Property(e => e.FilePath)
-                .HasMaxLength(255)
-                .HasColumnName("file_path");
-            entity.Property(e => e.GameId).HasColumnName("GameID");
-
-            entity.HasOne(d => d.Game).WithMany(p => p.Images)
-                .HasForeignKey(d => d.GameId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Image_Game");
-        });
+		modelBuilder.Entity<ImageGame>(entity =>
+		{
+			entity.HasKey(e => e.ImageId).HasName("PRIMARY");
+			entity.ToTable("imagegame");
+			entity.HasIndex(e => e.GameId, "GameID_INDEX");
+			entity.Property(e => e.ImageId).HasColumnName("ImageID");
+			entity.Property(e => e.CreateAt)
+				.HasColumnType("datetime")
+				.HasColumnName("create_at");
+			entity.Property(e => e.FileName)
+				.HasMaxLength(255)
+				.HasColumnName("file_name");
+			entity.Property(e => e.FilePath)
+				.HasMaxLength(255)
+				.HasColumnName("file_path");
+			entity.Property(e => e.GameId).HasColumnName("GameID");
+			entity.HasOne(d => d.Game).WithMany(p => p.ImageGame)
+				.HasForeignKey(d => d.GameId)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("FK_Image_Game");
+		});
 
         modelBuilder.Entity<Genre>(entity =>
         {
