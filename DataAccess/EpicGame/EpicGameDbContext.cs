@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using static System.Net.Mime.MediaTypeNames;
 
 // The "EpicGameDBContext.cs" file acts as a bridge between the application and the database, 
 // providing an abstraction layer for performing database operations and managing the entities 
@@ -36,6 +37,8 @@ public partial class EpicGameDbContext : DbContext
 
     public virtual DbSet<Genre> Genres { get; set; }
 
+    public virtual DbSet<ImageGame> Images { get; set; }
+
     public virtual DbSet<Paymentmethod> Paymentmethods { get; set; }
 
     public virtual DbSet<Publisher> Publishers { get; set; }
@@ -44,7 +47,7 @@ public partial class EpicGameDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server=localhost;User=root;Password=123456;Database=epicgamewebapp");
+        => optionsBuilder.UseMySQL("Server=localhost;User=root;Password=root;Database=epicgamewebapp");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -173,12 +176,13 @@ public partial class EpicGameDbContext : DbContext
             entity.Property(e => e.GameId).HasColumnName("GameID");
             entity.Property(e => e.Author).HasMaxLength(255);
             entity.Property(e => e.GenreId).HasColumnName("GenreID");
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.Price).HasPrecision(8);
             entity.Property(e => e.PublisherId).HasColumnName("PublisherID");
             entity.Property(e => e.Rating).HasPrecision(2, 1);
             entity.Property(e => e.Release).HasColumnType("datetime");
             entity.Property(e => e.Title).HasMaxLength(255);
-            entity.Property(e => e.Image).HasColumnType("longblob");
+
             entity.HasOne(d => d.Genre).WithMany(p => p.Games)
                 .HasForeignKey(d => d.GenreId)
                 .HasConstraintName("FK_Game_Genre");
@@ -186,6 +190,32 @@ public partial class EpicGameDbContext : DbContext
             entity.HasOne(d => d.Publisher).WithMany(p => p.Games)
                 .HasForeignKey(d => d.PublisherId)
                 .HasConstraintName("FK_Game_Publisher");
+        });
+
+        modelBuilder.Entity<ImageGame>(entity =>
+        {
+            entity.HasKey(e => e.ImageId).HasName("PRIMARY");
+
+            entity.ToTable("image");
+
+            entity.HasIndex(e => e.GameId, "GameID_INDEX");
+
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(255)
+                .HasColumnName("file_name");
+            entity.Property(e => e.FilePath)
+                .HasMaxLength(255)
+                .HasColumnName("file_path");
+            entity.Property(e => e.GameId).HasColumnName("GameID");
+
+            entity.HasOne(d => d.Game).WithMany(p => p.Images)
+                .HasForeignKey(d => d.GameId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Image_Game");
         });
 
         modelBuilder.Entity<Genre>(entity =>

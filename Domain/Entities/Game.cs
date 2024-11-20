@@ -8,6 +8,8 @@ public class Game
 
     public int? GenreId { get; set; }
 
+    public int ImageId { get; set; }
+
     public string? Title { get; set; }
 
     public decimal? Price { get; set; }
@@ -19,12 +21,12 @@ public class Game
     public decimal? Rating { get; set; }
 
     public string? Description { get; set; }
-    public byte[]? Image { get; set; }
     public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
     public virtual Genre? Genre { get; set; }
 
+    public virtual ICollection<ImageGame> Images { get; set; } = new List<ImageGame>();
     public virtual Publisher? Publisher { get; set; }
 }
