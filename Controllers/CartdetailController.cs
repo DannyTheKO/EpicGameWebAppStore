@@ -73,7 +73,6 @@ public class CartdetailController : Controller
 		{
 			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
-			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
 			Discount = cartDetailFormModel.Discount,
 		};
@@ -135,7 +134,6 @@ public class CartdetailController : Controller
 			CartDetailId = checkCartDetail.CartDetailId,
 			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
-			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
 			Discount = discount
 		};

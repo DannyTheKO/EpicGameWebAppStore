@@ -54,11 +54,14 @@ public partial class EpicGameDbContext : DbContext
 
             entity.ToTable("account");
 
-            entity.HasIndex(e => e.RoleId, "FK_Account_Role_idx");
+            entity.HasIndex(e => e.RoleId, "FK_Account_Role_INDEX");
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'Y'")
+                .HasColumnType("enum('N','Y')");
             entity.Property(e => e.Password).HasMaxLength(45);
             entity.Property(e => e.Username).HasMaxLength(45);
 
@@ -69,26 +72,26 @@ public partial class EpicGameDbContext : DbContext
 
         modelBuilder.Entity<AccountGame>(entity =>
         {
-	        entity.HasKey(e => e.AccountGameId).HasName("PRIMARY");
+            entity.HasKey(e => e.AccountGameId).HasName("PRIMARY");
 
-	        entity.ToTable("accountgame");
+            entity.ToTable("accountgame");
 
-	        entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_INDEX");
+            entity.HasIndex(e => e.AccountId, "FK_AccountGame_Account_INDEX");
 
-	        entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_INDEX");
+            entity.HasIndex(e => e.GameId, "FK_AccountGame_Game_INDEX");
 
-	        entity.Property(e => e.AccountGameId).HasColumnName("AccountGameID");
-	        entity.Property(e => e.AccountId).HasColumnName("AccountID");
-	        entity.Property(e => e.DateAdded).HasColumnType("datetime");
-	        entity.Property(e => e.GameId).HasColumnName("GameID");
+            entity.Property(e => e.AccountGameId).HasColumnName("AccountGameID");
+            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.DateAdded).HasColumnType("datetime");
+            entity.Property(e => e.GameId).HasColumnName("GameID");
 
-	        entity.HasOne(d => d.Account).WithMany(p => p.AccountGames)
-		        .HasForeignKey(d => d.AccountId)
-		        .HasConstraintName("FK_AccountGame_Account");
+            entity.HasOne(d => d.Account).WithMany(p => p.AccountGames)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_AccountGame_Account");
 
-	        entity.HasOne(d => d.Game).WithMany(p => p.AccountGames)
-		        .HasForeignKey(d => d.GameId)
-		        .HasConstraintName("FK_AccountGame_Game");
+            entity.HasOne(d => d.Game).WithMany(p => p.AccountGames)
+                .HasForeignKey(d => d.GameId)
+                .HasConstraintName("FK_AccountGame_Game");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -143,24 +146,24 @@ public partial class EpicGameDbContext : DbContext
 
         modelBuilder.Entity<Discount>(entity =>
         {
-	        entity.HasKey(e => e.DiscountId).HasName("PRIMARY");
+            entity.HasKey(e => e.DiscountId).HasName("PRIMARY");
 
-	        entity.ToTable("discount");
+            entity.ToTable("discount");
 
-	        entity.HasIndex(e => e.Code, "Code_UNIQUE").IsUnique();
+            entity.HasIndex(e => e.Code, "Code_UNIQUE").IsUnique();
 
-	        entity.HasIndex(e => e.GameId, "GameID_INDEX");
+            entity.HasIndex(e => e.GameId, "GameID_INDEX");
 
-	        entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
-	        entity.Property(e => e.Code).HasMaxLength(45);
-	        entity.Property(e => e.EndOn).HasColumnType("datetime");
-	        entity.Property(e => e.GameId).HasColumnName("GameID");
-	        entity.Property(e => e.Percent).HasPrecision(5);
-	        entity.Property(e => e.StartOn).HasColumnType("datetime");
+            entity.Property(e => e.DiscountId).HasColumnName("DiscountID");
+            entity.Property(e => e.Code).HasMaxLength(45);
+            entity.Property(e => e.EndOn).HasColumnType("datetime");
+            entity.Property(e => e.GameId).HasColumnName("GameID");
+            entity.Property(e => e.Percent).HasPrecision(5);
+            entity.Property(e => e.StartOn).HasColumnType("datetime");
 
-	        entity.HasOne(d => d.Game).WithMany(p => p.Discounts)
-		        .HasForeignKey(d => d.GameId)
-		        .HasConstraintName("FK_Discount_Game");
+            entity.HasOne(d => d.Game).WithMany(p => p.Discounts)
+                .HasForeignKey(d => d.GameId)
+                .HasConstraintName("FK_Discount_Game");
         });
 
         modelBuilder.Entity<Game>(entity =>
@@ -232,14 +235,7 @@ public partial class EpicGameDbContext : DbContext
             entity.ToTable("role");
 
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Permission)
-                .HasConversion(
-                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null))
-                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
+            entity.Property(e => e.Permission).HasColumnType("json");
         });
 
         OnModelCreatingPartial(modelBuilder);

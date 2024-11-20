@@ -21,13 +21,4 @@ public class Cart
     
     [JsonIgnore]
     public virtual Paymentmethod PaymentMethod { get; set; } = null!;
-
-
-    public void InitializeCart(int accountId)
-    {
-	    AccountId = accountId;
-        CreatedOn = DateTime.UtcNow;
-        TotalAmount = 0;
-        Cartdetails = new List<Cartdetail>();
-    }
 }
