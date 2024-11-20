@@ -75,7 +75,13 @@ public class CartService : ICartService
 		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
 	}
 
-
+	public async Task<Cart> GetLatestCart(int accountId)
+	{
+		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
+		return existingCarts
+			.OrderByDescending(c => c.CreatedOn)
+			.FirstOrDefault();
+	}
 
 
 

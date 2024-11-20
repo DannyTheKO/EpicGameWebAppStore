@@ -69,6 +69,23 @@ public class CartController : Controller
 		});
 	}
 
+	// GET: Cart/CheckOut?{accountId}
+	[HttpGet("CheckOut/{accountId}")]
+	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
+	{
+		var cart = await _cartService.GetLatestCart(accountId);
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "No cart found for this account"
+			});
+		}
+
+		return Ok(cart);
+	}
+
 	[HttpPost("CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
@@ -107,8 +124,6 @@ public class CartController : Controller
 		await _cartService.AddCart(cart);
 		return Ok(new { success = true, message = "Cart created successfully" });
 	}
-
-
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{cartId}")]
