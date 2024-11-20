@@ -1,7 +1,7 @@
 ﻿// src/components/Footer.js
 import React from 'react';
 import '../styles/components/Footer.css'; // Import CSS cho Footer
-import epicLogo from '../assets/EpicGames_Logo.png'; // Đảm bảo logo Epic Games ở thư mục `assets`
+import epicLogo from '../images/EpicGames_Logo.png'; // Đảm bảo logo Epic Games ở thư mục `assets`
 import { FaFacebook, FaTwitter, FaYoutube } from 'react-icons/fa';
 const Footer = () => {
     return (

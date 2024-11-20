@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import '../styles/components/Navbar.css';
-import EpicGamesLogo from '../assets/EpicGames_Logo.png';
+import EpicGamesLogo from '../images/EpicGames_Logo.png';
 
 const Navbar = () => {
     const location = useLocation();
