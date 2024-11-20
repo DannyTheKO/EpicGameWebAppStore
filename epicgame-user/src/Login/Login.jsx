@@ -16,18 +16,20 @@ const LoginForm = () => {
 
     const handleSignIn = async (event) => {
         event.preventDefault();
-        setErrorMessage(""); // Reset lỗi cũ
 
         const payload = {
-            Username: username,
-            Password: password,
+            Username: username,  // Kiểm tra tên biến phải giống với mô hình backend
+            Password: password   // Kiểm tra tên biến phải giống với mô hình backend
         };
 
         try {
             const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload, {
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
+            console.log(response.data);  // Kiểm tra phản hồi từ server
             const { loginStateFlag, accountToken, message } = response.data;
 
             if (loginStateFlag) {
@@ -38,9 +40,9 @@ const LoginForm = () => {
                 setErrorMessage(message || "Login failed. Please try again.");
             }
         } catch (error) {
+            console.error("Server responded with error: ", error.response.data);  // Xử lý lỗi nếu có
             const statusCode = error.response?.status || 500;
             const serverError = error.response?.data?.message || "Server error occurred. Please try again later.";
-
             console.error(`Error ${statusCode}:`, serverError);
             setErrorMessage(
                 statusCode === 401
@@ -49,7 +51,6 @@ const LoginForm = () => {
             );
         }
     };
-
 
     return (
         <div className="login-container">
