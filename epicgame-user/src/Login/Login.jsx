@@ -3,7 +3,7 @@ import './Login.css';
 import { FaUserAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import EpicGamesLogo from '../assets/EpicGames_Logo.png';
+import EpicGamesLogo from '../images/EpicGames_Logo.png';
 
 const LoginForm = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);

@@ -4,9 +4,9 @@ import '../styles/pages/Cart.css';
 import Payment from './Payment'; // Đúng đường dẫn vì Payment nằm cùng thư mục với Cart
 
 const initialCart = [
-    { id: 1, name: "Game 1", description: "An exciting action game.", price: 19.99, genre: "Action", image: require('../assets/game1.png') },
-    { id: 2, name: "Game 2", description: "A thrilling adventure awaits.", price: 29.99, genre: "Adventure", image: require('../assets/game2.png') },
-    { id: 3, name: "Game 3", description: "Explore the world of RPGs.", price: 39.99, genre: "RPG", image: require('../assets/game3.png') },
+    { id: 1, name: "Game 1", description: "An exciting action game.", price: 19.99, genre: "Action", image: require('../images/game1.png') },
+    { id: 2, name: "Game 2", description: "A thrilling adventure awaits.", price: 29.99, genre: "Adventure", image: require('../images/game2.png') },
+    { id: 3, name: "Game 3", description: "Explore the world of RPGs.", price: 39.99, genre: "RPG", image: require('../images/game3.png') },
 ];
 
 const Cart = () => {

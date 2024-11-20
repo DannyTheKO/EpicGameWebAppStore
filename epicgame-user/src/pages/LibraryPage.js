@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/pages/LibraryPage.css';
 import { FaSearch } from 'react-icons/fa';
-import images from '../assets'; // Import tất cả ảnh từ thư mục assets
+import images from '../images'; // Import tất cả ảnh từ thư mục assets
 
 // Danh sách các game đã mua
 const purchasedGames = [

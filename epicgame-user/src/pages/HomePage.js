@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/pages/HomePage.css';
-import images from '../assets'; // Import tất cả ảnh từ assets
+import images from '../images'; // Import tất cả ảnh từ assets
 
 // Dùng hình ảnh banner từ assets
 const bannerImages = [

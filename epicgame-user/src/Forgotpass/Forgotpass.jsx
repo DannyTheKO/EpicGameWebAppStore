@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaEnvelope } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import EpicGamesLogo from '../assets/EpicGames_Logo.png';
+import EpicGamesLogo from '../images/EpicGames_Logo.png';
 import "./forgot.css";
 
 const Forgotpass = () => {

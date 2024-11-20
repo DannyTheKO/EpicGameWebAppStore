@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
 import { FaUserAlt, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import EpicGamesLogo from '../assets/EpicGames_Logo.png';
+import EpicGamesLogo from '../images/EpicGames_Logo.png';
 import "./register.css";
 
 const RegisterForm = () => {
