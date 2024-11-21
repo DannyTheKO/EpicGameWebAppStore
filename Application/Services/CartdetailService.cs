@@ -35,7 +35,6 @@ public class CartdetailService : ICartdetailService
 		existingCartDetail.CartDetailId = cartDetail.CartDetailId;
 		existingCartDetail.CartId = cartDetail.CartId;
 		existingCartDetail.GameId = cartDetail.GameId;
-		existingCartDetail.Quantity = cartDetail.Quantity;
 		existingCartDetail.Price = cartDetail.Price;
 		existingCartDetail.Discount = cartDetail.Discount;
     

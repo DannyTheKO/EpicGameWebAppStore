@@ -10,7 +10,6 @@ namespace EpicGameWebAppStore.Models
 		[Required(ErrorMessage = "GameID is required")]
 		public int GameId { get; set; }
 		
-		public int Quantity { get; set; }
 
 		public decimal Discount { get; set; }
 	}

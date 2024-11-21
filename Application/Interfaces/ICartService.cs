@@ -10,6 +10,7 @@ public interface ICartService
     Task DeleteCart(int id);
     Task<Cart> GetCartById(int id);
     Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId);
+    Task<Cart> GetLatestCart(int accountId);
 
     Task<string> GetAccountByCartId(int accountId);
     Task<string> GetPaymentMethodNameById(int paymentMethodId);

@@ -75,11 +75,17 @@ public class CartService : ICartService
 		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
 	}
 
+	public async Task<Cart> GetLatestCart(int accountId)
+	{
+		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
+		return existingCarts
+			.OrderByDescending(c => c.CreatedOn)
+			.FirstOrDefault();
+	}
 
 
 
-
-	public async Task<Cart> AddToCart(int accountId, int gameId, int quantity)
+	public async Task<Cart> AddToCart(int accountId, int gameId)
 	{
 		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
 		var existingCart = existingCarts.FirstOrDefault(); // Get most recent cart or create new one
@@ -87,14 +93,18 @@ public class CartService : ICartService
 		if (existingCart == null) // Cart doesn't exist for that account
 		{
 			// Create new cart
-			var newCart = new Cart();
-			newCart.InitializeCart(accountId);
+			var newCart = new Cart()
+			{
+				AccountId = accountId,
+				CreatedOn = DateTime.UtcNow,
+				TotalAmount = 0,
+				Cartdetails = new List<Cartdetail>()
+			};
 
 			// Add new cart detail
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
-				Quantity = quantity
 			};
 
 			newCart.Cartdetails.Add(cartDetail);
@@ -110,10 +120,11 @@ public class CartService : ICartService
 			{
 				CartId = existingCart.CartId,
 				GameId = gameId,
-				Quantity = quantity
 			};
 
 			existingCart.Cartdetails.Add(cartDetail);
+
+			existingCart.TotalAmount = await CalculateTotalAmount(existingCart.CartId);
 			await _cartRepository.Update(existingCart);
 			return existingCart;
 		}
@@ -127,7 +138,6 @@ public class CartService : ICartService
 
 		decimal totalAmount = cart.Cartdetails.Sum(cd => 
 			cd.Price.GetValueOrDefault() * 
-			cd.Quantity.GetValueOrDefault() * 
 			(1 - cd.Discount.GetValueOrDefault() / 100)
 		);
 
