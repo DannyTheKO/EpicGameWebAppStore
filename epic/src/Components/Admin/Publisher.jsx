@@ -137,8 +137,8 @@ const validateGameRecord = () => {
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="PublisherID"
 
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+        scroll={{ x: "max-content" }}
       />
 
       {/* Modal cho cả Thêm và Sửa */}
@@ -152,7 +152,7 @@ const validateGameRecord = () => {
         <label>Publisher ID</label>
         <Input
            placeholder="ID Publisher"
-           value={publisherRecord.id}
+           value={publisherRecord.publisherId||publisherRecord.id}
            onChange={(e) => setpublisherRecord({ ...publisherRecord, id: e.target.value })}
            disabled
         />

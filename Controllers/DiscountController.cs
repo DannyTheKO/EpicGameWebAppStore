@@ -1,116 +1,101 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace EpicGameWebAppStore.Controllers;
 
-    [Route("[controller]")]
-    [ApiController]
-    public class DiscountController : ControllerBase
+[Route("[controller]")]
+[ApiController]
+public class DiscountController : ControllerBase
+{
+    private readonly IDiscountService _discountService;
+
+    public DiscountController(IDiscountService discountService)
     {
-        private readonly IDiscountService _discountService;
+        _discountService = discountService;
+    }
 
-        public DiscountController(IDiscountService discountService)
-        {
-            _discountService = discountService;
-        }
-
-    [HttpGet]
-    public async Task<IActionResult> Index()
+    // Get all discounts
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAllDiscounts()
     {
         var discounts = await _discountService.GetAllDiscountAsync();
-        return View(discounts);
+        return Ok(discounts);
     }
 
-    // GET: discounts/details/5
-    [HttpGet("details/{id}")]
-    public async Task<IActionResult> Details(int id)
+    // Get discount by ID
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDiscountById(int id)
     {
         var discount = await _discountService.GetDiscountByIdAsync(id);
-        if (discount == null) return NotFound();
-
-        return View(discount);
-    }
-
-
-    [HttpGet("create")]
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-
-    [HttpPost("create")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("DiscountId,GameId,Percent,Code,StartOn,EndOn")] Discount discount)
-    {
-        if (ModelState.IsValid)
+        if (discount == null)
         {
-            await _discountService.AddDiscountAsync(discount);
-            return RedirectToAction(nameof(Index));
+            return NotFound("Discount not found");
+        }
+        return Ok(discount);
+    }
+
+    // Get discount by code
+    [HttpGet("code/{code}")]
+    public async Task<IActionResult> GetDiscountByCode(string code)
+    {
+        var discounts = await _discountService.GetDiscountByCode(code);
+        return Ok(discounts);
+    }
+
+    // Get discount by Game ID
+    [HttpGet("game/{gameId}")]
+    public async Task<IActionResult> GetDiscountByGameId(int gameId)
+    {
+        var discounts = await _discountService.GetDiscountByGameId(gameId);
+        return Ok(discounts);
+    }
+
+    // Add a new discount
+    [HttpPost]
+    public async Task<IActionResult> AddDiscount([FromBody] Discount discount)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
         }
 
-        return View(discount);
+        var newDiscount = await _discountService.AddDiscountAsync(discount);
+        return CreatedAtAction(nameof(GetDiscountById), new { id = newDiscount.DiscountId }, newDiscount);
     }
 
-
-    [HttpGet("edit/{id}")]
-    public async Task<IActionResult> Edit(int id)
+    // Update an existing discount
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateDiscount(int id, [FromBody] Discount discount)
     {
-        var discount = await _discountService.GetDiscountByIdAsync(id);
-        if (discount == null) return NotFound();
-        return View(discount);
-    }
-
-    [HttpPost("edit/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id,
-        [Bind("DiscountId,GameId,Percent,Code,StartOn,EndOn")] Discount discount)
-    {
-        if (id != discount.DiscountId) return NotFound();
-
-        if (ModelState.IsValid)
+        if (id != discount.DiscountId)
         {
-            try
-            {
-                await _discountService.UpdateDiscountAsync(discount);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await DiscountExists(discount.DiscountId))
-                    return NotFound();
-                throw;
-            }
-
-            return RedirectToAction(nameof(Index));
+            return BadRequest("ID mismatch");
         }
 
-        return View(discount);
+        try
+        {
+            var updatedDiscount = await _discountService.UpdateDiscountAsync(discount);
+            return Ok(updatedDiscount);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet("delete/{id}")]
-    public async Task<IActionResult> Delete(int id)
+    // Delete a discount
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteDiscount(int id)
     {
-        var discount = await _discountService.GetDiscountByIdAsync(id);
-        if (discount == null) return NotFound();
-
-        return View(discount);
-    }
-
-    [HttpPost("delete/{id}")]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        await _discountService.DeleteDiscountAsync(id);
-        return RedirectToAction(nameof(Index));
-    }
-
-    private async Task<bool> DiscountExists(int id)
-    {
-        var discount = await _discountService.GetDiscountByIdAsync(id);
-        return discount != null;
+        try
+        {
+            var deletedDiscount = await _discountService.DeleteDiscountAsync(id);
+            return Ok(deletedDiscount);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

@@ -17,7 +17,7 @@ export const AddGame = async (game) => {
 };
 export const GetAllGenre = async () => {
 try {
-  const response = await apiClient.get('/Genre/GetAll'); // Đường dẫn chính xác đến endpoint
+  const response = await apiClient.get('/Genre/GetAllGenre'); // Đường dẫn chính xác đến endpoint
   console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
   return response.data; // Trả về danh sách sản phẩm
 } catch (error) {
@@ -27,7 +27,7 @@ try {
 };
 export const GetAllDiscount =  async () => {
   try {
-    const response = await apiClient.get('/Discount/GetAllDiscount'); // Đường dẫn chính xác đến endpoint
+    const response = await apiClient.get('/Discount/GetAll'); // Đường dẫn chính xác đến endpoint
     console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
     return response.data; // Trả về danh sách sản phẩm
   } catch (error) {
@@ -81,8 +81,15 @@ try {
 }
 };
 
-export const GetRole = () => {
-
+export const GetRole = async () => {
+  try {
+    const response = await apiClient.get('/Role/GetAll'); // Đường dẫn chính xác đến endpoint
+    console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
+    return response.data; // Trả về danh sách sản phẩm
+  } catch (error) {
+    console.error("Error :", error.response || error.message);
+    return [];
+  }
 };
 
 export const GetAllgame = async () => {
@@ -99,7 +106,7 @@ export const GetAllgame = async () => {
 // API.js
 export const DeleteGame = async (gameId) => {
 try {
-  const response = await apiClient.delete(`/Game/DeleteConfirm/${gameId}`); // Xóa game dựa trên gameId
+  const response = await apiClient.delete(`/Game/DeleteGame/${gameId}`); // Xóa game dựa trên gameId
   console.log("Xóa thành công gameId:", gameId);
   return response.data; // Trả về dữ liệu phản hồi (có thể là game đã xóa)
 } catch (error) {

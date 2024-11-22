@@ -35,16 +35,23 @@ function Discount() {
 
   const openModal = (record = null) => {
     if (record) {
-      record.starton = record.starton.split("T")[0]; // Lấy phần ngày
-      record.endon=record.endon.split("T")[0];
-      setDiscountRecord(record); // Dữ liệu cho game đang sửa
+      setDiscountRecord({
+        id: record.discountId || "",        // Lấy ID của discount
+        gameid: record.game?.gameId || "", // Lấy gameId từ record
+        percent: record.percent || 0,      // Lấy percent
+        code: record.code || "",           // Lấy code
+        starton: record.startOn ? record.startOn.split("T")[0] : null, // Chuyển ngày thành định dạng YYYY-MM-DD
+        endon: record.endOn ? record.endOn.split("T")[0] : null,       // Tương tự cho ngày kết thúc
+      });
+      console.log(discountRecord.starton);
       setIsEditing(true); // Chế độ sửa
     } else {
-      setDiscountRecord({ id:Count, gameid: "", percent: 0, code: "" ,starton:null,endon:null }); // Dữ liệu trống cho thêm mới
+      setDiscountRecord({ id: "", gameid: "", percent: 0, code: "", starton: null, endon: null }); // Dữ liệu trống cho thêm mới
       setIsEditing(false); // Chế độ thêm
     }
     setIsModalOpen(true); // Mở modal
   };
+  
 
   const handleDelete = async (record) => { // Chuyển tham số record vào ngay trong dấu ngoặc
     try {
@@ -101,11 +108,10 @@ const validateGameRecord = () => {
             
           },
           {
-            title: "ID Game",
-            dataIndex: "gameId",
-            key: "gameId",
-            render: (gameid) => <Text>{gameid}</Text>,
-          },
+            title: "Game Title",
+            key: "gameTitle",
+            render: (record) => <Text>{record.game?.title || "Unknown"}</Text>,
+          },  
           {
             title: "Percent",
             dataIndex: "percent",
@@ -147,61 +153,70 @@ const validateGameRecord = () => {
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="discountid"
 
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+        scroll={{ x: "max-content" }}
       />
 
       {/* Modal cho cả Thêm và Sửa */}
       <Modal
         className="form_addedit"
-        title={isEditing ? "Sửa thông tin game" : "Thêm Game mới"}
+        title={isEditing ? "Sửa thông tin discount" : "Thêm discount mới"}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}
       >
+        <label>ID Discount</label>
         <Input
           placeholder="ID Discount"
           value={discountRecord.id}
           onChange={(e) => setDiscountRecord({ ...discountRecord, id: e.target.value })}
+          disabled
         />
-          <Select
-          placeholder="Chọn Game"
-          value={discountRecord.gameid}
-          onChange={(value) => setDiscountRecord({ ...discountRecord, gameid: value })}
-          style={{ width: "100%", marginTop: "20px", height: "47px" }}
-        >
-          {dataGame.map((game) => (
-            <Option key={game.id} value={game.id}>
-              {game.name}
-            </Option>
-          ))}
-        </Select>
+        <label>Chọn game</label>
+        <Select
+  placeholder="Chọn Game"
+  value={discountRecord.gameid}
+  onChange={(value) => setDiscountRecord({ ...discountRecord, gameid: value })}
+  style={{ width: "100%",  height: "47px" }}
+>
+  {dataGame.map((game) => (
+    <Option key={game.gameId} value={game.gameId}>
+      {game.title}
+    </Option>
+  ))}
+</Select>
+
+        <label>Percent</label>
         <Input
           placeholder="Percent"
           type="number"
           value={discountRecord.percent}
           onChange={(e) => setDiscountRecord({ ...discountRecord, percent: parseFloat(e.target.value) })}
         />
+        <label>Code</label>
         <Input
           placeholder="Code"
           value={discountRecord.code}
           onChange={(e) => setDiscountRecord({ ...discountRecord, code: e.target.value })}
         />
+        <label>Start date</label>
         <Input
-          type="date"
-          placeholder="Start Date"
-          value={discountRecord.starton} // Hiển thị dữ liệu ngày
-          onChange={(e) => setDiscountRecord({ ...discountRecord, starton: e.target.value })} // Cập nhật giá trị
-          style={{ width: "100%", height: "52px", marginTop: "20px" }}
-        />
-         
+  type="date"
+  placeholder="Start Date"
+  value={discountRecord.starton} // Hiển thị dữ liệu ngày
+  onChange={(e) => setDiscountRecord({ ...discountRecord, startOn: e.target.value })} // Sửa lại cho đúng
+  style={{ width: "100%", height: "52px" }}
+/>
+
+         <label>End date</label>
          <Input
-          type="date"
-          placeholder="End Date"
-          value={discountRecord.endon} // Hiển thị dữ liệu ngày
-          onChange={(e) => discountRecord({ ...discountRecord, endon: e.target.value })} // Cập nhật giá trị
-          style={{ width: "100%", height: "52px", marginTop: "20px" }}
-        />
+  type="date"
+  placeholder="End Date"
+  value={discountRecord.endon} // Hiển thị dữ liệu ngày
+  onChange={(e) => setDiscountRecord({ ...discountRecord, endOn: e.target.value })} // Sửa dòng này, sử dụng setDiscountRecord
+  style={{ width: "100%", height: "52px" }}
+/>
+
        
       </Modal>
     </Space>

@@ -246,6 +246,7 @@ function Game() {
       dataIndex: "title",
       key: "title",
       render: (title) => <Text>{title}</Text>,
+      width:200,
     },
     {
       title: "Publisher",
@@ -264,6 +265,7 @@ function Game() {
       dataIndex: "price",
       key: "price",
       render: (price) => `$${price.toFixed(2)}`,
+      width:100,
     },
     {
       title: "Rating",
@@ -304,8 +306,8 @@ function Game() {
         columns={columns}
         dataSource={dataSource}
         rowKey="gameId"
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+        scroll={{ x: "max-content" }}
       />
 
 <Modal

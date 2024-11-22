@@ -11,7 +11,14 @@ function Account() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [Count, setCount] = useState(0); 
-  const [AccountRecord, setAccountRecord] = useState({id:"",role:"", username: "", email: "",createon:null,isactive: "" });
+  const [AccountRecord, setAccountRecord] = useState({
+    id: "",
+    role: "",
+    username: "",
+    email: "",
+    createdOn: null, // Thống nhất sử dụng createdOn
+    isActive: "",
+  });
   useEffect(() => {
     const fetchAccount = async () => {
       setLoading(true);
@@ -33,15 +40,29 @@ function Account() {
 
   const openModal = (record = null) => {
     if (record) {
-      record.createon = record.createon.split("T")[0];
-      setAccountRecord(record); 
-      setIsEditing(true); 
+      const matchedRole = dataRole.find((role) => role.roleId === record.roleId);
+      setAccountRecord({
+        ...record,
+        createdOn: record.createdOn ? record.createdOn.split("T")[0] : "", // Đảm bảo ngày ở định dạng "yyyy-MM-dd"
+        role: matchedRole ? matchedRole.name : "", // Lưu tên role
+        id: record.accountId, // Đảm bảo lấy đúng id từ record
+      });
+      setIsEditing(true);
     } else {
-      setAccountRecord({id:Count,role:"", username: "", email: "",createon:null,isactive:""}); 
-      setIsEditing(false); 
+      setAccountRecord({
+        id: Count + 1, // Tạo ID mới cho tài khoản
+        role: "",
+        username: "",
+        email: "",
+        createdOn: null,
+        isActive: "Y",
+      });
+      setIsEditing(false);
     }
     setIsModalOpen(true);
   };
+  
+  
 
   const validateGameRecord = () => {
     // const { title, author, price, rating, release, description } = gameRecord;
@@ -91,10 +112,13 @@ function Account() {
             
           },
           {
-            title: "ID Role",
+            title: "Role",
             dataIndex: "roleId",
             key: "roleId",
-            render: (RoleId) => <Text>{RoleId}</Text>,
+            render: (roleId) => {
+              const role = dataRole.find((item) => item.roleId === roleId); // Tìm account theo ID
+              return <Text>{roleId ? role.name : roleId}</Text>; // Hiển thị username hoặc thông báo lỗi
+            },
           },
           {
             title: "Username",
@@ -119,6 +143,7 @@ function Account() {
             dataIndex: "isActive",
             key: "isActive",
             render: (IsActive) => <Text>{IsActive}</Text>,
+            
           },
           {
             title: "Actions", // Cột chứa các nút
@@ -137,59 +162,65 @@ function Account() {
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
           rowKey="AccountID"
 
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 'max-content' }}
+          pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+          scroll={{ x: "max-content" }}
       ></Table>
     <Modal
           className="form_addedit"
-          title={isEditing ? "Sửa thông tin game" : "Thêm Game mới"}
+          title={isEditing ? "Sửa thông tin tài khoản" : "Thêm tài khoản mới"}
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           onOk={handleSave}
         >
+          <label>ID</label>
           <Input
             placeholder="ID Acount"
             value={AccountRecord.id}
             onChange={(e) => setAccountRecord({ ...AccountRecord, id: e.target.value })}
             disabled
           />
+          <label>Usernmae</label>
           <Input
             placeholder="Username"
             value={AccountRecord.username}
             onChange={(e) => setAccountRecord({ ...AccountRecord, username: e.target.value })}
           />
+          <label>Email</label>
           <Input
             placeholder="Email"
             value={AccountRecord.email}
             onChange={(e) => setAccountRecord({ ...AccountRecord, email: e.target.value })}
           />
+          <label htmlFor="">Create on</label>
           
-          <Input
-            type="date"
-            placeholder="Create on"
-            value={AccountRecord.createon}
-            onChange={(e) => setAccountRecord({ ...AccountRecord, createon: e.target.value })} // Cập nhật giá trị
-            
-          />
+<Input
+  type="date"
+  placeholder="Create on"
+  value={AccountRecord.createdOn} // Sử dụng createdOn
+  onChange={(e) => setAccountRecord({ ...AccountRecord, createdOn: e.target.value })} // Cập nhật giá trị
+/>
+          <label htmlFor="">Active</label>
           <Input
             placeholder="Is Active"
-            type="string"
-            value={AccountRecord.isactive}
+            type="text"
+            value={AccountRecord.isActive}
             onChange={(e) => setAccountRecord({ ...AccountRecord, isactive: e.target.value })}
+            disabled={!isEditing}
           />
+          <label htmlFor="">Chọn quyền</label>
           <Select
-          placeholder="Chọn quyền"
-          value={AccountRecord.role}
-          onChange={(value) => setAccountRecord({ ...AccountRecord, role: value })}
-          
-        >
-          {dataRole.map((role)=>(
-            <Option key ={role.id} value={role.name}>
-              {role.name}
-            </Option>
-          ))}
-          
-        </Select>
+  placeholder="Chọn quyền"
+  value={AccountRecord.role}
+  onChange={(value) => setAccountRecord({ ...AccountRecord, role: value })}
+  style={{ width: "100%", height: "47px" }}
+>
+  {dataRole.map((role) => (
+    <Option key={role.roleId} value={role.name}>
+      {role.name}
+    </Option>
+  ))}
+</Select>
+
         
         </Modal>
       </Space>
