@@ -14,9 +14,11 @@ public interface IGameService
 
 	// Search Game by Game ID
 	Task<Game> GetGameById(int id);
+    public Task<IEnumerable<Game>> GetTopTrendingGames(int count);
 
-	// Get Game By Publisher ID
-	Task<IEnumerable<Game>> GetGameByPublisherId(int publisherId);
+    public Task<IEnumerable<Game>> GetTopNewReleases(int count);
+    // Get Game By Publisher ID
+    Task<IEnumerable<Game>> GetGameByPublisherId(int publisherId);
 
 	// Search By Genre => Get Genre By "ID"
 	Task<IEnumerable<Game>> GetGameByGenreId(int genreId);
@@ -27,8 +29,7 @@ public interface IGameService
 	// Search By Publisher
 	Task<IEnumerable<Game>> GetGameByPublisher(string publisher);
 
-    Task<IEnumerable<Game>> GetTopTrendingGames(int count);
-    Task<IEnumerable<Game>> GetTopNewReleases(int count);
+
     // Search By Rating
     Task<IEnumerable<Game>> GetGameByRating(int rating);
 }

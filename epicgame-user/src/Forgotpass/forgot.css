@@ -1,0 +1,108 @@
+/* Forgot Password Page Styles */
+.forgot-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.forgot-box {
+    width: 400px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #2c2f33;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.forgot-title {
+    font-size: 1.8rem;
+    color: aqua;
+    margin-bottom: 20px;
+}
+
+.forgot-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input_box {
+    position: relative;
+}
+
+    .input_box input {
+        width: 60%;
+        padding: 10px 40px; /* Tạo khoảng trống cho icon */
+        border: 1px solid #555;
+        border-radius: 25px;
+        background-color: #333;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+    }
+
+.icon-container .icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.iconseyes {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.error,
+.success {
+    font-size: 0.9rem;
+    text-align: left;
+    margin-top: -10px;
+}
+.logo img {
+    width: 100px; /* hoặc một kích thước nhỏ hơn nếu cần */
+    height: auto;
+}
+
+.error {
+    color: #ff4d4d;
+}
+
+.success {
+    color: #4caf50;
+}
+
+.forgot-form .btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4081;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .forgot-form .btn:hover {
+        background-color: #e63972;
+    }
+
+.login-link a {
+    color: aqua;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
