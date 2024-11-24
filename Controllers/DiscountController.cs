@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
@@ -9,10 +10,12 @@ namespace EpicGameWebAppStore.Controllers;
 public class DiscountController : ControllerBase
 {
     private readonly IDiscountService _discountService;
+    	private readonly IGameService _gameServices;
 
-    public DiscountController(IDiscountService discountService)
+    public DiscountController(IDiscountService discountService,IGameService gameServices)
     {
         _discountService = discountService;
+        _gameServices = gameServices;
     }
 
     // Get all discounts
@@ -65,13 +68,32 @@ public class DiscountController : ControllerBase
     }
 
     // Update an existing discount
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateDiscount(int id, [FromBody] Discount discount)
+    [HttpPut("UpdateDiscount/{id}")]
+    public async Task<IActionResult> UpdateDiscount(int id, [FromBody] DiscountFormModel discountFormModel)
     {
-        if (id != discount.DiscountId)
+        if (!ModelState.IsValid) 
         {
-            return BadRequest("ID mismatch");
+          return BadRequest(ModelState);
         }
+        var game= await _gameServices.GetGameById(discountFormModel.GameID);
+        if (game == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Publisher ID not found"
+			});
+		}
+       var discount = new Discount
+{
+    DiscountId = id,
+    GameId = discountFormModel.GameID,
+    Percent = discountFormModel.Percent,
+    Code = discountFormModel.Code,
+    StartOn = discountFormModel.StartOn,
+    EndOn = discountFormModel.EndOn,
+    Game = game
+};
 
         try
         {
@@ -85,7 +107,7 @@ public class DiscountController : ControllerBase
     }
 
     // Delete a discount
-    [HttpDelete("{id}")]
+    [HttpDelete("DeleteDiscount/{id}")]
     public async Task<IActionResult> DeleteDiscount(int id)
     {
         try

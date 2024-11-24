@@ -66,6 +66,7 @@ import AccountGame from "./Components/Admin/AccountGame.jsx";
 import Account from "./Components/Admin/Account.jsx";
 import Discount from "./Components/Admin/Discount.js";
 import Publisher from "./Components/Admin/Publisher.jsx";
+import Cart from "./Components/Admin/Cart.jsx";
 import Header from "./Components/Admin/Header.jsx";
 
 // User Routes
@@ -92,6 +93,7 @@ function App() {
           <Route path="adminaccount" element={<Account />} />
           <Route path="admindiscount" element={<Discount />} />
           <Route path="adminpublisher" element={<Publisher />} />
+          <Route path="admincart" element={<Cart />}/> 
         </Route>
       </Routes>
 

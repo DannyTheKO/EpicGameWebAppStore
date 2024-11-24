@@ -1,6 +1,6 @@
 import { Button, Space, Table, Modal, Input,Select,Typography } from "antd";
 import { useEffect, useState } from "react";
-import {  GetAllAccountgame,GetAllgame,GetAccount } from "./API";
+import {  GetAllAccountgame,GetAllgame,GetAccount,DeleteAccountgame } from "./API";
 import "./table.css";
 const { Text } = Typography;
 const { Option }=Select;
@@ -46,8 +46,28 @@ function Accountgame() {
 };
 
   const handleDelete = (record) => {
-    // xóa 
+    Modal.confirm({
+      title: "Are you sure you want to delete this  acount game?",
+      content: "This action cannot be undone.",
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk: () => {
+        const acountgameid = record.accountGameId;
+        console.log(acountgameid);
+        DeleteAccountgame(acountgameid)
+          .then(() => {
+            setDataSource((prevDataSource) =>
+              prevDataSource.filter((item) => item.accountGameId !== acountgameid)
+            );
+          })
+          .catch((error) => {
+            console.error("Error deleting account game:", error);
+          });
+      },
+    });
   };
+
   const validateGameRecord = () => {
     // const { title, author, price, rating, release, description } = gameRecord;
     // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
@@ -125,7 +145,7 @@ function Accountgame() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
           rowKey=""
-          pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+          pagination={{ pageSize: 8,position: [ "bottomCenter"], }}
           scroll={{ x: "max-content" }}
       ></Table>
       <Modal

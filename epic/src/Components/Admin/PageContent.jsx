@@ -5,6 +5,7 @@ import Game from "./Game";
 import AccountGame from "./AccountGame";
 import Discount from "./Discount.js";
 import Publisher from "./Publisher.jsx";
+import Cart from "./Cart.jsx";
 import {  Routes, Route } from 'react-router-dom';
 function PageContent() {
   return (
@@ -16,7 +17,8 @@ function PageContent() {
         <Route path="/adminaccountgame" element={<AccountGame />} />
         <Route path="/adminaccount" element={<Account />} />
         <Route path="/admindiscount" element={<Discount />}/>
-      <Route path="/adminpublisher" element={<Publisher />}/>
+        <Route path="/adminpublisher" element={<Publisher />}/>
+        <Route path="/admincart" element={<Cart />}/>
       </Routes>
     </div>
   );

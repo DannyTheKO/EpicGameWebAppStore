@@ -1,6 +1,6 @@
 import { Button,  Space, Table, Typography, Modal, Input,Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllgame ,GetAllDiscount} from "./API";
+import { GetAllgame ,GetAllDiscount,DeleteDiscount,UpdateDiscount} from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -54,14 +54,28 @@ function Discount() {
   
 
   const handleDelete = async (record) => { // Chuyển tham số record vào ngay trong dấu ngoặc
-    try {
-        // await DeleteGame(record.gameId); // Gọi hàm DeleteGame với gameId
-        setDataSource(dataSource.filter((item) => item.gameId !== record.gameId)); // Cập nhật danh sách
-        console.log(`Xóa game với ID: ${record.gameId} thành công!`);
-    } catch (error) {
-        console.error("Lỗi khi xóa game:", error); // Xử lý lỗi nếu có
-    }
-};
+  
+      Modal.confirm({
+        title: "Are you sure you want to delete this discount?",
+        content: "This action cannot be undone.",
+        okText: "Delete",
+        okType: "danger",
+        cancelText: "Cancel",
+        onOk: () => {
+          const discountid= record.discountId;
+          console.log(discountid);
+          DeleteDiscount(discountid)
+            .then(() => {
+              setDataSource((prevDataSource) =>
+                prevDataSource.filter((item) => item.discountId  !== discountid)
+              );
+            })
+            .catch((error) => {
+              console.error("Error deleting game:", error);
+            });
+        },
+      });
+    };
 const validateGameRecord = () => {
   // const { title, author, price, rating, release, description } = gameRecord;
 
@@ -76,21 +90,45 @@ const validateGameRecord = () => {
 
   return true;
 };
-  const handleSave = async () => { // Thêm 'async' vào đây
-  //   if (!validateGameRecord()) {
-  //     return; // Nếu dữ liệu không hợp lệ, dừng lại
-  // }
-  //   if (isEditing) {
-  //       console.log("Lưu dữ liệu đã sửa:", gameRecord);
-  //       // Thêm logic lưu dữ liệu đã sửa ở đây
-  //   } else {
-  //       console.log("Thêm sản phẩm mới:", gameRecord);
-  //       const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
-  //       console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
-  //   }
-  //   setIsModalOpen(false); // Đóng modal sau khi lưu
-};
+const handleSave = async () => {
+  // Kiểm tra dữ liệu có hợp lệ không trước khi thực hiện hành động
+  if (!validateGameRecord()) {
+    return; // Nếu không hợp lệ, dừng lại và không lưu
+  }
 
+  try {
+    setLoading(true); // Bật trạng thái loading
+    console.log(discountRecord.id, discountRecord);
+    if (isEditing) {
+      // Gọi API cập nhật discount
+      await UpdateDiscount(discountRecord.id, discountRecord);
+
+      // Cập nhật dữ liệu mới từ API
+      const updatedDataSource = await GetAllDiscount();
+      setDataSource(updatedDataSource);
+
+      // Hiển thị thông báo thành công
+      Modal.success({
+        title: "Success",
+        content: `Discount ID ${discountRecord.id} đã được cập nhật thành công.`,
+      });
+    } else {
+      // Nếu là thêm mới, xử lý logic thêm tại đây
+      console.log("Thêm mới discount:", discountRecord);
+    }
+  } catch (error) {
+    console.error("Error updating discount:", error);
+
+    // Hiển thị thông báo lỗi
+    Modal.error({
+      title: "Error",
+      content: "Đã xảy ra lỗi trong quá trình cập nhật discount. Vui lòng thử lại.",
+    });
+  } finally {
+    setLoading(false); // Tắt trạng thái loading
+    setIsModalOpen(false); // Đóng modal
+  }
+};
 
   return (
     <Space className="size_table" size={10} direction="vertical">

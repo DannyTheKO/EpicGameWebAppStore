@@ -94,7 +94,24 @@ function Game() {
     if (isEditing) {
       // Cập nhật game
       console.log("Updating game with data:", gameRecord);
-      await UpdateGame(gameRecord.gameId,gameRecord);
+
+      try {
+        await UpdateGame(gameRecord.gameId,gameRecord);
+        const updatedDataSource = await GetAllgame(); // Lấy lại danh sách tài khoản từ DB
+      setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+
+      Modal.success({
+        title: "Account update successfully",
+        content: `The account with ID ${gameRecord.gameId} has been update.`,
+      });
+        
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        Modal.error({
+          title: "Error",
+          content: "An error occurred while updatingx the account. Please try again.",
+        });
+      }
     } else {
       // Thêm game mới
       console.log("Adding new game with data:", gameRecord);
@@ -306,7 +323,7 @@ function Game() {
         columns={columns}
         dataSource={dataSource}
         rowKey="gameId"
-        pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+        pagination={{ pageSize: 8,position: [ "bottomCenter"], }}
         scroll={{ x: "max-content" }}
       />
 

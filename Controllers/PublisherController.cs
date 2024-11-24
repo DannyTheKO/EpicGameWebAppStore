@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using EpicGameWebAppStore.Models;
 
 namespace EpicGameWebAppStore.Controllers;
 
@@ -65,14 +66,19 @@ public class PublisherController : ControllerBase
     }
 
     // Update an existing publisher
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdatePublisher(int id, [FromBody] Publisher publisher)
+    [HttpPut("UpdatePublisher/{id}")]
+    public async Task<IActionResult> UpdatePublisher(int id, [FromBody] PublisherFormModel publishermodel)
     {
-        if (id != publisher.PublisherId)
-        {
-            return BadRequest("ID mismatch.");
-        }
-
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+               var publisher = new Publisher
+{
+    PublisherId = id,
+    Name = publishermodel.Name,
+    Address = publishermodel.Address,
+    Email = publishermodel.Email,
+    Phone = publishermodel.Phone,
+    Website = publishermodel.Website,
+};
         try
         {
             var updatedPublisher = await _publisherService.UpdatePublisher(publisher);

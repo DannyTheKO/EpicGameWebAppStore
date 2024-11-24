@@ -1,6 +1,6 @@
 import { Button , Space, Table ,Modal,Input,Select,Typography} from "antd";
 import { useEffect, useState } from "react";
-import { GetAccount ,GetRole} from "./API";
+import { GetAccount ,GetRole,UpdateAccount} from "./API";
 import "./table.css";
 const { Text } = Typography;
 const { Option } = Select;
@@ -83,8 +83,25 @@ function Account() {
         return;
     }
       if (isEditing) {
-          // console.log("Lưu dữ liệu đã sửa:", gameRecord);
-          // Thêm logic lưu dữ liệu đã sửa ở đây
+          console.log("Lưu dữ liệu đã sửa:", AccountRecord);
+          try {
+            await UpdateAccount(AccountRecord.id, AccountRecord); 
+            const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+          setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+  
+          Modal.success({
+            title: "Account update successfully",
+            content: `The account with ID ${AccountRecord.id} has been deleted.`,
+          });
+            
+          } catch (error) {
+            console.error("Error deleting account:", error);
+            Modal.error({
+              title: "Error",
+              content: "An error occurred while deleting the account. Please try again.",
+            });
+          }
+          
       } else {
           // console.log("Thêm sản phẩm mới:", gameRecord);
           // const addedGame = await AddGame(gameRecord); // thêm mới game
@@ -94,9 +111,39 @@ function Account() {
   };
 
   const handleDelete = (record) => {
-    console.log("Xóa sản phẩm: ", record);
-    // Thêm logic xóa sản phẩm ở đây
+    Modal.confirm({
+      title: "Are you sure you want to delete this account?",
+      content: "This action cannot be undone.",
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk: async () => {
+        try {
+          const accountID = record.accountId;
+          record.isActive = "N"; // Đánh dấu tài khoản là không hoạt động
+  
+          console.log("Deleting account:", accountID);
+          console.log("Updated record:", record);
+  
+          await UpdateAccount(accountID, record); // Cập nhật trạng thái trong cơ sở dữ liệu
+          const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+          setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+  
+          Modal.success({
+            title: "Account deleted successfully",
+            content: `The account with ID ${accountID} has been deleted.`,
+          });
+        } catch (error) {
+          console.error("Error deleting account:", error);
+          Modal.error({
+            title: "Error",
+            content: "An error occurred while deleting the account. Please try again.",
+          });
+        }
+      },
+    });
   };
+  
   return (
     <Space className="size_table" size={10} direction="vertical">
       
@@ -160,9 +207,9 @@ function Account() {
           
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-          rowKey="AccountID"
+          rowKey="accountId"
 
-          pagination={{ pageSize: 5,position: [ "bottomCenter"], }}
+          pagination={{ pageSize: 8,position: [ "bottomCenter"], }}
           scroll={{ x: "max-content" }}
       ></Table>
     <Modal
@@ -201,12 +248,13 @@ function Account() {
 />
           <label htmlFor="">Active</label>
           <Input
-            placeholder="Is Active"
-            type="text"
-            value={AccountRecord.isActive}
-            onChange={(e) => setAccountRecord({ ...AccountRecord, isactive: e.target.value })}
-            disabled={!isEditing}
-          />
+  placeholder="Is Active"
+  type="text"
+  value={AccountRecord.isActive}
+  onChange={(e) => setAccountRecord({ ...AccountRecord, isActive: e.target.value })}
+  disabled={!isEditing}
+/>
+
           <label htmlFor="">Chọn quyền</label>
           <Select
   placeholder="Chọn quyền"

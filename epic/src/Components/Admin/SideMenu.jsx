@@ -4,7 +4,8 @@ import {
     ShoppingCartOutlined,
     UserOutlined,
   } from "@ant-design/icons";
-  import { MdOutlineLogout ,MdDiscount, MdOutlineWarehouse  } from "react-icons/md";
+
+  import { MdOutlineLogout ,MdDiscount, MdOutlineWarehouse ,MdOutlineShoppingCart  } from "react-icons/md";
   import { Menu } from "antd";
   import { useEffect, useState } from "react";
   import { useLocation, useNavigate } from "react-router-dom";
@@ -59,6 +60,11 @@ import {
               label: "Publisher",
               key: "/admin/adminpublisher",
               icon: <MdOutlineWarehouse />,
+            },
+            {
+              label: "Cart",
+              key: "/admin/admincard",
+              icon: <MdOutlineShoppingCart />,
             },
             {
               label: "Logout",

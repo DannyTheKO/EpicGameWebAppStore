@@ -115,7 +115,19 @@ try {
 }
 };
 
-
+// API.js
+export const DeleteAccountgame = async (AccountGameID) => {
+  try {
+    const response = await apiClient.delete(`/Accountgame/DeleteAccountGame/${AccountGameID}`); // Xóa game dựa trên gameId
+    console.log("Xóa thành công AccountgameID:", AccountGameID);
+    return response.data; // Trả về dữ liệu phản hồi (có thể là game đã xóa)
+  } catch (error) {
+    console.error("Lỗi khi xóa sản phẩm:", error.response || error.message);
+    throw new Error("Xóa không thành công");
+  }
+  };
+  
+  
 
 
 
@@ -138,6 +150,46 @@ export const UpdateGame = async (gameId,updatedGameData) => {
   } catch (error) {
     console.error("Error updating game:", error.response || error.message);
     return null; // Trả về null hoặc xử lý lỗi theo cách khác
+  }
+};
+export const UpdateAccount = async (Accountid,updatedAccount) => {
+  try {
+    // Sử dụng PUT để cập nhật thông tin game
+    const response = await apiClient.put(`/Account/UpdateAccount/${Accountid}`, updatedAccount); 
+    return response.data; // Trả về dữ liệu phản hồi sau khi cập nhật
+  } catch (error) {
+    console.error("Error updating game:", error.response || error.message);
+    return null; // Trả về null hoặc xử lý lỗi theo cách khác
+  }
+};
+export const UpdateDiscount = async (DiscountID,UpdateDiscount) => {
+  try {
+    // Sử dụng PUT để cập nhật thông tin game
+    const response = await apiClient.put(`/Discount/UpdateDiscount/${DiscountID}`, UpdateDiscount); 
+    return response.data; // Trả về dữ liệu phản hồi sau khi cập nhật
+  } catch (error) {
+    console.error("Error updating game:", error.response || error.message);
+    return null; // Trả về null hoặc xử lý lỗi theo cách khác
+  }
+};
+export const UpdatePublisher = async (publisher,UpdatePublisher) => {
+  try {
+    // Sử dụng PUT để cập nhật thông tin game
+    const response = await apiClient.put(`/Publisher/UpdatePublisher/${publisher}`, UpdatePublisher); 
+    return response.data; // Trả về dữ liệu phản hồi sau khi cập nhật
+  } catch (error) {
+    console.error("Error updating game:", error.response || error.message);
+    return null; // Trả về null hoặc xử lý lỗi theo cách khác
+  }
+};
+export const DeleteDiscount = async (DiscountID) => {
+  try {
+    const response = await apiClient.delete(`/Discount/DeleteDiscount/${DiscountID}`); // Xóa game dựa trên gameId
+    console.log("Xóa thành công discount:", DiscountID);
+    return response.data; // Trả về dữ liệu phản hồi (có thể là game đã xóa)
+  } catch (error) {
+    console.error("Lỗi khi xóa điscount:", error.response || error.message);
+    throw new Error("Xóa không thành công");
   }
 };
 
