@@ -62,15 +62,15 @@ namespace Application.Services
 			{
 				GameId = gameId,
 				CreateAt = DateTime.UtcNow,
-				FileName = "N/A"
+				FileName = "N/A" // don't remove this line or the database will throw an error
 			};
+
+			// Add to database to generate ImageId
+			await _imageGameRepository.Add(imageGame);
 
 			// Generate File name using ImageId
 			var fileName = $"{imageGame.ImageId}{Path.GetExtension(image.FileName)}";
 			var filePath = Path.Combine(uploadsFolder, fileName);
-
-			// Add to database to generate ImageId
-			await _imageGameRepository.Add(imageGame);
 
 			// Save file to directory
 			await using (var stream = new FileStream(filePath, FileMode.Create))

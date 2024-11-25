@@ -126,6 +126,16 @@ public class GameController : Controller
 			});
 		}
 
+		// Check if Game name is already existed
+		var checkGame = await _gameServices.GetGameByTitle(gameFormModel.Title);
+		if (checkGame.FirstOrDefault() != null) {
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game name is already existed"
+			});
+		}
+
 		var game = new Game()
 		{
 			PublisherId = gameFormModel.PublisherId,
@@ -137,7 +147,6 @@ public class GameController : Controller
 			Rating = gameFormModel.Rating,
 			Description = gameFormModel.Description,
 		};
-
 
 		// Add game first to create GameID
 		await _gameServices.AddGame(game);
@@ -154,7 +163,11 @@ public class GameController : Controller
 					message = "Failed to upload image",
 				});
 			}
+
+			game.ImageId = imageGame.ImageId;
 		}
+
+		await _gameServices.UpdateGame(game);
 
 		return Ok(new
 		{
