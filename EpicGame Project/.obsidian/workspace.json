@@ -4,28 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "75d2448032902b42",
+        "id": "819457679204bffa",
         "type": "tabs",
         "children": [
           {
-            "id": "3222dc6f14fcc6d1",
+            "id": "3f9e0ce62cb34ebb",
             "type": "leaf",
             "state": {
-              "type": "kanban",
-              "state": {
-                "file": "Back-End/Back-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "Back-End Progress"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -170,11 +159,12 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "3222dc6f14fcc6d1",
+  "active": "3f9e0ce62cb34ebb",
   "lastOpenFiles": [
-    "Back-End/Genre.md",
-    "Back-End/Back-End Progress.md",
     "Back-End/Game.md",
+    "Back-End/Back-End Progress.md",
+    "ImageGame.md",
+    "Back-End/Genre.md",
     "Back-End/CartDetail.md",
     "Back-End/AccountGame.md",
     "Back-End/Discount.md",

@@ -5,6 +5,8 @@
 - [x] Update ✅ 2024-11-18
 - [x] Delete ✅ 2024-11-18
 
+## Feature Function
+ - [x] Add Image function when creating a game ✅ 2024-11-25
 
 ### BUG
 - [x] Game/CreateGame, Game/UpdateGame/{id} ✅ 2024-11-18
