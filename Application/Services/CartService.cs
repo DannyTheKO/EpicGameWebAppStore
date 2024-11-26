@@ -1,16 +1,21 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Services;
 
 public class CartService : ICartService
 {
 	private readonly ICartRepository _cartRepository;
+	private readonly IGameRepository _gameRepository;
+	private readonly IAccountRepository _accountRepository;
 
-	public CartService(ICartRepository cartRepository)
+	public CartService(ICartRepository cartRepository, IGameRepository gameRepository, IAccountRepository accountRepository)
 	{
 		_cartRepository = cartRepository;
+		_gameRepository = gameRepository;
+		_accountRepository = accountRepository;
 	}
 
 	#region == CRUB Operation ==
@@ -81,32 +86,20 @@ public class CartService : ICartService
 		var filtered = existingCarts.OrderByDescending(c => c.CreatedOn).FirstOrDefault();
 		if (existingCarts == null)
 		{
-			// Do we have to create a new cart after the latest cart not found ?
-			var newCart = new Cart()
-			{
-				AccountId = accountId,
-				PaymentMethodId = 1,
-			};
-
-			await _cartRepository.Add(newCart);
-			
-			return (newCart, "Cart Not Found!, created a new cart for customer!");
+			return (null, "Cart Not Found!");
 		}
 
 		return (filtered, "Found!");
 	}
 
-
-
 	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
 	{
-		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
-		var existingCart = existingCarts.FirstOrDefault(); // Get most recent cart or create new one
+		var (existingCart, message)= await GetLatestCart(accountId); // Get most recent cart
 
 		if (existingCart == null) // Cart doesn't exist for that account
 		{
 			// Create new cart
-			var newCart = new Cart()
+			var newCart = new Cart
 			{
 				AccountId = accountId,
 				CreatedOn = DateTime.UtcNow,
@@ -114,14 +107,16 @@ public class CartService : ICartService
 				Cartdetails = new List<Cartdetail>()
 			};
 
-			// after create new cart we create cartDetail for the game
+			// After create new cart we create cartDetail for the game
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
 			};
 
+			// Add CartDetail into new Cart
 			newCart.Cartdetails.Add(cartDetail);
 
+			// Add Cart into database
 			await _cartRepository.Add(newCart);
 			return (newCart, "Cart not found!, created a new cart with a new cartDetail");
 		}
@@ -132,6 +127,8 @@ public class CartService : ICartService
 			{
 				CartId = existingCart.CartId,
 				GameId = gameId,
+				Price = (await _gameRepository.GetById(gameId)).Price,
+				Discount = null,
 			};
 
 			existingCart.Cartdetails.Add(cartDetail);

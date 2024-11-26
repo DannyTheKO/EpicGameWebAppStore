@@ -43,8 +43,8 @@ public class GameService : IGameService
 		existingGame.Author = game.Author;
 		existingGame.Rating = game.Rating;
 		existingGame.Description = game.Description;
-
 		existingGame.Release = game.Release;
+
 		existingGame.Publisher = game.Publisher;
 		existingGame.Genre = game.Genre;
 
