@@ -8,8 +8,8 @@ function Admin() {
     <div className="App">
       <AppHeader />
       <div className="SideMenuAndPageContent">
-        <SideMenu></SideMenu>
-        <PageContent></PageContent>
+        <SideMenu/>
+        <PageContent/>
       </div>
     </div>
   );

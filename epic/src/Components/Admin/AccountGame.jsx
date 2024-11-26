@@ -1,6 +1,6 @@
 import { Button, Space, Table, Modal, Input,Select,Typography } from "antd";
 import { useEffect, useState } from "react";
-import {  GetAllAccountgame,GetAllgame,GetAccount,DeleteAccountgame } from "./API";
+import {  GetAllAccountgame,GetAllgame,GetAccount,DeleteAccountgame ,AddAccountgame} from "./API";
 import "./table.css";
 const { Text } = Typography;
 const { Option }=Select;
@@ -12,7 +12,7 @@ function Accountgame() {
   const [dataTitleGame, setTitleGame] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [gameRecord, setAccountGameRecord] = useState({accoutid:"",username:"",gameid:"",title:"",dateadded:""});
+  const [AcountgameRecord, setAccountGameRecord] = useState({accoutid:"",username:"",gameid:"",title:"",dateadded:""});
   useEffect(() => {
     const fetchAccountGame = async () => {
       setLoading(true);
@@ -25,7 +25,7 @@ function Accountgame() {
         setDataSource(res || []);
         setNameAccount(username || []);
         setTitleGame(title || []);
-        console.log(" sad" + dataTitleGame);
+
       } catch (error) {
         console.log("lỗi load data")
       }
@@ -81,18 +81,34 @@ function Accountgame() {
     // return true;
 };
     const handleSave = async () => { 
-      if (!validateGameRecord()) {//kiểm tra dữ liệu thêm /sửa
+      if (validateGameRecord()) {//kiểm tra dữ liệu thêm /sửa
         return; 
     }
-      if (isEditing) {
-          console.log("Lưu dữ liệu đã sửa:", gameRecord);
-          // Thêm logic lưu dữ liệu đã sửa ở đây 
-      } else {
-          console.log("Thêm sản phẩm mới:", gameRecord);
-          // const addedGame = await AddGame(gameRecord); //thêm
-
-      }
-      setIsModalOpen(false); // Đóng modal sau khi lưu
+  
+    try {
+      // Thực hiện thêm tài khoản game mới
+      console.log("Dữ liệu gửi đi:", AcountgameRecord);
+      await AddAccountgame(AcountgameRecord);
+  
+      // Lấy lại danh sách tài khoản game sau khi thêm
+      const updatedDataSource = await GetAllAccountgame();
+      setDataSource(updatedDataSource);
+  
+      // Thông báo thành công
+      Modal.success({
+        title: "Thành công",
+        content: "Thêm tài khoản game thành công.",
+      });
+    } catch (error) {
+      console.error("Lỗi khi thêm tài khoản game:", error);
+      Modal.error({
+        title: "Lỗi",
+        content: "Có lỗi xảy ra khi thêm tài khoản game. Vui lòng thử lại.",
+      });
+    } finally {
+      setLoading(false);
+      setIsModalOpen(false); // Đóng mod
+    }
   };
   return (
     <Space className="size_table" size={20} direction="vertical">
@@ -158,8 +174,8 @@ function Accountgame() {
             <label htmlFor="">Chọn tài khoản</label>
             <Select
   placeholder="Chọn Username"
-  value={gameRecord.accountId || ""} // Phải sử dụng gameRecord.accountId
-  onChange={(value) => setAccountGameRecord({ ...gameRecord, accountId: value })}
+  value={AcountgameRecord.accountId || ""} // Phải sử dụng gameRecord.accountId
+  onChange={(value) => setAccountGameRecord({ ...AcountgameRecord, accountId: value })}
   style={{ width: "100%", height: "47px" }}
 >
   {dataNameAccount.map((account) => (
@@ -171,8 +187,8 @@ function Accountgame() {
 <label htmlFor="">Chọn game</label>
 <Select
   placeholder="Chọn Game"
-  value={gameRecord.gameId || ""} // Phải sử dụng gameRecord.gameId
-  onChange={(value) => setAccountGameRecord({ ...gameRecord, gameId: value })}
+  value={AcountgameRecord.gameId || ""} // Phải sử dụng gameRecord.gameId
+  onChange={(value) => setAccountGameRecord({ ...AcountgameRecord, gameId: value })}
   style={{ width: "100%", height: "47px" }}
 >
   {dataTitleGame.map((game) => (

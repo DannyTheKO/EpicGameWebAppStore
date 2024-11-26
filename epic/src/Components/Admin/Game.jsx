@@ -96,6 +96,8 @@ function Game() {
       console.log("Updating game with data:", gameRecord);
 
       try {
+        console.log(gameRecord);
+        // gameRecord.release = gameRecord.release.toISOString()
         await UpdateGame(gameRecord.gameId,gameRecord);
         const updatedDataSource = await GetAllgame(); // Lấy lại danh sách tài khoản từ DB
       setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
@@ -113,9 +115,24 @@ function Game() {
         });
       }
     } else {
-      // Thêm game mới
-      console.log("Adding new game with data:", gameRecord);
-      await AddGame(gameRecord);
+    
+      try {
+        await AddGame(gameRecord);
+        const updatedDataSource = await GetAllgame(); // Lấy lại danh sách tài khoản từ DB
+      setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+
+      Modal.success({
+        title: "Game update successfully",
+        content: `The Game with ID ${gameRecord.gameId} has been add.`,
+      });
+        
+      } catch (error) {
+        console.error("Error deleting game:", error);
+        Modal.error({
+          title: "Error",
+          content: "An error occurred while add the game. Please try again.",
+        });
+      } 
     }
   
     setIsModalOpen(false); // Đóng modal sau khi lưu

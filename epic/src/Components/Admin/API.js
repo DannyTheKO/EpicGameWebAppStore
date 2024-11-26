@@ -15,6 +15,25 @@ export const AddGame = async (game) => {
     return null; // Hoặc bạn có thể xử lý theo cách khác
 }
 };
+export const AddAccountgame = async (AccountGame) => {
+  try {
+    const response = await apiClient.post('/AccountGame/AddAccountgame', AccountGame); // Gửi yêu cầu POST đến API
+    return response.data; // Trả về dữ liệu phản hồi
+} catch (error) {
+    console.error("Error adding game:", error.response || error.message);
+    return null; // Hoặc bạn có thể xử lý theo cách khác
+}
+};
+export const AddDiscount = async (Discount) => {
+  try {
+    console.log(Discount);
+    const response = await apiClient.post('/Discount/addDiscount', Discount); // Gửi yêu cầu POST đến API
+    return response.data; // Trả về dữ liệu phản hồi
+} catch (error) {
+    console.error("Error adding game:", error.response || error.message);
+    return null; // Hoặc bạn có thể xử lý theo cách khác
+}
+};
 export const GetAllGenre = async () => {
 try {
   const response = await apiClient.get('/Genre/GetAllGenre'); // Đường dẫn chính xác đến endpoint
@@ -35,7 +54,18 @@ export const GetAllDiscount =  async () => {
     return [];
   }
 };
-
+export const GetAllCart = async() => {
+  // Code để lấy tất cả thể loại
+  try {
+    const response = await apiClient.get('/Cart/GetAll'); // Đường dẫn chính xác đến endpoint
+    console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
+    return response.data; // Trả về danh sách sản phẩm
+  } catch (error) {
+    console.error("Error :", error.response || error.message);
+    return [];
+  }
+  };
+  
 export const GetAllPublisher = async() => {
 // Code để lấy tất cả thể loại
 try {

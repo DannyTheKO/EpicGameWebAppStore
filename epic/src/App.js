@@ -93,11 +93,9 @@ function App() {
           <Route path="adminaccount" element={<Account />} />
           <Route path="admindiscount" element={<Discount />} />
           <Route path="adminpublisher" element={<Publisher />} />
-          <Route path="admincart" element={<Cart />}/> 
+          <Route path="admincard" element={<Cart />} />
         </Route>
       </Routes>
-
-      {/* Footer luôn hiển thị */}
     </BrowserRouter>  
   );
 }

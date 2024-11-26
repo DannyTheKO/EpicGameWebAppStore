@@ -61,11 +61,7 @@
     // return true;
   };
   const handleSave = async () => {
-    // if (!validateGameRecord()) {
-    //   console.log("error");
-    //   return; // Nếu dữ liệu không hợp lệ, dừng lại
-    // }
-
+   
     if (isEditing) {
       console.log(publisherRecord.publisherId, publisherRecord);
 
@@ -99,7 +95,7 @@
         // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",
-          // content: `Game ID ${addedGame.id} đã được thêm mới thành công.`,
+          content: `Game ID  đã được thêm mới thành công.`,
         });
       } catch (error) {
         console.error('Add failed', error);
@@ -225,9 +221,9 @@
           <label>Website</label>
           <Input
             placeholder="Website"
-            type="string"
+            type="text"
             value={publisherRecord.website}
-            onChange={(e) => setpublisherRecord({ ...publisherRecord, description: e.target.value })}
+            onChange={(e) => setpublisherRecord({ ...publisherRecord, website : e.target.value })}
           />
           
         </Modal>

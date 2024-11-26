@@ -1,6 +1,6 @@
 import { Button,  Space, Table, Typography, Modal, Input,Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllgame ,GetAllDiscount,DeleteDiscount,UpdateDiscount} from "./API";
+import { GetAllgame ,GetAllDiscount,DeleteDiscount,UpdateDiscount,AddDiscount} from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -113,8 +113,17 @@ const handleSave = async () => {
         content: `Discount ID ${discountRecord.id} đã được cập nhật thành công.`,
       });
     } else {
-      // Nếu là thêm mới, xử lý logic thêm tại đây
-      console.log("Thêm mới discount:", discountRecord);
+      await AddDiscount(discountRecord);
+
+      // Cập nhật dữ liệu mới từ API
+      const updatedDataSource = await GetAllDiscount();
+      setDataSource(updatedDataSource);
+
+      // Hiển thị thông báo thành công
+      Modal.success({
+        title: "Success",
+        content: `Discount ID ${discountRecord.id} đã được cập nhật thành công.`,
+      });
     }
   } catch (error) {
     console.error("Error updating discount:", error);
@@ -237,23 +246,24 @@ const handleSave = async () => {
           value={discountRecord.code}
           onChange={(e) => setDiscountRecord({ ...discountRecord, code: e.target.value })}
         />
-        <label>Start date</label>
-        <Input
+<label>Start date</label>
+<Input
   type="date"
   placeholder="Start Date"
-  value={discountRecord.starton} // Hiển thị dữ liệu ngày
-  onChange={(e) => setDiscountRecord({ ...discountRecord, startOn: e.target.value })} // Sửa lại cho đúng
+  value={discountRecord.starton || ""} // Hiển thị dữ liệu ngày
+  onChange={(e) => setDiscountRecord({ ...discountRecord, starton: e.target.value })} // Cập nhật dữ liệu ngày bắt đầu
   style={{ width: "100%", height: "52px" }}
 />
 
-         <label>End date</label>
-         <Input
+<label>End date</label>
+<Input
   type="date"
   placeholder="End Date"
-  value={discountRecord.endon} // Hiển thị dữ liệu ngày
-  onChange={(e) => setDiscountRecord({ ...discountRecord, endOn: e.target.value })} // Sửa dòng này, sử dụng setDiscountRecord
+  value={discountRecord.endon || ""} // Hiển thị dữ liệu ngày
+  onChange={(e) => setDiscountRecord({ ...discountRecord, endon: e.target.value })} // Cập nhật dữ liệu ngày kết thúc
   style={{ width: "100%", height: "52px" }}
 />
+
 
        
       </Modal>

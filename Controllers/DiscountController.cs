@@ -55,7 +55,7 @@ public class DiscountController : ControllerBase
     }
 
     // Add a new discount
-    [HttpPost]
+    [HttpPost("addDiscount")]
     public async Task<IActionResult> AddDiscount([FromBody] Discount discount)
     {
         if (!ModelState.IsValid)

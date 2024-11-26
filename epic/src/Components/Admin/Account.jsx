@@ -245,6 +245,7 @@ function Account() {
   placeholder="Create on"
   value={AccountRecord.createdOn} // Sử dụng createdOn
   onChange={(e) => setAccountRecord({ ...AccountRecord, createdOn: e.target.value })} // Cập nhật giá trị
+  disabled={isEditing}
 />
           <label htmlFor="">Active</label>
           <Input
