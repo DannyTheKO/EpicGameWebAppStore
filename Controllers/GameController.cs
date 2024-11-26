@@ -239,7 +239,7 @@ public class GameController : Controller
 			Description = gameFormModel.Description,
 
 			// Get detail from existing game
-			Release = checkGame.Release.Value,
+			Release = gameFormModel.Release,
 			Genre = checkGenre,
 			Publisher = checkPublisher,
 		};
