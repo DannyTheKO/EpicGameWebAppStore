@@ -18,20 +18,24 @@ public class GameController : Controller
 	private readonly IGameService _gameServices;
 	private readonly IGenreService _genreService;
 	private readonly IPublisherService _publisherService;
+	private readonly IImageGameService _imageGameService;
 
     public GameController(
         IGameService gameServices,
         IGenreService genreService,
         IPublisherService publisherService,
-        IAuthenticationServices authenticationServices,
+		IImageGameService imageGameService,
+		IAuthenticationServices authenticationServices,
         IAuthorizationServices authorizationServices)
     {
         _gameServices = gameServices;
         _genreService = genreService;
         _publisherService = publisherService;
-        _authenticationServices = authenticationServices;
+		_imageGameService = imageGameService;
+		_authenticationServices = authenticationServices;
         _authorizationServices = authorizationServices;
     }
+
     [HttpGet("GetTrendingGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
     {
@@ -86,9 +90,8 @@ public class GameController : Controller
 
 	// POST: Game/CreateGame
 	[HttpPost("CreateGame")]
-	public async Task<ActionResult> CreateGame([FromBody] GameFormModel gameFormModel)
+	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
-		// Validate User Input
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -123,7 +126,16 @@ public class GameController : Controller
 			});
 		}
 
-		// Create a new game
+		// Check if Game name is already existed
+		var checkGame = await _gameServices.GetGameByTitle(gameFormModel.Title);
+		if (checkGame.FirstOrDefault() != null) {
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game name is already existed"
+			});
+		}
+
 		var game = new Game()
 		{
 			PublisherId = gameFormModel.PublisherId,
@@ -136,7 +148,27 @@ public class GameController : Controller
 			Description = gameFormModel.Description,
 		};
 
+		// Add game first to create GameID
 		await _gameServices.AddGame(game);
+		
+		// Handle image upload if image file is provided
+		if (imageFile != null)
+		{
+			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId);
+			if (!flag)
+			{
+				return BadRequest(new
+				{
+					success = flag,
+					message = "Failed to upload image",
+				});
+			}
+
+			game.ImageId = imageGame.ImageId;
+		}
+
+		await _gameServices.UpdateGame(game);
+
 		return Ok(new
 		{
 			success = true,
@@ -147,7 +179,7 @@ public class GameController : Controller
 
 	// PUT: Game/UpdateGame/{gameId}
 	[HttpPut("UpdateGame/{gameId}")]
-	public async Task<ActionResult> UpdateGame(int gameId, [FromBody] GameFormModel gameFormModel)
+	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
 		// Check if user input is valid
 		if (!ModelState.IsValid)
@@ -207,7 +239,7 @@ public class GameController : Controller
 			Description = gameFormModel.Description,
 
 			// Get detail from existing game
-			Release = checkGame.Release.Value,
+			Release = gameFormModel.Release,
 			Genre = checkGenre,
 			Publisher = checkPublisher,
 		};

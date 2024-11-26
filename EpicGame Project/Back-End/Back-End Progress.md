@@ -10,11 +10,12 @@ kanban-plugin: board
 
 ## Working
 
-- [ ] [[Discount]]
+- [ ] [[ImageGame]]
 
 
 ## Testing
 
+- [ ] [[Discount]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Game]]
