@@ -19,6 +19,19 @@ public class GameController : Controller
 	private readonly IGenreService _genreService;
 	private readonly IPublisherService _publisherService;
 
+	public GameController(
+		IGameService gameServices,
+		IGenreService genreService,
+		IPublisherService publisherService,
+		IAuthenticationServices authenticationServices,
+		IAuthorizationServices authorizationServices)
+	{
+		_gameServices = gameServices;
+		_genreService = genreService;
+		_publisherService = publisherService;
+		_authenticationServices = authenticationServices;
+		_authorizationServices = authorizationServices;
+	}
     public GameController(
         IGameService gameServices,
         IGenreService genreService,
