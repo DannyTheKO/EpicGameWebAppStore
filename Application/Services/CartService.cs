@@ -75,17 +75,30 @@ public class CartService : ICartService
 		return paymentMethod?.Name ?? throw new Exception("Payment method not found.");
 	}
 
-	public async Task<Cart> GetLatestCart(int accountId)
+	public async Task<(Cart, string Message)> GetLatestCart(int accountId)
 	{
 		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
-		return existingCarts
-			.OrderByDescending(c => c.CreatedOn)
-			.FirstOrDefault();
+		var filtered = existingCarts.OrderByDescending(c => c.CreatedOn).FirstOrDefault();
+		if (existingCarts == null)
+		{
+			// Do we have to create a new cart after the latest cart not found ?
+			var newCart = new Cart()
+			{
+				AccountId = accountId,
+				PaymentMethodId = 1,
+			};
+
+			await _cartRepository.Add(newCart);
+			
+			return (newCart, "Cart Not Found!, created a new cart for customer!");
+		}
+
+		return (filtered, "Found!");
 	}
 
 
 
-	public async Task<Cart> AddToCart(int accountId, int gameId)
+	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
 	{
 		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
 		var existingCart = existingCarts.FirstOrDefault(); // Get most recent cart or create new one
@@ -101,7 +114,7 @@ public class CartService : ICartService
 				Cartdetails = new List<Cartdetail>()
 			};
 
-			// Add new cart detail
+			// after create new cart we create cartDetail for the game
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
@@ -109,9 +122,8 @@ public class CartService : ICartService
 
 			newCart.Cartdetails.Add(cartDetail);
 
-			// Save to database
 			await _cartRepository.Add(newCart);
-			return newCart;
+			return (newCart, "Cart not found!, created a new cart with a new cartDetail");
 		}
 		else
 		{
@@ -126,7 +138,7 @@ public class CartService : ICartService
 
 			existingCart.TotalAmount = await CalculateTotalAmount(existingCart.CartId);
 			await _cartRepository.Update(existingCart);
-			return existingCart;
+			return (existingCart, "Cart found, add cartDetail into the existed cart!");
 		}
 	}
 

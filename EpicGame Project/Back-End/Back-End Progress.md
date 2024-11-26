@@ -6,11 +6,11 @@ kanban-plugin: board
 
 ## Todo
 
-- [ ] [[ImageGame]]
 
 
 ## Working
 
+- [ ] [[ImageGame]]
 
 
 ## Testing

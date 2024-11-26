@@ -73,19 +73,25 @@ public class CartController : Controller
 	[HttpGet("CheckOut/{accountId}")]
 	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
 	{
-		var cart = await _cartService.GetLatestCart(accountId);
+		var (cart, message)= await _cartService.GetLatestCart(accountId);
 		if (cart == null)
 		{
 			return NotFound(new
 			{
 				success = false,
-				message = "No cart found for this account"
+				message = message
 			});
 		}
 
-		return Ok(cart);
+		return Ok( new
+		{
+			success = true,
+			message,
+			data = cart
+		});
 	}
 
+	// POST: Cart/CreateCart
 	[HttpPost("CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
@@ -123,6 +129,39 @@ public class CartController : Controller
 
 		await _cartService.AddCart(cart);
 		return Ok(new { success = true, message = "Cart created successfully" });
+	}
+
+	//POST: Cart/AddToCart
+	[HttpPost("AddToCart")]
+	public async Task<ActionResult> AddToCart([FromQuery] int accountId, [FromQuery] int gameId)
+	{
+		var checkAccount = await _accountService.GetAccountById(accountId);
+		if (checkAccount == null) // Not existed
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Account do not exist!"
+			});
+		}
+
+		var checkGame = await _gameService.GetGameById(gameId);
+		if (checkGame == null) // Not existed
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game do not exist"
+			});
+		}
+
+		var (cart,message) = await _cartService.AddGameToCart(accountId, gameId);
+		return Ok(new
+		{
+			success = true,
+			message = message,
+			data = cart,
+		});
 	}
 
 	// PUT: Cart/UpdateCart/{id}
