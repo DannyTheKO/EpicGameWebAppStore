@@ -38,14 +38,53 @@ public class CartController : Controller
 	}
 
 	// GET: api/Cart/5
-	[HttpGet("GetCart")]
-	public async Task<ActionResult<Cart>> GetCartById([FromQuery] int cartId)
+	[HttpGet("GetCartId/{cartId}")]
+	public async Task<ActionResult<Cart>> GetCartById(int cartId)
 	{
 		var cart = await _cartService.GetCartById(cartId);
 		if (cart == null) return NotFound();
 		return Ok(cart);
 	}
 
+	// GET: Cart/Account/5
+	[HttpGet("GetCartsByAccountId/{accountId}")]
+	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
+	{
+		var cart = await _cartService.GetCartsByAccountId(accountId);
+
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Cart Empty"
+			});
+		}
+
+		return Ok(new
+		{
+			success = true,
+			message = "Cart Found",
+			data = cart
+		});
+	}
+
+	// GET: Cart/CheckOut?{accountId}
+	[HttpGet("CheckOut/{accountId}")]
+	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
+	{
+		var cart = await _cartService.GetLatestCart(accountId);
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "No cart found for this account"
+			});
+		}
+
+		return Ok(cart);
+	}
 
 	[HttpPost("CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
@@ -85,8 +124,6 @@ public class CartController : Controller
 		await _cartService.AddCart(cart);
 		return Ok(new { success = true, message = "Cart created successfully" });
 	}
-
-
 
 	// PUT: Cart/UpdateCart/{id}
 	[HttpPut("UpdateCart/{cartId}")]
@@ -180,26 +217,5 @@ public class CartController : Controller
 		});
 	}
 
-	// GET: Cart/Account/5
-	[HttpGet("GetCartsByAccountId/{accountId}")]
-	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
-	{
-		var cart = _cartService.GetCartsByAccountId(accountId);
 
-		if (cart == null)
-		{
-			return NotFound(new
-			{
-				success = false,
-				message = "Cart Empty"
-			});
-		}
-
-		return Ok(new
-		{
-			success = true,
-			message = "Cart Found",
-			cartList = cart
-		});
-	}
 }

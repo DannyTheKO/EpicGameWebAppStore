@@ -17,24 +17,24 @@ public class PublisherService : IPublisherService
     }
 
 	// == Basic CRUD Function ==
-	public async Task<IEnumerable<Publisher>> GetAllPublishersAsync()
+	public async Task<IEnumerable<Publisher>> GetAllPublishers()
 	{
 		return await _publisherRepository.GetAll();
 	}
 
-	public async Task<Publisher> AddPublisherAsync(Publisher publisher)
+	public async Task<Publisher> AddPublisher(Publisher publisher)
 	{
 		await _publisherRepository.Add(publisher);
 		return publisher;
 	}
 
-	public async Task<Publisher> UpdatePublisherAsync(Publisher publisher)
+	public async Task<Publisher> UpdatePublisher(Publisher publisher)
 	{
 		await _publisherRepository.Update(publisher);
 		return publisher;
 	}
 
-    public async Task<Publisher> DeletePublisherAsync(int id)
+    public async Task<Publisher> DeletePublisher(int id)
     {
         var publisher = await _publisherRepository.GetById(id);
         if (publisher == null) throw new Exception("Publisher not found.");
@@ -45,19 +45,19 @@ public class PublisherService : IPublisherService
 	// == Feature Function ==
 
 	// Search by Publisher ID
-	public async Task<Publisher> GetPublisherByIdAsync(int id)
+	public async Task<Publisher> GetPublisherById(int id)
 	{
 		return await _publisherRepository.GetById(id);
 	}
 
-	public async Task<IEnumerable<Publisher>> GetPublisherByNameAsync(string name)
+	public async Task<IEnumerable<Publisher>> GetPublisherByName(string name)
 	{
 		var publisherList = await _publisherRepository.GetAll();
 		var filteredPublisher = publisherList.Where(f => f.Name == name);
 		return filteredPublisher;
 	}
 
-	public async Task<IEnumerable<Publisher>> GetPublisherByAddressAsync(string address)
+	public async Task<IEnumerable<Publisher>> GetPublisherByAddress(string address)
 	{
 		var publisherList = await _publisherRepository.GetAll();
 		var filteredPublisher = publisherList.Where(f => f.Address == address);

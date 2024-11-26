@@ -57,8 +57,9 @@ public class CartRepository : ICartRepository
     public async Task<IEnumerable<Cart>> GetAllCartFromAccountId(int accountId)
     {
         return await _context.Carts
-            .Where(c => c.AccountId == accountId)
             .Include(c => c.PaymentMethod)
+            .Include(cd => cd.Cartdetails).ThenInclude(g => g.Game)
+            .Where(c => c.AccountId == accountId)
             .ToListAsync();
     }
 

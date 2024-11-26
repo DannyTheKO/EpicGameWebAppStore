@@ -17,7 +17,7 @@ public interface IGenreService
     public Task<Genre> GetGenreById(int id);
 
     // TODO: Search By Name
-    public Task<IEnumerable<Genre>> GetGenreByName(string name);
+    public Task<IEnumerable<Genre>> GetGenreByName(string genreName);
 
 
 }

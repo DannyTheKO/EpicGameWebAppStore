@@ -142,7 +142,8 @@ public class AuthController : Controller
 		{
 			loginStateFlag = loginState,
 			accountToken = token,
-			message = resultMessage
+			message = resultMessage,
+			username = account.Username
 		});
 	}
 }

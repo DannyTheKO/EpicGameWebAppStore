@@ -19,6 +19,9 @@ public class Account
     public string IsActive { get; set; }
 
     public DateTime? CreatedOn { get; set; }
+    
+    [JsonIgnore]
+    public virtual ICollection<AccountGame> AccountGames { get; set; } = new List<AccountGame>();
 
     [JsonIgnore]
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();

@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities;
 
 public class Game
 {
@@ -21,12 +23,19 @@ public class Game
     public decimal? Rating { get; set; }
 
     public string? Description { get; set; }
-    public virtual ICollection<Cartdetail> Cartdetails { get; set; } = new List<Cartdetail>();
 
+    [JsonIgnore] 
+    public virtual ICollection<AccountGame> AccountGames { get; set; } = new List<AccountGame>();
+
+    [JsonIgnore]
+    public virtual ICollection<Cartdetail> CartDetails { get; set; } = new List<Cartdetail>();
+    
+    [JsonIgnore]
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
+    public virtual ICollection<ImageGame> ImageGame { get; set; } = new List<ImageGame>();
+    
     public virtual Genre? Genre { get; set; }
 
-    public virtual ICollection<ImageGame> Images { get; set; } = new List<ImageGame>();
     public virtual Publisher? Publisher { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +13,11 @@ namespace EpicGameWebAppStore.Controllers;
 [ApiController]
 public class GameController : Controller
 {
-    private readonly IAuthenticationServices _authenticationServices;
-    private readonly IAuthorizationServices _authorizationServices;
-    private readonly IGameService _gameServices;
-    private readonly IGenreService _genreService;
-    private readonly IPublisherService _publisherService;
+	private readonly IAuthenticationServices _authenticationServices;
+	private readonly IAuthorizationServices _authorizationServices;
+	private readonly IGameService _gameServices;
+	private readonly IGenreService _genreService;
+	private readonly IPublisherService _publisherService;
 
     public GameController(
         IGameService gameServices,
@@ -62,104 +63,184 @@ public class GameController : Controller
         }
     }
 
-    // GET: Game/Index
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<Game>>> GetAll()
-    {
-        var games = await _gameServices.GetAllGame();
-        return Ok(games);
-    }
-    [HttpGet("GetById/{id}")]
-    public async Task<ActionResult<Game>> GetById(int id)
-    {
-        var game = await _gameServices.GetGameById(id);
-        if (game == null)
-        {
-            return NotFound(new { message = "Game not found." });
-        }
-        return Ok(game);
-    }
+	// GET: Game/Index
+	[HttpGet("GetAll")]
+	public async Task<ActionResult<IEnumerable<Game>>> GetAll()
+	{
+		var games = await _gameServices.GetAllGame();
+		return Ok(games);
+	}
 
-    [HttpGet("GetGame/{gameId}")]
-    public async Task<ActionResult<Game>> GetGameById([FromBody] int gameId)
+	[HttpGet("GetGameId/{gameId}")]
+	public async Task<ActionResult<Game>> GetGameById(int gameId)
 	{
 		var game = await _gameServices.GetGameById(gameId);
-		if (game == null) return NotFound();
+		if (game == null) return NotFound(new
+		{
+			success = false,
+			message = "Requested game is not found!"
+		});
+
 		return Ok(game);
 	}
 
-	// POST: Game/CreateConfirm
+	// POST: Game/CreateGame
 	[HttpPost("CreateGame")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult<Game>> CreateGame(Game game)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new
-            {
-                success = false,
-	            message = "Fail to add game"
-            });
-        }
+	public async Task<ActionResult> CreateGame([FromBody] GameFormModel gameFormModel)
+	{
+		// Validate User Input
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
 
-        await _gameServices.AddGame(game);
-        return Ok(new
-        {
-	        success = true,
-	        message = "Successfully to add game"
-        });
-    }
+			});
+		}
 
-    // PUT: Game/UpdateConfirm/{id}
-    [HttpPut("UpdateGame/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult<Game>> UpdateGame(Game game, int id)
-    {
-        // Check if that game ID user was looking for is available
-        if (id != game.GameId) 
-	        return BadRequest(new
-        {
-            success = false,
-            message = "ID game don't match with the database or the game is updated"
-        });
+		// Check if Publisher ID is available
+		var checkPublisher = await _publisherService.GetPublisherById(gameFormModel.PublisherId);
+		if (checkPublisher == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Publisher ID not found"
+			});
+		}
 
-        // Check if the requirement is valid
-        if (!ModelState.IsValid)
-	        return BadRequest(new
-	        {
-		        success = false,
-		        message = "Missing Input Requirement"
-	        });
+		// Check if Genre ID is available
+		var checkGenre = await _genreService.GetGenreById(gameFormModel.GenreId);
+		if (checkGenre == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Genre ID not found"
+			});
+		}
 
-        await _gameServices.AddGame(game);
-        return Ok(new
-        {
-	        success = true,
-	        message = "Add Game Success"
-        });
-    }
+		// Create a new game
+		var game = new Game()
+		{
+			PublisherId = gameFormModel.PublisherId,
+			GenreId = gameFormModel.GenreId,
+			Title = gameFormModel.Title,
+			Price = gameFormModel.Price,
+			Author = gameFormModel.Author,
+			Release = DateTime.UtcNow,
+			Rating = gameFormModel.Rating,
+			Description = gameFormModel.Description,
+		};
 
-    // DELETE: Game/DeleteConfirm/{id}
-    [HttpDelete("DeleteConfirm/{id}")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult> DeleteConfirmed(int id)
-    {
-	    var existingGame = await _gameServices.GetGameById(id);
-	    if (existingGame == null)
-	    {
-		    return BadRequest(new
-		    {
-			    success = false,
-			    message = "ID game don't match with the database or the game is deleted"
-		    });
-	    }
+		await _gameServices.AddGame(game);
+		return Ok(new
+		{
+			success = true,
+			message = "Successfully to add game",
+			data = game
+		});
+	}
 
-	    await _gameServices.DeleteGame(id);
-	    return Ok(new
-	    {
-		    success = false,
-		    message = "Delete Game Success"
-	    });
-    }
+	// PUT: Game/UpdateGame/{gameId}
+	[HttpPut("UpdateGame/{gameId}")]
+	public async Task<ActionResult> UpdateGame(int gameId, [FromBody] GameFormModel gameFormModel)
+	{
+		// Check if user input is valid
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
+		}
+
+		// Check if the game ID is existed in the database
+		var checkGame = await _gameServices.GetGameById(gameId);
+		if (checkGame == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game ID not found"
+			});
+		}
+
+		// Check if the publisher ID is existed in the database
+		var checkPublisher = await _publisherService.GetPublisherById(gameFormModel.PublisherId);
+		if (checkPublisher == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Publisher ID not found"
+			});
+		}
+
+		// Check if the genre ID is existed in the database
+		var checkGenre = await _genreService.GetGenreById(gameFormModel.GenreId);
+		if (checkGenre == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Genre ID not found"
+			});
+		}
+
+		// Create new game
+		var game = new Game()	
+		{
+			GameId = checkGame.GameId,
+			PublisherId = gameFormModel.PublisherId,
+			GenreId = gameFormModel.GenreId,
+			Title = gameFormModel.Title,
+			Price = gameFormModel.Price,
+			Author = gameFormModel.Author,
+			Rating = gameFormModel.Rating,
+			Description = gameFormModel.Description,
+
+			// Get detail from existing game
+			Release = checkGame.Release.Value,
+			Genre = checkGenre,
+			Publisher = checkPublisher,
+		};
+
+		await _gameServices.UpdateGame(game);
+		return Ok(new
+		{
+			success = true,
+			message = "Update Game Successfully",
+			data = game
+		});
+	}
+
+	// DELETE: Game/DeleteGame/{gameId}
+	[HttpDelete("DeleteGame/{gameId}")]
+	public async Task<ActionResult> DeleteConfirmed(int gameId)
+	{
+		var existingGame = await _gameServices.GetGameById(gameId);
+		if (existingGame == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "ID game don't match with the database or the game is deleted"
+			});
+		}
+
+		await _gameServices.DeleteGame(gameId);
+		return Ok(new
+		{
+			success = false,
+			message = "Delete Game Success"
+		});
+	}
 }
 

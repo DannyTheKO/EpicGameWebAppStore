@@ -1,5 +1,5 @@
 - Basic CRUB Function
-	- [ ] Create 
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+	- [x] Create ✅ 2024-11-18
+	- [x] Read ✅ 2024-11-18
+	- [x] Update ✅ 2024-11-18
+	- [x] Delete ✅ 2024-11-18

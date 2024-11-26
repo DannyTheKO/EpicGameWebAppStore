@@ -30,10 +30,10 @@ public class CartdetailController : Controller
 		return Ok(cartDetail);
 	}
 
-	[HttpGet("GetCartDetail/{id}")]
-	public async Task<ActionResult<Cartdetail>> GetCartDetail(int id)
+	[HttpGet("GetCartDetail/{cartDetailId}")]
+	public async Task<ActionResult<Cartdetail>> GetCartDetail(int cartDetailId)
 	{
-		var cartDetail = await _cartdetailService.GetCartDetailById(id);
+		var cartDetail = await _cartdetailService.GetCartDetailById(cartDetailId);
 		if (cartDetail == null)
 			return NotFound(new { success = false, message = "Cart detail not found" });
 		return Ok(cartDetail);
@@ -73,9 +73,8 @@ public class CartdetailController : Controller
 		{
 			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
-			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
-			Discount = cartDetailFormModel.Discount
+			Discount = cartDetailFormModel.Discount,
 		};
 
 		// Add the cart detail to the database
@@ -135,7 +134,6 @@ public class CartdetailController : Controller
 			CartDetailId = checkCartDetail.CartDetailId,
 			CartId = cartDetailFormModel.CartId,
 			GameId = cartDetailFormModel.GameId,
-			Quantity = cartDetailFormModel.Quantity,
 			Price = (await _gameService.GetGameById(cartDetailFormModel.GameId)).Price,
 			Discount = discount
 		};
@@ -152,10 +150,15 @@ public class CartdetailController : Controller
 		});
 	}
 
-	[HttpDelete("DeleteCartDetail/{id}")]
-	public async Task<ActionResult<Cartdetail>> DeleteCartDetail(int id)
+	[HttpDelete("DeleteCartDetail/{cartDetailId}")]
+	public async Task<ActionResult> DeleteCartDetail(int cartDetailId)
 	{
-		var result = await _cartdetailService.DeleteCartDetail(id);
-		return Ok(new { success = true, message = "Cart detail deleted successfully", data = result });
+		var result = await _cartdetailService.DeleteCartDetail(cartDetailId);
+		return Ok(new
+		{
+			success = true, 
+			message = "Cart detail deleted successfully", 
+			data = result
+		});
 	}
 }

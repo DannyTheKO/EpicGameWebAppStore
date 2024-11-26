@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using System.Net.Http.Headers;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Repository;
 
@@ -28,12 +29,33 @@ namespace Application.Services
 			return await _accountGameRepository.GetAll();
 		}
 
+		public async Task<AccountGame> GetAccountGameById(int accountGameId)
+		{
+			var accountGame = await _accountGameRepository.GetAll();
+			return accountGame.SingleOrDefault(ag => ag.AccountGameId == accountGameId);
+		}
+
 		public async Task<AccountGame> UpdateAccountGame(AccountGame accountGame)
 		{
-			// Update the AccountGame using repository
-			await _accountGameRepository.Update(accountGame);
-    
-			return accountGame;
+			var existingAccountGame = await GetAccountGameById(accountGame.AccountGameId);
+
+			if (existingAccountGame == null) throw new Exception("AccountGame does not exist.");
+
+			existingAccountGame.AccountGameId = accountGame.AccountGameId;
+			existingAccountGame.AccountId = accountGame.AccountId;
+			existingAccountGame.GameId = accountGame.GameId;
+			existingAccountGame.DateAdded = accountGame.DateAdded;
+
+			await _accountGameRepository.Update(existingAccountGame);
+			return existingAccountGame;
+		}
+
+		public async Task DeleteAccountGame(int accountGameId)
+		{
+			var existingAccountGame = await GetAccountGameById(accountGameId);
+			if (existingAccountGame == null) throw new Exception("AccountGame not found!");
+
+			await _accountGameRepository.Delete(existingAccountGame);
 		}
 
 		public async Task<IEnumerable<AccountGame>> GetAccountGameByGameId(int gameId)

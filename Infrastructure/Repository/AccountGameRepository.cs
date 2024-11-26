@@ -26,7 +26,8 @@ namespace Infrastructure.Repository
 		{
 			return await _context.AccountGames
 				.Include(a => a.Account)
-				.Include(g => g.Game)
+				.Include(g => g.Game).ThenInclude(g => g.Genre)
+				.Include(g => g.Game).ThenInclude(p => p.Publisher)
 				.ToListAsync();
 		}
 
