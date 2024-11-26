@@ -32,19 +32,7 @@ public class GameController : Controller
 		_authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;
 	}
-    public GameController(
-        IGameService gameServices,
-        IGenreService genreService,
-        IPublisherService publisherService,
-        IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices)
-    {
-        _gameServices = gameServices;
-        _genreService = genreService;
-        _publisherService = publisherService;
-        _authenticationServices = authenticationServices;
-        _authorizationServices = authorizationServices;
-    }
+
     [HttpGet("GetTrendingGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
     {
