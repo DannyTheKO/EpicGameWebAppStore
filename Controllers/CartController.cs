@@ -29,15 +29,35 @@ public class CartController : Controller
 		_paymentMethodService = paymentMethodService;
 	}
 
-	// GET: api/Cart
+	// GET: Cart/GetAll
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
 		var carts = await _cartService.GetAllCarts();
-		return Ok(carts);
+    
+		var formattedResponse = carts.GroupBy(c => c.AccountId)
+			.Select(group => new
+			{
+				accountId = group.Key,
+				name = group.First().Account.Username,
+				cartId = group.First().CartId,
+				cart = group.Select(c => new
+				{
+					cartDetailId = c.CartId,
+					cartDetail = c.Cartdetails.Select(cd => new
+					{
+						gameId = cd.Game.GameId,
+						title = cd.Game.Title,
+						price = cd.Price,
+						discount = cd.Discount
+					}).ToList()
+				}).ToList()
+			});
+
+		return Ok(formattedResponse);
 	}
 
-	// GET: api/Cart/5
+	// GET: Cart/GetCartId
 	[HttpGet("GetCartId/{cartId}")]
 	public async Task<ActionResult<Cart>> GetCartById(int cartId)
 	{
@@ -46,7 +66,7 @@ public class CartController : Controller
 		return Ok(cart);
 	}
 
-	// GET: Cart/Account/5
+	// GET: Cart/GetCartsByAccountId/{accountId}
 	[HttpGet("GetCartsByAccountId/{accountId}")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
 	{
@@ -69,7 +89,7 @@ public class CartController : Controller
 		});
 	}
 
-	// GET: Cart/CheckOut?{accountId}
+	// GET: Cart/CheckOut/{accountId}
 	[HttpGet("CheckOut/{accountId}")]
 	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
 	{
@@ -90,6 +110,8 @@ public class CartController : Controller
 			data = cart
 		});
 	}
+
+
 
 	// POST: Cart/CreateCart
 	[HttpPost("CreateCart")]
@@ -133,7 +155,7 @@ public class CartController : Controller
 
 	//POST: Cart/AddToCart
 	[HttpPost("AddToCart")]
-	public async Task<ActionResult> AddToCart([FromQuery] int accountId, [FromQuery] int gameId)
+	public async Task<ActionResult> AddToCart(int accountId, int gameId)
 	{
 		var checkAccount = await _accountService.GetAccountById(accountId);
 		if (checkAccount == null) // Not existed
