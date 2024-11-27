@@ -34,28 +34,32 @@ public class CartController : Controller
 	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
 		var carts = await _cartService.GetAllCarts();
-    
-		var formattedResponse = carts.GroupBy(c => c.AccountId)
-			.Select(group => new
-			{
-				accountId = group.Key,
-				name = group.First().Account.Username,
-				cartId = group.First().CartId,
-				cart = group.Select(c => new
-				{
-					cartDetailId = c.CartId,
-					cartDetail = c.Cartdetails.Select(cd => new
-					{
-						gameId = cd.Game.GameId,
-						title = cd.Game.Title,
-						price = cd.Price,
-						discount = cd.Discount
-					}).ToList()
-				}).ToList()
-			});
 
-		return Ok(formattedResponse);
-	}
+        var formattedResponse = carts.GroupBy(c => c.AccountId)
+            .Select(group => new
+            {
+                accountId = group.Key,
+                name = group.First().Account.Username,
+                cart = group.Select(c => new
+                {
+                    cartId = c.CartId,
+					paymentMethodId = c.PaymentMethodId,
+                    cartDetails = c.Cartdetails.Select(cd => new
+                    {
+                        cartDetailId = cd.CartDetailId,
+                        cartDetail = new
+                        {
+                            gameId = cd.Game.GameId,
+                            title = cd.Game.Title,
+                            price = cd.Price,
+                            discount = cd.Discount
+                        }
+                    }).ToList()
+                }).ToList()
+            });
+
+        return Ok(formattedResponse);
+    }
 
 	// GET: Cart/GetCartId
 	[HttpGet("GetCartId/{cartId}")]
