@@ -1,0 +1,85 @@
+.home-page {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    padding-bottom: 50px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.banner {
+    display: flex;
+    width: 99vw; /* Mở rộng để tất cả ảnh nằm trong banner */
+    height: 100vh;
+    animation: slide 15s infinite;
+}
+
+.banner-image {
+    width: 100vw; /* Khít với chiều ngang màn hình */
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-section {
+    margin-top: 40px;
+    padding: 20px;
+}
+
+    .game-section h2 {
+        font-size: 2.5rem;
+        color: aqua;
+        margin-bottom: 35px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+.game-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.game-item {
+    width: calc(20% - 10px);
+    text-align: center;
+    margin-left:40px;
+}
+
+.game-item img {
+    width: 100%;
+    height: 160px; /* Chiều cao cố định cho hình ảnh */
+    object-fit: cover;
+    border-bottom: 2px solid #00ffff; /* Đường kẻ dưới hình */
+}
+
+    .game-item h3 {
+        margin: 10px 0 5px;
+        font-size: 18px;
+        color: #ffffff; /* Màu chữ trắng */
+        text-transform: capitalize; /* Viết hoa chữ cái đầu */
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 1 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+.game-item p {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Slide Animation for Banner */
+@keyframes slide {
+    0%, 20% { transform: translateX(0); }
+    25%, 45% { transform: translateX(-100vw); }
+    50%, 70% { transform: translateX(-200vw); }
+    100% { transform: translateX(0); }
+}

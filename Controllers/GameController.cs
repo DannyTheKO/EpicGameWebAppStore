@@ -87,6 +87,18 @@ public class GameController : Controller
 
 	// POST: Game/CreateGame
 	[HttpPost("CreateGame")]
+<<<<<<< HEAD
+    public async Task<ActionResult<Game>> CreateGame([FromBody] Game game)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
+                success = false,
+	            message = "Fail to add game"
+            });
+        }
+=======
 	public async Task<ActionResult> CreateGame([FromBody] GameFormModel gameFormModel)
 	{
 		// Validate User Input
@@ -98,10 +110,27 @@ public class GameController : Controller
 				errors = ModelState.Values
 					.SelectMany(v => v.Errors)
 					.Select(e => e.ErrorMessage)
+>>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 
 			});
 		}
 
+<<<<<<< HEAD
+    // PUT: Game/UpdateConfirm/{id}
+    [HttpPut("UpdateGame/{id}")]
+    public async Task<ActionResult<Game>> UpdateGame([FromBody] Game game, int id)
+    {
+        // Check if that game ID user was looking for is available
+        if (id != game.GameId) 
+	        return BadRequest(new
+        {
+            success = false,
+            message = "ID game don't match with the database or the game is updated"
+        });
+
+        // Check if the requirement is valid
+       
+=======
 		// Check if Publisher ID is available
 		var checkPublisher = await _publisherService.GetPublisherById(gameFormModel.PublisherId);
 		if (checkPublisher == null)
@@ -123,6 +152,7 @@ public class GameController : Controller
 				message = "Genre ID not found"
 			});
 		}
+>>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 
 		// Create a new game
 		var game = new Game()
@@ -137,6 +167,30 @@ public class GameController : Controller
 			Description = gameFormModel.Description,
 		};
 
+<<<<<<< HEAD
+    // DELETE: Game/DeleteConfirm/{id}
+    [HttpDelete("DeleteConfirm/{id}")]
+
+    public async Task<ActionResult> DeleteConfirmed(int id)
+    {
+	    var existingGame = await _gameServices.GetGameById(id);
+	    if (existingGame == null)
+	    {
+		    return BadRequest(new
+		    {
+			    success = false,
+			    message = "ID game don't match with the database or the game is deleted"
+		    });
+	    }
+
+	    await _gameServices.DeleteGame(id);
+	    return Ok(new
+	    {
+		    success = true,
+		    message = "Delete Game Success"
+	    });
+    }
+=======
 		await _gameServices.AddGame(game);
 		return Ok(new
 		{
@@ -243,5 +297,6 @@ public class GameController : Controller
 			message = "Delete Game Success"
 		});
 	}
+>>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 }
 

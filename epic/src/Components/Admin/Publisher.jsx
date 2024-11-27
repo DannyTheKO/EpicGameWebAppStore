@@ -1,6 +1,6 @@
 import { Button,Space, Table, Typography, Modal, Input,Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllgame } from "./API";
+import { GetAllPublisher } from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -17,7 +17,7 @@ function Publisher() {
   useEffect(() => {
     const fetchGame = async () => {
       setLoading(true);
-      const res = await GetAllgame();
+      const res = await GetAllPublisher();
       setDataSource(res || []);
       setCount(res.length);
       setLoading(false);
@@ -30,7 +30,7 @@ function Publisher() {
       setpublisherRecord(record); 
       setIsEditing(true); 
     } else {
-      setpublisherRecord({id:Count, name: "", address: "", email: "" ,phone:"",website:""});
+      setpublisherRecord({id:Count+1, name: "", address: "", email: "" ,phone:"",website:""});
       setIsEditing(false); // Chế độ thêm
     }
     setIsModalOpen(true); // Mở modal
@@ -85,27 +85,28 @@ const validateGameRecord = () => {
         columns={[
           {
             title: "Publisher ID",
-            dataIndex: "PublisherID",
-            key: "PublisherID",
+            dataIndex: "publisherId",
+            key: "publisherId",
             render: (PublisherID) => <Text>{PublisherID}</Text>,
             
           },
           {
             title: "Name",
-            dataIndex: "Name",
-            key: "Name",
+            dataIndex: "name",
+            key: "name",
             render: (Name) => <Text>{Name}</Text>,
           },
           {
             title: "Address",
-            dataIndex: "Address",
-            key: "Address",
+            dataIndex: "address",
+            key: "address",
             render: (Address) => <Text>{Address}</Text>,
+            width:200,
           },
           {
             title: "Email",
-            dataIndex: "Email",
-            key: "Email",
+            dataIndex: "email",
+            key: "email",
             render: (Email) => <Text>{Email}</Text>,
           },
           {
@@ -116,8 +117,8 @@ const validateGameRecord = () => {
           },
           {
             title: "Website",
-            dataIndex: "Website",
-            key: "Website",
+            dataIndex: "website",
+            key: "website",
             render: (Website) => <Text>{Website}</Text>,
           },
           {
@@ -127,7 +128,7 @@ const validateGameRecord = () => {
               <Space size="middle">
                 <Button type="primary" onClick={() => openModal()}>Thêm </Button>
                 <Button onClick={() => openModal(record)}>Sửa</Button>
-                <Button danger onClick={() => handleDelete(record)}>Xóa</Button>
+                
               </Space>
             ),
             className: "text-center",
@@ -148,36 +149,40 @@ const validateGameRecord = () => {
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}
       >
+        <label>Publisher ID</label>
         <Input
            placeholder="ID Publisher"
            value={publisherRecord.id}
            onChange={(e) => setpublisherRecord({ ...publisherRecord, id: e.target.value })}
            disabled
         />
+        <label>Name</label>
         <Input
           placeholder="Name"
           value={publisherRecord.name}
           onChange={(e) => setpublisherRecord({ ...publisherRecord, name: e.target.value })}
         />
+        <label>Phone</label>
         <Input
           placeholder="Phone"
           type="phone"
           value={publisherRecord.phone}
           onChange={(e) => setpublisherRecord({ ...publisherRecord, phone: e.target.value })}
         />
+        <label>Email</label>
         <Input
-          placeholder="Emain"
+          placeholder="Email"
           type="email"
           value={publisherRecord.email}
           onChange={(e) => setpublisherRecord({ ...publisherRecord, email:e.target.value })}
         />
+        <label>Address</label>
         <Input
           placeholder="Address"
           value={publisherRecord.address}
           onChange={(e) => setpublisherRecord({ ...publisherRecord, address: e.target.value })}
         />
-       
-         
+        <label>Website</label>
         <Input
           placeholder="Website"
           type="string"

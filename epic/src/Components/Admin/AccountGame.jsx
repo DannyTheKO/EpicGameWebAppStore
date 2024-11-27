@@ -1,6 +1,6 @@
 import { Button, Space, Table, Modal, Input,Select,Typography } from "antd";
 import { useEffect, useState } from "react";
-import {  GetAllAccountgame,GetAllUsername,GetAllTitle } from "./API";
+import {  GetAllAccountgame,GetAllgame,GetAccount } from "./API";
 import "./table.css";
 const { Text } = Typography;
 const { Option }=Select;
@@ -19,12 +19,13 @@ function Orders() {
       try {
         const [res, username, title]=await Promise.all([
           GetAllAccountgame(),
-          GetAllUsername(),
-          GetAllTitle()
+          GetAccount(),
+          GetAllgame()
         ]);
         setDataSource(res || []);
         setNameAccount(username || []);
         setTitleGame(title || []);
+        console.log(" sad" + dataTitleGame);
       } catch (error) {
         console.log("lỗi load data")
       }
@@ -34,11 +35,8 @@ function Orders() {
   }, []);
 
   const openModal = (record = null) => {
-    if (record) {
-      record.dateaddedd = record.dateadded.split("T")[0];
-      setAccountGameRecord(record); // hiển thi Dữ liệu  game đang sửa
-      setIsEditing(true); 
-    } else {
+    if (!record) {
+    
       setAccountGameRecord(); // Dữ liệu trống cho thêm mới
       setIsEditing(false); // 
     }
@@ -81,20 +79,22 @@ function Orders() {
         loading={loading}
         columns={[
           {
-            title: "ID Account",
-            dataIndex: "accountid",
-            key: "accountid",
-            render: (accountid) => <Text>{accountid}</Text>,
+            title: "Account",
+            dataIndex: "accountId", // Dữ liệu vẫn là accountId
+            key: "accountId",
+            render: (accountId, record) => <Text>{record.account.username}</Text>,
           },         
           {
-            title: "ID Game",
-            dataIndex: "gameid",
+            title: "Game",
+            dataIndex: "gameId", // Dữ liệu vẫn là accountId
+            key: "gameId",
+            render: (gameId, record) => <Text>{record.game.title}</Text>,
            
           },
           {
             title: "Date Addrd",
-            dataIndex: "dateadded",
-            key: "dateadded",
+            dataIndex: "dateAdded",
+            key: "dateAdded",
             render: (release) => new Date(release).toLocaleDateString(),
           },
             {
@@ -103,7 +103,6 @@ function Orders() {
               render: (record) => (
                 <Space size="middle">
                   <Button type="primary" onClick={() => openModal()}>Thêm </Button>
-                  <Button onClick={() => openModal(record)}>Sửa</Button>
                   <Button danger onClick={() => handleDelete(record)}>Xóa</Button>
                 </Space>
               ),
@@ -118,42 +117,38 @@ function Orders() {
       ></Table>
       <Modal
           className="form_addedit"
-          title={isEditing ? "Sửa tài khoản game" : "Thêm tài khoản mới"}
+          title={"Thêm tài khoản mới"}
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           onOk={handleSave}
         >
-         <Select
-          placeholder="Chọn Username"
-          value={gameRecord.namepublisher}
-          style={{ width: "100%", marginTop: "20px",height:"47px"  }}
-        >
-          {dataNameAccount.map((username)=>(
-            <Option key ={username.id} value={username.name}>
-              {username.name}
-            </Option>
-          ))}
-          
-        </Select>
         <Select
-          placeholder="Chọn Game"
-          value={gameRecord.namepublisher}
-          style={{ width: "100%", marginTop: "20px",height:"47px"  }}
-        >
-          {dataTitleGame.map((title)=>(
-            <Option key ={title.id} value={title.name}>
-              {title.name}
-            </Option>
-          ))}
-          
-        </Select>
-        <Input
-            type="date"
-            placeholder="Date"
-            value={gameRecord.release} 
-            onChange={(e) => setAccountGameRecord({ ...gameRecord, dateadded: e.target.value })} // Cập nhật giá trị
-            style={{ width: "100%", height: "52px", marginTop: "20px" }}
-          />
+  placeholder="Chọn Username"
+  value={gameRecord.username || ""} // Hiển thị username đã chọn hoặc rỗng nếu chưa chọn
+  onChange={(value) => setAccountGameRecord({ ...gameRecord, username: value })} // Cập nhật username vào gameRecord
+  style={{ width: "100%", marginTop: "20px", height: "47px" }}
+>
+  {dataNameAccount.map((account) => (
+    <Option key={account.accountId} value={account.username}> 
+      {account.name} {/* Hiển thị tên người dùng */}
+    </Option>
+  ))}
+</Select>
+
+<Select
+  placeholder="Chọn Game"
+  value={gameRecord.title || ""} // Hiển thị game title đã chọn hoặc rỗng nếu chưa chọn
+  onChange={(value) => setAccountGameRecord({ ...gameRecord, title: value })} // Cập nhật title vào gameRecord
+  style={{ width: "100%", marginTop: "20px", height: "47px" }}
+>
+  {dataTitleGame.map((game) => (
+    <Option key={game.gameId} value={game.title}> 
+      {game.name} {/* Hiển thị tên game */}
+    </Option>
+  ))}
+</Select>
+
+
         </Modal>
     </Space>
   );
