@@ -1,0 +1,173 @@
+/* Login Page Styles */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.login-box {
+    width: 400px;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    background-color: #2c2f33;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.login-title {
+    font-size: 1.8rem;
+    color: aqua;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        padding: 10px 15px;
+        border-radius: 25px;
+        border: 1px solid #555;
+        background-color: #333;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .login-form input:focus {
+        border-color: #00adee;
+        outline: none;
+    }
+
+.icon-container {
+    position: relative;
+}
+
+.input_box input {
+    width: 70%;
+    padding: 10px 40px; /* Adds space for icons */
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #333;
+    color: #ffffff;
+    font-size: 1em;
+    outline: none;
+}
+
+.icon-container .icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.iconseyes {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+}
+
+.login-form button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4081;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .login-form button:hover {
+        background-color: #e63972;
+    }
+
+.login-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+    .login-links a {
+        color: aqua;
+        text-decoration: none;
+    }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+/* Success Message */
+
+/* Error Message */
+.error {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Dropdown menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* Hiển thị ngay dưới nút user */
+    right: 0; /* Canh phải */
+    background-color: #2c2f33; /* Màu nền menu */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Giá trị cao hơn banner */
+    overflow: hidden;
+}
+
+/* Dropdown item */
+.dropdown-item {
+    padding: 10px 15px;
+    color: white;
+    text-align: left;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .dropdown-item:hover {
+        background-color: deeppink;
+    }
+
+/* Đảm bảo user-menu nằm trên cùng */
+.user-menu {
+    position: relative;
+    z-index: 1010; /* Cao hơn banner */
+}
+
+/* Navbar luôn có giá trị z-index */
+.navbar {
+    position: fixed; /* Giữ navbar ở trên cùng */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 500; /* Giữ thấp hơn dropdown */
+}

@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
@@ -18,20 +18,23 @@ public class GameController : Controller
 	private readonly IGameService _gameServices;
 	private readonly IGenreService _genreService;
 	private readonly IPublisherService _publisherService;
+	private readonly IImageGameService _imageGameService;
 
-	public GameController(
-		IGameService gameServices,
-		IGenreService genreService,
-		IPublisherService publisherService,
+    public GameController(
+        IGameService gameServices,
+        IGenreService genreService,
+        IPublisherService publisherService,
+		IImageGameService imageGameService,
 		IAuthenticationServices authenticationServices,
-		IAuthorizationServices authorizationServices)
-	{
-		_gameServices = gameServices;
-		_genreService = genreService;
-		_publisherService = publisherService;
+        IAuthorizationServices authorizationServices)
+    {
+        _gameServices = gameServices;
+        _genreService = genreService;
+        _publisherService = publisherService;
+		_imageGameService = imageGameService;
 		_authenticationServices = authenticationServices;
-		_authorizationServices = authorizationServices;
-	}
+        _authorizationServices = authorizationServices;
+    }
 
     [HttpGet("GetTrendingGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
@@ -87,21 +90,8 @@ public class GameController : Controller
 
 	// POST: Game/CreateGame
 	[HttpPost("CreateGame")]
-<<<<<<< HEAD
-    public async Task<ActionResult<Game>> CreateGame([FromBody] Game game)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new
-            {
-                success = false,
-	            message = "Fail to add game"
-            });
-        }
-=======
-	public async Task<ActionResult> CreateGame([FromBody] GameFormModel gameFormModel)
+	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
-		// Validate User Input
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -110,27 +100,10 @@ public class GameController : Controller
 				errors = ModelState.Values
 					.SelectMany(v => v.Errors)
 					.Select(e => e.ErrorMessage)
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 
 			});
 		}
 
-<<<<<<< HEAD
-    // PUT: Game/UpdateConfirm/{id}
-    [HttpPut("UpdateGame/{id}")]
-    public async Task<ActionResult<Game>> UpdateGame([FromBody] Game game, int id)
-    {
-        // Check if that game ID user was looking for is available
-        if (id != game.GameId) 
-	        return BadRequest(new
-        {
-            success = false,
-            message = "ID game don't match with the database or the game is updated"
-        });
-
-        // Check if the requirement is valid
-       
-=======
 		// Check if Publisher ID is available
 		var checkPublisher = await _publisherService.GetPublisherById(gameFormModel.PublisherId);
 		if (checkPublisher == null)
@@ -152,9 +125,17 @@ public class GameController : Controller
 				message = "Genre ID not found"
 			});
 		}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 
-		// Create a new game
+		// Check if Game name is already existed
+		var checkGame = await _gameServices.GetGameByTitle(gameFormModel.Title);
+		if (checkGame.FirstOrDefault() != null) {
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game name is already existed"
+			});
+		}
+
 		var game = new Game()
 		{
 			PublisherId = gameFormModel.PublisherId,
@@ -167,31 +148,27 @@ public class GameController : Controller
 			Description = gameFormModel.Description,
 		};
 
-<<<<<<< HEAD
-    // DELETE: Game/DeleteConfirm/{id}
-    [HttpDelete("DeleteConfirm/{id}")]
-
-    public async Task<ActionResult> DeleteConfirmed(int id)
-    {
-	    var existingGame = await _gameServices.GetGameById(id);
-	    if (existingGame == null)
-	    {
-		    return BadRequest(new
-		    {
-			    success = false,
-			    message = "ID game don't match with the database or the game is deleted"
-		    });
-	    }
-
-	    await _gameServices.DeleteGame(id);
-	    return Ok(new
-	    {
-		    success = true,
-		    message = "Delete Game Success"
-	    });
-    }
-=======
+		// Add game first to create GameID
 		await _gameServices.AddGame(game);
+		
+		// Handle image upload if image file is provided
+		if (imageFile != null)
+		{
+			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId);
+			if (!flag)
+			{
+				return BadRequest(new
+				{
+					success = flag,
+					message = "Failed to upload image",
+				});
+			}
+
+			game.ImageId = imageGame.ImageId;
+		}
+
+		await _gameServices.UpdateGame(game);
+
 		return Ok(new
 		{
 			success = true,
@@ -202,7 +179,7 @@ public class GameController : Controller
 
 	// PUT: Game/UpdateGame/{gameId}
 	[HttpPut("UpdateGame/{gameId}")]
-	public async Task<ActionResult> UpdateGame(int gameId, [FromBody] GameFormModel gameFormModel)
+	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
 		// Check if user input is valid
 		if (!ModelState.IsValid)
@@ -260,9 +237,9 @@ public class GameController : Controller
 			Author = gameFormModel.Author,
 			Rating = gameFormModel.Rating,
 			Description = gameFormModel.Description,
+			Release = gameFormModel.Release,
 
 			// Get detail from existing game
-			Release = checkGame.Release.Value,
 			Genre = checkGenre,
 			Publisher = checkPublisher,
 		};
@@ -297,6 +274,5 @@ public class GameController : Controller
 			message = "Delete Game Success"
 		});
 	}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
 }
-
+		

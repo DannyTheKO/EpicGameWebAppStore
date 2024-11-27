@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "75d2448032902b42",
+        "id": "bec4f2b50e41ba9d",
         "type": "tabs",
         "children": [
           {
-            "id": "3222dc6f14fcc6d1",
+            "id": "1602e8b6be3a625f",
             "type": "leaf",
             "state": {
               "type": "kanban",
@@ -170,21 +170,23 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "3222dc6f14fcc6d1",
+  "active": "ce5c66356071bf14",
   "lastOpenFiles": [
-    "Back-End/Genre.md",
     "Back-End/Back-End Progress.md",
-    "Back-End/Game.md",
-    "Back-End/CartDetail.md",
+    "Untitled.md",
+    "testFrontend.md",
     "Back-End/AccountGame.md",
-    "Back-End/Discount.md",
     "Back-End/Account.md",
+    "ImageGame.md",
     "Back-End/Cart.md",
+    "Back-End/CartDetail.md",
+    "Back-End/Game.md",
+    "Back-End/Genre.md",
+    "Back-End/Discount.md",
     "Back-End/img/Pasted image 20241115132340.png",
     "Back-End/img",
     "Tasks Plugin - Review and check your Statuses 2024-11-15 12-39-47.md",
     "Back-End Todo List.md",
-    "Back-End",
-    "testFrontend.md"
+    "Back-End"
   ]
 }

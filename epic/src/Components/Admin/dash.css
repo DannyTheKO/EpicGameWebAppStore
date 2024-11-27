@@ -1,0 +1,33 @@
+.card_component
+{
+    width: 19%;
+}
+.card_component
+{
+    width: 300px;
+    margin-left: 70px;
+}
+
+.vertical
+{
+    padding: 0px;
+}
+/* dash.css */
+.card_component {
+    background-color: white;  /* Thêm màu nền trắng cho các card */
+  }
+  
+  .table_recentorder {
+    background-color: white;  /* Thêm màu nền trắng cho bảng */
+  }
+  
+  .ant-space {
+    background-color: white;  /* Thêm màu nền trắng cho không gian bên ngoài */
+  }
+  
+  .ant-card {
+    background-color: white;  /* Thêm màu nền trắng cho các card trong Ant Design */
+  }
+
+  
+

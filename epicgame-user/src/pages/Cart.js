@@ -1,21 +1,26 @@
-// src/pages/Cart.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/pages/Cart.css';
-import Payment from './Payment'; // Đúng đường dẫn vì Payment nằm cùng thư mục với Cart
-
-const initialCart = [
-    { id: 1, name: "Game 1", description: "An exciting action game.", price: 19.99, genre: "Action", image: require('../images/game1.png') },
-    { id: 2, name: "Game 2", description: "A thrilling adventure awaits.", price: 29.99, genre: "Adventure", image: require('../images/game2.png') },
-    { id: 3, name: "Game 3", description: "Explore the world of RPGs.", price: 39.99, genre: "RPG", image: require('../images/game3.png') },
-];
+import Payment from './Payment';
 
 const Cart = () => {
-    const [cart, setCart] = useState(initialCart);
+    const [cart, setCart] = useState([]);
 
+    // Lấy giỏ hàng từ localStorage khi component được mount
+    useEffect(() => {
+        const username = localStorage.getItem('username'); // Lấy username từ localStorage
+        const savedCart = JSON.parse(localStorage.getItem(`cart_${username}`)) || []; // Lấy giỏ hàng của người dùng
+        setCart(savedCart); // Cập nhật trạng thái giỏ hàng
+    }, []); // useEffect chỉ chạy 1 lần khi trang được tải
+
+    // Xử lý xóa 1 sản phẩm khỏi giỏ hàng
     const handleRemoveItem = (id) => {
-        setCart(cart.filter(item => item.id !== id));
+        const username = localStorage.getItem('username'); // Lấy username từ localStorage
+        const updatedCart = cart.filter(item => item.gameId !== id); // Loại bỏ sản phẩm có id tương ứng
+        setCart(updatedCart);
+        localStorage.setItem(`cart_${username}`, JSON.stringify(updatedCart)); // Cập nhật giỏ hàng mới vào localStorage
     };
 
+    // Tính tổng giá trị của các sản phẩm trong giỏ hàng
     const totalPrice = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
 
     return (
@@ -23,29 +28,44 @@ const Cart = () => {
             <h1 className="cart-title">Your Shopping Cart</h1>
             <div className="cart-container">
                 <div className="cart-items">
-                    {cart.map(item => (
-                        <div key={item.id} className="cart-item">
-                            <img src={item.image} alt={item.name} className="cart-item-image" />
-                            <div className="cart-item-info">
-                                <span className="item-name">{item.name}</span>
-                                <span className="item-description">{item.description}</span>
-                                <span className="item-price">${item.price.toFixed(2)}</span>
-                            </div>
-                            <button className="remove-button" onClick={() => handleRemoveItem(item.id)}>
-                                Remove
-                            </button>
-                        </div>
-                    ))}
+                    {cart.length > 0 ? (
+                        cart.map(item => {
+                            // Lọc ảnh cover từ imageGame
+                            const coverImage = item.imageGame.find(image => image.filePath.includes('cover'));
+
+                            return (
+                                <div key={item.gameId} className="cart-item">
+                                    {/* Hiển thị hình ảnh của game */}
+                                    {coverImage && (
+                                        <img
+                                            src={`${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}`}
+                                            alt={item.title}
+                                            className="cart-item-image"
+                                        />
+                                    )}
+                                    <div className="cart-item-info">
+                                        <span className="item-name">{item.title}</span>
+                                        <span className="item-price">${item.price.toFixed(2)}</span>
+                                        <span className="item-genre">{item.genre?.name || 'N/A'}</span> {/* Thể loại */}
+                                    </div>
+                                    {/* Nút xóa game này khỏi giỏ */}
+                                    <button className="remove-button" onClick={() => handleRemoveItem(item.gameId)}>
+                                        Remove
+                                    </button>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div>Your cart is empty.</div>
+                    )}
                 </div>
                 <div className="cart-summary">
                     <h3>Total: ${totalPrice}</h3>
                     <button className="checkout-button">Proceed to Checkout</button>
                     <Payment />
                 </div>
-
             </div>
         </div>
-
     );
 };
 

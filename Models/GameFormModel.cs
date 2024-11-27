@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using EpicGameWebAppStore.Controllers;
 
 namespace EpicGameWebAppStore.Models
 {
@@ -16,6 +17,8 @@ namespace EpicGameWebAppStore.Models
 
 		[Required(ErrorMessage = "Author is required")]
 		public string Author { get; set; }
+
+		public DateTime? Release { get; set; }
 
 		public decimal Rating { get; set; }
 

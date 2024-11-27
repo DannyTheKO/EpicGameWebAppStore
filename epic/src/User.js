@@ -15,7 +15,7 @@ const UserRoutes = () => {
       <Navbar />
       
       <Routes>
-        <Route path="/index" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/store" element={<StorePage />} />
         <Route path="/game/:id" element={<GamePage />} />
         <Route path="/library" element={<LibraryPage />} />

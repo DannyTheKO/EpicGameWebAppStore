@@ -5,18 +5,21 @@
     padding-bottom: 50px;
     min-height: 100vh;
     overflow-x: hidden;
+    background-color: #161b22;
 }
 
 .banner {
+
     display: flex;
-    width: 99vw; /* Mở rộng để tất cả ảnh nằm trong banner */
+    width: 100vw; /* Mở rộng để tất cả ảnh nằm trong banner */
     height: 100vh;
     animation: slide 15s infinite;
 }
 
 .banner-image {
+    margin-top: 70px;
     width: 100vw; /* Khít với chiều ngang màn hình */
-    height: 100%;
+    height: 95vh;
     object-fit: cover;
 }
 

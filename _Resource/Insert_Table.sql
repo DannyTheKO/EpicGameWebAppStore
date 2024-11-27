@@ -56,19 +56,37 @@ INSERT INTO `EpicGameWebApp`.`Game` (`GameID`, `PublisherID`, `GenreID`, `ImageI
 
 -- Insert sample data into Image table
 INSERT INTO `EpicGameWebApp`.`ImageGame` (`ImageID`, `GameID`, `file_name`, `file_path`, `create_at`) VALUES
-(1, 1, 'apex_legends_cover.jpg', '/images/games/apex_legends/', '2019-02-04 00:00:00'),
-(2, 2, 'ac_valhalla_cover.jpg', '/images/games/ac_valhalla/', '2020-11-10 00:00:00'),
-(3, 3, 'wow_cover.jpg', '/images/games/world_of_warcraft/', '2004-11-23 00:00:00'),
-(4, 4, 'zelda_botw_cover.jpg', '/images/games/zelda/', '2017-03-03 00:00:00'),
-(5, 5, 'god_of_war_cover.jpg', '/images/games/god_of_war/', '2022-11-09 00:00:00'),
-(6, 6, 'fifa23_cover.jpg', '/images/games/fifa23/', '2022-09-30 00:00:00'),
-(7, 7, 'anno1800_cover.jpg', '/images/games/anno1800/', '2019-04-16 00:00:00'),
-(8, 8, 'cod_warzone_cover.jpg', '/images/games/cod_warzone/', '2020-03-10 00:00:00'),
-(13, 13, 'ff16_cover.jpg', '/images/games/ff16/', '2023-06-22 00:00:00'),
-(14, 14, 'cyberpunk_cover.jpg', '/images/games/cyberpunk/', '2020-12-10 00:00:00'),
-(15, 15, 'half_life_alyx_cover.jpg', '/images/games/half_life/', '2020-03-23 00:00:00'),
-(16, 16, 'kingdom_hearts_cover.jpg', '/images/games/kingdom_hearts/', '2019-01-29 00:00:00'),
-(17, 17, 'sims4_cover.jpg', '/images/games/sims4/', '2014-09-02 00:00:00');
+(1,1,'apex_legends_cover.jpg','/images/games/apex_legends/cover/','2019-02-04 00:00:00'),
+(2,2,'ac_valhalla_cover.jpg','/images/games/ac_valhalla/cover/','2020-11-10 00:00:00'),
+(3,3,'wow_cover.jpg','/images/games/world_of_warcraft/cover/','2004-11-23 00:00:00'),
+(4,4,'zelda_botw_cover.jpg','/images/games/zelda/cover/','2017-03-03 00:00:00'),
+(5,5,'god_of_war_cover.jpg','/images/games/god_of_war/cover/','2022-11-09 00:00:00'),
+(6,6,'fifa23_cover.jpg','/images/games/fifa23/cover/','2022-09-30 00:00:00'),
+(7,7,'anno1800_cover.jpg','/images/games/anno1800/cover/','2019-04-16 00:00:00'),
+(9,9,'mass_cover.jpg','/images/games/mass_effect/cover/','2020-03-10 00:00:00'),
+(10,10,'farcry6_cover.jpg','/images/games/fc_6/cover/','2020-03-10 00:00:00'),
+(11,11,'overwatch_cover.jpg','/images/games/overwatch/cover/','2020-03-10 00:00:00'),
+(12,12,'supermario_cover.jpg','/images/games/supermario_odyssey/cover/','2020-03-10 00:00:00'),
+(13,13,'ff16_cover.jpg','/images/games/ff16/cover/','2023-06-22 00:00:00'),
+(14,14,'cyberpunk_cover.jpg','/images/games/cyberpunk/cover/','2020-12-10 00:00:00'),
+(15,15,'half_life_alyx_cover.jpg','/images/games/half_life/cover/','2020-03-23 00:00:00'),
+(16,16,'kingdom_hearts_cover.jpg','/images/games/kingdom_hearts/cover/','2019-01-29 00:00:00'),
+(17,17,'sims4_cover.jpg','/images/games/sims4/cover/','2014-09-02 00:00:00'),
+(18,1,'apex_legends_gameplay1.jpg','/images/games/apex_legends/gameplay/','2019-02-04 00:00:00'),
+(19,1,'apex_legends_gameplay2.jpg','/images/games/apex_legends/gameplay/','2019-02-04 00:00:00'),
+(20,1,'apex_legends_gameplay3.jpg','/images/games/apex_legends/gameplay/','2019-02-04 00:00:00'),
+(21,2,'ac_valhalla_gameplay1.jpg','/images/games/ac_valhalla/gameplay/','2020-11-10 00:00:00'),
+(22,2,'ac_valhalla_gameplay2.jpg','/images/games/ac_valhalla/gameplay/','2020-11-10 00:00:00'),
+(23,2,'ac_valhalla_gameplay3.jpg','/images/games/ac_valhalla/gameplay/','2020-11-10 00:00:00'),
+(24,3,'wow_gameplay1.jpg','/images/games/world_of_warcraft/gameplay/','2004-11-23 00:00:00'),
+(25,3,'wow_gameplay2.jpg','/images/games/world_of_warcraft/gameplay/','2004-11-23 00:00:00'),
+(26,3,'wow_gameplay3.jpg','/images/games/world_of_warcraft/gameplay/','2004-11-23 00:00:00'),
+(27,4,'zelda_botw_gameplay1.jpg','/images/games/zelda/gameplay/','2017-03-03 00:00:00'),
+(28,4,'zelda_botw_gameplay2.jpg','/images/games/zelda/gameplay/','2017-03-03 00:00:00'),
+(29,4,'zelda_botw_gameplay3.jpg','/images/games/zelda/gameplay/','2017-03-03 00:00:00');
+
+
+
 
 
 -- Insert sample data into Account table

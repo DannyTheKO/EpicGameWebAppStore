@@ -72,6 +72,8 @@ builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IImageGameService, ImageGameService>();
+builder.Services.AddScoped<IImageGameRepository, ImageGameRepository>();
 
 // Other services
 builder.Services.AddScoped<IDiscountService, DiscountService>();
@@ -111,6 +113,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseAntiforgery();
 
 app.UseRouting();
 app.UseCors("ReactPolicy");
@@ -120,6 +123,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    "{controller=Home}/{action=Index}");
 
 app.Run();

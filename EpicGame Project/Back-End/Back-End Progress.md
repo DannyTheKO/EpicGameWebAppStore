@@ -6,15 +6,18 @@ kanban-plugin: board
 
 ## Todo
 
+- [ ] Friends List
+- [ ] Gift Games though Friends List
 
 
 ## Working
 
-- [ ] [[Discount]]
+- [ ] [[ImageGame]]
 
 
 ## Testing
 
+- [ ] [[Discount]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Game]]

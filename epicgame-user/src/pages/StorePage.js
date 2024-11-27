@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/pages/StorePage.css';
 import { FaSearch } from 'react-icons/fa';
@@ -7,20 +7,9 @@ const StorePage = () => {
     const [games, setGames] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedGenre, setSelectedGenre] = useState('all');
+    const [genres, setGenres] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const gamesPerPage = 15;
-
-    const genres = {
-        all: null,
-        action: 1,
-        adventure: 2,
-        rpg: 3,
-        simulation: 4,
-        strategy: 5,
-        sports: 6,
-        puzzle: 7,
-        racing: 8,
-    };
 
     // Fetch games from API
     const fetchGames = async () => {
@@ -45,14 +34,41 @@ const StorePage = () => {
         }
     };
 
+    // Fetch genres from API or define a static list if already in DB
+    const fetchGenres = async () => {
+        try {
+            const response = await fetch('http://localhost:5084/Genre/GetAll'); // Giả sử có một API trả về danh sách thể loại
+            const data = await response.json();
+            setGenres(data);
+        } catch (error) {
+            console.error("Error fetching genres:", error);
+            // Nếu không thể lấy từ API, sử dụng danh sách tĩnh
+            setGenres([
+                { genreId: 1, name: "Action" },
+                { genreId: 2, name: "Adventure" },
+                { genreId: 3, name: "Role-Playing" },
+                { genreId: 4, name: "Simulation" },
+                { genreId: 5, name: "Strategy" },
+                { genreId: 6, name: "Sports" },
+                { genreId: 7, name: "Shooter" },
+                { genreId: 8, name: "Platformer" },
+                { genreId: 9, name: "Horror" },
+                { genreId: 10, name: "Fighting" },
+                { genreId: 11, name: "Educational" },
+                { genreId: 12, name: "Music" }
+            ]);
+        }
+    };
+
     useEffect(() => {
         fetchGames();
+        fetchGenres();
     }, []);
 
     // Filter games by search term and genre
     const filteredGames = games.filter(game => {
         const matchesTitle = game.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesGenre = selectedGenre === 'all' || game.genreId === genres[selectedGenre];
+        const matchesGenre = selectedGenre === 'all' || game.genreId === parseInt(selectedGenre);
         return matchesTitle && matchesGenre;
     });
 
@@ -86,14 +102,11 @@ const StorePage = () => {
                     <label htmlFor="genre">Genre:</label>
                     <select id="genre" value={selectedGenre} onChange={(e) => setSelectedGenre(e.target.value)}>
                         <option value="all">All Genres</option>
-                        <option value="action">Action</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="rpg">Role-Playing</option>
-                        <option value="simulation">Simulation</option>
-                        <option value="strategy">Strategy</option>
-                        <option value="sports">Sports</option>
-                        <option value="puzzle">Puzzle</option>
-                        <option value="racing">Racing</option>
+                        {genres.map(genre => (
+                            <option key={genre.genreId} value={genre.genreId}>
+                                {genre.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>

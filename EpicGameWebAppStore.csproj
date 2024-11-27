@@ -75,9 +75,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="epicgame-user\src\images\games\ac_valhalla\" />
-    <Folder Include="epicgame-user\src\images\games\world_of_warcraft\" />
-  </ItemGroup>
-
 </Project>

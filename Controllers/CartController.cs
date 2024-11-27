@@ -29,15 +29,39 @@ public class CartController : Controller
 		_paymentMethodService = paymentMethodService;
 	}
 
-	// GET: api/Cart
+	// GET: Cart/GetAll
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
 		var carts = await _cartService.GetAllCarts();
-		return Ok(carts);
-	}
 
-	// GET: api/Cart/5
+        var formattedResponse = carts.GroupBy(c => c.AccountId)
+            .Select(group => new
+            {
+                accountId = group.Key,
+                name = group.First().Account.Username,
+                cart = group.Select(c => new
+                {
+                    cartId = c.CartId,
+					paymentMethodId = c.PaymentMethodId,
+                    cartDetails = c.Cartdetails.Select(cd => new
+                    {
+                        cartDetailId = cd.CartDetailId,
+                        cartDetail = new
+                        {
+                            gameId = cd.Game.GameId,
+                            title = cd.Game.Title,
+                            price = cd.Price,
+                            discount = cd.Discount
+                        }
+                    }).ToList()
+                }).ToList()
+            });
+
+        return Ok(formattedResponse);
+    }
+
+	// GET: Cart/GetCartId
 	[HttpGet("GetCartId/{cartId}")]
 	public async Task<ActionResult<Cart>> GetCartById(int cartId)
 	{
@@ -46,7 +70,7 @@ public class CartController : Controller
 		return Ok(cart);
 	}
 
-	// GET: Cart/Account/5
+	// GET: Cart/GetCartsByAccountId/{accountId}
 	[HttpGet("GetCartsByAccountId/{accountId}")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
 	{
@@ -69,23 +93,31 @@ public class CartController : Controller
 		});
 	}
 
-	// GET: Cart/CheckOut?{accountId}
+	// GET: Cart/CheckOut/{accountId}
 	[HttpGet("CheckOut/{accountId}")]
 	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
 	{
-		var cart = await _cartService.GetLatestCart(accountId);
+		var (cart, message)= await _cartService.GetLatestCart(accountId);
 		if (cart == null)
 		{
 			return NotFound(new
 			{
 				success = false,
-				message = "No cart found for this account"
+				message = message
 			});
 		}
 
-		return Ok(cart);
+		return Ok( new
+		{
+			success = true,
+			message,
+			data = cart
+		});
 	}
 
+
+
+	// POST: Cart/CreateCart
 	[HttpPost("CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
@@ -123,6 +155,39 @@ public class CartController : Controller
 
 		await _cartService.AddCart(cart);
 		return Ok(new { success = true, message = "Cart created successfully" });
+	}
+
+	//POST: Cart/AddToCart
+	[HttpPost("AddToCart")]
+	public async Task<ActionResult> AddToCart(int accountId, int gameId)
+	{
+		var checkAccount = await _accountService.GetAccountById(accountId);
+		if (checkAccount == null) // Not existed
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Account do not exist!"
+			});
+		}
+
+		var checkGame = await _gameService.GetGameById(gameId);
+		if (checkGame == null) // Not existed
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game do not exist"
+			});
+		}
+
+		var (cart,message) = await _cartService.AddGameToCart(accountId, gameId);
+		return Ok(new
+		{
+			success = true,
+			message = message,
+			data = cart,
+		});
 	}
 
 	// PUT: Cart/UpdateCart/{id}

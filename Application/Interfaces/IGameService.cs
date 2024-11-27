@@ -29,6 +29,7 @@ public interface IGameService
 	// Search By Publisher
 	Task<IEnumerable<Game>> GetGameByPublisher(string publisher);
 
-	// Search By Rating
-	Task<IEnumerable<Game>> GetGameByRating(int rating);
+
+    // Search By Rating
+    Task<IEnumerable<Game>> GetGameByRating(int rating);
 }

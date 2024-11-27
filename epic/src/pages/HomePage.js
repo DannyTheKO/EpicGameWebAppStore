@@ -21,8 +21,13 @@ const HomePage = () => {
             if (!response.ok) throw new Error("Failed to fetch Top New Releases");
             const data = await response.json();
 
+            const updatedGames = data.map(game => {
+                const coverImage = game.imageGame.find(img => img.fileName.includes('cover'));
+                const coverImagePath = coverImage ? `${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}` : '';
+                return { ...game, coverImagePath };
+            });
             // Chỉ lấy tối đa 5 game
-            setTopNewReleases(data.slice(0, 5));
+            setTopNewReleases(updatedGames.slice(0, 5));
         } catch (error) {
             console.error("Error fetching Top New Releases:", error);
             setTopNewReleases([]); // Set rỗng nếu có lỗi
@@ -34,8 +39,14 @@ const HomePage = () => {
             const response = await fetch('http://localhost:5084/Game/GetTrendingGames');
             if (!response.ok) throw new Error("Failed to fetch Trending Games");
             const data = await response.json();
+            const updatedGames = data.map(game => {
+                const coverImage = game.imageGame.find(img => img.fileName.includes('cover'));
+                const coverImagePath = coverImage ? `${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}` : '';
+                return { ...game, coverImagePath };
+            });
+            setTrendingGames(updatedGames.slice(0, 5));
             console.log("Trending Games:", data); // Log để kiểm tra
-            setTrendingGames(data.slice(0, 5));
+
         } catch (error) {
             console.error("Error fetching Trending Games:", error);
             setTrendingGames([]); // Set rỗng nếu có lỗi
@@ -67,10 +78,13 @@ const HomePage = () => {
                         topNewReleases.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    <img
-                                        src={`data:image/jpeg;base64,${game.image}`}
-                                        alt={game.title}
-                                    />
+                                    {game.coverImagePath && (
+                                        <img
+                                            src={game.coverImagePath}
+                                            alt={game.title}
+                                            className="game-cover"
+                                        />
+                                    )}
                                     <h3>{game.title}</h3>
                                     <p>${game.price.toFixed(2)}</p>
                                 </div>
@@ -90,10 +104,13 @@ const HomePage = () => {
                         trendingGames.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    <img
-                                        src={`data:image/jpeg;base64,${game.image}`}
-                                        alt={game.title}
-                                    />
+                                    {game.coverImagePath && (
+                                        <img
+                                            src={game.coverImagePath}
+                                            alt={game.title}
+                                            className="game-cover"
+                                        />
+                                    )}
                                     <h3>{game.title}</h3>
                                     <p>${game.price.toFixed(2)}</p>
                                 </div>

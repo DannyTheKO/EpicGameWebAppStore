@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/pages/GamePage.css';
 
 const GamePage = () => {
-    const { id } = useParams(); // Lấy ID game từ URL
+    const { id } = useParams();
     const [game, setGame] = useState(null);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -13,6 +14,30 @@ const GamePage = () => {
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [reviews, setReviews] = useState([]);
+    const handleAddToCart = () => {
+        const authToken = localStorage.getItem('authToken'); // Kiểm tra nếu có authToken
+
+        if (!authToken) {
+            alert('You must be logged in to add items to your cart.');
+            navigate('/login'); // Điều hướng đến trang đăng nhập
+            return;
+        }
+
+        const username = localStorage.getItem('username'); // Lấy username từ localStorage
+        const storedCart = JSON.parse(localStorage.getItem(`cart_${username}`)) || [];
+
+        // Kiểm tra nếu game đã có trong giỏ hàng
+        const isGameInCart = storedCart.some(item => item.gameId === game.gameId);
+        if (isGameInCart) {
+            alert('This game is already in your cart!');
+            return;
+        }
+
+        const newCart = [...storedCart, game]; // Thêm game vào giỏ hàng
+        localStorage.setItem(`cart_${username}`, JSON.stringify(newCart)); // Lưu giỏ hàng riêng biệt theo username
+
+        alert(`${game.title} has been added to your cart!`);
+    };
 
     useEffect(() => {
         const fetchGameDetails = async () => {
@@ -78,12 +103,12 @@ const GamePage = () => {
 
     console.log("Gameplay Images:", gameplayImages); // Log danh sách ảnh gameplay để kiểm tra
 
+
     return (
         <div className="game-page">
             <div className="game-header">
                 <h1>{game.title || 'Game Title'}</h1>
             </div>
-
             <div className="game-details">
                 <img
                     src={`${process.env.PUBLIC_URL}${game.imageGame[0]?.filePath}${game.imageGame[0]?.fileName}`}
@@ -104,11 +129,8 @@ const GamePage = () => {
                         <h3>Price:</h3>
                         <span className="price-value">${gamePrice}</span>
                     </div>
-                    <button className="purchase-button">Purchase Now</button>
-                    <button className="add-to-cart-button">Add to Cart</button>
+                    <button onClick={handleAddToCart} className="add-to-cart-button">Add to Cart</button>
                 </div>
-
-                {/* Thông tin bổ sung */}
                 <div className="game-metadata">
                     <p><span className="label">Author:</span> <span className="value">{game.author}</span></p>
                     <p><span className="label">Publisher:</span> <span className="value">{game.publisher?.name || 'N/A'}</span></p>
@@ -116,8 +138,6 @@ const GamePage = () => {
                     <p><span className="label">Release Date:</span> <span className="value">{game.release}</span></p>
                 </div>
             </div>
-
-            {/* Phần chuyển đổi ảnh gameplay */}
             <div className="gameplay-section">
                 <h2>Gameplay</h2>
                 {hasGameplayImages ? (
@@ -138,8 +158,6 @@ const GamePage = () => {
                     <div className="no-gameplay-message">Không có hình ảnh gameplay.</div>
                 )}
             </div>
-
-            {/* Ratings and Reviews Section */}
             <div className="review-section">
                 <h2>User Ratings and Reviews</h2>
                 <form onSubmit={handleReviewSubmit} className="review-form">

@@ -1,164 +1,107 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using EpicGameWebAppStore.Models;
 
-namespace WebAPI.Controllers
+namespace EpicGameWebAppStore.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class PublisherController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class PublisherController : ControllerBase
+    private readonly IPublisherService _publisherService;
+
+    public PublisherController(IPublisherService publisherService)
     {
-        private readonly IPublisherService _publisherService;
+        _publisherService = publisherService;
+    }
 
-        public PublisherController(IPublisherService publisherService)
+    // Get all publishers
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAllPublishers()
+    {
+        var publishers = await _publisherService.GetAllPublishers();
+        return Ok(publishers);
+    }
+
+    // Get publisher by ID
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPublisherById(int id)
+    {
+        var publisher = await _publisherService.GetPublisherById(id);
+        if (publisher == null)
         {
-            _publisherService = publisherService;
+            return NotFound("Publisher not found.");
+        }
+        return Ok(publisher);
+    }
+
+    // Get publishers by name
+    [HttpGet("name/{name}")]
+    public async Task<IActionResult> GetPublishersByName(string name)
+    {
+        var publishers = await _publisherService.GetPublisherByName(name);
+        return Ok(publishers);
+    }
+
+    // Get publishers by address
+    [HttpGet("address/{address}")]
+    public async Task<IActionResult> GetPublishersByAddress(string address)
+    {
+        var publishers = await _publisherService.GetPublisherByAddress(address);
+        return Ok(publishers);
+    }
+
+    // Add a new publisher
+    [HttpPost]
+    public async Task<IActionResult> AddPublisher([FromBody] Publisher publisher)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
         }
 
-<<<<<<< HEAD
-        // == Get All Publishers ==
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllPublishers()
+        var newPublisher = await _publisherService.AddPublisher(publisher);
+        return CreatedAtAction(nameof(GetPublisherById), new { id = newPublisher.PublisherId }, newPublisher);
+    }
+
+    // Update an existing publisher
+    [HttpPut("UpdatePublisher/{id}")]
+    public async Task<IActionResult> UpdatePublisher(int id, [FromBody] PublisherFormModel publishermodel)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+               var publisher = new Publisher
+{
+    PublisherId = id,
+    Name = publishermodel.Name,
+    Address = publishermodel.Address,
+    Email = publishermodel.Email,
+    Phone = publishermodel.Phone,
+    Website = publishermodel.Website,
+};
+        try
         {
-            try
-            {
-                var publishers = await _publisherService.GetAllPublishersAsync();
-                return Ok(publishers);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var updatedPublisher = await _publisherService.UpdatePublisher(publisher);
+            return Ok(updatedPublisher);
         }
-=======
-	// GET: Publisher/Index
-	public async Task<IActionResult> Index()
-	{
-		var publishers = await _publisherService.GetAllPublishers();
-		return View(publishers);
-	}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
-
-        // == Get Publisher by ID ==
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPublisherById(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                var publisher = await _publisherService.GetPublisherByIdAsync(id);
-                if (publisher == null) return NotFound("Publisher not found.");
-                return Ok(publisher);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return NotFound(ex.Message);
         }
+    }
 
-<<<<<<< HEAD
-        // == Add a Publisher ==
-        [HttpPost]
-        public async Task<IActionResult> AddPublisher([FromBody] Publisher publisher)
+    // Delete a publisher
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePublisher(int id)
+    {
+        try
         {
-            try
-            {
-                if (publisher == null) return BadRequest("Invalid publisher data.");
-=======
-	// POST: Publisher/Create
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create(Publisher publisher)
-	{
-		if (ModelState.IsValid)
-		{
-			await _publisherService.AddPublisher(publisher);
-			TempData["Message"] = "Publisher created successfully.";
-			return RedirectToAction(nameof(Index));
-		}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
-
-                var createdPublisher = await _publisherService.AddPublisherAsync(publisher);
-                return CreatedAtAction(nameof(GetPublisherById), new { id = createdPublisher.PublisherId }, createdPublisher);
-
-<<<<<<< HEAD
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var deletedPublisher = await _publisherService.DeletePublisher(id);
+            return Ok(deletedPublisher);
         }
-=======
-	// GET: Publisher/Edit/{id}
-	public async Task<IActionResult> Edit(int id)
-	{
-		var publisher = await _publisherService.GetPublisherById(id);
-		if (publisher == null) return NotFound();
-		return View(publisher);
-	}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
-
-        // == Update a Publisher ==
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePublisher(int id, [FromBody] Publisher publisher)
+        catch (Exception ex)
         {
-            try
-            {
-                if (publisher == null || publisher.PublisherId != id) return BadRequest("Publisher ID mismatch.");
-
-<<<<<<< HEAD
-                var updatedPublisher = await _publisherService.UpdatePublisherAsync(publisher);
-                return Ok(updatedPublisher);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        // == Delete a Publisher ==
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePublisher(int id)
-        {
-            try
-            {
-                var deletedPublisher = await _publisherService.DeletePublisherAsync(id);
-                return Ok(deletedPublisher);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return NotFound(ex.Message);
         }
     }
 }
-=======
-		if (ModelState.IsValid)
-		{
-			await _publisherService.UpdatePublisher(publisher);
-			TempData["Message"] = "Publisher updated successfully.";
-			return RedirectToAction(nameof(Index));
-		}
-
-		return View(publisher);
-	}
-
-	// GET: Publisher/Delete/{id}
-	public async Task<IActionResult> Delete(int id)
-	{
-		var publisher = await _publisherService.GetPublisherById(id);
-		if (publisher == null) return NotFound();
-		return View(publisher);
-	}
-
-	// POST: Publisher/Delete/{id}
-	[HttpPost]
-	[ActionName("Delete")]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> DeleteConfirmed(int id)
-	{
-		await _publisherService.DeletePublisher(id);
-		TempData["Message"] = "Publisher deleted successfully.";
-		return RedirectToAction(nameof(Index));
-	}
-}
->>>>>>> 7bc7d2dd36cb49ea71fba6fcc44270bff1903677
