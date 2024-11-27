@@ -17,7 +17,17 @@ public class AccountController : Controller
 		_accountService = accountService;
 		_roleService = roleService;
 	}
+	 [HttpPost("AddAccount")]
+        public async Task<IActionResult> AddAccount([FromBody] Account account)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var createdAccount = await _accountService.AddAccount(account);
+            return CreatedAtAction(nameof(GetAccountById), new { id = createdAccount.AccountId }, createdAccount);
+        }
 	// GET: Get all account
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Account>>> GetAll()

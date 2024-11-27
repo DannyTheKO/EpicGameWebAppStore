@@ -44,7 +44,7 @@ public class AuthenticationServices : IAuthenticationServices
 
         // Create a new account
         account.CreatedOn = DateTime.UtcNow;
-        account.RoleId = 5; // Default Role is "Guest"
+        account.RoleId = 3; // Default Role is "Guest"
         account.IsActive = "Y"; // TODO: Implement authorization logic later
 
         // TODO: Hash the password before saving it

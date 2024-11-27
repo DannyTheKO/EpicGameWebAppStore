@@ -1,6 +1,6 @@
-import { Button , Space, Table ,Modal,Input,Select,Typography} from "antd";
+import { Button, Space, Table, Modal, Input, Select, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { GetAccount ,GetRole,UpdateAccount} from "./API";
+import { GetAccount, GetRole, UpdateAccount, AddAccountu } from "./API";
 import "./table.css";
 const { Text } = Typography;
 const { Option } = Select;
@@ -10,7 +10,7 @@ function Account() {
   const [dataRole, setRole] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [Count, setCount] = useState(0); 
+  const [Count, setCount] = useState(0);
   const [AccountRecord, setAccountRecord] = useState({
     id: "",
     role: "",
@@ -23,15 +23,12 @@ function Account() {
     const fetchAccount = async () => {
       setLoading(true);
       try {
-        const [res, role]=await Promise.all([
-          GetAccount(),
-          GetRole()
-        ]);
+        const [res, role] = await Promise.all([GetAccount(), GetRole()]);
         setDataSource(res || []);
-        setRole( role|| []);
-        setCount(res.length)
+        setRole(role || []);
+        setCount(res.length);
       } catch (error) {
-        console.log("lỗi load data")
+        console.log("lỗi load data");
       }
       setLoading(false);
     };
@@ -40,7 +37,9 @@ function Account() {
 
   const openModal = (record = null) => {
     if (record) {
-      const matchedRole = dataRole.find((role) => role.roleId === record.roleId);
+      const matchedRole = dataRole.find(
+        (role) => role.roleId === record.roleId
+      );
       setAccountRecord({
         ...record,
         createdOn: record.createdOn ? record.createdOn.split("T")[0] : "", // Đảm bảo ngày ở định dạng "yyyy-MM-dd"
@@ -61,8 +60,6 @@ function Account() {
     }
     setIsModalOpen(true);
   };
-  
-  
 
   const validateGameRecord = () => {
     // const { title, author, price, rating, release, description } = gameRecord;
@@ -77,38 +74,79 @@ function Account() {
     // }
 
     return true;
-};
-    const handleSave = async () => { 
-      if (!validateGameRecord()) {
-        return;
+  };
+  const handleSave = async () => {
+    if (!validateGameRecord()) {
+      return;
     }
-      if (isEditing) {
-          console.log("Lưu dữ liệu đã sửa:", AccountRecord);
-          try {
-            await UpdateAccount(AccountRecord.id, AccountRecord); 
-            const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-          setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+    if (isEditing) {
+      console.log("Lưu dữ liệu đã sửa:", AccountRecord);
+      try {
+        await UpdateAccount(AccountRecord.id, AccountRecord);
+        const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+        setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
+
+        Modal.success({
+          title: "Account update successfully",
+          content: `The account with ID ${AccountRecord.id} has been deleted.`,
+        });
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        Modal.error({
+          title: "Error",
+          content:
+            "An error occurred while deleting the account. Please try again.",
+        });
+      }
+    } else {
+      console.log("Thêm sản phẩm mới:", AccountRecord);
+      // const addedGame = await AddGame(gameRecord); // thêm mới game
+      // console.log("Added Game:", addedGame);
+      // try {
+      //   await AddAccountu(AccountRecord);
+      //   const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+      //   setDataSource(addDataSource); // Cập nhật state với danh sách mới
+
+      //   Modal.success({
+      //     title: "Account update successfully",
+      //     content: `The account with ID ${AccountRecord.id} has been deleted.`,
+      //   });
+      // } catch (error) {
+      //   console.error("Error deleting account:", error);
+      //   Modal.error({
+      //     title: "Error",
+      //     content:
+      //       "An error occurred while deleting the account. Please try again.",
+      //   });
+      // }
+      try {
+        const roleId = dataRole.find(role => role.name === AccountRecord.role)?.roleId; // Tìm roleId từ tên role
+        if (roleId) {
+          const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
+          await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
+          const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+          setDataSource(addDataSource); // Cập nhật state với danh sách mới
   
           Modal.success({
-            title: "Account update successfully",
-            content: `The account with ID ${AccountRecord.id} has been deleted.`,
+            title: "Account added successfully",
+            content: `The account with ID ${newAccount.id} has been added.`,
           });
-            
-          } catch (error) {
-            console.error("Error deleting account:", error);
-            Modal.error({
-              title: "Error",
-              content: "An error occurred while deleting the account. Please try again.",
-            });
-          }
-          
-      } else {
-          // console.log("Thêm sản phẩm mới:", gameRecord);
-          // const addedGame = await AddGame(gameRecord); // thêm mới game
-          // console.log("Added Game:", addedGame);
+        } else {
+          Modal.error({
+            title: "Error",
+            content: "Please select a valid role.",
+          });
+        }
+      } catch (error) {
+        console.error("Error adding account:", error);
+        Modal.error({
+          title: "Error",
+          content: "An error occurred while adding the account. Please try again.",
+        });
       }
-      setIsModalOpen(false); 
-  };
+    }
+    setIsModalOpen(false);
+  };  
 
   const handleDelete = (record) => {
     Modal.confirm({
@@ -121,14 +159,14 @@ function Account() {
         try {
           const accountID = record.accountId;
           record.isActive = "N"; // Đánh dấu tài khoản là không hoạt động
-  
+
           console.log("Deleting account:", accountID);
           console.log("Updated record:", record);
-  
+
           await UpdateAccount(accountID, record); // Cập nhật trạng thái trong cơ sở dữ liệu
           const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
           setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-  
+
           Modal.success({
             title: "Account deleted successfully",
             content: `The account with ID ${accountID} has been deleted.`,
@@ -137,16 +175,16 @@ function Account() {
           console.error("Error deleting account:", error);
           Modal.error({
             title: "Error",
-            content: "An error occurred while deleting the account. Please try again.",
+            content:
+              "An error occurred while deleting the account. Please try again.",
           });
         }
       },
     });
   };
-  
+
   return (
     <Space className="size_table" size={10} direction="vertical">
-      
       <Table
         className="data"
         loading={loading}
@@ -156,7 +194,6 @@ function Account() {
             dataIndex: "accountId",
             key: "accountId",
             render: (AccountID) => <Text>{AccountID}</Text>,
-            
           },
           {
             title: "Role",
@@ -183,96 +220,107 @@ function Account() {
             title: "Create On",
             dataIndex: "createdOn",
             key: "createdOn",
-              render: (Createon) => new Date(Createon).toLocaleDateString(),
+            render: (Createon) => new Date(Createon).toLocaleDateString(),
           },
           {
             title: "Is Active",
             dataIndex: "isActive",
             key: "isActive",
             render: (IsActive) => <Text>{IsActive}</Text>,
-            
           },
           {
             title: "Actions", // Cột chứa các nút
             render: (record) => {
               return (
                 <Space size="middle">
-                  <Button type="primary" onClick={() => openModal()}>Thêm</Button>
+                  <Button type="primary" onClick={() => openModal()}>
+                    Thêm
+                  </Button>
                   <Button onClick={() => openModal(record)}>Sửa</Button>
-                  <Button danger onClick={() => handleDelete(record)}>Xóa</Button>
+                  <Button danger onClick={() => handleDelete(record)}>
+                    Xóa
+                  </Button>
                 </Space>
               );
             },
-          }
-          
+          },
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-          rowKey="accountId"
-
-          pagination={{ pageSize: 8,position: [ "bottomCenter"], }}
-          scroll={{ x: "max-content" }}
+        rowKey="accountId"
+        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        scroll={{ x: "max-content" }}
       ></Table>
-    <Modal
-          className="form_addedit"
-          title={isEditing ? "Sửa thông tin tài khoản" : "Thêm tài khoản mới"}
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          onOk={handleSave}
+      <Modal
+        className="form_addedit"
+        title={isEditing ? "Sửa thông tin tài khoản" : "Thêm tài khoản mới"}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={handleSave}
+      >
+        <label>ID</label>
+        <Input
+          placeholder="ID Acount"
+          value={AccountRecord.id}
+          onChange={(e) =>
+            setAccountRecord({ ...AccountRecord, id: e.target.value })
+          }
+          disabled
+        />
+        <label>Usernmae</label>
+        <Input
+          placeholder="Username"
+          value={AccountRecord.username}
+          onChange={(e) =>
+            setAccountRecord({ ...AccountRecord, username: e.target.value })
+          }
+        />
+        <label>Email</label>
+        <Input
+          placeholder="Email"
+          value={AccountRecord.email}
+          onChange={(e) =>
+            setAccountRecord({ ...AccountRecord, email: e.target.value })
+          }
+        />
+        <label htmlFor="">Create on</label>
+
+        <Input
+          type="date"
+          placeholder="Create on"
+          value={AccountRecord.createdOn} // Sử dụng createdOn
+          onChange={(e) =>
+            setAccountRecord({ ...AccountRecord, createdOn: e.target.value })
+          } // Cập nhật giá trị
+          disabled={isEditing}
+        />
+        <label htmlFor="">Active</label>
+        <Input
+          placeholder="Is Active"
+          type="text"
+          value={AccountRecord.isActive}
+          onChange={(e) =>
+            setAccountRecord({ ...AccountRecord, isActive: e.target.value })
+          }
+          disabled={!isEditing}
+        />
+
+        <label htmlFor="">Chọn quyền</label>
+        <Select
+          placeholder="Chọn quyền"
+          value={AccountRecord.role}
+          onChange={(value) =>
+            setAccountRecord({ ...AccountRecord, role: value })
+          }
+          style={{ width: "100%", height: "47px" }}
         >
-          <label>ID</label>
-          <Input
-            placeholder="ID Acount"
-            value={AccountRecord.id}
-            onChange={(e) => setAccountRecord({ ...AccountRecord, id: e.target.value })}
-            disabled
-          />
-          <label>Usernmae</label>
-          <Input
-            placeholder="Username"
-            value={AccountRecord.username}
-            onChange={(e) => setAccountRecord({ ...AccountRecord, username: e.target.value })}
-          />
-          <label>Email</label>
-          <Input
-            placeholder="Email"
-            value={AccountRecord.email}
-            onChange={(e) => setAccountRecord({ ...AccountRecord, email: e.target.value })}
-          />
-          <label htmlFor="">Create on</label>
-          
-<Input
-  type="date"
-  placeholder="Create on"
-  value={AccountRecord.createdOn} // Sử dụng createdOn
-  onChange={(e) => setAccountRecord({ ...AccountRecord, createdOn: e.target.value })} // Cập nhật giá trị
-  disabled={isEditing}
-/>
-          <label htmlFor="">Active</label>
-          <Input
-  placeholder="Is Active"
-  type="text"
-  value={AccountRecord.isActive}
-  onChange={(e) => setAccountRecord({ ...AccountRecord, isActive: e.target.value })}
-  disabled={!isEditing}
-/>
-
-          <label htmlFor="">Chọn quyền</label>
-          <Select
-  placeholder="Chọn quyền"
-  value={AccountRecord.role}
-  onChange={(value) => setAccountRecord({ ...AccountRecord, role: value })}
-  style={{ width: "100%", height: "47px" }}
->
-  {dataRole.map((role) => (
-    <Option key={role.roleId} value={role.name}>
-      {role.name}
-    </Option>
-  ))}
-</Select>
-
-        
-        </Modal>
-      </Space>
+          {dataRole.map((role) => (
+            <Option key={role.roleId} value={role.name}>
+              {role.name}
+            </Option>
+          ))}
+        </Select>
+      </Modal>
+    </Space>
   );
 }
 export default Account;

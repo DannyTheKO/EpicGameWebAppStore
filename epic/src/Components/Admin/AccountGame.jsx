@@ -1,9 +1,15 @@
-import { Button, Space, Table, Modal, Input,Select,Typography } from "antd";
+import { Button, Space, Table, Modal, Input, Select, Typography } from "antd";
 import { useEffect, useState } from "react";
-import {  GetAllAccountgame,GetAllgame,GetAccount,DeleteAccountgame ,AddAccountgame} from "./API";
+import {
+  GetAllAccountgame,
+  GetAllgame,
+  GetAccount,
+  DeleteAccountgame,
+  AddAccountgame,
+} from "./API";
 import "./table.css";
 const { Text } = Typography;
-const { Option }=Select;
+const { Option } = Select;
 
 function Accountgame() {
   const [loading, setLoading] = useState(false);
@@ -12,38 +18,43 @@ function Accountgame() {
   const [dataTitleGame, setTitleGame] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [AcountgameRecord, setAccountGameRecord] = useState({accoutid:"",username:"",gameid:"",title:"",dateadded:""});
+  const [AcountgameRecord, setAccountGameRecord] = useState({
+    accoutid: "",
+    username: "",
+    gameid: "",
+    title: "",
+    dateadded: "",
+  });
   useEffect(() => {
     const fetchAccountGame = async () => {
       setLoading(true);
       try {
-        const [res, username, title]=await Promise.all([
+        const [res, username, title] = await Promise.all([
           GetAllAccountgame(),
           GetAccount(),
-          GetAllgame()
+          GetAllgame(),
         ]);
         setDataSource(res || []);
         setNameAccount(username || []);
         setTitleGame(title || []);
-
       } catch (error) {
-        console.log("lỗi load data")
+        console.log("lỗi load data");
       }
       setLoading(false);
-    };  
+    };
     fetchAccountGame();
   }, []);
 
- const openModal = (record = null) => {
-  if (!record) {
-    setAccountGameRecord({ accountId: "", gameId: "", dateAdded: "" }); // Dữ liệu trống cho thêm mới
-    setIsEditing(false);
-  } else {
-    setAccountGameRecord(record); // Dữ liệu cho sửa
-    setIsEditing(true);
-  }
-  setIsModalOpen(true);
-};
+  const openModal = (record = null) => {
+    if (!record) {
+      setAccountGameRecord({ accountId: "", gameId: "", dateAdded: "" }); // Dữ liệu trống cho thêm mới
+      setIsEditing(false);
+    } else {
+      setAccountGameRecord(record); // Dữ liệu cho sửa
+      setIsEditing(true);
+    }
+    setIsModalOpen(true);
+  };
 
   const handleDelete = (record) => {
     Modal.confirm({
@@ -58,7 +69,9 @@ function Accountgame() {
         DeleteAccountgame(acountgameid)
           .then(() => {
             setDataSource((prevDataSource) =>
-              prevDataSource.filter((item) => item.accountGameId !== acountgameid)
+              prevDataSource.filter(
+                (item) => item.accountGameId !== acountgameid
+              )
             );
           })
           .catch((error) => {
@@ -77,23 +90,23 @@ function Accountgame() {
     //     });
     //     return false;
     // }
-
     // return true;
-};
-    const handleSave = async () => { 
-      if (validateGameRecord()) {//kiểm tra dữ liệu thêm /sửa
-        return; 
+  };
+  const handleSave = async () => {
+    if (validateGameRecord()) {
+      //kiểm tra dữ liệu thêm /sửa
+      return;
     }
-  
+
     try {
       // Thực hiện thêm tài khoản game mới
       console.log("Dữ liệu gửi đi:", AcountgameRecord);
       await AddAccountgame(AcountgameRecord);
-  
+
       // Lấy lại danh sách tài khoản game sau khi thêm
       const updatedDataSource = await GetAllAccountgame();
       setDataSource(updatedDataSource);
-  
+
       // Thông báo thành công
       Modal.success({
         title: "Thành công",
@@ -112,7 +125,6 @@ function Accountgame() {
   };
   return (
     <Space className="size_table" size={20} direction="vertical">
-
       <Table
         className="data"
         loading={loading}
@@ -122,22 +134,26 @@ function Accountgame() {
             dataIndex: "accountGameId", // Dữ liệu vẫn là accountId
             key: "accountGameId ",
             render: (accountgameId) => <Text>{accountgameId}</Text>,
-          },      
+          },
           {
             title: "Account",
             dataIndex: "accountId", // Dữ liệu vẫn là accountId
             key: "accountId",
             render: (accountId) => {
-              const account = dataNameAccount.find((item) => item.accountId === accountId); // Tìm account theo ID
+              const account = dataNameAccount.find(
+                (item) => item.accountId === accountId
+              ); // Tìm account theo ID
               return <Text>{account ? account.username : accountId}</Text>; // Hiển thị username hoặc thông báo lỗi
             },
-          },         
+          },
           {
             title: "Game",
             dataIndex: "gameId", // Dữ liệu vẫn là accountId
             key: "gameId",
             render: (gameId) => {
-              const titlegame = dataTitleGame.find((item) => item.gameId === gameId); // Tìm account theo ID
+              const titlegame = dataTitleGame.find(
+                (item) => item.gameId === gameId
+              ); // Tìm account theo ID
               return <Text>{gameId ? titlegame.title : gameId}</Text>; // Hiển thị username hoặc thông báo lỗi
             },
           },
@@ -147,60 +163,65 @@ function Accountgame() {
             key: "dateAdded",
             render: (release) => new Date(release).toLocaleDateString(),
           },
-            {
-              title: "Actions",
-              key: "actions",
-              render: (record) => (
-                <Space size="middle">
-                  <Button type="primary" onClick={() => openModal()}>Thêm </Button>
-                  <Button danger onClick={() => handleDelete(record)}>Xóa</Button>
-                </Space>
-              ),
-              className: "text-center",
-            },
+          {
+            title: "Actions",
+            key: "actions",
+            render: (record) => (
+              <Space size="middle">
+                <Button type="primary" onClick={() => openModal()}>
+                  Thêm{" "}
+                </Button>
+                <Button danger onClick={() => handleDelete(record)}>
+                  Xóa
+                </Button>
+              </Space>
+            ),
+            className: "text-center",
+          },
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-          rowKey=""
-          pagination={{ pageSize: 8,position: [ "bottomCenter"], }}
-          scroll={{ x: "max-content" }}
+        rowKey=""
+        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        scroll={{ x: "max-content" }}
       ></Table>
       <Modal
-          className="form_addedit"
-          title={"Thêm tài khoản mới"}
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          onOk={handleSave}
+        className="form_addedit"
+        title={"Thêm tài khoản mới"}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={handleSave}
+      >
+        <label htmlFor="">Chọn tài khoản</label>
+        <Select
+          placeholder="Chọn Username"
+          value={AcountgameRecord.accountId || ""} // Phải sử dụng gameRecord.accountId
+          onChange={(value) =>
+            setAccountGameRecord({ ...AcountgameRecord, accountId: value })
+          }
+          style={{ width: "100%", height: "47px" }}
         >
-            <label htmlFor="">Chọn tài khoản</label>
-            <Select
-  placeholder="Chọn Username"
-  value={AcountgameRecord.accountId || ""} // Phải sử dụng gameRecord.accountId
-  onChange={(value) => setAccountGameRecord({ ...AcountgameRecord, accountId: value })}
-  style={{ width: "100%", height: "47px" }}
->
-  {dataNameAccount.map((account) => (
-    <Option key={account.accountId} value={account.accountId}>
-      {account.username}
-    </Option>
-  ))}
-</Select>
-<label htmlFor="">Chọn game</label>
-<Select
-  placeholder="Chọn Game"
-  value={AcountgameRecord.gameId || ""} // Phải sử dụng gameRecord.gameId
-  onChange={(value) => setAccountGameRecord({ ...AcountgameRecord, gameId: value })}
-  style={{ width: "100%", height: "47px" }}
->
-  {dataTitleGame.map((game) => (
-    <Option key={game.gameId} value={game.gameId}>
-      {game.title}
-    </Option>
-  ))}
-</Select>
-
-
-
-        </Modal>
+          {dataNameAccount.map((account) => (
+            <Option key={account.accountId} value={account.accountId}>
+              {account.username}
+            </Option>
+          ))}
+        </Select>
+        <label htmlFor="">Chọn game</label>
+        <Select
+          placeholder="Chọn Game"
+          value={AcountgameRecord.gameId || ""} // Phải sử dụng gameRecord.gameId
+          onChange={(value) =>
+            setAccountGameRecord({ ...AcountgameRecord, gameId: value })
+          }
+          style={{ width: "100%", height: "47px" }}
+        >
+          {dataTitleGame.map((game) => (
+            <Option key={game.gameId} value={game.gameId}>
+              {game.title}
+            </Option>
+          ))}
+        </Select>
+      </Modal>
     </Space>
   );
 }

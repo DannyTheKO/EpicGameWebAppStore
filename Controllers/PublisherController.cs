@@ -53,7 +53,7 @@ public class PublisherController : ControllerBase
     }
 
     // Add a new publisher
-    [HttpPost("/createpublisher")]
+    [HttpPost("createpublisher")]
     public async Task<IActionResult> AddPublisher([FromBody] Publisher publisher)
     {
         if (!ModelState.IsValid)

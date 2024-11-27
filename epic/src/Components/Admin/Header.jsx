@@ -1,7 +1,6 @@
-import { Space, Typography,Dropdown,Menu } from "antd";
-import './header.css';
+import { Space, Typography, Dropdown, Menu } from "antd";
+import "./header.css";
 import { MdAccountCircle } from "react-icons/md";
-
 
 function Header() {
   const menu = (
@@ -16,14 +15,13 @@ function Header() {
   );
   return (
     <div className="AppHeader">
-      <img className="logoad" src="../Asset/logo.png" ></img>
-      <Typography.Title >EPIC GAMING</Typography.Title>
-      <Space >
-      <Dropdown overlay={menu} trigger={['hover']}>
+      <img className="logoad" src="../Asset/logo.png"></img>
+      <Typography.Title>EPIC GAMING</Typography.Title>
+      <Space>
+        <Dropdown overlay={menu} trigger={["hover"]}>
           <MdAccountCircle className="client" />
         </Dropdown>
       </Space>
-
     </div>
   );
 }
