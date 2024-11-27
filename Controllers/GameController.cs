@@ -237,9 +237,9 @@ public class GameController : Controller
 			Author = gameFormModel.Author,
 			Rating = gameFormModel.Rating,
 			Description = gameFormModel.Description,
+			Release = gameFormModel.Release,
 
 			// Get detail from existing game
-			Release = gameFormModel.Release,
 			Genre = checkGenre,
 			Publisher = checkPublisher,
 		};
