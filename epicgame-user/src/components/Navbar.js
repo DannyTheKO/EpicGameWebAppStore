@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import '../styles/components/Navbar.css';
@@ -15,14 +15,17 @@ const Navbar = () => {
     const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
     const [isNavbarVisible, setIsNavbarVisible] = useState(true);
 
+    // Kiểm tra trạng thái đăng nhập và tên người dùng từ localStorage
     useEffect(() => {
-        const token = localStorage.getItem('accountToken');
-        if (token) {
+        const token = localStorage.getItem('authToken');
+        const storedUsername = localStorage.getItem('username');
+        if (token && storedUsername) {
             setIsLoggedIn(true);
-            setUsername("Gamer");
+            setUsername(storedUsername);
         }
     }, []);
 
+    // Ẩn/Hiện navbar khi cuộn trang
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollPos = window.pageYOffset;
@@ -34,9 +37,12 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [prevScrollPos]);
 
+    // Xử lý đăng xuất
     const handleLogout = () => {
-        localStorage.removeItem('accountToken');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
         setIsLoggedIn(false);
+        setUsername("User");
         navigate('/');
     };
 
