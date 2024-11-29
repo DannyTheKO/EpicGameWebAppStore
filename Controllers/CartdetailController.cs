@@ -8,14 +8,20 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CartdetailController : Controller
+public class CartdetailController : _BaseController
 {
 	private readonly ICartdetailService _cartdetailService;
 	private readonly ICartService _cartService;
 	private readonly IGameService _gameService;
 	private readonly IDiscountService _discountService;
+	private readonly IAuthorizationServices _authorizationServices;
 
-	public CartdetailController(ICartdetailService cartdetailService, IGameService gameService, ICartService cartService, IDiscountService discountService)
+	public CartdetailController(
+		ICartdetailService cartdetailService, 
+		IGameService gameService, 
+		ICartService cartService, 
+		IDiscountService discountService,
+		IAuthorizationServices authorizationServices) : base(authorizationServices)
 	{
 		_cartdetailService = cartdetailService;
 		_gameService = gameService;

@@ -7,11 +7,12 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class GenreController : Controller
+public class GenreController : _BaseController
 {
     private readonly IGenreService _genreService;
+    private readonly IAuthorizationServices _authorizationServices;
 
-    public GenreController(IGenreService genreService)
+    public GenreController(IGenreService genreService, IAuthorizationServices authorizationServices) : base(authorizationServices)
     {
         _genreService = genreService;
     }
