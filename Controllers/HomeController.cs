@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
-public class HomeController : Controller
+public class HomeController : _BaseController
 {
     private readonly IAuthenticationServices _authenticationServices;
-    private readonly ILogger<HomeController> _logger;
+	private readonly IAuthorizationServices _authorizationServices;
+	private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IAuthorizationServices authorizationServices) : base(authorizationServices)
     {
         _logger = logger;
     }
@@ -18,16 +19,5 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return Redirect("swagger/index.html");
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

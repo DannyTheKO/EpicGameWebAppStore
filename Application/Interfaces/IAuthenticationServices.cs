@@ -20,5 +20,5 @@ public interface IAuthenticationServices
     Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account);
 
 	// ACTION: Generate JWT Token
-	public string GenerateJwtToken(Account account);
+	public Task<string> GenerateJwtToken(Account account);
 }

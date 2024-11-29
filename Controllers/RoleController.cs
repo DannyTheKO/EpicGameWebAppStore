@@ -6,12 +6,13 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class RoleController : ControllerBase
+public class RoleController : _BaseController
 {
     private readonly IRoleService _roleService;
+    private readonly IAuthorizationServices _authorizationServices;
 
-    public RoleController(IRoleService roleService)
-    {
+	public RoleController(IRoleService roleService, IAuthorizationServices authorizationServices) : base(authorizationServices)
+	{
         _roleService = roleService;
     }
 

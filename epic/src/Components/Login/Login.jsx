@@ -1,108 +1,92 @@
-    import React, { useState } from "react";
-    import './Login.css';
-    import { jwtDecode } from "jwt-decode";
-    import { FaUserAlt, FaEye, FaEyeSlash } from "react-icons/fa";
-    import axios from 'axios';
+import React, { useState } from "react";
+import './Login.css';
+import { FaUserAlt, FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
+import EpicGamesLogo from '../../assets/EpicGames_Logo.png';
 
-    const LoginForm = () => {
-        const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-        const [errorMessage, setErrorMessage] = useState(""); 
-        const [username, setUsername] = useState(""); 
-        const [password, setPassword] = useState(""); 
+const LoginForm = () => {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-        const toggleVisibility = () => {
-            setIsPasswordVisible(!isPasswordVisible);
+    const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
+
+    const handleSignIn = async (event) => {
+        event.preventDefault();
+
+        const payload = {
+            Username: username,
+            Password: password
         };
-        const checkUserRole = () => {
-            const token = localStorage.getItem("accountToken");
-            if (!token) {
-                console.log("Token not found, user is not logged in.");
-                return false;
+
+        try {
+            const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(response.data);
+            const { loginStateFlag, accountToken, username: returnedUsername, message } = response.data;
+            // console
+
+            if (loginStateFlag) {
+                localStorage.setItem('authToken', accountToken);
+                localStorage.setItem('username', returnedUsername); // Lưu username từ server
+
+                // Khởi tạo giỏ hàng mới cho tài khoản này nếu chưa có
+                const savedCart = JSON.parse(localStorage.getItem(`cart_${returnedUsername}`)) || [];
+                localStorage.setItem(`cart_${returnedUsername}`, JSON.stringify(savedCart));
+                const decodedToken = jwtDecode(accountToken);
+  
+            const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            
+            if (userRole === "Admin"|| userRole ==="Moderator")  {
+                navigate('/admin'); // Chuyển hướng đến trang admin
+            } else {
+                navigate('/');
+                window.location.reload();
+            }  // Chuyển hướng và reload lại trang
+              
+            } else {
+                setErrorMessage(message || "Login failed. Please try again.");
             }
-        
-            try {
-                // Giải mã token để lấy thông tin người dùng
-                const decodedToken = jwtDecode(token);
-                console.log("Decoded token:", decodedToken);
-                const role= decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
-                if (role === '1' || role === '2' || role === '4') {
-                    console.log("User is admin");
-                    window.location.href = "/admin";
-                    return true;  // Quản trị viên có quyền
-                }
-                
-                if (role === '3') {
-                    console.log("User is normal user");
-                    window.location.href = "/index";
-                    return true;  // Người dùng bình thường
-                }
-                else {
-                    console.log("User role is not recognized.");
-                    return false;
-                }
-            } catch (error) {
-                console.error("Error decoding token:", error);
-                return false;
-            }
-        };
-        const handleSignIn = async (event) => {
-            event.preventDefault(); // Ngăn chặn reload trang mặc định
-        
-            const payload = {
-                Username: username, // Phải trùng với tên thuộc tính của backend
-                Password: password
-            };
-        
-            try {
-                const response = await axios.post('http://localhost:5084/Auth/LoginConfirm', payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        //  'Authorization': `Bearer ${token}`
-                       
-                    }
-                });
-                // Kiểm tra token từ phản hồi của server
-                if (response.data.loginStateFlag ) {
-                    console.log( response.data.message,response.data.username);
-                    const token = response.data.accountToken;
-                    // Lưu token vào localStorage
-                    localStorage.setItem("accountToken", token);
-                    console.log("Login successful! Token:", token);
-                    // Điều hướng người dùng sau khi đăng nhập thành công (ví dụ: đến trang Dashboard)
-                    checkUserRole();
-                } else {
-                    setErrorMessage("Token không tồn tại hoặc đăng nhập thất bại.");
-                }
-            } catch (error) {
-                if (error.response) {
-                    // Nếu có phản hồi từ server với lỗi cụ thể
-                    setErrorMessage(error.response.data.message || "Lỗi đăng nhập! Vui lòng thử lại.");
-                    console.error("Server responded with error: ", error.response.data);
-                } else {
-                    // Lỗi khác (ví dụ: không thể kết nối tới server)
-                    setErrorMessage("Không thể kết nối tới server. Vui lòng kiểm tra lại.");
-                    console.error("Error connecting to server: ", error.message);
-                }
-            }
-        };
-        
-    
-        return (
-            <div className="wrapper-login">
-                <form onSubmit={handleSignIn}>
-                    <div className="logo"><img src="/Images/EpicGames_Logo.png" alt="" /></div>
-                    <h1>SIGN IN</h1>
-                    <div className="input_box">
-                        <input 
-                            type="text" 
-                            placeholder="Username" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            required 
+        } catch (error) {
+            console.error("Server responded with error: ", error.response?.data);
+            const statusCode = error.response?.status || 500;
+            const serverError = error.response?.data?.message || "Server error occurred. Please try again later.";
+            setErrorMessage(
+                statusCode === 401
+                    ? "Invalid credentials. Please check your username or password."
+                    : serverError
+            );
+        }
+    };
+
+    return (
+        <div className="login-container">
+            <div className="login-box">
+                <div className="logo">
+                    <Link to="/" className="navbar-logo">
+                        <img src={EpicGamesLogo} alt="Epic Games Logo" className="logo-image" />
+                    </Link>
+                </div>
+                <h1 className="login-title">SIGN IN</h1>
+                <form className="login-form" onSubmit={handleSignIn}>
+                    <div className="input_box icon-container">
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
                         />
-                        <FaUserAlt className="icons" />
                     </div>
-                    <div className="input_box">
+                    <div className="input_box icon-container">
                         <input
                             type={isPasswordVisible ? "text" : "password"}
                             placeholder="Password"
@@ -110,21 +94,22 @@
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <span className="iconseyes" onClick={toggleVisibility} style={{ cursor: 'pointer', color: 'white' }}>
+                        <span className="iconseyes" onClick={toggleVisibility}>
                             {isPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                         </span>
                     </div>
                     {errorMessage && <div className="error">{errorMessage}</div>}
                     <div className="forgot">
-                        <a href="/forgot_pass">Forgot password?</a>
+                        <Link to="/forgot_pass">Forgot password?</Link>
                     </div>
-                    <button type="submit">Sign In</button>
+                    <button className="btn" type="submit">Sign In</button>
                     <div className="register-link">
-                        <a href="/register">Create account</a>
+                        <Link to="/register">Create account</Link>
                     </div>
                 </form>
             </div>
-        );
-    };
+        </div>
+    );
+};
 
-    export default LoginForm;
+export default LoginForm;

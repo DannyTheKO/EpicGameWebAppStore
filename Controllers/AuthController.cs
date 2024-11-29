@@ -9,7 +9,9 @@ namespace EpicGameWebAppStore.Controllers;
 //[Authorize]
 [Route("[controller]")]
 [ApiController]
-public class AuthController : Controller
+
+
+public class AuthController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
@@ -20,7 +22,7 @@ public class AuthController : Controller
 		IAuthorizationServices authorizationServices,
 		IAuthenticationServices authenticationServices,
 		IAccountService accountService,
-		IRoleService roleService)
+		IRoleService roleService) : base(authorizationServices)
 	{
 		_authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;
@@ -53,7 +55,7 @@ public class AuthController : Controller
 	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public ActionResult AccessDenied()
 	{
-		return StatusCode(403, new
+		return StatusCode(401, new
 		{
 			accessFlag = false,
 			message = "Access Denied: You don't have permission to access this resource"

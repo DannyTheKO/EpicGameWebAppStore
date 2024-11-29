@@ -1,263 +1,82 @@
-import { Button, Space, Table, Modal, Input, Select, Typography } from "antd";
-import { useEffect, useState } from "react";
-import { GetAccount, GetRole, UpdateAccount, GetAllCart } from "./API";
-import "./table.css";
-const { Text } = Typography;
-const { Option } = Select;
-function Cart() {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
-  const [dataAccount, setAccount] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [Count, setCount] = useState(0);
-  const [AccountRecord, setAccountRecord] = useState({
-    id: "",
-    role: "",
-    username: "",
-    email: "",
-    createdOn: null, // Thống nhất sử dụng createdOn
-    isActive: "",
-  });
+import React, { useState, useEffect } from 'react';
+import { Table } from 'antd';
+import { GetAllCart } from './API';
+
+const AccountTable = () => {
+  const [data, setData] = useState([]);
+
+  // Lấy dữ liệu từ hàm GetAllCart
   useEffect(() => {
-    const fetchAccount = async () => {
-      setLoading(true);
-      try {
-        const [res, account] = await Promise.all([GetAllCart(), GetAccount()]);
-        setDataSource(res || []);
-        setAccount(account || []);
-        setCount(res.length);
-      } catch (error) {
-        console.log("lỗi load data");
-      }
-      setLoading(false);
-    };
-    fetchAccount();
-  }, []);
-
-  const openModal = (record = null) => {
-    if (record) {
-      // const matchedRole = dataRole.find((role) => role.roleId === record.roleId);
-      // setAccountRecord({
-      //   ...record,
-      //   createdOn: record.createdOn ? record.createdOn.split("T")[0] : "", // Đảm bảo ngày ở định dạng "yyyy-MM-dd"
-      //   role: matchedRole ? matchedRole.name : "", // Lưu tên role
-      //   id: record.accountId, // Đảm bảo lấy đúng id từ record
-      // });
-      setIsEditing(true);
-    } else {
-      setAccountRecord({
-        id: Count + 1, // Tạo ID mới cho tài khoản
-        role: "",
-        username: "",
-        email: "",
-        createdOn: null,
-        isActive: "Y",
+    GetAllCart()
+      .then(responseData => {
+        setData(responseData);
+      })
+      .catch(error => {
+        console.error('Có lỗi khi lấy dữ liệu:', error);
       });
-      setIsEditing(false);
-    }
-    setIsModalOpen(true);
+  }, []); // Chạy khi component mount
+
+  // Columns cho bảng Account
+  const accountColumns = [
+    {
+      title: 'Account Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Account ID',
+      dataIndex: 'accountId',
+      key: 'accountId',
+    },
+  ];
+
+  // Expanded row renderer cho Cart
+  const expandedRowRenderCart = (record) => {
+    return (
+      <Table
+        columns={[
+          { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
+          { title: 'Payment Method ID', dataIndex: 'paymentMethodId', key: 'paymentMethodId' },
+        ]}
+        dataSource={record.cart.map(cart => ({
+          key: cart.cartId,
+          cartId: cart.cartId,
+          paymentMethodId: cart.paymentMethodId,
+        }))}
+        pagination={false}
+        expandedRowRender={(cartRecord) => expandedRowRenderCartDetails(cartRecord)}
+      />
+    );
   };
 
-  const validateGameRecord = () => {
-    // const { title, author, price, rating, release, description } = gameRecord;
-
-    // // Kiểm tra các trường bắt buộc
-    // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-    //     Modal.error({
-    //         title: 'Lỗi',
-    //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-    //     });
-    //     return false;
-    // }
-
-    return true;
-  };
-  const handleSave = async () => {
-    if (!validateGameRecord()) {
-      return;
-    }
-    if (isEditing) {
-      console.log("Lưu dữ liệu đã sửa:", AccountRecord);
-      try {
-        await UpdateAccount(AccountRecord.id, AccountRecord);
-        const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-        setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-
-        Modal.success({
-          title: "Account update successfully",
-          content: `The account with ID ${AccountRecord.id} has been deleted.`,
-        });
-      } catch (error) {
-        console.error("Error deleting account:", error);
-        Modal.error({
-          title: "Error",
-          content:
-            "An error occurred while deleting the account. Please try again.",
-        });
-      }
-    } else {
-      // console.log("Thêm sản phẩm mới:", gameRecord);
-      // const addedGame = await AddGame(gameRecord); // thêm mới game
-      // console.log("Added Game:", addedGame);
-    }
-    setIsModalOpen(false);
-  };
-
-  const handleDelete = (record) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this account?",
-      content: "This action cannot be undone.",
-      okText: "Delete",
-      okType: "danger",
-      cancelText: "Cancel",
-      onOk: async () => {
-        try {
-          const accountID = record.accountId;
-          record.isActive = "N"; // Đánh dấu tài khoản là không hoạt động
-
-          console.log("Deleting account:", accountID);
-          console.log("Updated record:", record);
-
-          await UpdateAccount(accountID, record); // Cập nhật trạng thái trong cơ sở dữ liệu
-          const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-          setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-
-          Modal.success({
-            title: "Account deleted successfully",
-            content: `The account with ID ${accountID} has been deleted.`,
-          });
-        } catch (error) {
-          console.error("Error deleting account:", error);
-          Modal.error({
-            title: "Error",
-            content:
-              "An error occurred while deleting the account. Please try again.",
-          });
-        }
-      },
-    });
+  // Expanded row renderer cho Cart Details
+  const expandedRowRenderCartDetails = (cartRecord) => {
+    return (
+      <Table
+        columns={[
+          { title: 'Game Title', dataIndex: 'title', key: 'title' },
+          { title: 'Price', dataIndex: 'price', key: 'price' },
+          { title: 'Discount', dataIndex: 'discount', key: 'discount' },
+        ]}
+        dataSource={cartRecord.map(item => ({
+          key: item.cartDetailId,
+          title: item.cartDetail.title,
+          price: item.cartDetail.price,
+          discount: item.cartDetail.discount,
+        }))}
+        pagination={false}
+      />
+    );
   };
 
   return (
-    <Space className="size_table" size={10} direction="vertical">
-      <Table
-        className="data"
-        loading={loading}
-        columns={[
-          {
-            title: "ID",
-            dataIndex: "cardId",
-            key: "cardId",
-            render: (CartId) => <Text>{CartId}</Text>,
-          },
-          {
-            title: "Account",
-            dataIndex: "Account",
-            key: "Account",
-            render: (accountId) => {
-              const title = dataAccount.find(
-                (item) => item.accountId === accountId
-              ); // Tìm account theo ID
-              return <Text>{accountId ? title.username : accountId}</Text>; // Hiển thị username hoặc thông báo lỗi
-            },
-          },
-          {
-            title: "Paymentmethoad",
-            dataIndex: "username",
-            key: "username",
-            render: (Username) => <Text>{Username}</Text>,
-          },
-          {
-            title: "total amount",
-            dataIndex: "totalAmount",
-            key: "totalAmount",
-            render: (total) => <Text>{total}</Text>,
-          },
-          {
-            title: "Create On",
-            dataIndex: "createdOn",
-            key: "createdOn",
-            render: (Createon) => new Date(Createon).toLocaleDateString(),
-          },
-
-          {
-            title: "Actions", // Cột chứa các nút
-            render: (record) => {
-              return (
-                <Space size="middle">
-                  <Button type="primary" onClick={() => openModal()}>
-                    Thêm
-                  </Button>
-                  <Button onClick={() => openModal(record)}>Sửa</Button>
-                  <Button danger onClick={() => handleDelete(record)}>
-                    Xóa
-                  </Button>
-                </Space>
-              );
-            },
-          },
-        ]}
-        dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-        rowKey="accountId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
-        scroll={{ x: "max-content" }}
-      ></Table>
-      <Modal
-        className="form_addedit"
-        title={isEditing ? "Sửa thông tin tài khoản" : "Thêm tài khoản mới"}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onOk={handleSave}
-      >
-        <label>phương thức thanh toán</label>
-        <label>ID</label>
-        <Input
-          placeholder="ID Acount"
-          value={AccountRecord.id}
-          onChange={(e) =>
-            setAccountRecord({ ...AccountRecord, id: e.target.value })
-          }
-          disabled
-        />
-        <label>Usernmae</label>
-        <Input
-          placeholder="Username"
-          value={AccountRecord.username}
-          onChange={(e) =>
-            setAccountRecord({ ...AccountRecord, username: e.target.value })
-          }
-        />
-        <label>Email</label>
-        <Input
-          placeholder="Email"
-          value={AccountRecord.email}
-          onChange={(e) =>
-            setAccountRecord({ ...AccountRecord, email: e.target.value })
-          }
-        />
-        <label htmlFor="">Create on</label>
-
-        <Input
-          type="date"
-          placeholder="Create on"
-          value={AccountRecord.createdOn} // Sử dụng createdOn
-          onChange={(e) =>
-            setAccountRecord({ ...AccountRecord, createdOn: e.target.value })
-          } // Cập nhật giá trị
-        />
-        <label htmlFor="">Active</label>
-        <Input
-          placeholder="Is Active"
-          type="text"
-          value={AccountRecord.isActive}
-          onChange={(e) =>
-            setAccountRecord({ ...AccountRecord, isActive: e.target.value })
-          }
-          disabled={!isEditing}
-        />
-      </Modal>
-    </Space>
+    <Table
+      columns={accountColumns}
+      dataSource={data.map(item => ({ ...item, key: item.accountId }))}
+      expandedRowRender={expandedRowRenderCart}
+      pagination={false}
+    />
   );
-}
-export default Cart;
+};
+
+export default AccountTable;

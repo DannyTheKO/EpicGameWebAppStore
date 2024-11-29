@@ -18,8 +18,8 @@ const LoginForm = () => {
         event.preventDefault();
 
         const payload = {
-            Username: username,  // Kiểm tra tên biến phải giống với mô hình backend
-            Password: password   // Kiểm tra tên biến phải giống với mô hình backend
+            Username: username,
+            Password: password
         };
 
         try {
@@ -29,25 +29,31 @@ const LoginForm = () => {
                 }
             });
 
-            console.log(response.data);  // Kiểm tra phản hồi từ server
-            const { loginStateFlag, accountToken, message } = response.data;
+            console.log(response.data);
+            const { loginStateFlag, accountToken, username: returnedUsername, message } = response.data;
 
             if (loginStateFlag) {
                 localStorage.setItem('authToken', accountToken);
-                alert("Login successful!");
-                navigate("/store");
+                localStorage.setItem('username', returnedUsername); // Lưu username từ server
+
+                // Khởi tạo giỏ hàng mới cho tài khoản này nếu chưa có
+                const savedCart = JSON.parse(localStorage.getItem(`cart_${returnedUsername}`)) || [];
+                localStorage.setItem(`cart_${returnedUsername}`, JSON.stringify(savedCart));
+
+                // Chuyển hướng và reload lại trang
+                navigate('/');
+                window.location.reload();
             } else {
                 setErrorMessage(message || "Login failed. Please try again.");
             }
         } catch (error) {
-            console.error("Server responded with error: ", error.response.data);  // Xử lý lỗi nếu có
+            console.error("Server responded with error: ", error.response?.data);
             const statusCode = error.response?.status || 500;
             const serverError = error.response?.data?.message || "Server error occurred. Please try again later.";
-            console.error(`Error ${statusCode}:`, serverError);
             setErrorMessage(
                 statusCode === 401
                     ? "Invalid credentials. Please check your username or password."
-                    : "Server error occurred. Please try again later."
+                    : serverError
             );
         }
     };

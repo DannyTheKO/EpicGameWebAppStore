@@ -1,26 +1,29 @@
  using Application.Interfaces;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CartController : Controller
+public class CartController : _BaseController
 {
 	private readonly ICartService _cartService;
 	private readonly ICartdetailService _cartdetailService;
 	private readonly IGameService _gameService;
 	private readonly IAccountService _accountService;
 	private readonly IPaymentMethodService _paymentMethodService;
+	private readonly IAuthorizationServices _authorizationServices;
 
 	public CartController(
 		ICartService cartService,
 		ICartdetailService cartdetailService,
 		IGameService gameService,
 		IAccountService accountService,
-		IPaymentMethodService paymentMethodService)
+		IPaymentMethodService paymentMethodService,
+		IAuthorizationServices authorizationServices) : base(authorizationServices)
 	{
 		_cartService = cartService;
 		_cartdetailService = cartdetailService;

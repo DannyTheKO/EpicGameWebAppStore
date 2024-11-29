@@ -1,9 +1,10 @@
 import axios from 'axios';
-
+ const token =localStorage.getItem('authToken');
 const apiClient = axios.create({
   baseURL: 'http://localhost:5084', // Địa chỉ URL của ASP.NET Core API
   headers: {
     'Content-Type': 'application/json',
+   'Authorization': `Bearer ${token}`
   },
 });
 export const AddGame = async (game) => {
