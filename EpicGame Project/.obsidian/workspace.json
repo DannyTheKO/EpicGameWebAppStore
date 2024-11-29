@@ -11,21 +11,14 @@
             "id": "1602e8b6be3a625f",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Back-End/Back-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "testFrontend.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "Back-End Progress"
+              "icon": "lucide-file",
+              "title": "testFrontend"
             }
           }
         ]
@@ -170,18 +163,18 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "ce5c66356071bf14",
+  "active": "1602e8b6be3a625f",
   "lastOpenFiles": [
+    "Back-End/Genre.md",
+    "Back-End/ImageGame.md",
+    "testFrontend.md",
     "Back-End/Back-End Progress.md",
     "Untitled.md",
-    "testFrontend.md",
     "Back-End/AccountGame.md",
     "Back-End/Account.md",
-    "ImageGame.md",
     "Back-End/Cart.md",
     "Back-End/CartDetail.md",
     "Back-End/Game.md",
-    "Back-End/Genre.md",
     "Back-End/Discount.md",
     "Back-End/img/Pasted image 20241115132340.png",
     "Back-End/img",
