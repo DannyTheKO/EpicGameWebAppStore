@@ -417,8 +417,6 @@ function Game() {
         >
           {datapublisher.map((publisher) => (
             <Option key={publisher.publisherId} value={publisher.publisherId}>
-              {" "}
-              {/* Sử dụng publisherId làm value */}
               {publisher.name} {/* Hiển thị tên publisher */}
             </Option>
           ))}

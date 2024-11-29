@@ -15,6 +15,15 @@ export const AddGame = async (game) => {
     return null; // Hoặc bạn có thể xử lý theo cách khác
 }
 };
+export const AddPublisher = async (Publisher) => {
+  try {
+    const response = await apiClient.post('/Publisher/createpublisher', Publisher); // Gửi yêu cầu POST đến API
+    return response.data; // Trả về dữ liệu phản hồi
+} catch (error) {
+    console.error("Error adding game:", error.response || error.message);
+    return null; // Hoặc bạn có thể xử lý theo cách khác
+}
+};
 export const AddAccountu = async (Account) => {
   try {
     const response = await apiClient.post('/Account/AddAccount', Account); // Gửi yêu cầu POST đến API

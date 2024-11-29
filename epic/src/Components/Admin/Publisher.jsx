@@ -1,6 +1,6 @@
 import { Button, Space, Table, Typography, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
-import { GetAllPublisher, UpdatePublisher } from "./API";
+import { GetAllPublisher, UpdatePublisher,AddPublisher } from "./API";
 import "./table.css";
 
 const { Text } = Typography;
@@ -101,7 +101,11 @@ function Publisher() {
         // console.log("Thêm sản phẩm mới:", gameRecord);
         // const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
         // console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
+        await AddPublisher(publisherRecord);
 
+        // Cập nhật lại danh sách sau khi thay đổi
+        const updatedDataSource = await GetAllPublisher();
+        setDataSource(updatedDataSource);
         // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",

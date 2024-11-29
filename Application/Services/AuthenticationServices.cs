@@ -81,6 +81,7 @@ public class AuthenticationServices : IAuthenticationServices
 		    new Claim(ClaimTypes.Name, account.Username),
 		    new Claim(ClaimTypes.Role, account.RoleId.ToString()),
 		    new Claim(ClaimTypes.Email, account.Email),
+            // new Claim(ClaimTypes.IsActive, account.IsActive.ToString()),
 	    };
 
 	    var token = new JwtSecurityToken(

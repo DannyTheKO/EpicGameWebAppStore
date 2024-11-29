@@ -1,5 +1,6 @@
 import { Button, Space, Table, Modal, Input, Select, Typography } from "antd";
 import { useEffect, useState } from "react";
+import {jwtDecode} from "jwt-decode";
 import {
   GetAllAccountgame,
   GetAllgame,
@@ -43,6 +44,7 @@ function Accountgame() {
       setLoading(false);
     };
     fetchAccountGame();
+   
   }, []);
 
   const openModal = (record = null) => {

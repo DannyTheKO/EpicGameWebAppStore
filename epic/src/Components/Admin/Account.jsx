@@ -18,6 +18,7 @@ function Account() {
     email: "",
     createdOn: null, // Thống nhất sử dụng createdOn
     isActive: "",
+    password:"",
   });
   useEffect(() => {
     const fetchAccount = async () => {
@@ -55,6 +56,7 @@ function Account() {
         email: "",
         createdOn: null,
         isActive: "Y",
+        password:"",
       });
       setIsEditing(false);
     }
@@ -82,6 +84,7 @@ function Account() {
     if (isEditing) {
       console.log("Lưu dữ liệu đã sửa:", AccountRecord);
       try {
+        
         await UpdateAccount(AccountRecord.id, AccountRecord);
         const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
         setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
@@ -98,53 +101,42 @@ function Account() {
             "An error occurred while deleting the account. Please try again.",
         });
       }
-    } else {
-      console.log("Thêm sản phẩm mới:", AccountRecord);
-      // const addedGame = await AddGame(gameRecord); // thêm mới game
-      // console.log("Added Game:", addedGame);
-      // try {
-      //   await AddAccountu(AccountRecord);
-      //   const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-      //   setDataSource(addDataSource); // Cập nhật state với danh sách mới
+      } else {
 
-      //   Modal.success({
-      //     title: "Account update successfully",
-      //     content: `The account with ID ${AccountRecord.id} has been deleted.`,
-      //   });
-      // } catch (error) {
-      //   console.error("Error deleting account:", error);
-      //   Modal.error({
-      //     title: "Error",
-      //     content:
-      //       "An error occurred while deleting the account. Please try again.",
-      //   });
-      // }
-      try {
-        const roleId = dataRole.find(role => role.name === AccountRecord.role)?.roleId; // Tìm roleId từ tên role
-        if (roleId) {
-          const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
-          await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
-          const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-          setDataSource(addDataSource); // Cập nhật state với danh sách mới
-  
-          Modal.success({
-            title: "Account added successfully",
-            content: `The account with ID ${newAccount.id} has been added.`,
-          });
-        } else {
-          Modal.error({
-            title: "Error",
-            content: "Please select a valid role.",
-          });
-        }
-      } catch (error) {
-        console.error("Error adding account:", error);
-        Modal.error({
-          title: "Error",
-          content: "An error occurred while adding the account. Please try again.",
-        });
+          console.log("Thêm sản phẩm mới:", AccountRecord);
+          try {
+            const roleId = dataRole.find((role) => role.name === AccountRecord.role)?.roleId;
+            console.log(roleId);
+        
+            if (roleId) {
+              const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
+              delete newAccount.role; // Nếu cần loại bỏ key role tránh bị override.
+        
+              await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
+        
+              const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
+              setDataSource(addDataSource); // Cập nhật state với danh sách mới
+        
+              Modal.success({
+                title: "Success",
+                content: "Account added successfully.",
+              });
+            } else {
+              Modal.error({
+                title: "Error",
+                content: "Please select a valid role.",
+              });
+            }
+          } catch (error) {
+            console.error("Error adding account:", error);
+            Modal.error({
+              title: "Error",
+              content: "An error occurred while adding the account. Please try again.",
+            });
+          }
+        
+        
       }
-    }
     setIsModalOpen(false);
   };  
 
