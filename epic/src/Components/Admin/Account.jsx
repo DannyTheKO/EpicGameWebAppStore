@@ -18,7 +18,7 @@ function Account() {
     email: "",
     createdOn: null, // Thống nhất sử dụng createdOn
     isActive: "",
-    password:"",
+    // password:"",
   });
   useEffect(() => {
     const fetchAccount = async () => {

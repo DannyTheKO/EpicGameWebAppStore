@@ -1,79 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
+
 import { GetAllCart } from './API';
 
-const AccountTable = () => {
-  const [data, setData] = useState([]);
+// Cấu trúc bảng con: Cart
+const CartTable = ({ cartData }) => {
+  const cartColumns = [
+    { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
+    { title: 'Payment Method', dataIndex: 'paymentMethodId', key: 'paymentMethodId' },
+  ];
 
-  // Lấy dữ liệu từ hàm GetAllCart
+  return (
+    <Table
+      columns={cartColumns}
+      dataSource={cartData.map(item => ({
+        key: item.cartId,
+        cartId: item.cartId,
+        paymentMethodId: item.paymentMethodId,
+      }))}
+      pagination={false}
+      expandedRowRender={(cartRecord) => <CartDetailTable cartDetails={cartRecord.cartDetails} />}
+    />
+  );
+};
+
+// Cấu trúc bảng con: Cart Details
+const CartDetailTable = ({ cartDetails }) => {
+  const cartDetailColumns = [
+    { title: 'Game Title', dataIndex: 'title', key: 'title' },
+    { title: 'Price', dataIndex: 'price', key: 'price' },
+    { title: 'Discount', dataIndex: 'discount', key: 'discount' },
+  ];
+
+  return (
+    <Table
+      columns={cartDetailColumns}
+      dataSource={cartDetails.map(item => ({
+        key: item.cartDetailId,
+        title: item.cartDetail.title,
+        price: item.cartDetail.price,
+        discount: item.cartDetail.discount,
+      }))}
+      pagination={false}
+    />
+  );
+};
+
+const AccountTable = () => {
+  const [accounts, setAccounts] = useState([]);
+
+  // Lấy dữ liệu từ API khi component mount
   useEffect(() => {
     GetAllCart()
       .then(responseData => {
-        setData(responseData);
+        setAccounts(responseData);
       })
       .catch(error => {
         console.error('Có lỗi khi lấy dữ liệu:', error);
       });
-  }, []); // Chạy khi component mount
+  }, []);
 
-  // Columns cho bảng Account
+  // Các cột của bảng Account
   const accountColumns = [
-    {
-      title: 'Account Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Account ID',
-      dataIndex: 'accountId',
-      key: 'accountId',
-    },
+    { title: 'Account Name', dataIndex: 'name', key: 'name' },
+    { title: 'Account ID', dataIndex: 'accountId', key: 'accountId' },
   ];
-
-  // Expanded row renderer cho Cart
-  const expandedRowRenderCart = (record) => {
-    return (
-      <Table
-        columns={[
-          { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
-          { title: 'Payment Method ID', dataIndex: 'paymentMethodId', key: 'paymentMethodId' },
-        ]}
-        dataSource={record.cart.map(cart => ({
-          key: cart.cartId,
-          cartId: cart.cartId,
-          paymentMethodId: cart.paymentMethodId,
-        }))}
-        pagination={false}
-        expandedRowRender={(cartRecord) => expandedRowRenderCartDetails(cartRecord)}
-      />
-    );
-  };
-
-  // Expanded row renderer cho Cart Details
-  const expandedRowRenderCartDetails = (cartRecord) => {
-    return (
-      <Table
-        columns={[
-          { title: 'Game Title', dataIndex: 'title', key: 'title' },
-          { title: 'Price', dataIndex: 'price', key: 'price' },
-          { title: 'Discount', dataIndex: 'discount', key: 'discount' },
-        ]}
-        dataSource={cartRecord.map(item => ({
-          key: item.cartDetailId,
-          title: item.cartDetail.title,
-          price: item.cartDetail.price,
-          discount: item.cartDetail.discount,
-        }))}
-        pagination={false}
-      />
-    );
-  };
 
   return (
     <Table
       columns={accountColumns}
-      dataSource={data.map(item => ({ ...item, key: item.accountId }))}
-      expandedRowRender={expandedRowRenderCart}
+      dataSource={accounts.map(account => ({
+        key: account.accountId,
+        name: account.name,
+        accountId: account.accountId,
+        cart: account.cart, // Chuyển qua dữ liệu Cart
+      }))}
+      expandedRowRender={(record) => <CartTable cartData={record.cart} />}
       pagination={false}
     />
   );

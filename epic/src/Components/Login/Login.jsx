@@ -45,13 +45,18 @@ const LoginForm = () => {
   
             const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             
+           const active =decodedToken["IsActive"];
+           if(active)
+           {
+            // console.log(decodedToken);
             if (userRole === "Admin"|| userRole ==="Moderator")  {
                 navigate('/admin'); // Chuyển hướng đến trang admin
+                window.location.reload();
             } else {
                 navigate('/');
                 window.location.reload();
             }  // Chuyển hướng và reload lại trang
-              
+           }
             } else {
                 setErrorMessage(message || "Login failed. Please try again.");
             }

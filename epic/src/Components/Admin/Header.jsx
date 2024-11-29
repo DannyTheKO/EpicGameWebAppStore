@@ -3,13 +3,19 @@ import "./header.css";
 import { MdAccountCircle } from "react-icons/md";
 
 function Header() {
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+ 
+    window.location.href = "/"; // Ví dụ chuyển hướng về trang chủ sau khi đăng xuất
+  };
   const menu = (
     <Menu>
       <Menu.Item>
         <a href="thông tin cá nhân ">Thông tin tài khoản</a>
       </Menu.Item>
-      <Menu.Item>
-        <a href="/index">Đăng xuất</a>
+      <Menu.Item onClick={handleLogout}>
+        
+        <a href="/">Đăng xuất</a>
       </Menu.Item>
     </Menu>
   );
@@ -24,5 +30,6 @@ function Header() {
       </Space>
     </div>
   );
+  
 }
 export default Header;
