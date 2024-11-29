@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
-//[Authorize(Roles = "Admin, Moderator, Editor")]
+[Authorize(Roles = "Admin, Moderator")]
 [Route("[controller]")]
 [ApiController]
-public class GameController : Controller
+public class GameController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
@@ -26,7 +26,7 @@ public class GameController : Controller
         IPublisherService publisherService,
 		IImageGameService imageGameService,
 		IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices)
+        IAuthorizationServices authorizationServices) : base(authorizationServices)
     {
         _gameServices = gameServices;
         _genreService = genreService;

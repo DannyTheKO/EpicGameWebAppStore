@@ -7,11 +7,12 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class PublisherController : ControllerBase
+public class PublisherController : _BaseController
 {
     private readonly IPublisherService _publisherService;
+    private readonly IAuthorizationServices _authorizationServices;
 
-    public PublisherController(IPublisherService publisherService)
+	public PublisherController(IPublisherService publisherService, IAuthorizationServices authorizationServices) : base(authorizationServices)
     {
         _publisherService = publisherService;
     }

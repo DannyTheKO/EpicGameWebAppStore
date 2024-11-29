@@ -7,13 +7,15 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class AccountGameController : Controller
+public class AccountGameController : _BaseController
 {
 	private readonly IAccountGameService _accountGameService;
 	private readonly IAccountService _accountService;
 	private readonly IGameService _gameService;
+	private readonly IAuthorizationServices _authorizationServices;
 
-	public AccountGameController(IAccountGameService accountGameService, IAccountService accountService, IGameService gameService)
+	public AccountGameController(IAccountGameService accountGameService, IAccountService accountService, IGameService gameService, IAuthorizationServices authorizationServices) 
+		: base (authorizationServices)
 	{
 		_accountGameService = accountGameService;
 		_accountService = accountService;

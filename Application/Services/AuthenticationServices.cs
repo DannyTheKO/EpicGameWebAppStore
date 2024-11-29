@@ -11,11 +11,13 @@ namespace Application.Services;
 public class AuthenticationServices : IAuthenticationServices
 {
     private readonly IAccountService _accountService;
+    private readonly IRoleService _roleService;
     private readonly IConfiguration _configuration;
 
-    public AuthenticationServices(IAccountService accountService, IConfiguration configuration)
+    public AuthenticationServices(IAccountService accountService, IRoleService roleService, IConfiguration configuration)
     {
         _accountService = accountService;
+        _roleService = roleService;
         _configuration = configuration;
     }
 
@@ -44,8 +46,8 @@ public class AuthenticationServices : IAuthenticationServices
 
         // Create a new account
         account.CreatedOn = DateTime.UtcNow;
-        account.RoleId = 5; // Default Role is "Guest"
-        account.IsActive = "Y"; // TODO: Implement authorization logic later
+        account.RoleId = 5;
+        account.IsActive = "Y"; 
 
         // TODO: Hash the password before saving it
         // account.Password = HashPassword(account.Password);
@@ -60,27 +62,35 @@ public class AuthenticationServices : IAuthenticationServices
     public async Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account)
     {
 	    var existingAccount = await _accountService.GetAccountByUsername(account.Username);
-        // Check Username exist in Account database
-	    if (existingAccount == null) return (false, null, "Username does not exist");
+
+        // Check is that account is allow to be active
+	    if (existingAccount?.IsActive == "N") return (false, null, "Account not allow to be active.");
+
+	    // Check Username exist in Account database
+	    if (existingAccount == null) return (false, null, "Username does not exist.");
+	    
 	    // If Username exists, check if the password is correct
-	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password");
+	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password.");
     
 	    // Generate JWT token instead of cookie authentication
 	    var token = GenerateJwtToken(existingAccount);
-	    return (true, token, "Successfully login");
+	    return (true, token.Result, "Successfully login");
     }
 
-    public string GenerateJwtToken(Account account)
+    public async Task<string> GenerateJwtToken(Account account)
     {
 	    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 	    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+	    var role = await _roleService.GetRoleByAccountId(account.AccountId);
 	    var claims = new[]
 	    {
 		    new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
 		    new Claim(ClaimTypes.Name, account.Username),
-		    new Claim(ClaimTypes.Role, account.RoleId.ToString()),
+		    new Claim(ClaimTypes.Role, role.Name),  // This is what the [Authorize] attribute checks
 		    new Claim(ClaimTypes.Email, account.Email),
+		    new Claim("IsActive", account.IsActive),
+		    new Claim("Permission", role.Permission.ToString())
 	    };
 
 	    var token = new JwtSecurityToken(
