@@ -1,0 +1,2 @@
+- [ ] Thêm Publisher: Lỗi khi thêm puslisher >9, trường website k nhập được
+- [ ] Edit: k nhập được trường website

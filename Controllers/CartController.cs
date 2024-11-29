@@ -47,7 +47,8 @@ public class CartController : _BaseController
                 {
                     cartId = c.CartId,
 					paymentMethodId = c.PaymentMethodId,
-                    cartDetails = c.Cartdetails.Select(cd => new
+					paymentMethod = c.PaymentMethod.Name,
+					cartDetails = c.Cartdetails.Select(cd => new
                     {
                         cartDetailId = cd.CartDetailId,
                         cartDetail = new
