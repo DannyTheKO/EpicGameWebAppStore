@@ -1,0 +1,2 @@
+- [ ] Thêm discount: Không nhập được trường Start, End; không thêm đươcj discount
+- [ ] Edit: Không sửa được Start, End
