@@ -53,13 +53,13 @@ public class ProfileUser : _BaseController
         return Ok(new { success = true, data = result });
     }
 
-    [HttpGet("GetPurchaseHistory")]
-    public async Task<ActionResult<IEnumerable<Cart>>> GetPurchaseHistory()
-    {
-        //var currentAccount = GetDetailAccount();
-        //var purchaseHistory = await _cartService.GetCompletedCartsByUserId(currentAccount.AccountId);
-        //return Ok(new { success = true, data = purchaseHistory });
-    }
+    //[HttpGet("GetPurchaseHistory")]
+    //public async Task<ActionResult<IEnumerable<Cart>>> GetPurchaseHistory()
+    //{
+    //    var currentAccount = GetDetailAccount();
+    //    var purchaseHistory = await _cartService.GetCompletedCartsByUserId(currentAccount.AccountId);
+    //    return Ok(new { success = true, data = purchaseHistory });
+    //}
 
     [HttpGet("GetOwnedGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetOwnedGames()
