@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EpicGameWebAppStore.Controllers.EndUser;
 
 [Authorize]
+[ApiController]
 [Route("Profile/[controller]")]
 public class ProfileUser : _BaseController
 {
@@ -30,41 +31,68 @@ public class ProfileUser : _BaseController
     [HttpGet("GetProfile")]
     public async Task<ActionResult<Account>> GetProfile()
     {
-        var currentAccount = GetDetailAccount();
+        var currentAccount = GetCurrentDetailAccount();
         var profile = await _accountService.GetAccountById(currentAccount.AccountId);
         return Ok(new { success = true, data = profile });
     }
 
     [HttpGet("GetCartList")]
-    public async Task<ActionResult<IEnumerable<Cart>>> GetCartList()
+    public async Task<ActionResult> GetCartList()
     {
-        var currentAccount = GetDetailAccount();
-        var carts = await _cartService.GetCartsByAccountId(currentAccount.AccountId);
-        return Ok(new { success = true, data = carts });
+	    var currentAccount = GetCurrentDetailAccount();
+	    var carts = await _cartService.GetCartsByAccountId(currentAccount.AccountId);
+    
+	    var formattedResponse = new
+	    {
+		    accountId = currentAccount.AccountId,
+		    name = currentAccount.Username,
+		    cart = carts.Select(c => new
+		    {
+			    cartId = c.CartId,
+			    cartStatus = c.CartStatus,
+			    paymentMethodId = c.PaymentMethodId,
+			    paymentMethod = c.PaymentMethod.Name,
+			    cartDetails = c.Cartdetails.Select(cd => new
+			    {
+				    cartDetailId = cd.CartDetailId,
+				    cartDetail = new
+				    {
+					    gameId = cd.Game.GameId,
+					    title = cd.Game.Title,
+					    price = cd.Price,
+					    discount = cd.Discount
+				    }
+			    }).ToList()
+		    }).ToList()
+	    };
+
+	    return Ok(new { success = true, data = formattedResponse });
     }
+
+
 
     [HttpPut("UpdateProfile")]
     public async Task<ActionResult<Account>> UpdateProfile([FromBody] Account updatedAccount)
     {
-        var currentAccount = GetDetailAccount();
+        var currentAccount = GetCurrentDetailAccount();
         updatedAccount.AccountId = currentAccount.AccountId; // Ensure we update the correct account
         
         var result = await _accountService.UpdateAccount(updatedAccount);
         return Ok(new { success = true, data = result });
     }
 
-    //[HttpGet("GetPurchaseHistory")]
-    //public async Task<ActionResult<IEnumerable<Cart>>> GetPurchaseHistory()
-    //{
-    //    var currentAccount = GetDetailAccount();
-    //    var purchaseHistory = await _cartService.GetCompletedCartsByUserId(currentAccount.AccountId);
-    //    return Ok(new { success = true, data = purchaseHistory });
-    //}
+    [HttpGet("GetPurchaseHistory")]
+    public async Task<ActionResult<IEnumerable<Cart>>> GetPurchaseHistory()
+    {
+        var currentAccount = GetCurrentDetailAccount();
+        var purchaseHistory = await _cartService.GetCompleteCartByAccountId(currentAccount.AccountId);
+        return Ok(new { success = true, data = purchaseHistory });
+    }
 
     [HttpGet("GetOwnedGames")]
     public async Task<ActionResult<IEnumerable<Game>>> GetOwnedGames()
     {
-        var currentAccount = GetDetailAccount();
+        var currentAccount = GetCurrentDetailAccount();
         var ownedGames = await _accountGameService.GetAccountGameByAccountId(currentAccount.AccountId);
         return Ok(new { success = true, data = ownedGames });
     }
@@ -72,7 +100,7 @@ public class ProfileUser : _BaseController
     [HttpGet("GetActiveCart")]
     public async Task<ActionResult<Cart>> GetActiveCart()
     {
-        var currentAccount = GetDetailAccount();
+        var currentAccount = GetCurrentDetailAccount();
         var activeCart = await _cartService.GetLatestCart(currentAccount.AccountId);
         return Ok(new { success = true, data = activeCart });
     }
@@ -80,7 +108,7 @@ public class ProfileUser : _BaseController
     [HttpGet("GetCartDetails/{cartId}")]
     public async Task<ActionResult<IEnumerable<Cart>>> GetCartDetails(int cartId)
     {
-        var currentAccount = GetDetailAccount();
+        var currentAccount = GetCurrentDetailAccount();
         var cartDetails = await _cartService.GetCartById(cartId);
 
 		if (cartDetails == null)

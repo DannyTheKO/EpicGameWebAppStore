@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers.EndUser;
 
-[Route("Store/[controller]")]
-[ApiController]
 [Authorize]
+[ApiController]
+[Route("Store/[controller]")]
 public class CheckoutPage : _BaseController
 {
 	private readonly ICartService _cartService;
@@ -24,9 +24,9 @@ public class CheckoutPage : _BaseController
 	}
 
 	[HttpGet("CurrentCartList")]
-	public async Task<ActionResult<IEnumerable<Cart>>> GetCurrentCartList()
+	public async Task<ActionResult<Cart>> GetCurrentCartList()
 	{
-		var carts = await _cartService.GetLatestCart(GetDetailAccount().AccountId);
+		var carts = await _cartService.GetActiveCartByAccountId(GetCurrentDetailAccount().AccountId);
 		return Ok(carts);
 	}
 }

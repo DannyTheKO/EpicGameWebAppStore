@@ -63,6 +63,21 @@ public class CartService : ICartService
 	}
 	#endregion
 
+	public async Task<IEnumerable<Cart>> GetCompleteCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.Where(c => c.CartStatus == "Completed");
+
+		return filtered;
+	}
+
+	public async Task<Cart> GetActiveCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.FirstOrDefault(c => c.CartStatus == "Active");
+		return filtered;
+	}
+
 	public async Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId)
 	{
 		return await _cartRepository.GetAllCartFromAccountId(accountId);

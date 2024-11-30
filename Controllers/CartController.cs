@@ -46,6 +46,7 @@ public class CartController : _BaseController
                 cart = group.Select(c => new
                 {
                     cartId = c.CartId,
+					cartStatus = c.CartStatus,
 					paymentMethodId = c.PaymentMethodId,
 					paymentMethod = c.PaymentMethod.Name,
 					cartDetails = c.Cartdetails.Select(cd => new

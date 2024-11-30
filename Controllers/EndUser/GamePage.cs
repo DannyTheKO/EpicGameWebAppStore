@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers.EndUser;
 
-[Route("Store/[controller]")]
 [ApiController]
+[Route("Store/[controller]")]
 public class GamePage : _BaseController
 {
 	private readonly IAuthorizationServices _authorizationServices;
@@ -62,8 +62,8 @@ public class GamePage : _BaseController
 			});
 
 
-		await _cartService.AddGameToCart(GetDetailAccount().AccountId, request.GameId, request.PaymentMethodId);
-		var (lastestAccountCart, message)= await _cartService.GetLatestCart(GetDetailAccount().AccountId);
+		await _cartService.AddGameToCart(GetCurrentDetailAccount().AccountId, request.GameId, request.PaymentMethodId);
+		var (lastestAccountCart, message)= await _cartService.GetLatestCart(GetCurrentDetailAccount().AccountId);
 		return Ok(new
 		{
 			success = true,

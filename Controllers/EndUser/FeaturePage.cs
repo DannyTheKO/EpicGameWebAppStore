@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace EpicGameWebAppStore.Controllers.EndUser;
 
 
-[Route("Store/[controller]")]
 [ApiController]
+[Route("Store/[controller]")]
 public class FeaturePage : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;

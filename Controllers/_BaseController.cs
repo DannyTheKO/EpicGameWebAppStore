@@ -16,7 +16,7 @@ namespace EpicGameWebAppStore.Controllers
 
 		protected async Task<ActionResult> CheckPermission(string requiredPermission)
 		{
-			var accountDetails = GetDetailAccount();
+			var accountDetails = GetCurrentDetailAccount();
 			var hasPermission = await _authorizationServices.UserHasPermission(accountDetails.AccountId, requiredPermission);
     
 			// Returns null if hasPermission is true, otherwise returns the AccessDenied redirect
@@ -25,7 +25,7 @@ namespace EpicGameWebAppStore.Controllers
 
 
 
-		protected (int AccountId, string Username, string Role, string Email, string IsActive, string Permissions) GetDetailAccount()
+		protected (int AccountId, string Username, string Role, string Email, string IsActive, string Permissions) GetCurrentDetailAccount()
 		{
 			return (
 				AccountId: int.Parse(HttpContext.Items["AccountId"]?.ToString() ?? "0"),
