@@ -11,10 +11,19 @@
             "id": "15d862755fa6b92d",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "kanban",
+              "state": {
+                "file": "Front-End/Front-End Progress.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": [
+                    false,
+                    false
+                  ]
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "Front-End Progress"
             }
           }
         ]
@@ -161,8 +170,8 @@
   },
   "active": "15d862755fa6b92d",
   "lastOpenFiles": [
-    "Front-End/Front-End Progress.md",
     "Front-End/FrontEnd Process.md",
+    "Front-End/Front-End Progress.md",
     "Front-End/Admin/Account.md",
     "Front-End/Admin/Account Game.md",
     "Front-End/Admin/Cart.md",

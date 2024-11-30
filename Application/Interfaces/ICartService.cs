@@ -15,5 +15,5 @@ public interface ICartService
     Task<string> GetAccountByCartId(int accountId);
     Task<string> GetPaymentMethodNameById(int paymentMethodId);
     Task<decimal> CalculateTotalAmount(int cartId);
-    Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId);
+    Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId, int paymentMethodId);
 }
