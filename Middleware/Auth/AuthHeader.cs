@@ -51,7 +51,6 @@ public class AuthHeader
 				context.Items["Email"] = email;
 				context.Items["IsActive"] = isActive;
 				context.Items["Permission"] = permission;
-
 			}
 		}
 

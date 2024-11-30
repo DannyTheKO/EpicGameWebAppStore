@@ -4,7 +4,7 @@
 
 ## BUG
 - [x] Lỗi database khi update cartdetail ✅ 2024-11-18
-- [ ] Dư trường cartdetail trong create, update game
+- [x] Dư trường cartdetail trong create, update game ✅ 2024-11-29
 
 # Complete
 - Basic CRUB Function
