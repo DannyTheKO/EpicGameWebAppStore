@@ -53,7 +53,7 @@ public class AuthController : _BaseController
 	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public ActionResult AccessDenied()
 	{
-		return StatusCode(401, new
+		return Unauthorized( new
 		{
 			accessFlag = false,
 			message = "Access Denied: You don't have permission to access this resource"
