@@ -11,14 +11,10 @@
             "id": "15d862755fa6b92d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Front-End/FrontEnd Process.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "FrontEnd Process"
+              "title": "New tab"
             }
           }
         ]
@@ -165,13 +161,14 @@
   },
   "active": "15d862755fa6b92d",
   "lastOpenFiles": [
+    "Front-End/Front-End Progress.md",
+    "Front-End/FrontEnd Process.md",
     "Front-End/Admin/Account.md",
     "Front-End/Admin/Account Game.md",
     "Front-End/Admin/Cart.md",
     "Front-End/Admin/Discount.md",
     "Front-End/Admin/Game.md",
     "Front-End/Admin/Publisher.md",
-    "Front-End/FrontEnd Process.md",
     "Back-End/Back-End Progress.md",
     "Back-End/Game.md",
     "Back-End/Genre.md",
