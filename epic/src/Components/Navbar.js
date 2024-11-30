@@ -14,6 +14,7 @@ const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
     const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+    const [cartItemCount, setCartItemCount] = useState(0);  // State to store cart item count
 
     // Kiểm tra trạng thái đăng nhập và tên người dùng từ localStorage
     useEffect(() => {
@@ -23,6 +24,13 @@ const Navbar = () => {
             setIsLoggedIn(true);
             setUsername(storedUsername);
         }
+    }, []);
+
+    // Lấy số lượng sản phẩm trong giỏ hàng từ localStorage
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        const savedCart = JSON.parse(localStorage.getItem(`cart_${storedUsername}`)) || [];
+        setCartItemCount(savedCart.length); // Cập nhật số lượng game trong giỏ
     }, []);
 
     // Ẩn/Hiện navbar khi cuộn trang
@@ -63,6 +71,9 @@ const Navbar = () => {
                 {!isHomePage && (
                     <Link to="/cart" className="btn cart">
                         <FaShoppingCart size={20} />
+                        {cartItemCount > 0 && (
+                            <span className="cart-item-count">{cartItemCount}</span>
+                        )}
                     </Link>
                 )}
                 {isLoggedIn ? (

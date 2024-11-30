@@ -187,3 +187,25 @@
         background: #ff4081;
         transform: scale(1.05);
     }
+/* Thêm vào trong file Navbar.css */
+
+.cart-item-count {
+    position: absolute;
+    top: -5px; /* Điều chỉnh để số lượng nằm đúng vị trí */
+    right: -5px; /* Điều chỉnh để số lượng nằm đúng vị trí */
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Thêm bóng nhẹ để số lượng nổi bật */
+}
+
+/* Đảm bảo icon giỏ hàng có vị trí relative để đặt số lượng vào đúng vị trí */
+.btn.cart {
+    position: relative;
+}

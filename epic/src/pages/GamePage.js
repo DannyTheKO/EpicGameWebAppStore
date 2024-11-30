@@ -14,11 +14,17 @@ const GamePage = () => {
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [reviews, setReviews] = useState([]);
+    const [alert, setAlert] = useState(null); // Thêm alert state
+
     const handleAddToCart = () => {
         const authToken = localStorage.getItem('authToken'); // Kiểm tra nếu có authToken
 
         if (!authToken) {
-            alert('You must be logged in to add items to your cart.');
+            setAlert({
+                message: 'Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng.',
+                type: 'error',
+            });
+            setTimeout(() => setAlert(null), 3000); // Ẩn thông báo sau 3 giây
             navigate('/login'); // Điều hướng đến trang đăng nhập
             return;
         }
@@ -29,25 +35,32 @@ const GamePage = () => {
         // Kiểm tra nếu game đã có trong giỏ hàng
         const isGameInCart = storedCart.some(item => item.gameId === game.gameId);
         if (isGameInCart) {
-            alert('This game is already in your cart!');
+            setAlert({
+                message: 'Game này đã có trong giỏ hàng của bạn!',
+                type: 'error',
+            });
+            setTimeout(() => setAlert(null), 3000);
             return;
         }
 
         const newCart = [...storedCart, game]; // Thêm game vào giỏ hàng
         localStorage.setItem(`cart_${username}`, JSON.stringify(newCart)); // Lưu giỏ hàng riêng biệt theo username
 
-        alert(`${game.title} has been added to your cart!`);
+        setAlert({
+            message: `${game.title} đã được thêm vào giỏ hàng!`,
+            type: 'success',
+        });
+        setTimeout(() => setAlert(null), 3000); // Ẩn thông báo sau 3 giây
     };
 
     useEffect(() => {
         const fetchGameDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:5084/Game/GetGameId/${id}`);
+                const response = await fetch(`http://localhost:5084/Store/FeaturePage/GetGameId/${id}`);
                 if (!response.ok) {
                     throw new Error('Failed to load game details.');
                 }
                 const data = await response.json();
-                console.log(data); // Log dữ liệu để kiểm tra
                 setGame(data);
             } catch (error) {
                 setError(error.message);
@@ -101,11 +114,14 @@ const GamePage = () => {
     // Đảm bảo không có ảnh gameplay
     const hasGameplayImages = gameplayImages.length > 0;
 
-    console.log("Gameplay Images:", gameplayImages); // Log danh sách ảnh gameplay để kiểm tra
-
-
     return (
         <div className="game-page">
+            {alert && (
+                <div className={`alert-message ${alert.type}`}>
+                    <span>{alert.message}</span>
+                    <button className="close-btn" onClick={() => setAlert(null)}>&times;</button>
+                </div>
+            )}
             <div className="game-header">
                 <h1>{game.title || 'Game Title'}</h1>
             </div>
@@ -174,21 +190,18 @@ const GamePage = () => {
                         ))}
                     </div>
                     <textarea
-                        placeholder="Write your review here..."
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
+                        placeholder="Write your review here"
+                        rows="5"
                     />
-                    <button type="submit" className="submit-review">Submit Review</button>
+                    <button type="submit" className="submit-review-button">Submit Review</button>
                 </form>
-                <div className="reviews-list">
-                    {reviews.map((r, index) => (
-                        <div key={index} className="review-item">
-                            <div className="review-rating">
-                                {[...Array(r.rating)].map((_, i) => (
-                                    <span key={i} className="star selected">★</span>
-                                ))}
-                            </div>
-                            <p>{r.review}</p>
+                <div className="reviews">
+                    {reviews.map((rev, index) => (
+                        <div key={index} className="review">
+                            <span className="review-rating">Rating: {rev.rating} ★</span>
+                            <p>{rev.review}</p>
                         </div>
                     ))}
                 </div>
@@ -198,4 +211,3 @@ const GamePage = () => {
 };
 
 export default GamePage;
-    

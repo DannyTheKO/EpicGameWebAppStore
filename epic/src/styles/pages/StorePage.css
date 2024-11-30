@@ -121,6 +121,7 @@ a {
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right:30px;
 }
 
     .game-item:hover {
@@ -129,9 +130,9 @@ a {
     }
 
     .game-item img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
+        width: 100%; /* Chiều rộng đầy đủ */
+        aspect-ratio: 3 / 4; /* Tỷ lệ 3:4 */
+        object-fit: cover; /* Đảm bảo hình ảnh lấp đầy khung và giữ tỷ lệ */
         border-bottom: 2px solid aqua;
         transition: transform 0.3s ease;
     }

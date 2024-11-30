@@ -56,4 +56,17 @@ public class FeaturePage : _BaseController
 		var topNewReleases = await _gameServices.GetTopNewReleases(10); // Lấy 10 game mới phát hành
 		return Ok(topNewReleases);
 	}
+
+    [HttpGet("GetGameId/{gameId}")]
+    public async Task<ActionResult<Game>> GetGameById(int gameId)
+    {
+        var game = await _gameServices.GetGameById(gameId);
+        if (game == null) return NotFound(new
+        {
+            success = false,
+            message = "Requested game is not found!"
+        });
+
+        return Ok(game);
+    }
 }

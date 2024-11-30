@@ -9,22 +9,20 @@
 }
 
 .banner {
-
     display: flex;
     width: 100vw; /* Mở rộng để tất cả ảnh nằm trong banner */
-    height: 100vh;
     animation: slide 15s infinite;
 }
 
 .banner-image {
     margin-top: 70px;
-    width: 100vw; /* Khít với chiều ngang màn hình */
-    height: 95vh;
-    object-fit: cover;
+    width: 100vw; /* Chiều rộng của ảnh chiếm toàn bộ màn hình */
+    height: calc(100vw / 3); /* Tính chiều cao theo tỷ lệ 3:1 */
+    object-fit: cover; /* Cắt bớt ảnh nếu cần để giữ tỷ lệ */
 }
 
 .game-section {
-    margin-top: 40px;
+    margin-top: 20px;
     padding: 20px;
 }
 
@@ -54,12 +52,13 @@
     margin-left:40px;
 }
 
-.game-item img {
-    width: 100%;
-    height: 160px; /* Chiều cao cố định cho hình ảnh */
-    object-fit: cover;
-    border-bottom: 2px solid #00ffff; /* Đường kẻ dưới hình */
-}
+    .game-item img {
+        width: 100%;
+        height: auto; /* Đảm bảo tỷ lệ 3:4 cho hình ảnh */
+        aspect-ratio: 3 / 4; /* Tỷ lệ ảnh 3:4 */
+        object-fit: cover; /* Giữ cho ảnh không bị méo */
+        border-bottom: 2px solid #00ffff; /* Đường kẻ dưới hình */
+    }
 
     .game-item h3 {
         margin: 10px 0 5px;

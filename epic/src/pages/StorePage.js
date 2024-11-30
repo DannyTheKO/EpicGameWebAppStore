@@ -14,7 +14,7 @@ const StorePage = () => {
     // Fetch games from API
     const fetchGames = async () => {
         try {
-            const response = await fetch('http://localhost:5084/Game/GetAll');
+            const response = await fetch('http://localhost:5084/Store/FeaturePage/GetAll');
             const data = await response.json();
 
             // Update images for each game
