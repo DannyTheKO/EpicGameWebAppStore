@@ -33,7 +33,8 @@ function Discount() {
         const [res, game] = await Promise.all([GetAllDiscount(), GetAllgame()]);
         setDataSource(res || []);
         setDataGame(game || []);
-        setCount(res.length);
+        const maxId = res.length > 0 ? Math.max(...res.map(item => item.discountId)) : 0;
+        setCount(maxId);
       } catch (error) {
         console.log("lỗi load data");
       }
@@ -56,7 +57,7 @@ function Discount() {
       setIsEditing(true); // Chế độ sửa
     } else {
       setDiscountRecord({
-        id: "",
+        id: Count+1,
         gameid: "",
         percent: 0,
         code: "",
