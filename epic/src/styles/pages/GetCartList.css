@@ -1,0 +1,135 @@
+﻿/* Cập nhật kiểu dáng cho trang giỏ hàng */
+.cart-list-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #1c1c1c;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #fff;
+}
+
+    .cart-list-container h2 {
+        text-align: center;
+        color: #00e5e5;
+        font-size: 32px;
+        margin-bottom: 25px;
+    }
+
+.cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cart-item {
+    background-color: #2c2c2c;
+    padding: 18px 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .cart-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .cart-header h3 {
+        font-size: 22px;
+        color: #fff;
+    }
+
+.status {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 5px;
+}
+
+    .status.pending {
+        background-color: #ff9800;
+        color: #fff;
+    }
+
+    .status.completed {
+        background-color: #4caf50;
+        color: #fff;
+    }
+
+.cart-summary {
+    font-size: 15px;
+    color: #bbb;
+    margin-top: 10px;
+}
+
+/* Chi tiết giỏ hàng */
+.cart-detail-container {
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn {
+    background-color: #00e5e5;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+    .back-btn:hover {
+        background-color: #00b0b0;
+    }
+
+.cart-detail h3 {
+    text-align: center;
+    color: #00e5e5;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-item .game-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid #444;
+    color: #e0e0e0;
+}
+
+    .game-item:last-child {
+        border-bottom: none;
+    }
+
+    .game-item span {
+        flex: 1;
+        text-align: left;
+    }
+
+        .game-item span:nth-child(2) {
+            text-align: center;
+        }
+
+        .game-item span:nth-child(3) {
+            text-align: right;
+            color: #ff5722;
+        }

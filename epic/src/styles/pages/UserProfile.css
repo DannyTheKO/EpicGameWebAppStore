@@ -1,0 +1,93 @@
+﻿.user-profile {
+    display: flex;
+    height: calc(100vh - 80px); /* Trừ chiều cao navbar (giả sử navbar cao 80px) */
+    margin-top: 70px; /* Đẩy toàn bộ nội dung xuống dưới để tránh bị navbar che */
+    background-color: #161b22; /* Tông màu nền tối */
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #1c1f26; /* Màu sidebar */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-right: 2px solid #00ffff; /* Viền phát sáng */
+}
+
+    .sidebar button {
+        background-color: transparent;
+        color: #ffffff;
+        font-size: 1rem;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 25px;
+        text-align: left;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .sidebar button:hover {
+            background-color: aqua;
+            color: #000;
+            transform: translateX(10px); /* Hiệu ứng di chuyển nhẹ */
+        }
+
+        .sidebar button.active {
+            background-color: #00ffff; /* Màu nút đang chọn */
+            color: #000;
+            font-weight: bold;
+        }
+
+/* Nội dung bên phải */
+.content {
+    flex: 1; /* Chiếm toàn bộ không gian còn lại */
+    padding: 20px;
+    overflow-y: auto; /* Cuộn nếu nội dung dài hơn chiều cao */
+}
+
+    .content div {
+        background-color: #23272e;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-profile {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%; /* Chiều rộng đầy đủ trên màn hình nhỏ */
+        border-right: none;
+        border-bottom: 2px solid #00ffff;
+        flex-direction: row;
+        overflow-x: auto; /* Cuộn ngang nếu quá dài */
+    }
+
+        .sidebar button {
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+        }
+}

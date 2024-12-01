@@ -76,7 +76,7 @@ a {
 .genre-container {
     display: flex;
     flex: 1; /* Cho phép giãn đều trong không gian */
-    max-width: 300px; /* Đặt chiều rộng tối đa cho dropdown thể loại */
+    max-width: 250px; /* Đặt chiều rộng tối đa cho dropdown thể loại */
     align-items: center; /* Căn giữa theo chiều dọc */
     gap: 10px; /* Khoảng cách giữa label và select */
 }

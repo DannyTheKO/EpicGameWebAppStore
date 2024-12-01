@@ -16,7 +16,9 @@ const GamePage = () => {
     const [reviews, setReviews] = useState([]);
     const [alert, setAlert] = useState(null); // Thêm alert state
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e) => {
+        e.preventDefault(); // Ngừng hành động mặc định (nếu có)
+
         const authToken = localStorage.getItem('authToken'); // Kiểm tra nếu có authToken
 
         if (!authToken) {
@@ -50,8 +52,14 @@ const GamePage = () => {
             message: `${game.title} đã được thêm vào giỏ hàng!`,
             type: 'success',
         });
-        setTimeout(() => setAlert(null), 3000); // Ẩn thông báo sau 3 giây
+
+        // Sử dụng window.location.replace() để reload lại trang mà không giật
+        setTimeout(() => {
+            window.location.replace(window.location.href); // Reload trang nhanh chóng mà không tạo hiệu ứng nhấp nháy
+        }, 3000); // Sau 3 giây, reload lại trang sau khi thông báo ẩn đi
+
     };
+
 
     useEffect(() => {
         const fetchGameDetails = async () => {
