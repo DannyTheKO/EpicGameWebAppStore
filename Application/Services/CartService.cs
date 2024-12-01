@@ -63,6 +63,21 @@ public class CartService : ICartService
 	}
 	#endregion
 
+	public async Task<IEnumerable<Cart>> GetCompleteCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.Where(c => c.CartStatus == "Completed");
+
+		return filtered;
+	}
+
+	public async Task<Cart> GetActiveCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.FirstOrDefault(c => c.CartStatus == "Active");
+		return filtered;
+	}
+
 	public async Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId)
 	{
 		return await _cartRepository.GetAllCartFromAccountId(accountId);
@@ -84,7 +99,7 @@ public class CartService : ICartService
 	{
 		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
 		var filtered = existingCarts.OrderByDescending(c => c.CreatedOn).FirstOrDefault();
-		if (existingCarts == null)
+		if (filtered == null)
 		{
 			return (null, "Cart Not Found!");
 		}
@@ -92,7 +107,7 @@ public class CartService : ICartService
 		return (filtered, "Found!");
 	}
 
-	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
+	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId, int paymentMethodId)
 	{
 		var (existingCart, message)= await GetLatestCart(accountId); // Get most recent cart
 
@@ -102,6 +117,7 @@ public class CartService : ICartService
 			var newCart = new Cart
 			{
 				AccountId = accountId,
+				PaymentMethodId = paymentMethodId,
 				CreatedOn = DateTime.UtcNow,
 				TotalAmount = 0,
 				Cartdetails = new List<Cartdetail>()
@@ -111,6 +127,8 @@ public class CartService : ICartService
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
+				Price = (await _gameRepository.GetById(gameId)).Price,
+				Discount = 0
 			};
 
 			// Add CartDetail into new Cart

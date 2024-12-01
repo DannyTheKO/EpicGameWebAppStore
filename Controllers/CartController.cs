@@ -46,6 +46,7 @@ public class CartController : _BaseController
                 cart = group.Select(c => new
                 {
                     cartId = c.CartId,
+					cartStatus = c.CartStatus,
 					paymentMethodId = c.PaymentMethodId,
 					paymentMethod = c.PaymentMethod.Name,
 					cartDetails = c.Cartdetails.Select(cd => new
@@ -163,7 +164,7 @@ public class CartController : _BaseController
 
 	//POST: Cart/AddToCart
 	[HttpPost("AddToCart")]
-	public async Task<ActionResult> AddToCart(int accountId, int gameId)
+	public async Task<ActionResult> AddToCart(int accountId, int gameId, int paymentMethodId)
 	{
 		var checkAccount = await _accountService.GetAccountById(accountId);
 		if (checkAccount == null) // Not existed
@@ -185,7 +186,7 @@ public class CartController : _BaseController
 			});
 		}
 
-		var (cart,message) = await _cartService.AddGameToCart(accountId, gameId);
+		var (cart,message) = await _cartService.AddGameToCart(accountId, gameId, paymentMethodId);
 		return Ok(new
 		{
 			success = true,

@@ -1,6 +1,5 @@
-﻿namespace EpicGameWebAppStore.Controllers.BusinessUser
+﻿namespace EpicGameWebAppStore.Controllers.BusinessUser;
+public class Dashboard
 {
-	public class Dashboard
-	{
-	}
+
 }

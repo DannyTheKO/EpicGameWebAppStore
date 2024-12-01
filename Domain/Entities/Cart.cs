@@ -14,6 +14,8 @@ public class Cart
 
     public DateTime? CreatedOn { get; set; }
 
+    public string? CartStatus { get; set; }
+
     [JsonIgnore]
     public virtual Account Account { get; set; } = null!;
 
