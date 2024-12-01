@@ -39,35 +39,38 @@ public class ProfileUser : _BaseController
     [HttpGet("GetCartList")]
     public async Task<ActionResult> GetCartList()
     {
-	    var currentAccount = GetCurrentDetailAccount();
-	    var carts = await _cartService.GetCartsByAccountId(currentAccount.AccountId);
-    
-	    var formattedResponse = new
-	    {
-		    accountId = currentAccount.AccountId,
-		    name = currentAccount.Username,
-		    cart = carts.Select(c => new
-		    {
-			    cartId = c.CartId,
-			    cartStatus = c.CartStatus,
-			    paymentMethodId = c.PaymentMethodId,
-			    paymentMethod = c.PaymentMethod.Name,
-			    cartDetails = c.Cartdetails.Select(cd => new
-			    {
-				    cartDetailId = cd.CartDetailId,
-				    cartDetail = new
-				    {
-					    gameId = cd.Game.GameId,
-					    title = cd.Game.Title,
-					    price = cd.Price,
-					    discount = cd.Discount
-				    }
-			    }).ToList()
-		    }).ToList()
-	    };
+        var currentAccount = GetCurrentDetailAccount();
+        var carts = await _cartService.GetCartsByAccountId(currentAccount.AccountId);
 
-	    return Ok(new { success = true, data = formattedResponse });
+        var formattedResponse = new
+        {
+            accountId = currentAccount.AccountId,
+            name = currentAccount.Username,
+            cart = carts.Select(c => new
+            {
+                cartId = c.CartId,
+                cartStatus = c.CartStatus,
+                paymentMethodId = c.PaymentMethodId,
+                paymentMethod = c.PaymentMethod.Name,
+                createdAt = c.CreatedOn?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A",// Nếu null, trả về "N/A"
+                total = c.TotalAmount,
+                cartDetails = c.Cartdetails.Select(cd => new
+                {
+                    cartDetailId = cd.CartDetailId,
+                    cartDetail = new
+                    {
+                        gameId = cd.Game.GameId,
+                        title = cd.Game.Title,
+                        price = cd.Price,
+                        discount = cd.Discount
+                    }
+                }).ToList()
+            }).ToList()
+        };
+
+        return Ok(new { success = true, data = formattedResponse });
     }
+
 
 
 

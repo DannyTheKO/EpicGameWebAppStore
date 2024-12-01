@@ -1,135 +1,185 @@
-﻿/* Cập nhật kiểu dáng cho trang giỏ hàng */
-.cart-list-container {
+﻿.cart-list-container {
+    background-color: #1a1a1a;
+    color: #ffffff;
     padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 1000px;
-    margin: 0 auto;
-    background-color: #1c1c1c;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    color: #fff;
+    margin: auto;
 }
 
     .cart-list-container h2 {
+        font-size: 1.8rem;
+        color: aqua;
+        margin-bottom: 15px;
         text-align: center;
-        color: #00e5e5;
-        font-size: 32px;
-        margin-bottom: 25px;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
     }
 
-.cart-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-.cart-item {
-    background-color: #2c2c2c;
-    padding: 18px 24px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-    .cart-item:hover {
-        transform: scale(1.02);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    .cart-table th,
+    .cart-table td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #333;
     }
 
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
+    .cart-table th {
+        background-color: #333;
+        font-size: 18px;
+    }
 
-    .cart-header h3 {
-        font-size: 22px;
-        color: #fff;
+    .cart-table td {
+        background-color: #2d2d2d;
+    }
+
+    .cart-table tr:hover {
+        background-color: #383838;
+        cursor: pointer;
     }
 
 .status {
-    font-size: 14px;
-    font-weight: bold;
-    padding: 4px 8px;
+    padding: 5px 10px;
     border-radius: 5px;
+    font-weight: bold;
 }
-
-    .status.pending {
-        background-color: #ff9800;
-        color: #fff;
-    }
 
     .status.completed {
         background-color: #4caf50;
-        color: #fff;
     }
 
-.cart-summary {
-    font-size: 15px;
-    color: #bbb;
-    margin-top: 10px;
+    .status.pending {
+        background-color: #f44336;
+    }
+
+/* Nút Xem Chi Tiết */
+.view-detail-btn {
+    background-color: #00c5c7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
 }
+
+    .view-detail-btn:hover {
+        background-color: #008f8f;
+    }
 
 /* Chi tiết giỏ hàng */
+/* Cập nhật chung cho phần giỏ hàng */
 .cart-detail-container {
-    padding: 20px;
     background-color: #2c2c2c;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    color: #ffffff;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+    .cart-detail-container h3 {
+        font-size: 1.8rem;
+        color: aqua;
+        margin-bottom: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    .cart-detail-container h4 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+/* Cập nhật cho bảng chi tiết giỏ hàng */
+.cart-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .cart-items-table th,
+    .cart-items-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border: 1px solid #333;
+    }
+
+    .cart-items-table th {
+        background-color: #333;
+        font-size: 18px;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+
+    .cart-items-table td {
+        background-color: #2d2d2d;
+        color: #ffffff;
+    }
+
+    .cart-items-table tr:hover {
+        background-color: #383838;
+        cursor: pointer;
+    }
+
+    .cart-items-table td .price {
+        color: #00c5c7; /* Aqua color for price */
+    }
+
+    .cart-items-table td .discount {
+        color: #f44336; /* Red color for discount */
+        font-weight: bold;
+    }
+
+/* Thêm các phần trang trí cho nút quay lại */
 .back-btn {
-    background-color: #00e5e5;
+    background-color: #00c5c7;
+    color: white;
     border: none;
     padding: 10px 20px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
     border-radius: 5px;
+    cursor: pointer;
     margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 16px;
 }
 
     .back-btn:hover {
-        background-color: #00b0b0;
+        background-color: #008f8f;
     }
 
-.cart-detail h3 {
-    text-align: center;
-    color: #00e5e5;
-    font-size: 28px;
-    margin-bottom: 20px;
+/* Các class cho trạng thái giỏ hàng */
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
-.cart-items {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.cart-item .game-item {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    padding: 8px 0;
-    border-bottom: 1px solid #444;
-    color: #e0e0e0;
-}
-
-    .game-item:last-child {
-        border-bottom: none;
+    .status.completed {
+        background-color: #4caf50; /* Green for completed */
     }
 
-    .game-item span {
-        flex: 1;
-        text-align: left;
+    .status.pending {
+        background-color: #f44336; /* Red for pending */
     }
 
-        .game-item span:nth-child(2) {
-            text-align: center;
-        }
-
-        .game-item span:nth-child(3) {
-            text-align: right;
-            color: #ff5722;
-        }

@@ -1,49 +1,91 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import DetailAccountProfile from './DetailAccountProfile'; // Component cho chi tiết tài khoản
 import GetCartList from './GetCartList'; // Component cho danh sách giỏ hàng
 import '../styles/pages/UserProfile.css';
 
 const UserProfile = () => {
     const [activeSection, setActiveSection] = useState('detail');
+    const [user, setUser] = useState(null); // State lưu thông tin người dùng
+    const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
+    const [carts, setCarts] = useState([]); // State để lưu danh sách giỏ hàng
 
-    // Dữ liệu mẫu cho giỏ hàng (thay bằng dữ liệu thật từ backend)
-    const sampleCarts = [
-        {
-            id: 'CART001',
-            total: 120.5,
-            status: 'Completed',
-            createdAt: '2024-12-01',
-            games: [
-                { name: 'Game A', price: 50, discount: 10 },
-                { name: 'Game B', price: 70, discount: 0 },
-            ],
-        },
-        {
-            id: 'CART002',
-            total: 80.0,
-            status: 'Pending',
-            createdAt: '2024-12-02',
-            games: [
-                { name: 'Game C', price: 80, discount: 0 },
-            ],
-        },
-    ];
+    // Lấy token từ localStorage (giả sử bạn đã lưu token sau khi đăng nhập)
+    const accountToken = localStorage.getItem('authToken'); // Hoặc sử dụng cookie hoặc context
+
+    // Gọi API để lấy thông tin người dùng
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await fetch('http://localhost:5084/Profile/ProfileUser/GetProfile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accountToken}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user profile');
+                }
+
+                const data = await response.json();
+                console.log('User profile data:', data); // Kiểm tra phản hồi từ API
+
+                if (data.success) {
+                    setUser(data.data); // Lưu thông tin người dùng vào state
+                } else {
+                    console.error('Error fetching user profile');
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            } finally {
+                setLoading(false); // Cập nhật trạng thái tải
+            }
+        };
+
+        if (accountToken) {
+            fetchUserProfile();
+        } else {
+            setLoading(false); // Nếu không có token, không làm gì
+        }
+    }, [accountToken]);
+
+    // Fetch danh sách giỏ hàng khi nhấn nút "Get Cart List"
+    const fetchCartList = async () => {
+        try {
+            const response = await fetch('http://localhost:5084/Profile/ProfileUser/GetCartList', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accountToken}`,
+                    'Accept': 'application/json',
+                },
+            });
+            const data = await response.json();
+            console.log('Cart list data:', data); // Kiểm tra phản hồi từ API
+
+            if (data.success) {
+                setCarts(data.data.cart); // Lưu danh sách giỏ hàng vào state
+            } else {
+                console.error('Failed to fetch cart list');
+            }
+        } catch (error) {
+            console.error('Error fetching cart list:', error);
+        }
+    };
 
     // Render nội dung bên phải dựa trên phần section
     const renderSection = () => {
+        console.log('User:', user); // Kiểm tra dữ liệu user
+
         switch (activeSection) {
             case 'detail':
-                return (
-                    <DetailAccountProfile
-                        user={{
-                            username: 'john_doe',
-                            password: '12345678',
-                            email: 'john.doe@example.com',
-                        }}
-                    />
+                return loading ? (
+                    <div>Loading...</div> // Hiển thị khi đang tải thông tin
+                ) : (
+                    <DetailAccountProfile user={user} />
                 );
             case 'cart':
-                return <GetCartList carts={sampleCarts} />;
+                return <GetCartList carts={carts} />; // Hiển thị danh sách giỏ hàng
             case 'update':
                 return <div>Form to Update Profile</div>;
             case 'history':
@@ -70,7 +112,10 @@ const UserProfile = () => {
                 </button>
                 <button
                     className={activeSection === 'cart' ? 'active' : ''}
-                    onClick={() => setActiveSection('cart')}
+                    onClick={() => {
+                        setActiveSection('cart');
+                        fetchCartList(); // Fetch giỏ hàng khi nhấn nút
+                    }}
                 >
                     Get Cart List
                 </button>

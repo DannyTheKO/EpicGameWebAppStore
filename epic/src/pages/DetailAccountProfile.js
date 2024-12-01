@@ -8,6 +8,10 @@ const DetailAccountProfile = ({ user }) => {
         setShowPassword(!showPassword);
     };
 
+    if (!user) {
+        return <div>No user data available</div>;
+    }
+
     return (
         <div className="detail-account-profile">
             <h2>Account Details</h2>
@@ -16,21 +20,21 @@ const DetailAccountProfile = ({ user }) => {
                 <span>{user.username}</span>
             </div>
             <div className="profile-item">
+                <label>Email:</label>
+                <span>{user.email}</span>
+            </div>
+            <div className="profile-item">
                 <label>Password:</label>
                 <div className="password-container">
                     <input
                         type={showPassword ? "text" : "password"}
-                        value={user.password}
+                        value={user.password || ''} // Don't expose password if it's sensitive
                         readOnly
                     />
                     <button onClick={togglePasswordVisibility}>
                         {showPassword ? "Hide" : "Show"}
                     </button>
                 </div>
-            </div>
-            <div className="profile-item">
-                <label>Email:</label>
-                <span>{user.email}</span>
             </div>
         </div>
     );
