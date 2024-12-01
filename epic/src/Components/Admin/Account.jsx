@@ -2,6 +2,7 @@ import { Button, Space, Table, Modal, Input, Select, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { GetAccount, GetRole, UpdateAccount, AddAccountu } from "./API";
 import "./table.css";
+import {jwtDecode} from 'jwt-decode';
 const { Text } = Typography;
 const { Option } = Select;
 function Account() {
@@ -35,7 +36,13 @@ function Account() {
     };
     fetchAccount();
   }, []);
-
+  const isAdmin = () => {
+    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const decodedToken = jwtDecode(role);
+    const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return userRole === "Admin";
+  
+  };
   const openModal = (record = null) => {
     if (record) {
       const matchedRole = dataRole.find(
@@ -63,22 +70,51 @@ function Account() {
     setIsModalOpen(true);
   };
 
-  const validateGameRecord = () => {
-    // const { title, author, price, rating, release, description } = gameRecord;
-
-    // // Kiểm tra các trường bắt buộc
-    // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-    //     Modal.error({
-    //         title: 'Lỗi',
-    //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-    //     });
-    //     return false;
-    // }
-
-    return true;
+  const validateAccountRecord = () => {
+    const { username, email, role, isActive } = AccountRecord;
+  
+    // Kiểm tra các trường bắt buộc
+    if (!username || !email || !role || !isActive) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra định dạng email
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(email)) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập một địa chỉ email hợp lệ.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra nếu Role không hợp lệ
+    if (!role) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng chọn một quyền hợp lệ.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra nếu trạng thái "Is Active" không hợp lệ
+    if (isActive !== "Y" && isActive !== "N") {
+      Modal.error({
+        title: "Lỗi",
+        content: "Trạng thái 'Is Active' phải là 'Y' hoặc 'N'.",
+      });
+      return false;
+    }
+  
+    return true; // Nếu tất cả các kiểm tra đều hợp lệ
   };
+  
   const handleSave = async () => {
-    if (!validateGameRecord()) {
+    if (!validateAccountRecord()) {
       return;
     }
     if (isEditing) {
@@ -213,6 +249,7 @@ function Account() {
             dataIndex: "createdOn",
             key: "createdOn",
             render: (Createon) => new Date(Createon).toLocaleDateString(),
+            
           },
           {
             title: "Is Active",
@@ -224,15 +261,23 @@ function Account() {
             title: "Actions", // Cột chứa các nút
             render: (record) => {
               return (
-                <Space size="middle">
-                  <Button type="primary" onClick={() => openModal()}>
-                    Thêm
-                  </Button>
-                  <Button onClick={() => openModal(record)}>Sửa</Button>
-                  <Button danger onClick={() => handleDelete(record)}>
-                    Xóa
-                  </Button>
-                </Space>
+             <Space size="middle">
+          
+              { isAdmin() &&
+               <Button onClick={() => openModal()} type="primary">
+               Add
+             </Button>
+             }
+               <Button onClick={() => openModal(record)} type="primary">
+                 Edit
+               </Button>
+              {
+               isAdmin() &&
+               <Button danger onClick={() => handleDelete(record)}>
+               Delete
+             </Button>
+              }
+             </Space>
               );
             },
           },
@@ -274,7 +319,7 @@ function Account() {
             setAccountRecord({ ...AccountRecord, email: e.target.value })
           }
         />
-        <label htmlFor="">Create on</label>
+        <label >Create on</label>
 
         <Input
           type="date"

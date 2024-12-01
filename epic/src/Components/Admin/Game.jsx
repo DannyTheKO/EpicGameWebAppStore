@@ -9,9 +9,9 @@ import {
   Select,
 } from "antd";
 import { useEffect, useState } from "react";
+import {jwtDecode} from 'jwt-decode';
 import {
   GetAllgame,
-  AddGame,
   DeleteGame,
   GetAllPublisher,
   GetAllGenre,
@@ -31,6 +31,7 @@ function Game() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  // const [isAdmin, setIsAdmin] = useState(false);
   const [gameRecord, setGameRecord] = useState({
     gameId: "", // Sử dụng gameId làm ID duy nhất
     title: "",
@@ -71,6 +72,14 @@ function Game() {
     }, 0); // Khởi tạo maxId là 0
   };
 
+  const isAdmin = () => {
+    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const decodedToken = jwtDecode(role);
+    const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return userRole === "Admin";
+  
+  };
+  
   // Open modal to add or edit a game
   const openModal = (record = null) => {
     if (record) {
@@ -365,7 +374,7 @@ function Game() {
     }
 
     // Kiểm tra Price phải lớn hơn 0
-    if (price <= 0) {
+    if (price < 0) {
       Modal.error({
         title: "Error",
         content: "Price must be greater than 0.",
@@ -460,15 +469,21 @@ function Game() {
       key: "actions",
       render: (record) => (
         <Space size="middle">
+          
+         { isAdmin() &&
           <Button onClick={() => openModal()} type="primary">
-            Add
-          </Button>
+          Add
+        </Button>
+        }
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
+         {
+          isAdmin() &&
           <Button danger onClick={() => handleDelete(record)}>
-            Delete
-          </Button>
+          Delete
+        </Button>
+         }
         </Space>
       ),
     },

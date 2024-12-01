@@ -2,7 +2,7 @@ import { Button, Space, Table, Typography, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { GetAllPublisher, UpdatePublisher,AddPublisher } from "./API";
 import "./table.css";
-
+import {jwtDecode} from 'jwt-decode';
 const { Text } = Typography;
 
 function Publisher() {
@@ -30,7 +30,13 @@ function Publisher() {
     };
     fetchGame();
   }, []);
-
+  const isAdmin = () => {
+    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const decodedToken = jwtDecode(role);
+    const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return userRole === "Admin";
+  
+  };
   const openModal = (record = null) => {
     if (record) {
       setpublisherRecord(record);
@@ -49,28 +55,60 @@ function Publisher() {
     setIsModalOpen(true); // Mở modal
   };
 
-  const handleDelete = async (record) => {
-    // Chuyển tham số record vào ngay trong dấu ngoặc
-    // try {
-    //     // await DeleteGame(record.gameId); // Gọi hàm DeleteGame với gameId
-    //     setDataSource(dataSource.filter((item) => item.gameId !== record.gameId)); // Cập nhật danh sách
-    //     console.log(`Xóa game với ID: ${record.gameId} thành công!`);
-    // } catch (error) {
-    //     console.error("Lỗi khi xóa game:", error); // Xử lý lỗi nếu có
-    // }
+  
+  const validatePublisherRecord = () => {
+    const { name, phone, email, address, website } = publisherRecord;
+  
+    // Kiểm tra tên nhà sản xuất
+    if (!name) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập tên nhà sản xuất.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra email (đảm bảo là email hợp lệ)
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!email || !emailRegex.test(email)) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập địa chỉ email hợp lệ.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra số điện thoại (đảm bảo là số hợp lệ)
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phone || !phoneRegex.test(phone)) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập số điện thoại hợp lệ (10-15 chữ số).",
+      });
+      return false;
+    }
+  
+    // Kiểm tra địa chỉ
+    if (!address) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập địa chỉ.",
+      });
+      return false;
+    }
+  
+    // Kiểm tra website (nếu có) - đảm bảo là URL hợp lệ
+    if (website && !/^https?:\/\/[^\s]+$/.test(website)) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng nhập địa chỉ website hợp lệ.",
+      });
+      return false;
+    }
+  
+    return true; // Nếu tất cả các trường hợp lệ
   };
-  const validateGameRecord = () => {
-    // const { title, author, price, rating, release, description } = gameRecord;
-    // // Kiểm tra các trường bắt buộc
-    // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-    //     Modal.error({
-    //         title: 'Lỗi',
-    //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-    //     });
-    //     return false;
-    // }
-    // return true;
-  };
+  
   const handleSave = async () => {
     if (isEditing) {
       console.log(publisherRecord.publisherId, publisherRecord);
@@ -171,11 +209,17 @@ function Publisher() {
             key: "actions",
             render: (record) => (
               <Space size="middle">
-                <Button type="primary" onClick={() => openModal()}>
-                  Thêm{" "}
-                </Button>
-                <Button onClick={() => openModal(record)}>Sửa</Button>
-              </Space>
+          
+              { isAdmin() &&
+               <Button onClick={() => openModal()} type="primary">
+               Add
+             </Button>
+             }
+               <Button onClick={() => openModal(record)} type="primary">
+                 Edit
+               </Button>
+              
+             </Space>
             ),
             className: "text-center",
           },

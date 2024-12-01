@@ -1,84 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
+import { GetAllCart } from './API'; // Hàm giả định để lấy dữ liệu
 
-import { GetAllCart } from './API';
+// Cột cho bảng Account
+const accountColumns = [
+  { title: 'Account Name', dataIndex: 'name', key: 'name' },
+  { title: 'Account ID', dataIndex: 'accountId', key: 'accountId' },
+];
 
-// Cấu trúc bảng con: Cart
-const CartTable = ({ cartData }) => {
-  const cartColumns = [
-    { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
-    { title: 'Payment Method', dataIndex: 'paymentMethodId', key: 'paymentMethodId' },
-  ];
+// Cột cho bảng Cart
+const cartColumns = [
+  { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
+  { title: 'Payment Method', dataIndex: 'paymentMethod', key: 'paymentMethod' },
+];
 
-  return (
-    <Table
-      columns={cartColumns}
-      dataSource={cartData.map(item => ({
-        key: item.cartId,
-        cartId: item.cartId,
-        paymentMethodId: item.paymentMethodId,
-      }))}
-      pagination={false}
-      expandedRowRender={(cartRecord) => <CartDetailTable cartDetails={cartRecord.cartDetails} />}
-    />
-  );
-};
-
-// Cấu trúc bảng con: Cart Details
-const CartDetailTable = ({ cartDetails }) => {
-  const cartDetailColumns = [
-    { title: 'Game Title', dataIndex: 'title', key: 'title' },
-    { title: 'Price', dataIndex: 'price', key: 'price' },
-    { title: 'Discount', dataIndex: 'discount', key: 'discount' },
-  ];
-
-  return (
-    <Table
-      columns={cartDetailColumns}
-      dataSource={cartDetails.map(item => ({
-        key: item.cartDetailId,
-        title: item.cartDetail.title,
-        price: item.cartDetail.price,
-        discount: item.cartDetail.discount,
-      }))}
-      pagination={false}
-    />
-  );
-};
+// Cột cho bảng CartDetails
+const cartDetailColumns = [
+  { title: 'Game Title', dataIndex: ['cartDetail', 'title'], key: 'title' },
+  { title: 'Price', dataIndex: ['cartDetail', 'price'], key: 'price' },
+  { title: 'Discount', dataIndex: ['cartDetail', 'discount'], key: 'discount' },
+];
 
 const AccountTable = () => {
   const [accounts, setAccounts] = useState([]);
 
-  // Lấy dữ liệu từ API khi component mount
   useEffect(() => {
     GetAllCart()
-      .then(responseData => {
-        setAccounts(responseData);
-      })
-      .catch(error => {
-        console.error('Có lỗi khi lấy dữ liệu:', error);
-      });
+      .then(setAccounts)
+      .catch((error) => console.error('Error fetching data:', error));
   }, []);
-
-  // Các cột của bảng Account
-  const accountColumns = [
-    { title: 'Account Name', dataIndex: 'name', key: 'name' },
-    { title: 'Account ID', dataIndex: 'accountId', key: 'accountId' },
-  ];
 
   return (
     <Table
       columns={accountColumns}
-      dataSource={accounts.map(account => ({
+      dataSource={accounts.map((account) => ({
         key: account.accountId,
-        name: account.name,
-        accountId: account.accountId,
-        cart: account.cart, // Chuyển qua dữ liệu Cart
+        ...account,
       }))}
-      expandedRowRender={(record) => <CartTable cartData={record.cart} />}
       pagination={false}
+      expandedRowRender={(account) => (
+        <CartTable cartData={account.cart} />
+      )}
     />
   );
 };
+
+const CartTable = ({ cartData }) => (
+  <Table
+    columns={cartColumns}
+    dataSource={cartData.map((cart) => ({
+      key: cart.cartId,
+      ...cart,
+    }))}
+    pagination={false}
+    expandedRowRender={(cart) => (
+      <CartDetailTable cartDetails={cart.cartDetails} />
+    )}
+  />
+);
+
+const CartDetailTable = ({ cartDetails }) => (
+  <Table
+    columns={cartDetailColumns}
+    dataSource={cartDetails.map((detail) => ({
+      key: detail.cartDetailId,
+      ...detail,
+    }))}
+    pagination={false}
+  />
+);
 
 export default AccountTable;
