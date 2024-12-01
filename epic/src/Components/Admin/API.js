@@ -7,15 +7,36 @@ const apiClient = axios.create({
    'Authorization': `Bearer ${token}`
   },
 });
-export const AddGame = async (game) => {
+export const AddGame = async (game, img) => {
   try {
-    const response = await apiClient.post('/Game/CreateGame', game); // Gửi yêu cầu POST đến API
-    return response.data; // Trả về dữ liệu phản hồi
-} catch (error) {
+    const formData = new FormData();
+    
+    // Thêm dữ liệu game vào FormData
+    formData.append('gameFormModel', JSON.stringify(game)); // Chuyển đối tượng game thành chuỗi JSON
+    formData.append('imageFile', img); // Thêm tệp hình ảnh vào FormData
+    if (img) {
+      formData.append('imageFile', img); // Thêm tệp hình ảnh vào FormData
+    } else {
+      console.error('No image selected!');
+      return null;
+    }
+    
+
+    // In formData ra console để kiểm tra
+    console.log('FormData content:');
+    formData.forEach((value, key) => {
+      console.log(key + ':', value); // In key và value của từng phần tử trong FormData
+    });
+    const response = await apiClient.post('/Game/CreateGame', formData);
+
+    // Trả về dữ liệu phản hồi
+    return response.data;
+  } catch (error) {
     console.error("Error adding game:", error.response || error.message);
     return null; // Hoặc bạn có thể xử lý theo cách khác
-}
+  }
 };
+
 export const AddPublisher = async (Publisher) => {
   try {
     const response = await apiClient.post('/Publisher/createpublisher', Publisher); // Gửi yêu cầu POST đến API

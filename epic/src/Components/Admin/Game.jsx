@@ -18,7 +18,8 @@ import {
   UpdateGame,
 } from "./API"; // Import các API
 import "./table.css";
-
+import axios from 'axios';
+ 
 const { Text } = Typography;
 const { Option } = Select;
 
@@ -29,6 +30,7 @@ function Game() {
   const [datapublisher, setpublisher] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [gameRecord, setGameRecord] = useState({
     gameId: "", // Sử dụng gameId làm ID duy nhất
     title: "",
@@ -134,26 +136,131 @@ function Game() {
       }
     } else {
       try {
-        await AddGame(gameRecord);
-        const updatedDataSource = await GetAllgame(); // Lấy lại danh sách tài khoản từ DB
-        setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-
-        Modal.success({
-          title: "Game update successfully",
-          content: `The Game with ID ${gameRecord.gameId} has been add.`,
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error("Token not found!");
+          Modal.error({
+            title: "Error",
+            content: "Authentication token is missing. Please log in again.",
+          });
+          return;
+        }
+    
+        if (!selectedImage) {
+          console.error("No image selected!");
+          Modal.error({
+            title: "Error",
+            content: "No image selected. Please select an image to upload.",
+          });
+          return;
+        }
+    
+        if (!gameRecord || !gameRecord.gameId) {
+          console.error("Invalid game record");
+          Modal.error({
+            title: "Error",
+            content: "Invalid game data. Please check the game details and try again.",
+          });
+          return;
+        }
+    
+        // Tạo đối tượng FormData
+        const formData = new FormData();
+        formData.append('Price',gameRecord.price);
+        formData.append('Author',gameRecord.author);
+        formData.append('PublisherId',gameRecord.publisherId);
+        formData.append('Title',gameRecord.title);
+        formData.append('Description',gameRecord.description);
+        formData.append('Rating',gameRecord.rating);
+        formData.append('GenreId',gameRecord.genreId);
+        formData.append('Release',gameRecord.release);
+        formData.append('imageFile', selectedImage); // Thêm tệp hình ảnh vào FormData
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
+        // Gửi yêu cầu API
+        const response = await axios.post("http://localhost:5084/Game/CreateGame", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // Thêm token vào header
+          },
         });
+    
+        // Kiểm tra phản hồi từ API
+        if (response.status === 200) {
+          const updatedDataSource = await GetAllgame(); // Lấy lại danh sách game từ DB
+          setDataSource(updatedDataSource); // Cập nhật dữ liệu trong state
+    
+          Modal.success({
+            title: "Game added successfully",
+            content: `The game with ID ${gameRecord.gameId} has been added.`,
+          });
+        } else {
+          throw new Error("Failed to add the game. Please try again.");
+        }
       } catch (error) {
-        console.error("Error deleting game:", error);
+        console.error("Error adding game:", error.response ? error.response.data : error.message);
+        
+        // Hiển thị thông báo lỗi chi tiết
         Modal.error({
           title: "Error",
-          content: "An error occurred while add the game. Please try again.",
+          content: `An error occurred while adding the game. Error details: ${error.response ? error.response.data : error.message}`,
         });
       }
+  
     }
 
     setIsModalOpen(false); // Đóng modal sau khi lưu
     fetchGame(); // Cập nhật lại danh sách game sau khi thêm/sửa
   };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Kiểm tra định dạng tệp (JPEG, PNG, GIF)
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!validImageTypes.includes(file.type)) {
+        console.error('Invalid file type. Please select a valid image.');
+        return;
+      }
+  
+      // Kiểm tra kích thước tệp (Giới hạn là 5MB trong ví dụ này)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('File is too large. Maximum size is 5MB.');
+        return;
+      }
+  
+      // Đọc ảnh và kiểm tra tỷ lệ
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+  
+        img.onload = () => {
+          const width = img.width;
+          const height = img.height;
+  
+          // Kiểm tra tỷ lệ 16:9 hoặc 3:4
+          const ratio16_9 = Math.abs(width / height - 16 / 9) < 0.01;
+          const ratio3_4 = Math.abs(width / height - 3 / 4) < 0.01;
+  
+          if (ratio16_9 || ratio3_4) {
+            console.log(`Image resolution is valid: ${width}x${height} (${ratio16_9 ? '16:9' : '3:4'})`);
+            setSelectedImage(file); // Lưu hình ảnh hợp lệ vào state
+          } else {
+            console.error('Image resolution must be 16:9 or 3:4.');
+            alert('Image resolution must be 16:9 or 3:4.');
+          }
+        };
+      };
+  
+      reader.readAsDataURL(file); // Đọc tệp hình ảnh
+    }
+  };
+  
+
+ 
 
   //test lại
 
@@ -497,7 +604,17 @@ function Game() {
             setGameRecord({ ...gameRecord, description: e.target.value })
           }
         />
-      </Modal>
+          {!isEditing && (
+    <>
+      <label>Image</label>
+      <Input
+        className="modal-input"
+        type="file"
+        accept="image/*" // Chỉ cho phép chọn file ảnh
+        onChange={handleFileChange}
+      />
+    </>
+)}      </Modal>
     </Space>
   );
 }

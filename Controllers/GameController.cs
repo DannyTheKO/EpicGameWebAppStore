@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EpicGameWebAppStore.Controllers;
 
-[Authorize(Roles = "Admin, Moderator")]
+//[Authorize(Roles = "Admin, Moderator")]
 [Route("[controller]")]
 [ApiController]
 public class GameController : _BaseController
@@ -152,7 +152,7 @@ public class GameController : _BaseController
 	{
 		// Check if user input is valid
 		if (!ModelState.IsValid)
-		{
+		{	
 			return BadRequest(new
 			{
 				success = false,
