@@ -117,11 +117,12 @@ function Account() {
     if (!validateAccountRecord()) {
       return;
     }
+    const roleId = dataRole.find((role) => role.name === AccountRecord.role)?.roleId;
+  const recordToSave = { ...AccountRecord, roleId };
     if (isEditing) {
-      console.log("Lưu dữ liệu đã sửa:", AccountRecord);
+      console.log("Lưu dữ liệu đã sửa:", recordToSave);
       try {
-        
-        await UpdateAccount(AccountRecord.id, AccountRecord);
+        await UpdateAccount(AccountRecord.id, recordToSave);
         const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
         setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
 
