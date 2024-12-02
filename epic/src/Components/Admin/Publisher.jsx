@@ -25,7 +25,7 @@ function Publisher() {
       setLoading(true);
       const res = await GetAllPublisher();
       setDataSource(res || []);
-      setCount(res.length);
+      
       setLoading(false);
     };
     fetchGame();
@@ -42,10 +42,11 @@ function Publisher() {
       setpublisherRecord(record);
       setIsEditing(true); // Chế độ sửa
     } else {
-      const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
-      setCount(maxId);;
+      const maxId = Math.max(...dataSource.map(item => item.publisherId)) ;
+      setCount(maxId); 
+      console.log(maxId);
       setpublisherRecord({
-        id: Count + 1,
+        id: maxId + 1,
         name: "",
         address: "",
         email: "",
