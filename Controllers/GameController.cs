@@ -20,52 +20,21 @@ public class GameController : _BaseController
 	private readonly IPublisherService _publisherService;
 	private readonly IImageGameService _imageGameService;
 
-    public GameController(
-        IGameService gameServices,
-        IGenreService genreService,
-        IPublisherService publisherService,
+	public GameController(
+		IGameService gameServices,
+		IGenreService genreService,
+		IPublisherService publisherService,
 		IImageGameService imageGameService,
 		IAuthenticationServices authenticationServices,
-        IAuthorizationServices authorizationServices) : base(authorizationServices)
-    {
-        _gameServices = gameServices;
-        _genreService = genreService;
-        _publisherService = publisherService;
+		IAuthorizationServices authorizationServices) : base(authorizationServices)
+	{
+		_gameServices = gameServices;
+		_genreService = genreService;
+		_publisherService = publisherService;
 		_imageGameService = imageGameService;
 		_authenticationServices = authenticationServices;
-        _authorizationServices = authorizationServices;
-    }
-
-    [HttpGet("GetTrendingGames")]
-    public async Task<ActionResult<IEnumerable<Game>>> GetTrendingGames()
-    {
-        var games = await _gameServices.GetAllGame();
-        var trendingGames = games
-            .Where(g => g.Rating != null) // Chỉ lấy game có Rating hợp lệ
-            .OrderByDescending(g => g.Rating) // Sắp xếp theo Rating cao nhất
-            .Take(5) // Giới hạn 5 game
-            .ToList();
-
-        if (!trendingGames.Any()) // Nếu không có game
-            return NotFound(new { message = "No trending games available." });
-
-        return Ok(trendingGames);
-    }
-
-    // GET: Game/GetTopNewReleases
-    [HttpGet("GetTopNewReleases")]
-    public async Task<ActionResult<IEnumerable<Game>>> GetTopNewReleases()
-    {
-        try
-        {
-            var topNewReleases = await _gameServices.GetTopNewReleases(10); // Lấy 10 game mới phát hành
-            return Ok(topNewReleases);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
-    }
+		_authorizationServices = authorizationServices;
+	}
 
 	// GET: Game/Index
 	[HttpGet("GetAll")]
@@ -128,14 +97,44 @@ public class GameController : _BaseController
 
 		// Check if Game name is already existed
 		var checkGame = await _gameServices.GetGameByTitle(gameFormModel.Title);
-		if (checkGame.FirstOrDefault() != null) {
-			return BadRequest(new
+		var existingGame = checkGame.FirstOrDefault();
+
+		if (existingGame != null)
+		{
+			// If game exists and image is provided, add it to existing game
+			if (imageFile != null)
 			{
-				success = false,
-				message = "Game name is already existed"
+				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId);
+				if (!flag)
+				{
+					return BadRequest(new
+					{
+						success = flag,
+						message = "Failed to upload image",
+					});
+				}
+
+				return Ok(new
+				{
+					success = true,
+					message = "Image added to existing game successfully",
+					data = new
+					{
+						game = existingGame,
+						newImage = imageGame
+					}
+				});
+			}
+
+			return Ok(new
+			{
+				success = true,
+				message = "Game already exists",
+				data = existingGame
 			});
 		}
 
+		// If game doesn't exist, create new game
 		var game = new Game()
 		{
 			PublisherId = gameFormModel.PublisherId,
@@ -148,10 +147,8 @@ public class GameController : _BaseController
 			Description = gameFormModel.Description,
 		};
 
-		// Add game first to create GameID
 		await _gameServices.AddGame(game);
-		
-		// Handle image upload if image file is provided
+
 		if (imageFile != null)
 		{
 			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId);
@@ -172,7 +169,7 @@ public class GameController : _BaseController
 		return Ok(new
 		{
 			success = true,
-			message = "Successfully to add game",
+			message = "Successfully added new game",
 			data = game
 		});
 	}
@@ -227,7 +224,7 @@ public class GameController : _BaseController
 		}
 
 		// Create new game
-		var game = new Game()	
+		var game = new Game()
 		{
 			GameId = checkGame.GameId,
 			PublisherId = gameFormModel.PublisherId,
@@ -275,4 +272,3 @@ public class GameController : _BaseController
 		});
 	}
 }
-		

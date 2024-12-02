@@ -63,6 +63,21 @@ public class CartService : ICartService
 	}
 	#endregion
 
+	public async Task<IEnumerable<Cart>> GetCompleteCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.Where(c => c.CartStatus == "Completed");
+
+		return filtered;
+	}
+
+	public async Task<Cart> GetActiveCartByAccountId(int accountId)
+	{
+		var cart = await _cartRepository.GetAllCartFromAccountId(accountId);
+		var filtered = cart.FirstOrDefault(c => c.CartStatus == "Active");
+		return filtered;
+	}
+
 	public async Task<IEnumerable<Cart>> GetCartsByAccountId(int accountId)
 	{
 		return await _cartRepository.GetAllCartFromAccountId(accountId);
@@ -84,7 +99,7 @@ public class CartService : ICartService
 	{
 		var existingCarts = await _cartRepository.GetAllCartFromAccountId(accountId);
 		var filtered = existingCarts.OrderByDescending(c => c.CreatedOn).FirstOrDefault();
-		if (existingCarts == null)
+		if (filtered == null)
 		{
 			return (null, "Cart Not Found!");
 		}
@@ -102,7 +117,9 @@ public class CartService : ICartService
 			var newCart = new Cart
 			{
 				AccountId = accountId,
+				PaymentMethodId = 0,
 				CreatedOn = DateTime.UtcNow,
+				CartStatus = "Active",
 				TotalAmount = 0,
 				Cartdetails = new List<Cartdetail>()
 			};
@@ -111,6 +128,8 @@ public class CartService : ICartService
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
+				Price = (await _gameRepository.GetById(gameId)).Price,
+				Discount = 0
 			};
 
 			// Add CartDetail into new Cart
@@ -128,7 +147,7 @@ public class CartService : ICartService
 				CartId = existingCart.CartId,
 				GameId = gameId,
 				Price = (await _gameRepository.GetById(gameId)).Price,
-				Discount = null,
+				Discount = 0,
 			};
 
 			existingCart.Cartdetails.Add(cartDetail);
@@ -137,6 +156,15 @@ public class CartService : ICartService
 			await _cartRepository.Update(existingCart);
 			return (existingCart, "Cart found, add cartDetail into the existed cart!");
 		}
+	}
+
+	// ACTION: Complete Checkout Cart
+	public async Task CompleteCheckout(int cartId, int paymentMethodId)
+	{
+		var cart = await _cartRepository.GetById(cartId);
+		if (cart == null) throw new Exception("Cart not found.");
+		cart.CartStatus = "Completed";
+		await _cartRepository.Update(cart);
 	}
 
 	// ACTION: Calculate Total Amount of all CartDetail with Discount and Price

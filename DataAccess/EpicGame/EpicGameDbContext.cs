@@ -109,6 +109,9 @@ public partial class EpicGameDbContext : DbContext
 
 			entity.Property(e => e.CartId).HasColumnName("CartID");
 			entity.Property(e => e.AccountId).HasColumnName("AccountID");
+			entity.Property(e => e.CartStatus)
+				.HasDefaultValueSql("'Completed'")
+				.HasColumnType("enum('Active','Completed')");
 			entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 			entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
 			entity.Property(e => e.TotalAmount).HasPrecision(8);
