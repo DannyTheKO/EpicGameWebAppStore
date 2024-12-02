@@ -8,11 +8,40 @@ const UserProfile = () => {
     const [user, setUser] = useState(null); // State lưu thông tin người dùng
     const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
     const [carts, setCarts] = useState([]); // State để lưu danh sách giỏ hàng
+    const [updatedUser, setUpdatedUser] = useState(null); // Lưu thông tin người dùng khi sửa
 
-    // Lấy token từ localStorage (giả sử bạn đã lưu token sau khi đăng nhập)
-    const accountToken = localStorage.getItem('authToken'); // Hoặc sử dụng cookie hoặc context
+    const accountToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
+    const [ownedGames, setOwnedGames] = useState([]); // State lưu game đã sở hữu
 
-    // Gọi API để lấy thông tin người dùng
+    const fetchOwnedGames = async () => {
+        try {
+            const response = await fetch('http://localhost:5084/Profile/ProfileUser/GetOwnedGames', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accountToken}`,
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                console.error('Response:', response.status, response.statusText);
+                throw new Error('Failed to fetch owned games');
+            }
+
+            const data = await response.json();
+            console.log('Owned games data:', data);
+
+            if (data.success) {
+                setOwnedGames(data.data);
+            } else {
+                console.error('Error fetching owned games:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching owned games:', error);
+        }
+    };
+
+
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -33,6 +62,7 @@ const UserProfile = () => {
 
                 if (data.success) {
                     setUser(data.data); // Lưu thông tin người dùng vào state
+                    setUpdatedUser(data.data); // Lưu vào updatedUser để sử dụng trong form
                 } else {
                     console.error('Error fetching user profile');
                 }
@@ -50,7 +80,6 @@ const UserProfile = () => {
         }
     }, [accountToken]);
 
-    // Fetch danh sách giỏ hàng khi nhấn nút "Get Cart List"
     const fetchCartList = async () => {
         try {
             const response = await fetch('http://localhost:5084/Profile/ProfileUser/GetCartList', {
@@ -73,7 +102,33 @@ const UserProfile = () => {
         }
     };
 
-    // Render nội dung bên phải dựa trên phần section
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:5084/Profile/ProfileUser/UpdateProfile', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${accountToken}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedUser),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                localStorage.setItem('username', updatedUser.username); // Cập nhật localStorage
+                alert('Profile updated successfully');
+                window.location.reload();
+            } else {
+                alert('Error updating profile');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert(`Error: ${error.message}`);
+        }
+    };
+
     const renderSection = () => {
         console.log('User:', user); // Kiểm tra dữ liệu user
 
@@ -87,15 +142,57 @@ const UserProfile = () => {
             case 'cart':
                 return <GetCartList carts={carts} />; // Hiển thị danh sách giỏ hàng
             case 'update':
-                return <div>Form to Update Profile</div>;
-            case 'history':
-                return <div>List of Purchase History</div>;
-            case 'owned':
-                return <div>List of Owned Games</div>;
-            case 'activeCart':
-                return <div>Details of the Active Cart</div>;
-            case 'cartDetail':
-                return <div>Details of Cart Items by Cart ID</div>;
+                return (
+                    <div className="update-profile-form">
+                        <h2>Update Profile</h2>
+                        <form onSubmit={handleUpdateProfile}>
+                            <label htmlFor="username">Username:</label>
+                            <input
+                                type="text"
+                                id="username"
+                                value={updatedUser?.username || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, username: e.target.value })}
+                            />
+
+                            <label htmlFor="password">Password:</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={updatedUser?.password || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, password: e.target.value })}
+                            />
+
+                            <label htmlFor="email">Email:</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={updatedUser?.email || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
+                            />
+
+                            <button type="submit">Update</button>
+                        </form>
+                    </div>
+                );
+            case 'ownedGames':
+                return (
+                    <div className="owned-games-section">
+                        <h2>Owned Games</h2>
+                        {ownedGames.length > 0 ? (
+                            <ul>
+                                {ownedGames.map((game) => (
+                                    <li key={game.gameId}>
+                                        <h3>{game.title}</h3>
+                                        <p>Price: ${game.price.toFixed(2)}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No games owned yet.</p>
+                        )}
+                    </div>
+                );
+
             default:
                 return <div>Select a section</div>;
         }
@@ -126,29 +223,15 @@ const UserProfile = () => {
                     Update Profile
                 </button>
                 <button
-                    className={activeSection === 'history' ? 'active' : ''}
-                    onClick={() => setActiveSection('history')}
+                    className={activeSection === 'ownedGames' ? 'active' : ''}
+                    onClick={() => {
+                        setActiveSection('ownedGames');
+                        fetchOwnedGames(); // Gọi API khi chuyển sang phần "Game đã sở hữu"
+                    }}
                 >
-                    Get Purchase History
+                    View Owned Games
                 </button>
-                <button
-                    className={activeSection === 'owned' ? 'active' : ''}
-                    onClick={() => setActiveSection('owned')}
-                >
-                    Get Owned Game
-                </button>
-                <button
-                    className={activeSection === 'activeCart' ? 'active' : ''}
-                    onClick={() => setActiveSection('activeCart')}
-                >
-                    Get Active Cart
-                </button>
-                <button
-                    className={activeSection === 'cartDetail' ? 'active' : ''}
-                    onClick={() => setActiveSection('cartDetail')}
-                >
-                    Get CartDetail in CartId
-                </button>
+
             </div>
             <div className="content">{renderSection()}</div>
         </div>

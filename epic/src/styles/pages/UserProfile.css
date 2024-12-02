@@ -91,3 +91,78 @@
             text-align: center;
         }
 }
+.update-profile-form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #2d333b; /* Tông màu nền tối của form */
+    padding: 40px; /* Tăng padding để form thoáng hơn */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Bóng mờ */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+    .update-profile-form h2 {
+        font-size: 1.8rem;
+        color: aqua;
+        margin-bottom: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    .update-profile-form label {
+        font-size: 16px;
+        color: #fff;
+        font-weight:bold;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        display: block;
+    }
+
+    .update-profile-form input {
+        padding: 15px;
+        font-size: 16px;
+        border: 1px solid #4a4e58;
+        border-radius: 8px;
+        background-color: #23272e;
+        color: #fff;
+        transition: all 0.3s ease;
+        width: 100%; /* Chiếm toàn bộ chiều rộng */
+        box-sizing: border-box; /* Đảm bảo các input không tràn ra ngoài */
+    }
+
+        .update-profile-form input:focus {
+            border-color: #00ffff;
+            outline: none;
+            background-color: #3a434b; /* Tông nền khi focus */
+        }
+
+    .update-profile-form button {
+        padding: 15px 20px; /* Tăng padding cho nút */
+        font-size: 18px;
+        background-color: #00ffff;
+        color: #000;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        width: 100%; /* Nút chiếm toàn bộ chiều rộng */
+        margin-top: 20px; /* Tăng khoảng cách giữa nút và trường cuối */
+    }
+
+        .update-profile-form button:hover {
+            background-color: #00b3b3; /* Tông màu nhạt hơn khi hover */
+        }
+
+        .update-profile-form button:active {
+            background-color: #008c8c; /* Tông màu tối khi nhấn */
+        }
