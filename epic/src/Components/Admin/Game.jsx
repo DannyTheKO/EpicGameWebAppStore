@@ -470,11 +470,7 @@ function Game() {
       render: (record) => (
         <Space size="middle">
           
-         { isAdmin() &&
-          <Button onClick={() => openModal()} type="primary">
-          Add
-        </Button>
-        }
+         
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
@@ -491,13 +487,18 @@ function Game() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
+      { isAdmin() &&
+          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+          Add
+        </Button>
+        }
       <Table
         className="data"
         loading={loading}
         columns={columns}
         dataSource={dataSource}
         rowKey="gameId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

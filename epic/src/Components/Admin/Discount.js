@@ -220,6 +220,12 @@ function Discount() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
+       {/* Nút Add nằm phía trên bảng */}
+  {isAdmin() && (
+    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+      Add
+    </Button>
+  )}
       <Table
         className="data"
         loading={loading}
@@ -266,11 +272,7 @@ function Discount() {
             render: (record) => (
               <Space size="middle">
           
-              { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary">
-               Add
-             </Button>
-             }
+              
                <Button onClick={() => openModal(record)} type="primary">
                  Edit
                </Button>
@@ -287,7 +289,7 @@ function Discount() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="discountid"
-        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 
