@@ -17,19 +17,20 @@ kanban-plugin: board
 
 ## Testing
 
-- [ ] [[Back-End/Discount]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Back-End/Game]]
 - [ ] [[CartDetail]]
+- [ ] [[Back-End/Account]]
+- [ ] [[Back-End/Cart]]
 
 
 ## Done
 
 **Complete**
-- [x] [[Back-End/Cart]] ✅ 2024-11-16
-- [x] [[Back-End/Account]] ✅ 2024-11-16
 - [x] Populate more data in the database ✅ 2024-11-16
+- [x] [[Back-End/Discount]] ✅ 2024-12-02
+- [x] [[Publisher]] ✅ 2024-12-02
 
 
 
