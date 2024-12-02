@@ -225,7 +225,7 @@ function Accountgame() {
           },
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-        rowKey=""
+        rowKey="accountGameId"
         pagination={{ pageSize: 8, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       ></Table>

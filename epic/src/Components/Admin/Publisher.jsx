@@ -42,6 +42,8 @@ function Publisher() {
       setpublisherRecord(record);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
+      setCount(maxId);;
       setpublisherRecord({
         id: Count + 1,
         name: "",
@@ -110,9 +112,12 @@ function Publisher() {
   };
   
   const handleSave = async () => {
+
     if (isEditing) {
       console.log(publisherRecord.publisherId, publisherRecord);
-
+ if (!validatePublisherRecord()) {
+      return; // Nếu không hợp lệ thì không lưu
+    }
       try {
         // Cập nhật dữ liệu (Ví dụ: gọi API để cập nhật publisher)
         await UpdatePublisher(publisherRecord.publisherId, publisherRecord);
@@ -227,7 +232,7 @@ function Publisher() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="PublisherID"
-        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 4, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

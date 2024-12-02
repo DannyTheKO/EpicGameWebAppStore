@@ -57,6 +57,8 @@ function Discount() {
       console.log(discountRecord.starton);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
+        setCount(maxId);;
       setDiscountRecord({
         id: Count+1,
         gameid: "",
