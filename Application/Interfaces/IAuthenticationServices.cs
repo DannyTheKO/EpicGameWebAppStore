@@ -8,7 +8,7 @@ namespace Application.Interfaces;
 public interface IAuthenticationServices
 {
 	// ACTION: Get current login Account
-	public int GetLoginAccountId(ClaimsPrincipal User);
+	public int GetLoginAccountId(ClaimsPrincipal user);
 
 	// ACTION: Validate Account Credential
 	Task<bool> ValidateAccountCredential(string username, string password);
