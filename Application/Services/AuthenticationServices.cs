@@ -67,10 +67,10 @@ public class AuthenticationServices : IAuthenticationServices
 	    if (existingAccount?.IsActive == "N") return (false, null, "Account not allow to be active.");
 
 	    // Check Username exist in Account database
-	    if (existingAccount == null) return (false, null, "Username does not exist.");
+	    if (existingAccount == null) return (false, null, "Invalid Username.");
 	    
 	    // If Username exists, check if the password is correct
-	    if (existingAccount.Password != account.Password) return (false, null, "Invalid password.");
+	    if (existingAccount.Password != account.Password) return (false, null, "Invalid Password.");
     
 	    // Generate JWT token instead of cookie authentication
 	    var token = GenerateJwtToken(existingAccount);
@@ -104,8 +104,8 @@ public class AuthenticationServices : IAuthenticationServices
 	    return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-	public int GetLoginAccountId(ClaimsPrincipal User)
+	public int GetLoginAccountId(ClaimsPrincipal user)
 	{
-		return int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
+		return int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0");
 	}
 }

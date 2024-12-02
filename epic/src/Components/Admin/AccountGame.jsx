@@ -83,19 +83,26 @@ function Accountgame() {
     });
   };
 
-  const validateGameRecord = () => {
-    // const { title, author, price, rating, release, description } = gameRecord;
-    // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-    //     Modal.error({
-    //         title: 'Lỗi',
-    //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-    //     });
-    //     return false;
-    // }
-    // return true;
+  const validateAccountGameRecord = () => {
+    const { accountId, gameId, dateAdded } = AcountgameRecord;
+  
+    // Kiểm tra nếu accountId hoặc gameId trống
+    if (!accountId || !gameId) {
+      Modal.error({
+        title: "Lỗi",
+        content: "Vui lòng chọn tài khoản và game.",
+      });
+      return false; // Trả về false nếu dữ liệu không hợp lệ
+    }
+  
+    // Kiểm tra nếu dateAdded không hợp lệ (có thể thêm các kiểm tra khác tùy theo yêu cầu)
+   
+    // Nếu tất cả các điều kiện trên đều hợp lệ, trả về true
+    return true;
   };
+  
   const handleSave = async () => {
-    if (validateGameRecord()) {
+    if (validateAccountGameRecord()) {
       //kiểm tra dữ liệu thêm /sửa
       return;
     }

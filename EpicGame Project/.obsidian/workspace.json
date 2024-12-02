@@ -4,26 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "51823bd4511c4983",
+        "id": "883def45c135cecf",
         "type": "tabs",
         "children": [
           {
-            "id": "15d862755fa6b92d",
+            "id": "2ee94be61d3a3a9f",
             "type": "leaf",
             "state": {
-              "type": "kanban",
-              "state": {
-                "file": "Front-End/Front-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "Front-End Progress"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -168,27 +159,25 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "15d862755fa6b92d",
+  "active": "2ee94be61d3a3a9f",
   "lastOpenFiles": [
     "Front-End/FrontEnd Process.md",
-    "Front-End/Front-End Progress.md",
-    "Front-End/Admin/Account.md",
-    "Front-End/Admin/Account Game.md",
-    "Front-End/Admin/Cart.md",
-    "Front-End/Admin/Discount.md",
     "Front-End/Admin/Game.md",
     "Front-End/Admin/Publisher.md",
+    "Front-End/Admin/Cart.md",
+    "Front-End/Admin/Account.md",
     "Back-End/Back-End Progress.md",
-    "Back-End/Game.md",
-    "Back-End/Genre.md",
-    "Back-End/ImageGame.md",
-    "Back-End/Discount.md",
+    "Back-End/img/Pasted image 20241115132340.png",
+    "Front-End/Admin/Account Game.md",
+    "Front-End/Page FrontEnd",
+    "Front-End/Admin/Discount.md",
+    "Back-End/Account.md",
     "Back-End/CartDetail.md",
+    "Back-End/Genre.md",
+    "Back-End/Game.md",
+    "Back-End/Discount.md",
     "Back-End/Cart.md",
     "Back-End/AccountGame.md",
-    "Back-End/Account.md",
-    "Back-End/img/Pasted image 20241115132340.png",
-    "Front-End/Page FrontEnd",
     "ImageGame.md",
     "testFrontend.md",
     "Front-End/Admin",

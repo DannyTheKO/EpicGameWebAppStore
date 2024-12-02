@@ -107,7 +107,7 @@ public class CartService : ICartService
 		return (filtered, "Found!");
 	}
 
-	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId, int paymentMethodId)
+	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
 	{
 		var (existingCart, message)= await GetLatestCart(accountId); // Get most recent cart
 
@@ -117,8 +117,9 @@ public class CartService : ICartService
 			var newCart = new Cart
 			{
 				AccountId = accountId,
-				PaymentMethodId = paymentMethodId,
+				PaymentMethodId = 0,
 				CreatedOn = DateTime.UtcNow,
+				CartStatus = "Active",
 				TotalAmount = 0,
 				Cartdetails = new List<Cartdetail>()
 			};
@@ -146,7 +147,7 @@ public class CartService : ICartService
 				CartId = existingCart.CartId,
 				GameId = gameId,
 				Price = (await _gameRepository.GetById(gameId)).Price,
-				Discount = null,
+				Discount = 0,
 			};
 
 			existingCart.Cartdetails.Add(cartDetail);
@@ -155,6 +156,15 @@ public class CartService : ICartService
 			await _cartRepository.Update(existingCart);
 			return (existingCart, "Cart found, add cartDetail into the existed cart!");
 		}
+	}
+
+	// ACTION: Complete Checkout Cart
+	public async Task CompleteCheckout(int cartId, int paymentMethodId)
+	{
+		var cart = await _cartRepository.GetById(cartId);
+		if (cart == null) throw new Exception("Cart not found.");
+		cart.CartStatus = "Completed";
+		await _cartRepository.Update(cart);
 	}
 
 	// ACTION: Calculate Total Amount of all CartDetail with Discount and Price

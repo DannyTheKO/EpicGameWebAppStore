@@ -44,16 +44,13 @@ public class GamePage : _BaseController
 	{
 		[Required(ErrorMessage = "GameId is Required")]
 		public int GameId { get; set; }
-
-		[Required(ErrorMessage = "Payment Method is Required")]
-		public int PaymentMethodId { get; set; }
 	}
 
 	[Authorize]
 	[HttpPost("AddToCart")]
-	public async Task<ActionResult> AddToCart([FromBody] AddToCartRequest request)
+	public async Task<ActionResult> AddToCart(int gameId)
 	{
-		var game = await _gameService.GetGameById(request.GameId);
+		var game = await _gameService.GetGameById(gameId);
 		if (game == null)
 			return NotFound(new
 			{
@@ -62,7 +59,7 @@ public class GamePage : _BaseController
 			});
 
 
-		await _cartService.AddGameToCart(GetCurrentDetailAccount().AccountId, request.GameId, request.PaymentMethodId);
+		await _cartService.AddGameToCart(GetCurrentDetailAccount().AccountId, gameId);
 		var (lastestAccountCart, message)= await _cartService.GetLatestCart(GetCurrentDetailAccount().AccountId);
 		return Ok(new
 		{

@@ -7,6 +7,7 @@ import {
   UpdateDiscount,
   AddDiscount,
 } from "./API";
+import {jwtDecode} from 'jwt-decode';
 import "./table.css";
 
 const { Text } = Typography;
@@ -68,7 +69,13 @@ function Discount() {
     }
     setIsModalOpen(true); // Mở modal
   };
-
+  const isAdmin = () => {
+    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const decodedToken = jwtDecode(role);
+    const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return userRole === "Admin";
+  
+  };
   const handleDelete = async (record) => {
     // Chuyển tham số record vào ngay trong dấu ngoặc
 
@@ -93,23 +100,77 @@ function Discount() {
       },
     });
   };
-  const validateGameRecord = () => {
-    // const { title, author, price, rating, release, description } = gameRecord;
-
-    // // Kiểm tra các trường bắt buộc
-    // if (!title || !author || price <= 0 || rating < 0 || rating > 10 || !release || !description) {
-    //     Modal.error({
-    //         title: 'Lỗi',
-    //         content: 'Vui lòng điền đầy đủ thông tin hợp lệ cho tất cả các trường.',
-    //     });
-    //     return false;
-    // }
-
-    return true;
+  const validateDiscountRecord = () => {
+    const { gameid, percent, code, starton, endon } = discountRecord;
+  
+    // Kiểm tra xem game có được chọn chưa
+    if (!gameid) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Vui lòng chọn một game.',
+      });
+      return false;
+    }
+  
+    // Kiểm tra tỷ lệ phần trăm (percent)
+    if (percent <= 0 || percent > 100) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Tỷ lệ phần trăm phải nằm trong khoảng từ 1 đến 100.',
+      });
+      return false;
+    }
+  
+    // Kiểm tra mã giảm giá (code) không được để trống
+    if (!code) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Vui lòng nhập mã giảm giá.',
+      });
+      return false;
+    }
+    
+    // Kiểm tra mã giảm giá phải là chữ in và có 6 ký tự
+    if (!/^[A-Z]{6}$/.test(code)) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Mã giảm giá phải là chữ in và có đúng 6 ký tự.',
+      });
+      return false;
+    }
+  
+    // Kiểm tra ngày bắt đầu (starton) và ngày kết thúc (endon)
+    if (!starton) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Vui lòng chọn ngày bắt đầu.',
+      });
+      return false;
+    }
+  
+    if (!endon) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Vui lòng chọn ngày kết thúc.',
+      });
+      return false;
+    }
+  
+    // Kiểm tra ngày kết thúc có phải sau ngày bắt đầu không
+    if (new Date(starton) > new Date(endon)) {
+      Modal.error({
+        title: 'Lỗi',
+        content: 'Ngày kết thúc phải sau ngày bắt đầu.',
+      });
+      return false;
+    }
+  
+    return true; // Nếu tất cả các điều kiện hợp lệ
   };
+  
   const handleSave = async () => {
     // Kiểm tra dữ liệu có hợp lệ không trước khi thực hiện hành động
-    if (!validateGameRecord()) {
+    if (!validateDiscountRecord()) {
       return; // Nếu không hợp lệ, dừng lại và không lưu
     }
 
@@ -204,14 +265,22 @@ function Discount() {
             key: "actions",
             render: (record) => (
               <Space size="middle">
-                <Button type="primary" onClick={() => openModal()}>
-                  Thêm{" "}
-                </Button>
-                <Button onClick={() => openModal(record)}>Sửa</Button>
-                <Button danger onClick={() => handleDelete(record)}>
-                  Xóa
-                </Button>
-              </Space>
+          
+              { isAdmin() &&
+               <Button onClick={() => openModal()} type="primary">
+               Add
+             </Button>
+             }
+               <Button onClick={() => openModal(record)} type="primary">
+                 Edit
+               </Button>
+              {
+               isAdmin() &&
+               <Button danger onClick={() => handleDelete(record)}>
+               Delete
+             </Button>
+              }
+             </Space>
             ),
             className: "text-center",
           },
