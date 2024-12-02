@@ -113,12 +113,12 @@ function Publisher() {
   };
   
   const handleSave = async () => {
-
-    if (isEditing) {
-      console.log(publisherRecord.publisherId, publisherRecord);
- if (!validatePublisherRecord()) {
+    if (!validatePublisherRecord()) {
       return; // Nếu không hợp lệ thì không lưu
     }
+    if (isEditing) {
+      console.log(publisherRecord.publisherId, publisherRecord);
+
       try {
         // Cập nhật dữ liệu (Ví dụ: gọi API để cập nhật publisher)
         await UpdatePublisher(publisherRecord.publisherId, publisherRecord);
