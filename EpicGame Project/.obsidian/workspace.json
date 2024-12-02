@@ -39,21 +39,14 @@
             "id": "bc200cda2d81f217",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Back-End/Back-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Front-End/Admin/Game.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "Back-End Progress"
+              "icon": "lucide-file",
+              "title": "Game"
             }
           }
         ],
@@ -201,26 +194,26 @@
   },
   "active": "bc200cda2d81f217",
   "lastOpenFiles": [
-    "Back-End/GamePage.md",
-    "Back-End/Back-End Progress.md",
-    "Back-End/Cart.md",
-    "Back-End/CartDetail.md",
-    "Back-End/Game.md",
-    "Back-End/CheckoutPage.md",
-    "Back-End/Publisher.md",
-    "Back-End/Genre.md",
-    "Untitled",
-    "Back-End/ImageGame.md",
-    "Back-End/Discount.md",
-    "Back-End/Account.md",
-    "Back-End/AccountGame.md",
     "Front-End/Admin/Account Game.md",
     "Front-End/Admin/Account.md",
+    "Front-End/Front-End Progress.md",
+    "Front-End/Admin/Cart.md",
+    "Front-End/Admin/Publisher.md",
     "Front-End/Admin/Discount.md",
     "Front-End/Admin/Game.md",
-    "Front-End/Admin/Publisher.md",
-    "Front-End/Admin/Cart.md",
-    "Front-End/Front-End Progress.md",
+    "Back-End/Back-End Progress.md",
+    "Back-End/ImageGame.md",
+    "Back-End/GamePage.md",
+    "Back-End/Publisher.md",
+    "Back-End/Genre.md",
+    "Back-End/Game.md",
+    "Back-End/Discount.md",
+    "Back-End/CheckoutPage.md",
+    "Back-End/CartDetail.md",
+    "Back-End/Cart.md",
+    "Untitled",
+    "Back-End/Account.md",
+    "Back-End/AccountGame.md",
     "Front-End/FrontEnd Process.md",
     "Back-End/img/Pasted image 20241115132340.png",
     "Front-End/Page FrontEnd",

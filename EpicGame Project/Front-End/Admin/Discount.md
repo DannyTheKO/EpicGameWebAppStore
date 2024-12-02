@@ -1,2 +1,2 @@
-- [ ] Thêm discount: Không nhập được trường Start, End; không thêm đươcj discount
-- [ ] Edit: Không sửa được Start, End
+- [x] Thêm discount: Không nhập được trường Start, End; không thêm đươcj discount ✅ 2024-12-03
+- [x] Edit: Không sửa được Start, End ✅ 2024-12-03
