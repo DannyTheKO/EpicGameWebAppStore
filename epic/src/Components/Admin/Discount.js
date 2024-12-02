@@ -57,6 +57,8 @@ function Discount() {
       console.log(discountRecord.starton);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
+        setCount(maxId);;
       setDiscountRecord({
         id: Count+1,
         gameid: "",
@@ -220,6 +222,12 @@ function Discount() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
+       {/* Nút Add nằm phía trên bảng */}
+  {isAdmin() && (
+    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+      Add
+    </Button>
+  )}
       <Table
         className="data"
         loading={loading}
@@ -239,7 +247,7 @@ function Discount() {
             title: "Percent",
             dataIndex: "percent",
             key: "percent",
-            render: (Percent) => `$${Percent.toFixed(2)}`,
+            render: (Percent) => `${Percent.toFixed(2)}%`,
           },
 
           {
@@ -266,11 +274,7 @@ function Discount() {
             render: (record) => (
               <Space size="middle">
           
-              { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary">
-               Add
-             </Button>
-             }
+              
                <Button onClick={() => openModal(record)} type="primary">
                  Edit
                </Button>
@@ -287,7 +291,7 @@ function Discount() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="discountid"
-        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

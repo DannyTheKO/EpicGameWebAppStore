@@ -51,10 +51,7 @@ function Accountgame() {
     if (!record) {
       setAccountGameRecord({ accountId: "", gameId: "", dateAdded: "" }); // Dữ liệu trống cho thêm mới
       setIsEditing(false);
-    } else {
-      setAccountGameRecord(record); // Dữ liệu cho sửa
-      setIsEditing(true);
-    }
+    } 
     setIsModalOpen(true);
   };
 
@@ -101,26 +98,63 @@ function Accountgame() {
     return true;
   };
   
+  // const handleSave = async () => {
+  //   if (validateAccountGameRecord()) {
+  //     //kiểm tra dữ liệu thêm /sửa
+  //     return;
+  //   }
+
+  //   try {
+  //     // Thực hiện thêm tài khoản game mới
+  //     console.log("Dữ liệu gửi đi:", AcountgameRecord);
+  //     await AddAccountgame(AcountgameRecord);
+
+  //     // Lấy lại danh sách tài khoản game sau khi thêm
+  //     const updatedDataSource = await GetAllAccountgame();
+  //     setDataSource(updatedDataSource);
+
+  //     // Thông báo thành công
+  //     Modal.success({
+  //       title: "Thành công",
+  //       content: "Thêm tài khoản game thành công.",
+  //     });
+  //   } catch (error) {
+  //     console.error("Lỗi khi thêm tài khoản game:", error);
+  //     Modal.error({
+  //       title: "Lỗi",
+  //       content: "Có lỗi xảy ra khi thêm tài khoản game. Vui lòng thử lại.",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //     setIsModalOpen(false); // Đóng mod
+  //   }
+  // };
   const handleSave = async () => {
-    if (validateAccountGameRecord()) {
-      //kiểm tra dữ liệu thêm /sửa
-      return;
+    if (!validateAccountGameRecord()) {
+      return; // Nếu dữ liệu không hợp lệ, dừng thực hiện
     }
-
+  
+    setLoading(true); // Hiển thị trạng thái loading khi đang lưu
+  
     try {
-      // Thực hiện thêm tài khoản game mới
-      console.log("Dữ liệu gửi đi:", AcountgameRecord);
-      await AddAccountgame(AcountgameRecord);
-
-      // Lấy lại danh sách tài khoản game sau khi thêm
+      if (!isEditing) {
+        // Thêm tài khoản game mới
+        console.log("Dữ liệu gửi đi:", AcountgameRecord);
+        await AddAccountgame(AcountgameRecord);
+  
+        Modal.success({
+          title: "Thành công",
+          content: "Thêm tài khoản game thành công.",
+        });
+      } 
+      // Nếu có thể sửa (logic sửa thiếu hiện tại)
+      // else {
+      //   // Logic cho sửa nếu cần
+      // }
+  
+      // Refresh lại data
       const updatedDataSource = await GetAllAccountgame();
       setDataSource(updatedDataSource);
-
-      // Thông báo thành công
-      Modal.success({
-        title: "Thành công",
-        content: "Thêm tài khoản game thành công.",
-      });
     } catch (error) {
       console.error("Lỗi khi thêm tài khoản game:", error);
       Modal.error({
@@ -129,11 +163,15 @@ function Accountgame() {
       });
     } finally {
       setLoading(false);
-      setIsModalOpen(false); // Đóng mod
+      setIsModalOpen(false); // Đóng modal bất kể thành công hay lỗi
     }
   };
+  
   return (
     <Space className="size_table" size={20} direction="vertical">
+      <Button type="primary" onClick={() => openModal()}  style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+                  Thêm
+                </Button>
       <Table
         className="data"
         loading={loading}
@@ -177,9 +215,7 @@ function Accountgame() {
             key: "actions",
             render: (record) => (
               <Space size="middle">
-                <Button type="primary" onClick={() => openModal()}>
-                  Thêm{" "}
-                </Button>
+                
                 <Button danger onClick={() => handleDelete(record)}>
                   Xóa
                 </Button>
@@ -189,7 +225,7 @@ function Accountgame() {
           },
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
-        rowKey=""
+        rowKey="accountGameId"
         pagination={{ pageSize: 8, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       ></Table>

@@ -25,7 +25,7 @@ function Publisher() {
       setLoading(true);
       const res = await GetAllPublisher();
       setDataSource(res || []);
-      setCount(res.length);
+      
       setLoading(false);
     };
     fetchGame();
@@ -42,8 +42,11 @@ function Publisher() {
       setpublisherRecord(record);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const maxId = Math.max(...dataSource.map(item => item.publisherId)) ;
+      setCount(maxId); 
+      console.log(maxId);
       setpublisherRecord({
-        id: Count + 1,
+        id: maxId + 1,
         name: "",
         address: "",
         email: "",
@@ -110,6 +113,9 @@ function Publisher() {
   };
   
   const handleSave = async () => {
+    if (!validatePublisherRecord()) {
+      return; // Nếu không hợp lệ thì không lưu
+    }
     if (isEditing) {
       console.log(publisherRecord.publisherId, publisherRecord);
 
@@ -163,6 +169,11 @@ function Publisher() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
+        { isAdmin() &&
+               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+               Add
+             </Button>
+             }
       <Table
         className="data"
         loading={loading}
@@ -210,11 +221,7 @@ function Publisher() {
             render: (record) => (
               <Space size="middle">
           
-              { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary">
-               Add
-             </Button>
-             }
+            
                <Button onClick={() => openModal(record)} type="primary">
                  Edit
                </Button>
@@ -226,7 +233,7 @@ function Publisher() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="PublisherID"
-        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 4, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

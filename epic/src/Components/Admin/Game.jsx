@@ -470,11 +470,7 @@ function Game() {
       render: (record) => (
         <Space size="middle">
           
-         { isAdmin() &&
-          <Button onClick={() => openModal()} type="primary">
-          Add
-        </Button>
-        }
+         
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
@@ -491,13 +487,18 @@ function Game() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
+      { isAdmin() &&
+          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+          Add
+        </Button>
+        }
       <Table
         className="data"
         loading={loading}
         columns={columns}
         dataSource={dataSource}
         rowKey="gameId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 
@@ -574,31 +575,35 @@ function Game() {
         />
         <label>Rating</label>
         <Input
-          className="modal-input"
-          placeholder="Rating"
-          value={gameRecord.rating}
-          onChange={(e) => {
-            const value = e.target.value;
-            // Kiểm tra nếu giá trị là số và nằm trong khoảng từ 0 đến 10, cho phép xóa
-            const parsedValue = value === "" ? "" : parseInt(value, 10);
-            if (
-              parsedValue === "" ||
-              (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 10)
-            ) {
-              setGameRecord({ ...gameRecord, rating: parsedValue });
-            }
-          }}
-          onKeyPress={(e) => {
-            // Chỉ cho phép nhập các ký tự số từ 0 đến 9 và cho phép Backspace hoặc Delete
-            if (
-              !/[0-9]/.test(e.key) &&
-              e.key !== "Backspace" &&
-              e.key !== "Delete"
-            ) {
-              e.preventDefault(); // Ngăn chặn nhập ký tự không phải số
-            }
-          }}
-        />
+  className="modal-input"
+  placeholder="Rating"
+  value={gameRecord.rating}
+  onChange={(e) => {
+    const value = e.target.value;
+    // Kiểm tra nếu giá trị là số thập phân và nằm trong khoảng từ 0 đến 10, hoặc cho phép xóa
+    if (
+      value === "" ||
+      (/^\d*\.?\d*$/.test(value) && parseFloat(value) >= 0 && parseFloat(value) <= 10)
+    ) {
+      setGameRecord({ ...gameRecord, rating: value });
+    }
+  }}
+  onKeyPress={(e) => {
+    // Chỉ cho phép nhập số, dấu chấm (.), Backspace hoặc Delete
+    if (
+      !/[0-9.]/.test(e.key) &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete"
+    ) {
+      e.preventDefault(); // Ngăn chặn ký tự không hợp lệ
+    }
+    // Ngăn nhập nhiều dấu chấm
+    if (e.key === "." && gameRecord.rating.includes(".")) {
+      e.preventDefault();
+    }
+  }}
+/>
+
 
         <label>Release Date</label>
         <Input

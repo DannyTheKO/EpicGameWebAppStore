@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
+
 [Route("[controller]")]
 [ApiController]
 public class AccountGameController : _BaseController
