@@ -57,7 +57,6 @@ public class GameController : _BaseController
 		return Ok(game);
 	}
 
-	// POST: Game/CreateGame
 	[HttpPost("CreateGame")]
 	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
@@ -69,7 +68,6 @@ public class GameController : _BaseController
 				errors = ModelState.Values
 					.SelectMany(v => v.Errors)
 					.Select(e => e.ErrorMessage)
-
 			});
 		}
 
@@ -104,7 +102,7 @@ public class GameController : _BaseController
 			// If game exists and image is provided, add it to existing game
 			if (imageFile != null)
 			{
-				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId);
+				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, gameFormModel.ImageType);
 				if (!flag)
 				{
 					return BadRequest(new
@@ -151,7 +149,7 @@ public class GameController : _BaseController
 
 		if (imageFile != null)
 		{
-			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId);
+			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId, "Thumbnail");
 			if (!flag)
 			{
 				return BadRequest(new
@@ -160,8 +158,6 @@ public class GameController : _BaseController
 					message = "Failed to upload image",
 				});
 			}
-
-			game.ImageId = imageGame.ImageId;
 		}
 
 		await _gameServices.UpdateGame(game);
@@ -174,13 +170,14 @@ public class GameController : _BaseController
 		});
 	}
 
+
 	// PUT: Game/UpdateGame/{gameId}
 	[HttpPut("UpdateGame/{gameId}")]
 	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
 		// Check if user input is valid
 		if (!ModelState.IsValid)
-		{	
+		{
 			return BadRequest(new
 			{
 				success = false,

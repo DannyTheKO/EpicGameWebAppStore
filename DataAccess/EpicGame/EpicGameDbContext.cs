@@ -182,44 +182,35 @@ public partial class EpicGameDbContext : DbContext
 
 			entity.HasIndex(e => e.PublisherId, "PublisherID_INDEX");
 
-            entity.Property(e => e.GameId).HasColumnName("GameID");
-            entity.Property(e => e.Author).HasMaxLength(255);
-            entity.Property(e => e.GenreId).HasColumnName("GenreID");
-            entity.Property(e => e.ImageId).HasColumnName("ImageID");
-            entity.Property(e => e.Price).HasPrecision(8);
-            entity.Property(e => e.PublisherId).HasColumnName("PublisherID");
-            entity.Property(e => e.Rating).HasPrecision(2, 1);
-            entity.Property(e => e.Release).HasColumnType("datetime");
-            entity.Property(e => e.Title).HasMaxLength(255);
-
-            entity.HasOne(d => d.Genre).WithMany(p => p.Games)
-                .HasForeignKey(d => d.GenreId)
-                .HasConstraintName("FK_Game_Genre");
-
-			entity.HasOne(d => d.Publisher).WithMany(p => p.Games)
-				.HasForeignKey(d => d.PublisherId)
-				.HasConstraintName("FK_Game_Publisher");
+			entity.Property(e => e.GameId).HasColumnName("GameID");
+			entity.Property(e => e.Author).HasMaxLength(255);
+			entity.Property(e => e.GenreId).HasColumnName("GenreID");
+			entity.Property(e => e.Price).HasPrecision(8);
+			entity.Property(e => e.PublisherId).HasColumnName("PublisherID");
+			entity.Property(e => e.Rating).HasPrecision(2, 1);
+			entity.Property(e => e.Release).HasColumnType("datetime");
+			entity.Property(e => e.Title).HasMaxLength(255);
 		});
 
 		modelBuilder.Entity<ImageGame>(entity =>
 		{
-			entity.HasKey(e => e.ImageId).HasName("PRIMARY");
+			entity.HasKey(e => e.ImageGameId).HasName("PRIMARY");
+
 			entity.ToTable("imagegame");
+
 			entity.HasIndex(e => e.GameId, "GameID_INDEX");
-			entity.Property(e => e.ImageId).HasColumnName("ImageID");
-			entity.Property(e => e.CreateAt)
-				.HasColumnType("datetime")
-				.HasColumnName("create_at");
-			entity.Property(e => e.FileName)
-				.HasMaxLength(255)
-				.HasColumnName("file_name");
-			entity.Property(e => e.FilePath)
-				.HasMaxLength(255)
-				.HasColumnName("file_path");
+
+			entity.Property(e => e.ImageGameId).HasColumnName("ImageGameID");
+			entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+			entity.Property(e => e.FileName).HasMaxLength(255);
+			entity.Property(e => e.FilePath).HasMaxLength(255);
 			entity.Property(e => e.GameId).HasColumnName("GameID");
+			entity.Property(e => e.ImageType)
+				.HasDefaultValueSql("'Thumbnail'")
+				.HasColumnType("enum('Banner','Thumbnail','Screenshot','Background')");
+
 			entity.HasOne(d => d.Game).WithMany(p => p.ImageGame)
 				.HasForeignKey(d => d.GameId)
-				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("FK_Image_Game");
 		});
 
