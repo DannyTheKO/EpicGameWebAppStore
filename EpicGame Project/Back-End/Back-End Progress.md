@@ -8,9 +8,6 @@ kanban-plugin: board
 
 - [ ] Friends List
 - [ ] Gift Games though Friends List
-- [ ] [[CartDetail]]
-- [ ] [[Back-End/Cart]]
-- [ ] [[GamePage]]
 
 
 ## Working
@@ -20,10 +17,15 @@ kanban-plugin: board
 
 ## Testing
 
+- [ ] [[GamePage]]
+- [ ] [[CartDetail]]
+- [ ] [[Back-End/Cart]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Back-End/Game]]
 - [ ] [[Back-End/Account]]
+- [ ] ProfileUser Controller
+- [ ] Upload Image with ImageType
 
 
 ## Done
@@ -33,6 +35,11 @@ kanban-plugin: board
 - [x] [[Back-End/Discount]] ✅ 2024-12-02
 - [x] [[AccountGame]] ✅ 2024-12-02
 - [x] [[Publisher]] ✅ 2024-12-02
+- [x] [[AccountGame]] ✅ 2024-12-03
+- [x] [[Back-End/Account]] ✅ 2024-12-03
+- [x] [[Back-End/Cart]] ✅ 2024-12-03
+- [x] [[Back-End/Game]] ✅ 2024-12-03
+- [x] [[CartDetail]] ✅ 2024-12-03
 
 
 

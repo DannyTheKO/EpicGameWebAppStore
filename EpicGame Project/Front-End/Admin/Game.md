@@ -1,2 +1,1 @@
-- [ ] Không add được game
-- [ ] 1 nút "Thêm" chung cho game, ở trường game chỉ cần 2 nút " Edit" và "Delete"
+- [ ] Lỗi khi xóa game

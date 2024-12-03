@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EpicGameWebAppStore.Controllers;
+using Mysqlx;
 
 namespace EpicGameWebAppStore.Models
 {
@@ -15,7 +16,6 @@ namespace EpicGameWebAppStore.Models
 		[Required(ErrorMessage = "Price is required")]
 		public decimal Price { get; set; }
 
-
 		[Required(ErrorMessage = "Author is required")]
 		public string Author { get; set; }
 
@@ -24,5 +24,8 @@ namespace EpicGameWebAppStore.Models
 		public decimal Rating { get; set; }
 
 		public string Description { get; set; }
+
+		[Required(ErrorMessage = "Image Type is required")]
+		public string ImageType { get; set; }
 	}
 }
