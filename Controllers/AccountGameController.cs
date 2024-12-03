@@ -1,10 +1,12 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
 
+[Authorize(Roles ="Admin, Moderator")]
 [Route("[controller]")]
 [ApiController]
 public class AccountGameController : _BaseController

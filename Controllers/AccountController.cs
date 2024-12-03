@@ -15,23 +15,25 @@ public class AccountController : _BaseController
 	private readonly IAccountService _accountService;
 	private readonly IRoleService _roleService;
 
-	public AccountController(IAccountService accountService, IRoleService roleService, IAuthorizationServices authorizationServices) 
+	public AccountController(IAccountService accountService, IRoleService roleService, IAuthorizationServices authorizationServices)
 		: base(authorizationServices)
 	{
 		_accountService = accountService;
 		_roleService = roleService;
 	}
-	 [HttpPost("AddAccount")]
-        public async Task<IActionResult> AddAccount([FromBody] Account account)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var createdAccount = await _accountService.AddAccount(account);
-            return CreatedAtAction(nameof(GetAccountById), new { id = createdAccount.AccountId }, createdAccount);
-        }
+	[HttpPost("AddAccount")]
+	public async Task<IActionResult> AddAccount([FromBody] Account account)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var createdAccount = await _accountService.AddAccount(account);
+		return CreatedAtAction(nameof(GetAccountById), new { id = createdAccount.AccountId }, createdAccount);
+	}
+
 	// GET: Get all account
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Account>>> GetAll()
