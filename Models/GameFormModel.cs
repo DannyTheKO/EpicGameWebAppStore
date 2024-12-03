@@ -15,7 +15,6 @@ namespace EpicGameWebAppStore.Models
 		[Required(ErrorMessage = "Price is required")]
 		public decimal Price { get; set; }
 
-
 		[Required(ErrorMessage = "Author is required")]
 		public string Author { get; set; }
 
