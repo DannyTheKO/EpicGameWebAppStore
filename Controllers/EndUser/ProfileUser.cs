@@ -10,23 +10,29 @@ namespace EpicGameWebAppStore.Controllers.EndUser;
 [Route("Profile/[controller]")]
 public class ProfileUser : _BaseController
 {
-    private readonly IAccountService _accountService;
-    private readonly IAccountGameService _accountGameService;
-    private readonly ICartService _cartService;
-    private readonly ICartdetailService _cartdetailService;
+	private readonly IAccountService _accountService;
+	private readonly IAccountGameService _accountGameService;
+	private readonly ICartService _cartService;
+	private readonly ICartdetailService _cartdetailService;
 	private readonly IGameService _gameService;
-    private readonly IAuthorizationServices _authorizationServices;
+	private readonly IAuthorizationServices _authorizationServices;
 
 	public ProfileUser(
-		IAccountService accountService, 
-		ICartService cartService, 
+		IAccountService accountService,
+		IAccountGameService accountGameService,
+		ICartService cartService,
+		ICartdetailService cartdetailService,
 		IGameService gameService,
-		IAuthorizationServices authorizationServices) : base(authorizationServices)
-    {
-        _accountService = accountService;
-        _cartService = cartService;
-        _gameService = gameService;
-    }
+		IAuthorizationServices authorizationServices) 
+		: base(authorizationServices)
+	{
+		_accountService = accountService;
+		_accountGameService = accountGameService;
+		_cartService = cartService;
+		_cartdetailService = cartdetailService;
+		_gameService = gameService;
+		_authorizationServices = authorizationServices;
+	}
 
     [HttpGet("GetProfile")]
     public async Task<ActionResult<Account>> GetProfile()

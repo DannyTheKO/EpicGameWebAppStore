@@ -71,12 +71,7 @@ public class AccountController : _BaseController
 	[HttpPut("UpdateAccount/{accountId}")]
 	public async Task<ActionResult> UpdateAccount(int accountId, [FromBody] AccountFormModel accountFormModel)
 	{
-		// Check permission first
-		var permissionCheck = await CheckPermission("delete");  // Use proper permission string
-		if (permissionCheck != null)
-		{
-			return permissionCheck; // Return the AccessDenied redirect if permission check fails
-		}
+		await CheckPermission("update");
 
 		// Get Account by accountId
 		var checkAccount = await _accountService.GetAccountById(accountId);

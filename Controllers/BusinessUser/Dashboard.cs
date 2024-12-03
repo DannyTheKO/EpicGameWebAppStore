@@ -23,6 +23,7 @@ public class Dashboard : _BaseController
 	private readonly IGenreService _genreService;
 
 	private readonly IDiscountService _discountService;
+	private readonly IPaymentMethodService _paymentMethodService;
 	private readonly ICartService _cartService;
 	private readonly ICartdetailService _cartdetailService;
 
@@ -41,6 +42,8 @@ public class Dashboard : _BaseController
 		IDiscountService discountService,
 		ICartService cartService,
 		ICartdetailService cartdetailService,
+		IPaymentMethodService paymentMethodService,
+
 		IAuthorizationServices authorizationServices
 		)
 		: base(authorizationServices)
@@ -57,12 +60,13 @@ public class Dashboard : _BaseController
 		_discountService = discountService;
 		_cartService = cartService;
 		_cartdetailService = cartdetailService;
+		_paymentMethodService = paymentMethodService;
 
 		_authorizationServices = authorizationServices;
 	}
 
 
-	#region Game Tab
+	#region == Game Tab ==
 
 	// GET: Get all games
 	[HttpGet("Game/GetAll")]
@@ -90,6 +94,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Game/Create")]
 	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
+		await CheckPermission("add");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -132,7 +138,7 @@ public class Dashboard : _BaseController
 			// If game exists and image is provided, add it to existing game
 			if (imageFile != null)
 			{
-				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, gameFormModel.ImageType);
+				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, "Thumbnail");
 				if (!flag)
 				{
 					return BadRequest(new
@@ -186,6 +192,7 @@ public class Dashboard : _BaseController
 				{
 					success = flag,
 					message = "Failed to upload image",
+					data = imageGame
 				});
 			}
 		}
@@ -204,6 +211,8 @@ public class Dashboard : _BaseController
 	[HttpPut("Game/Update/{gameId}")]
 	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
+		await CheckPermission("update");
+
 		// Check if user input is valid
 		if (!ModelState.IsValid)
 		{
@@ -278,8 +287,10 @@ public class Dashboard : _BaseController
 
 	// DELETE: Delete game
 	[HttpDelete("Game/Delete/{gameId}")]
-	public async Task<ActionResult> DeleteConfirmed(int gameId)
+	public async Task<ActionResult> DeleteGame(int gameId)
 	{
+		await CheckPermission("delete");
+
 		var existingGame = await _gameService.GetGameById(gameId);
 		if (existingGame == null)
 		{
@@ -300,7 +311,7 @@ public class Dashboard : _BaseController
 
 	#endregion
 
-	#region Account Game Tab
+	#region == Account Game Tab ==
 
 	// GET: Get all account game
 	[HttpGet("AccountGame/GetAll")]
@@ -368,6 +379,8 @@ public class Dashboard : _BaseController
 	[HttpPost("AccountGame/Add")]
 	public async Task<ActionResult<AccountGameFormModel>> AddAccountGame([FromBody] AccountGameFormModel accountGameFormModel)
 	{
+		await CheckPermission("add");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -438,6 +451,8 @@ public class Dashboard : _BaseController
 	[HttpPut("AccountGame/Update/{accountGameId}")]
 	public async Task<ActionResult> UpdateAccountGame(int accountGameId, [FromBody] AccountGameFormModel accountGameFormModel)
 	{
+		await CheckPermission("update");
+
 		// Validate user input
 		if (!ModelState.IsValid)
 		{
@@ -495,6 +510,8 @@ public class Dashboard : _BaseController
 	[HttpDelete("AccountGame/Delete/{accountGameId}")]
 	public async Task<ActionResult> DeleteAccountGame(int accountGameId)
 	{
+		await CheckPermission("delete");
+
 		var accountGame = await _accountGameService.GetAccountGameById(accountGameId);
 		if (accountGame == null)
 		{
@@ -515,7 +532,7 @@ public class Dashboard : _BaseController
 
 	#endregion
 
-	#region Account
+	#region == Account ==
 
 	// GET: Get all account
 	[HttpGet("Account/GetAll")]
@@ -554,6 +571,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Account/Add")]
 	public async Task<ActionResult> AddAccount([FromBody] AccountFormModel accountFormModel)
 	{
+		await CheckPermission("add");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -600,12 +619,7 @@ public class Dashboard : _BaseController
 	[HttpPut("Account/Update/{accountId}")]
 	public async Task<ActionResult> UpdateAccount(int accountId, [FromBody] AccountFormModel accountFormModel)
 	{
-		// Check permission first
-		var permissionCheck = await CheckPermission("delete");  // Use proper permission string
-		if (permissionCheck != null)
-		{
-			return permissionCheck; // Return the AccessDenied redirect if permission check fails
-		}
+		await CheckPermission("update");
 
 		// Get Account by accountId
 		var checkAccount = await _accountService.GetAccountById(accountId);
@@ -689,6 +703,8 @@ public class Dashboard : _BaseController
 	[HttpDelete("Account/Delete/{accountId}")]
 	public async Task<ActionResult> DeleteAccount(int accountId)
 	{
+		await CheckPermission("delete");
+
 		var account = await _accountService.GetAccountById(accountId);
 
 		if (account == null)
@@ -710,7 +726,7 @@ public class Dashboard : _BaseController
 
 	#endregion
 
-	#region Discount
+	#region == Discount ==
 
 	// GET: Get all discounts
 	[HttpGet("Discount/GetAll")]
@@ -752,6 +768,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Discount/Add")]
 	public async Task<IActionResult> AddDiscount([FromBody] DiscountFormModel discountFormModel)
 	{
+		await CheckPermission("add");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -798,6 +816,8 @@ public class Dashboard : _BaseController
 	[HttpPut("Discount/Update/{discountId}")]
 	public async Task<ActionResult> UpdateDiscount(int discountId, [FromBody] DiscountFormModel discountFormModel)
 	{
+		await CheckPermission("update");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -844,6 +864,8 @@ public class Dashboard : _BaseController
 	[HttpDelete("DeleteDiscount/{discountId}")]
 	public async Task<IActionResult> DeleteDiscount(int discountId)
 	{
+		await CheckPermission("delete");
+
 		var discount = await _discountService.GetDiscountByIdAsync(discountId);
 		if (discount == null)
 		{
@@ -866,19 +888,339 @@ public class Dashboard : _BaseController
 
 	#endregion
 
-	#region Publisher
+	#region == Publisher ==
 
+	// Get all publishers
+	[HttpGet("Publisher/GetAll")]
+	public async Task<ActionResult> GetAllPublishers()
+	{
+		var publishers = await _publisherService.GetAllPublishers();
+		return Ok(publishers);
+	}
+
+	// Get publisher by ID
+	[HttpGet("Publisher/GetById/{publisherId}")]
+	public async Task<ActionResult> GetPublisherById(int publisherId)
+	{
+		var publisher = await _publisherService.GetPublisherById(publisherId);
+		if (publisher == null)
+		{
+			return NotFound("Publisher not found.");
+		}
+		return Ok(publisher);
+	}
+
+	// Get publishers by name
+	[HttpGet("Publisher/GetByName/{publisherName}")]
+	public async Task<ActionResult> GetPublishersByName(string publisherName)
+	{
+		var publishers = await _publisherService.GetPublisherByName(publisherName);
+		return Ok(publishers);
+	}
+
+	// Get publishers by address
+	[HttpGet("Publisher/GetByAddress/{publisherAddress}")]
+	public async Task<ActionResult> GetPublishersByAddress(string publisherAddress)
+	{
+		var publishers = await _publisherService.GetPublisherByAddress(publisherAddress);
+		return Ok(publishers);
+	}
+
+	// Add a new publisher
+	[HttpPost("Publisher/Create")]
+	public async Task<ActionResult> AddPublisher([FromBody] Publisher publisher)
+	{
+		await CheckPermission("add");
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var newPublisher = await _publisherService.AddPublisher(publisher);
+		return CreatedAtAction(nameof(GetPublisherById), new { id = newPublisher.PublisherId }, newPublisher);
+	}
+
+	// Update an existing publisher
+	[HttpPut("Publisher/Update/{publisherId}")]
+	public async Task<ActionResult> UpdatePublisher(int publisherId, [FromBody] PublisherFormModel publisherFormModel)
+	{
+		await CheckPermission("update");
+
+		if (!ModelState.IsValid) return BadRequest(ModelState);
+		var publisher = new Publisher
+		{
+			PublisherId = publisherId,
+			Name = publisherFormModel.Name,
+			Address = publisherFormModel.Address,
+			Email = publisherFormModel.Email,
+			Phone = publisherFormModel.Phone,
+			Website = publisherFormModel.Website,
+		};
+		try
+		{
+			var updatedPublisher = await _publisherService.UpdatePublisher(publisher);
+			return Ok(updatedPublisher);
+		}
+		catch (Exception ex)
+		{
+			return NotFound(ex.Message);
+		}
+	}
+
+	// Delete a publisher
+	[HttpDelete("Publisher/Delete/{publisherId}")]
+	public async Task<ActionResult> DeletePublisher(int publisherId)
+	{
+		await CheckPermission("delete");
+
+		try
+		{
+			var deletedPublisher = await _publisherService.DeletePublisher(publisherId);
+			return Ok(deletedPublisher);
+		}
+		catch (Exception ex)
+		{
+			return NotFound(ex.Message);
+		}
+	}
+
+	#endregion
+
+	#region == Cart ==
+
+		// GET: Cart/GetAll
+	[HttpGet("Cart/GetAll")]
+	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
+	{
+		var carts = await _cartService.GetAllCarts();
+
+        var formattedResponse = carts.GroupBy(c => c.AccountId)
+            .Select(group => new
+            {
+                accountId = group.Key,
+                name = group.First().Account.Username,
+                cart = group.Select(c => new
+                {
+                    cartId = c.CartId,
+					cartStatus = c.CartStatus,
+					paymentMethodId = c.PaymentMethodId,
+					paymentMethod = c.PaymentMethod.Name,
+					cartDetails = c.Cartdetails.Select(cd => new
+                    {
+                        cartDetailId = cd.CartDetailId,
+                        cartDetail = new
+                        {
+                            gameId = cd.Game.GameId,
+                            title = cd.Game.Title,
+                            price = cd.Price,
+                            discount = cd.Discount
+                        }
+                    }).ToList()
+                }).ToList()
+            });
+
+        return Ok(formattedResponse);
+    }
+
+	// GET: Cart/GetCartId
+	[HttpGet("Cart/GetById/{cartId}")]
+	public async Task<ActionResult<Cart>> GetCartById(int cartId)
+	{
+		var cart = await _cartService.GetCartById(cartId);
+		if (cart == null) return NotFound();
+		return Ok(cart);
+	}
+
+	// GET: Cart/GetCartsByAccountId/{accountId}
+	[HttpGet("Cart/GetByAccountId/{accountId}")]
+	public async Task<ActionResult<IEnumerable<Cart>>> GetCartsByAccountId(int accountId)
+	{
+		var cart = await _cartService.GetCartsByAccountId(accountId);
+
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Cart Empty"
+			});
+		}
+
+		return Ok(new
+		{
+			success = true,
+			message = "Cart Found",
+			data = cart
+		});
+	}
+
+	// GET: Cart/CheckOut/{accountId}
+	[HttpGet("Cart/CheckOut/{accountId}")]
+	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
+	{
+		var (cart, message)= await _cartService.GetLatestCart(accountId);
+		if (cart == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = message
+			});
+		}
+
+		return Ok( new
+		{
+			success = true,
+			message,
+			data = cart
+		});
+	}
+
+
+
+	// POST: Cart/CreateCart
+	[HttpPost("Cart/CreateCart")]
+	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
+	{
+		await CheckPermission("add");
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
+		}
+
+		// Check if that AccountId exist
+		if (cartFormModel.AccountId == null)
+		{
+			return Ok(new { success = false, message = "Account do not exist!" });
+		}
+
+		// Check if that PaymentMethod exist
+		if (cartFormModel.PaymentMethodId == null)
+		{
+			return Ok(new { success = false, message = "Payment do not exist!" });
+		}
+
+		// Create a new cart first
+		var cart = new Cart
+		{
+			AccountId = cartFormModel.AccountId,
+			PaymentMethodId = cartFormModel.PaymentMethodId,
+			CreatedOn = DateTime.UtcNow,
+			TotalAmount = 0,
+		};
+
+		await _cartService.AddCart(cart);
+		return Ok(new { success = true, message = "Cart created successfully" });
+	}
+
+	// PUT: Cart/UpdateCart/{id}
+	[HttpPut("Cart/Update/{cartId}")]
+	public async Task<ActionResult<CartFormModel>> UpdateCart(int cartId, [FromBody] CartFormModel cartFormModel)
+	{
+		await CheckPermission("update");
+
+		// Check if CartId exist
+		var checkCartId = await _cartService.GetCartById(cartId);
+		if (checkCartId == null) return NotFound(new
+		{
+			sucess = false,
+			message = "Requested Cart do not exist!"
+		});
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
+		}
+
+		// Check if AccountId exist
+		var checkAccountId = await _accountService.GetAccountById(cartFormModel.AccountId);
+		if (checkAccountId == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Requested Account do not exist!"
+			});
+		}
+
+		// Check if PaymentMethodId exist
+		var checkPaymentMethodId = await _paymentMethodService.GetPaymentMethodById(cartFormModel.PaymentMethodId);
+		if (checkPaymentMethodId == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Requested Payment Method do not exist!"
+			});
+		}
+
+		// Create a new cart
+		var cart = new Cart()
+		{
+			CartId = cartId,
+			AccountId = cartFormModel.AccountId,
+			PaymentMethodId = cartFormModel.PaymentMethodId,
+			TotalAmount = await _cartService.CalculateTotalAmount(cartId),
+			CreatedOn = DateTime.UtcNow,
+			Cartdetails = (await _cartdetailService.GetAllCartDetailByCartId(cartId)).ToList()
+		};
+
+		// Update Cart
+		await _cartService.UpdateCart(cart);
+		
+		return Ok(new
+		{
+			sucess = true,
+			message = "Updated cart successfully",
+			data = cart
+		});
+	}
+
+	// DELETE: Cart/DeleteCart/{id}
+	[HttpDelete("Cart/Delete/{cartId}")]
+	public async Task<ActionResult> DeleteCart(int cartId)
+	{
+		await CheckPermission("delete");
+
+		var existingCart = await _cartService.GetCartById(cartId);
+
+		if (existingCart == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Requested Cart do not existed or already deleted"
+			});
+
+		}
+
+		await _cartService.DeleteCart(cartId);
+
+		return Ok(new
+		{
+			success = true,
+			message = "Successfully Deleted Cart",
+		});
+	}
 
 
 	#endregion
 
-	#region Cart
-
-
-
-	#endregion
-
-	#region Image
+	#region == Image ==
 
 	// GET: Get all Image
 	[HttpGet("Image/GetAll")]
@@ -915,6 +1257,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Image/Add")]
 	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel)
 	{
+		await CheckPermission("add");
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -956,6 +1300,8 @@ public class Dashboard : _BaseController
 	[HttpDelete("Image/Delete/{imageId}")]
 	public async Task<ActionResult> DeleteImage(int imageId)
 	{
+		await CheckPermission("delete");
+
 		var image = await _imageGameService.GetImageGameById(imageId);
 		if (image == null)
 		{
