@@ -13,28 +13,40 @@ namespace EpicGameWebAppStore.Controllers
 		{
 			_authorizationServices = authorizationServices;
 		}
-
-		protected async Task<ActionResult> CheckPermission(string requiredPermission)
+		public class CurrentAccountDetails
 		{
-			var accountDetails = GetCurrentDetailAccount();
-			var hasPermission = await _authorizationServices.UserHasPermission(accountDetails.AccountId, requiredPermission);
-    
-			// Returns null if hasPermission is true, otherwise returns the AccessDenied redirect
-			return hasPermission ? null : RedirectToAction("AccessDenied", "Auth");
+			public int AccountId { get; init; }
+			public string? Username { get; init; }
+			public string? Role { get; init; }
+			public string? Email { get; init; }
+			public string? IsActive { get; init; }
+			public string? Permissions { get; init; }
 		}
 
-
-
-		protected (int AccountId, string Username, string Role, string Email, string IsActive, string Permissions) GetCurrentDetailAccount()
+		protected CurrentAccountDetails GetCurrentDetailAccount()
 		{
-			return (
-				AccountId: int.Parse(HttpContext.Items["AccountId"]?.ToString() ?? "0"),
-				Username: HttpContext.Items["Username"]?.ToString(),
-				Role: HttpContext.Items["Role"]?.ToString(),
-				Email: HttpContext.Items["Email"]?.ToString(),
-				IsActive: HttpContext.Items["IsActive"]?.ToString(),
-				Permissions: HttpContext.Items["Permission"]?.ToString()
-			);
+			return new CurrentAccountDetails
+			{
+				//in case something happened, for debug
+				AccountId = HttpContext.Items["AccountId"] is string accountId ? int.Parse(accountId) : 0,
+				Username = HttpContext.Items["Username"] as string,
+				Role = HttpContext.Items["Role"] as string,
+				Email = HttpContext.Items["Email"] as string,
+				IsActive = HttpContext.Items["IsActive"] as string,
+				Permissions = HttpContext.Items["Permission"] as string
+			};
 		}
+
+		protected async Task<IActionResult> CheckPermission(string requiredPermission)
+		{
+			var permissionCheck = await _authorizationServices.UserHasPermission(GetCurrentDetailAccount().AccountId, requiredPermission);
+			if (!permissionCheck)
+			{
+				return Redirect("Auth/AccessDenied");
+			}
+
+			return null; // this is a void return, but that fuck it, who cared anyway
+		}
+
 	}
 }

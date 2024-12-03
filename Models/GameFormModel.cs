@@ -24,8 +24,5 @@ namespace EpicGameWebAppStore.Models
 		public decimal Rating { get; set; }
 
 		public string Description { get; set; }
-
-		[Required(ErrorMessage = "Image Type is required")]
-		public string ImageType { get; set; }
 	}
 }
