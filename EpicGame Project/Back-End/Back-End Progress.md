@@ -8,9 +8,6 @@ kanban-plugin: board
 
 - [ ] Friends List
 - [ ] Gift Games though Friends List
-- [ ] [[CartDetail]]
-- [ ] [[Back-End/Cart]]
-- [ ] [[GamePage]]
 
 
 ## Working
@@ -20,10 +17,15 @@ kanban-plugin: board
 
 ## Testing
 
+- [ ] [[GamePage]]
+- [ ] [[CartDetail]]
+- [ ] [[Back-End/Cart]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Back-End/Game]]
 - [ ] [[Back-End/Account]]
+- [ ] ProfileUser Controller
+- [ ] Upload Image with ImageType
 
 
 ## Done
