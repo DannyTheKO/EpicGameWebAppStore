@@ -109,7 +109,7 @@ public class CartService : ICartService
 
 	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
 	{
-		var (existingCart, message)= await GetLatestCart(accountId); // Get most recent cart
+		var existingCart = await GetActiveCartByAccountId(accountId); // Get most recent cart
 
 		if (existingCart == null) // Cart doesn't exist for that account
 		{
@@ -117,7 +117,7 @@ public class CartService : ICartService
 			var newCart = new Cart
 			{
 				AccountId = accountId,
-				PaymentMethodId = 0,
+				PaymentMethodId = 1,
 				CreatedOn = DateTime.UtcNow,
 				CartStatus = "Active",
 				TotalAmount = 0,
@@ -141,6 +141,13 @@ public class CartService : ICartService
 		}
 		else
 		{
+			// Check if that game already exist in the current cart
+			var gameExists = existingCart.Cartdetails.Any(cd => cd.GameId == gameId);
+			if (gameExists)
+			{
+				return (existingCart, "This game is already in your cart!");
+			}
+
 			// Add to existing cart
 			var cartDetail = new Cartdetail
 			{

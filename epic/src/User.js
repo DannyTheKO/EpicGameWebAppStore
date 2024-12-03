@@ -7,6 +7,7 @@ import StorePage from "./pages/StorePage.js";
 import GamePage from "./pages/GamePage.js";
 import LibraryPage from "./pages/LibraryPage.js";
 import Cart from "./pages/Cart.js";
+import UserProfile from './pages/UserProfile';
 
 const UserRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const UserRoutes = () => {
       
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/userprofile" element={<UserProfile />} />
         <Route path="/store" element={<StorePage />} />
         <Route path="/game/:id" element={<GamePage />} />
         <Route path="/library" element={<LibraryPage />} />

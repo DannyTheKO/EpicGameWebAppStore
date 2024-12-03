@@ -17,19 +17,29 @@ kanban-plugin: board
 
 ## Testing
 
-- [ ] [[Back-End/Discount]]
+- [ ] [[GamePage]]
+- [ ] [[CartDetail]]
+- [ ] [[Back-End/Cart]]
 - [ ] [[AccountGame]]
 - [ ] [[Genre]]
 - [ ] [[Back-End/Game]]
-- [ ] [[CartDetail]]
+- [ ] [[Back-End/Account]]
+- [ ] ProfileUser Controller
+- [ ] Upload Image with ImageType
 
 
 ## Done
 
 **Complete**
-- [x] [[Back-End/Cart]] ✅ 2024-11-16
-- [x] [[Back-End/Account]] ✅ 2024-11-16
 - [x] Populate more data in the database ✅ 2024-11-16
+- [x] [[Back-End/Discount]] ✅ 2024-12-02
+- [x] [[AccountGame]] ✅ 2024-12-02
+- [x] [[Publisher]] ✅ 2024-12-02
+- [x] [[AccountGame]] ✅ 2024-12-03
+- [x] [[Back-End/Account]] ✅ 2024-12-03
+- [x] [[Back-End/Cart]] ✅ 2024-12-03
+- [x] [[Back-End/Game]] ✅ 2024-12-03
+- [x] [[CartDetail]] ✅ 2024-12-03
 
 
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/pages/Cart.css';
 import Payment from './Payment';
-
+import { useNavigate } from 'react-router-dom';
 const Cart = () => {
     const [cart, setCart] = useState([]);
-
+    const navigate = useNavigate();
     // Lấy giỏ hàng từ localStorage khi component được mount
     useEffect(() => {
         const username = localStorage.getItem('username'); // Lấy username từ localStorage
@@ -18,6 +18,7 @@ const Cart = () => {
         const updatedCart = cart.filter(item => item.gameId !== id); // Loại bỏ sản phẩm có id tương ứng
         setCart(updatedCart);
         localStorage.setItem(`cart_${username}`, JSON.stringify(updatedCart)); // Cập nhật giỏ hàng mới vào localStorage
+        navigate(0);
     };
 
     // Tính tổng giá trị của các sản phẩm trong giỏ hàng

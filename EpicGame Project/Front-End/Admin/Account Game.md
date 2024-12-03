@@ -1,1 +1,1 @@
-- [ ] Lỗi 404, not done
+- [x] Lỗi 404, not done ✅ 2024-12-03

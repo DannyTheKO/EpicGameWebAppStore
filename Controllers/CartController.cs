@@ -164,18 +164,8 @@ public class CartController : _BaseController
 
 	//POST: Cart/AddToCart
 	[HttpPost("AddToCart")]
-	public async Task<ActionResult> AddToCart(int accountId, int gameId)
+	public async Task<ActionResult> AddToCart(int gameId)
 	{
-		var checkAccount = await _accountService.GetAccountById(accountId);
-		if (checkAccount == null) // Not existed
-		{
-			return BadRequest(new
-			{
-				success = false,
-				message = "Account do not exist!"
-			});
-		}
-
 		var checkGame = await _gameService.GetGameById(gameId);
 		if (checkGame == null) // Not existed
 		{
@@ -186,7 +176,7 @@ public class CartController : _BaseController
 			});
 		}
 
-		var (cart,message) = await _cartService.AddGameToCart(accountId, gameId);
+		var (cart,message) = await _cartService.AddGameToCart(GetCurrentDetailAccount().AccountId, gameId);
 		return Ok(new
 		{
 			success = true,

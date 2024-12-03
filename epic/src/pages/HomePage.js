@@ -17,7 +17,7 @@ const HomePage = () => {
     // Fetch dữ liệu từ API
     const fetchTopNewReleases = async () => {
         try {
-            const response = await fetch('http://localhost:5084/Game/GetTopNewReleases');
+            const response = await fetch('http://localhost:5084/Store/FeaturePage/GetTopNewReleases');
             if (!response.ok) throw new Error("Failed to fetch Top New Releases");
             const data = await response.json();
 
@@ -36,7 +36,7 @@ const HomePage = () => {
 
     const fetchTrendingGames = async () => {
         try {
-            const response = await fetch('http://localhost:5084/Game/GetTrendingGames');
+            const response = await fetch('http://localhost:5084/Store/FeaturePage/GetTrendingGames');
             if (!response.ok) throw new Error("Failed to fetch Trending Games");
             const data = await response.json();
             const updatedGames = data.map(game => {

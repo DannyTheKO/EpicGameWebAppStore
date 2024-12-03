@@ -1,2 +1,2 @@
-- [ ] Thêm Publisher: Lỗi khi thêm puslisher >9, trường website k nhập được
-- [ ] Edit: k nhập được trường website
+- [x] Thêm Publisher: Lỗi khi thêm puslisher >9, trường website k nhập được ✅ 2024-12-03
+- [x] Edit: k nhập được trường website ✅ 2024-12-03

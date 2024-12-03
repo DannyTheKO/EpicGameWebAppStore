@@ -247,7 +247,7 @@ function Discount() {
             title: "Percent",
             dataIndex: "percent",
             key: "percent",
-            render: (Percent) => `$${Percent.toFixed(2)}`,
+            render: (Percent) => `${Percent.toFixed(2)}%`,
           },
 
           {

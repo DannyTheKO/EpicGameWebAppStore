@@ -1,0 +1,80 @@
+﻿.detail-account-profile {
+    padding: 20px;
+    background-color: #1e242c;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 20px;
+}
+
+    .detail-account-profile h2 {
+        font-size: 1.8rem;
+        color: aqua;
+        margin-bottom: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+    .profile-item label {
+        font-size: 1rem;
+        color: #b3b3b3;
+        margin-bottom: 5px;
+    }
+
+    .profile-item span,
+    .profile-item input {
+        font-size: 1.2rem;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: 1px solid #555;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+.password-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .password-container input {
+        flex: 1;
+    }
+
+    .password-container button {
+        padding: 10px 15px;
+        background-color: #0066ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .password-container button:hover {
+            background-color: #0052cc;
+        }
+
+/* Hiệu ứng glow */
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px aqua, 0 0 20px aqua, 0 0 30px aqua;
+    }
+
+    to {
+        text-shadow: 0 0 20px #00ffff, 0 0 40px #0066ff, 0 0 60px #0066ff;
+    }
+}

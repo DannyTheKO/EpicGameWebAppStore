@@ -14,6 +14,7 @@ const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
     const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+    const [cartItemCount, setCartItemCount] = useState(0);
 
     // Kiểm tra trạng thái đăng nhập và tên người dùng từ localStorage
     useEffect(() => {
@@ -24,6 +25,13 @@ const Navbar = () => {
             setUsername(storedUsername);
         }
     }, []);
+
+    // Lấy số lượng sản phẩm trong giỏ hàng từ localStorage mỗi khi giỏ hàng thay đổi
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        const savedCart = JSON.parse(localStorage.getItem(`cart_${storedUsername}`)) || [];
+        setCartItemCount(savedCart.length);
+    }, [location.pathname]);
 
     // Ẩn/Hiện navbar khi cuộn trang
     useEffect(() => {
@@ -46,6 +54,11 @@ const Navbar = () => {
         navigate('/');
     };
 
+    // Xử lý chuyển đến trang UserProfile
+    const handleUserProfile = () => {
+        navigate('/userprofile');
+    };
+
     return (
         <nav className={`navbar ${isNavbarVisible ? 'visible' : 'hidden'}`}>
             <div className="navbar-left">
@@ -63,18 +76,25 @@ const Navbar = () => {
                 {!isHomePage && (
                     <Link to="/cart" className="btn cart">
                         <FaShoppingCart size={20} />
+                        {cartItemCount > 0 && (
+                            <span className="cart-item-count">{cartItemCount}</span>
+                        )}
                     </Link>
                 )}
                 {isLoggedIn ? (
-                    <div className="user-menu">
-                        <button
-                            className="btn user-name"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        >
+                    <div
+                        className="user-menu"
+                        onMouseEnter={() => setIsDropdownOpen(true)}
+                        onMouseLeave={() => setIsDropdownOpen(false)}
+                    >
+                        <button className="btn user-name">
                             {username}
                         </button>
                         {isDropdownOpen && (
                             <div className="dropdown-menu">
+                                <button onClick={handleUserProfile} className="dropdown-item">
+                                    User Profile
+                                </button>
                                 <button onClick={handleLogout} className="dropdown-item">
                                     Logout
                                 </button>

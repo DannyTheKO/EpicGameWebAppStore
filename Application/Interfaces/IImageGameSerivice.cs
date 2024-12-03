@@ -20,6 +20,6 @@ namespace Application.Interfaces
 
 		Task DeleteImageGame(int imageGameID);
 
-		Task<(ImageGame imageGame, bool Flag)> UploadImageGame(IFormFile image, int gameId);
+		Task<(ImageGame imageGame, bool Flag)> UploadImageGame(IFormFile image, int gameId, string imageType);
 	}
 }

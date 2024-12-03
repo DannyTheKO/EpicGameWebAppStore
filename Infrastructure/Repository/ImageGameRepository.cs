@@ -24,7 +24,7 @@ namespace Infrastructure.Repository
 		public async Task<ImageGame> GetById(int imageGameID)
 		{
 			var imageGameList = await GetAll();
-			return imageGameList.SingleOrDefault(ig => ig.ImageId == imageGameID);
+			return imageGameList.SingleOrDefault(ig => ig.ImageGameId == imageGameID);
 		}
 
 		// Add Image into database
@@ -47,7 +47,7 @@ namespace Infrastructure.Repository
 
 		public async Task Update(ImageGame imageGame)
 		{
-			var checkImageGame = await GetById(imageGame.ImageId);
+			var checkImageGame = await GetById(imageGame.ImageGameId);
 			if (checkImageGame != null)
 			{
 				_context.Update(checkImageGame);

@@ -56,7 +56,7 @@ Download
 ```
 
 ### DELETE: Delete Cart
-- [x] /Cart/DeleteCart/{id}: ✅ 2024-11-15
+- [x] /Cart/DeleteCart/{id}: ✅ 2024-12-02
  ```
  Error: response status is 400
   ```json
@@ -65,5 +65,4 @@ Download
   "message": "Requested Cart do not existed or already deleted"
 }
 ```
-
 

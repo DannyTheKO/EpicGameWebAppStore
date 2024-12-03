@@ -24,12 +24,13 @@
 }
 
     .game-details img {
-        width: 300px; /* Đặt chiều rộng cố định */
-        height: 400px;; /* Tự động điều chỉnh chiều cao để giữ tỷ lệ ảnh */
-        border-radius: 10px; /* Làm mềm góc ảnh */
-        object-fit: cover; /* Đảm bảo ảnh luôn lấp đầy khung */
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.7); /* Hiệu ứng đổ bóng */
-        background-color: #000; /* Nền đen cho phần trống */
+        width: auto; /* Chiều rộng tự động, có thể điều chỉnh */
+        max-width: 300px; /* Hoặc đặt chiều rộng cố định */
+        aspect-ratio: 3 / 4; /* Đảm bảo tỷ lệ 3:4 */
+        object-fit: cover; /* Lấp đầy khung mà không méo ảnh */
+        border-radius: 10px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.7);
+        background-color: #000;
     }
 
 .game-info {
@@ -294,9 +295,9 @@ textarea {
 }
 
 .gameplay-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover; /* Ảnh vừa khung nhưng giữ tỉ lệ */
+    width: 100%; /* Chiều rộng tối đa */
+    aspect-ratio: 16 / 9; /* Tỷ lệ 16:9 */
+    object-fit: cover; /* Đảm bảo lấp đầy khung mà không méo */
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
@@ -344,4 +345,50 @@ textarea {
     font-size: 18px;
     color: #888;
     margin-top: 20px;
+}
+
+/* CSS cho thông báo alert */
+.alert-message {
+    background-color: #ff4d4d;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 20px; /* Đặt vị trí từ dưới lên */
+    right: 20px; /* Đặt vị trí từ phải vào */
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+    .alert-message.success {
+        background-color: #4caf50; /* Màu xanh cho thông báo thành công */
+    }
+
+    .alert-message.error {
+        background-color: #ff4d4d; /* Màu đỏ cho thông báo lỗi */
+    }
+
+    .alert-message .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

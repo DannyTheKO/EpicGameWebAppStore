@@ -46,7 +46,7 @@ namespace Application.Services
 
 		// Service
 
-		public async Task<(ImageGame imageGame, bool Flag)> UploadImageGame(IFormFile image, int gameId)
+		public async Task<(ImageGame imageGame, bool Flag)> UploadImageGame(IFormFile image, int gameId, string imageType)
 		{
 			// Check if that game is existing
 			var game = await _gameRepository.GetById(gameId);
@@ -54,22 +54,23 @@ namespace Application.Services
 
 			// Create directory if the game folder does not exist
 			var gameFolder = game.Title.Replace(" ", "_").ToLower();
-			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images", gameFolder);
+			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images", gameFolder, imageType);
 			Directory.CreateDirectory(uploadsFolder);
 
 			// Create ImageGame first to get the ID
 			var imageGame = new ImageGame()
 			{
 				GameId = gameId,
-				CreateAt = DateTime.UtcNow,
-				FileName = "N/A" // don't remove this line or the database will throw an error
+				CreatedOn = DateTime.UtcNow,
+				FileName = "N/A", // don't remove this line or the database will throw an error
+				ImageType = imageType
 			};
 
 			// Add to database to generate ImageId
 			await _imageGameRepository.Add(imageGame);
 
 			// Generate File name using ImageId
-			var fileName = $"{imageGame.ImageId}{Path.GetExtension(image.FileName)}";
+			var fileName = $"{imageGame.ImageGameId}{Path.GetExtension(image.FileName)}";
 			var filePath = Path.Combine(uploadsFolder, fileName);
 
 			// Save file to directory
@@ -80,7 +81,7 @@ namespace Application.Services
 
 			// Update ImageGame with file info
 			imageGame.FileName = fileName;
-			imageGame.FilePath = $"/Images/{gameFolder}/{fileName}";
+			imageGame.FilePath = $"/Images/{gameFolder}/{imageType}/{fileName}";
 
 			// Update the entity
 			await _imageGameRepository.Update(imageGame);
