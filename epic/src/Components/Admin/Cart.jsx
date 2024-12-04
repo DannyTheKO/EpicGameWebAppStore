@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
-import { GetAllCart } from './API'; // Hàm giả định để lấy dữ liệu
-
-// Cột cho bảng Account
+import { GetAllCart } from './API'; 
 const accountColumns = [
   { title: 'Account Name', dataIndex: 'name', key: 'name' },
   { title: 'Account ID', dataIndex: 'accountId', key: 'accountId' },
 ];
 
-// Cột cho bảng Cart
 const cartColumns = [
   { title: 'Cart ID', dataIndex: 'cartId', key: 'cartId' },
   { title: 'Payment Method', dataIndex: 'paymentMethod', key: 'paymentMethod' },
 ];
 
-// Cột cho bảng CartDetails
 const cartDetailColumns = [
   { title: 'Game Title', dataIndex: ['cartDetail', 'title'], key: 'title' },
   { title: 'Price', dataIndex: ['cartDetail', 'price'], key: 'price' },

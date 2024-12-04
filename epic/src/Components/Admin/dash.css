@@ -12,21 +12,20 @@
 {
     padding: 0px;
 }
-/* dash.css */
 .card_component {
-    background-color: white;  /* Thêm màu nền trắng cho các card */
+    background-color: white;  
   }
   
   .table_recentorder {
-    background-color: white;  /* Thêm màu nền trắng cho bảng */
+    background-color: white; 
   }
   
   .ant-space {
-    background-color: white;  /* Thêm màu nền trắng cho không gian bên ngoài */
+    background-color: white;  
   }
   
   .ant-card {
-    background-color: white;  /* Thêm màu nền trắng cho các card trong Ant Design */
+    background-color: white; 
   }
 
   

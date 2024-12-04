@@ -6,15 +6,14 @@
 }
 .client {
     margin-top: 10px;
-    font-size: 60px;      /* Điều chỉnh kích thước biểu tượng */
-    color: black;         /* Đổi màu biểu tượng */
-    cursor: pointer;      /* Thêm con trỏ khi hover */
+    font-size: 60px;      
+    color: black;       
+    cursor: pointer;     
     margin-right: 100px; 
 
-    /* Hiệu ứng khi thay đổi màu */
   }
   
   .client:hover {
-    color: #ffcc00; /* Màu vàng khi hover */
+    color: #ffcc00;
   }
   

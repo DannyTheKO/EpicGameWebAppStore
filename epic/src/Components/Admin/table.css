@@ -6,7 +6,6 @@
 .data {
   margin-left: 20px;
   width: auto;
-  /* border: 1px solid black; */
 }
 
 .form_addedit Input {
@@ -14,50 +13,49 @@
 }
 
 .data .ant-table-thead > tr > th {
-  text-align: center; /* Căn giữa tiêu đề cột */
-  width: auto; /* Chiều rộng tự động cho các cột */
+  text-align: center; 
+  width: auto;
 }
 
 .data .ant-table-tbody > tr > td {
-  text-align: center; /* Căn giữa nội dung cột */
+  text-align: center; 
 }
 
 .modal-input {
   width: 100%;
-  height: 50px; /* Điều chỉnh khoảng cách theo ý muốn */
+  height: 50px; 
 }
 
 .size_table .ant-table {
-  height: auto; /* Thay đổi thành auto để chiều cao tự động điều chỉnh */
+  height: auto; 
 }
 
 .size_table .ant-table-body {
   display: flex;
-  align-items: stretch; /* Đảm bảo các dòng dữ liệu kéo dài theo chiều cao */
+  align-items: stretch; 
 }
 
 .size_table .ant-table-tbody > tr > td {
-  height: 50px; /* Điều chỉnh chiều cao từng hàng */
-  line-height: 50px; /* Đặt nội dung căn giữa */
+  height: 50px; 
+  line-height: 50px;
 }
 
 .modal-input {
-  height: 40px; /* Đặt chiều cao của Input */
+  height: 40px; 
 }
 
 .ant-select-selector {
-  height: 40px !important; /* Đặt chiều cao của Select */
+  height: 40px !important; 
   align-items: center;
 }
 
-/* Sửa lại selector với cú pháp đúng */
 .ant-table-row.ant-table-row-level-0 {
-  height: auto; /* Điều chỉnh chiều cao cho các dòng ở cấp độ 0 */
+  height: auto; 
 }
 .data .ant-table-row {
   height: 90px;
   padding: 0px;
 }
 .data .ant-table-cell.ant-table-cell {
-  padding: 10px; /* Điều chỉnh padding của tất cả các ô */
+  padding: 10px; 
 }

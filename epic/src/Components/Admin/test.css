@@ -1,7 +1,7 @@
 .sticky-header th {
     position: sticky;
     top: 0;
-    background-color: #fff;  /* Đảm bảo tiêu đề bảng có nền trắng */
-    z-index: 1;  /* Đảm bảo tiêu đề luôn nằm trên các dòng dữ liệu */
+    background-color: #fff; 
+    z-index: 1; 
   }
   

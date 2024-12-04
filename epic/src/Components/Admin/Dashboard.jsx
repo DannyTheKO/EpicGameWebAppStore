@@ -4,9 +4,9 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Card, Space, Statistic, Table, Typography } from "antd";
+import { Card, Space, Statistic } from "antd";
 import { useEffect, useState } from "react";
-import { getCustomers, GetAllgame,GetAllCartdetal,GetAllCart,GetAccount, getOrders, getRevenue } from "./API";
+import {  GetAllgame,GetAllCartdetal,GetAccount, getOrders, getRevenue } from "./API";
 import "./dash.css";
 
 import {
@@ -153,7 +153,7 @@ function DashboardChart() {
     labels: [],
     datasets: [],
   });
-  const [tableData, setTableData] = useState([]); // State để lưu dữ liệu bảng
+  const [tableData, setTableData] = useState([]); 
 
   useEffect(() => {
     getRevenue().then((res) => {
