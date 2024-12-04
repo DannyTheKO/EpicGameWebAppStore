@@ -166,3 +166,96 @@
         .update-profile-form button:active {
             background-color: #008c8c; /* Tông màu tối khi nhấn */
         }
+/* Scoped styles for the owned games section */
+.owned-games-section {
+    padding: 20px;
+    background-color: #1c1c1c; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+    .owned-games-section h2 {
+        font-size: 1.8rem;
+        color: aqua;
+        margin-bottom: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+.owned-games-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.owned-game-item {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background-color: #252525; /* Slightly lighter dark tone */
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+    .owned-game-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 15px rgba(0, 255, 255, 0.5); /* Highlight on hover */
+    }
+
+    .owned-game-item .game-cover {
+        width: 200px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #00ffff; /* Aqua border for game images */
+    }
+
+    .owned-game-item .game-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .owned-game-item .game-info h3 {
+            color: #00ffff; /* Aqua highlight for game title */
+            font-size: 1.5em;
+            margin: 0 0 10px 0;
+        }
+
+        .owned-game-item .game-info p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #c0c0c0; /* Slightly muted text */
+        }
+
+            .owned-game-item .game-info p strong {
+                color: #ffffff; /* Highlight strong text */
+            }
+
+/* Add responsive design for smaller screens */
+@media (max-width: 768px) {
+    .owned-game-item {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .owned-game-item .game-info {
+            text-align: center;
+        }
+
+        .owned-game-item .game-cover {
+            width: 120px;
+            height: 160px;
+        }
+}
