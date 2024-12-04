@@ -15,23 +15,25 @@ public class AccountController : _BaseController
 	private readonly IAccountService _accountService;
 	private readonly IRoleService _roleService;
 
-	public AccountController(IAccountService accountService, IRoleService roleService, IAuthorizationServices authorizationServices) 
+	public AccountController(IAccountService accountService, IRoleService roleService, IAuthorizationServices authorizationServices)
 		: base(authorizationServices)
 	{
 		_accountService = accountService;
 		_roleService = roleService;
 	}
-	 [HttpPost("AddAccount")]
-        public async Task<IActionResult> AddAccount([FromBody] Account account)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var createdAccount = await _accountService.AddAccount(account);
-            return CreatedAtAction(nameof(GetAccountById), new { id = createdAccount.AccountId }, createdAccount);
-        }
+	[HttpPost("AddAccount")]
+	public async Task<IActionResult> AddAccount([FromBody] Account account)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var createdAccount = await _accountService.AddAccount(account);
+		return CreatedAtAction(nameof(GetAccountById), new { id = createdAccount.AccountId }, createdAccount);
+	}
+
 	// GET: Get all account
 	[HttpGet("GetAll")]
 	public async Task<ActionResult<IEnumerable<Account>>> GetAll()
@@ -69,12 +71,7 @@ public class AccountController : _BaseController
 	[HttpPut("UpdateAccount/{accountId}")]
 	public async Task<ActionResult> UpdateAccount(int accountId, [FromBody] AccountFormModel accountFormModel)
 	{
-		// Check permission first
-		var permissionCheck = await CheckPermission("delete");  // Use proper permission string
-		if (permissionCheck != null)
-		{
-			return permissionCheck; // Return the AccessDenied redirect if permission check fails
-		}
+		await CheckPermission("update");
 
 		// Get Account by accountId
 		var checkAccount = await _accountService.GetAccountById(accountId);
