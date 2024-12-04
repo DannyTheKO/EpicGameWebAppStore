@@ -7,6 +7,7 @@ import {
   Modal,
   Input,
   Select,
+
 } from "antd";
 import { useEffect, useState } from "react";
 import {jwtDecode} from 'jwt-decode';
@@ -16,13 +17,11 @@ import {
   GetAllPublisher,
   GetAllGenre,
   UpdateGame,
-} from "./API"; // Import các API
+} from "./API"; 
 import "./table.css";
 import axios from 'axios';
- 
 const { Text } = Typography;
 const { Option } = Select;
-
 function Game() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
@@ -31,9 +30,9 @@ function Game() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  // const [isAdmin, setIsAdmin] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);  
   const [gameRecord, setGameRecord] = useState({
-    gameId: "", // Sử dụng gameId làm ID duy nhất
+    gameId: "",
     title: "",
     author: "",
     price: 0,
@@ -47,15 +46,14 @@ function Game() {
   const fetchGame = async () => {
     setLoading(true);
     try {
-      // Sử dụng Promise.all để gọi đồng thời 3 API
       const [res, genre, publisher] = await Promise.all([
         GetAllgame(),
         GetAllGenre(),
         GetAllPublisher(),
       ]);
-      setDataSource(res || []); // Cập nhật dữ liệu game
-      setgenre(genre || []); // Cập nhật dữ liệu thể loại
-      setpublisher(publisher || []); // Cập nhật dữ liệu nhà phát hành
+      setDataSource(res || [])
+      setgenre(genre || []); 
+      setpublisher(publisher || []); 
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu", error);
     }
@@ -63,74 +61,69 @@ function Game() {
   };
 
   useEffect(() => {
-    fetchGame(); // Gọi hàm fetchGame khi component mount
+    fetchGame(); 
   }, []);
   const getMaxGameId = () => {
-    if (dataSource.length === 0) return null; // Trả về null nếu mảng không có phần tử nào
+    if (dataSource.length === 0) return null; 
     return dataSource.reduce((maxId, game) => {
       return game.gameId > maxId ? game.gameId : maxId;
-    }, 0); // Khởi tạo maxId là 0
+    }, 0); 
   };
-
   const isAdmin = () => {
-    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const role = localStorage.getItem('authToken'); 
     const decodedToken = jwtDecode(role);
     const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     return userRole === "Admin";
   
   };
-  
-  // Open modal to add or edit a game
+  const handleCloseModal = () => {
+    setIsImageModalOpen(false);
+  };
   const openModal = (record = null) => {
     if (record) {
-      // Nếu là chỉnh sửa game
       setGameRecord({
         gameId: record.gameId,
         title: record.title,
         author: record.author,
         price: record.price,
         rating: record.rating,
-        release: record.release.split("T")[0], // Định dạng ngày thành YYYY-MM-DD
+        release: record.release.split("T")[0], 
         description: record.description,
         genreId: record.genre.genreId,
         publisherId: record.publisher.publisherId,
       });
-      setIsEditing(true); // Đặt trạng thái là đang chỉnh sửa
+      setIsEditing(true);
     } else {
-      // Nếu là thêm mới game, reset gameRecord về giá trị mặc định
       setGameRecord({
-        gameId: getMaxGameId() + 1, // Khởi tạo lại ID game với giá trị rỗng
+        gameId: getMaxGameId() + 1, 
         title: "",
         author: "",
         price: 0,
         rating: 0,
-        release: "", // Khởi tạo ngày phát hành là rỗng
+        release: "",
         description: "",
-        genreId: "", // Khởi tạo genreId là rỗng
-        publisherId: "", // Khởi tạo publisherId là rỗng
+        genreId: "", 
+        publisherId: "", 
       });
-      setIsEditing(false); // Đặt trạng thái là thêm mới
+      setIsEditing(false);
     }
-
-    setIsModalOpen(true); // Mở modal để thêm hoặc chỉnh sửa game
+    setIsModalOpen(true);
   };
-
+  const openModalImg = (record) => {
+    if (record) {
+      console.log(record.gameId); 
+    }
+    setIsImageModalOpen(true);
+  };
   const handleSave = async () => {
     if (!validateGameRecord()) {
-      return; // Nếu không hợp lệ thì không lưu
+      return;
     }
-
     if (isEditing) {
-      // Cập nhật game
-      console.log("Updating game with data:", gameRecord);
-
       try {
-        console.log(gameRecord);
-        // gameRecord.release = gameRecord.release.toISOString()
         await UpdateGame(gameRecord.gameId, gameRecord);
-        const updatedDataSource = await GetAllgame(); // Lấy lại danh sách tài khoản từ DB
-        setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-
+        const updatedDataSource = await GetAllgame(); 
+        setDataSource(updatedDataSource); 
         Modal.success({
           title: "Account update successfully",
           content: `The account with ID ${gameRecord.gameId} has been update.`,
@@ -183,22 +176,19 @@ function Game() {
         formData.append('Rating',gameRecord.rating);
         formData.append('GenreId',gameRecord.genreId);
         formData.append('Release',gameRecord.release);
-        formData.append('imageFile', selectedImage); // Thêm tệp hình ảnh vào FormData
+        formData.append('imageFile', selectedImage); 
         for (let [key, value] of formData.entries()) {
           console.log(`${key}: ${value}`);
         }
-        // Gửi yêu cầu API
         const response = await axios.post("http://localhost:5084/Game/CreateGame", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Thêm token vào header
+            Authorization: `Bearer ${token}`, 
           },
         });
-    
-        // Kiểm tra phản hồi từ API
         if (response.status === 200) {
-          const updatedDataSource = await GetAllgame(); // Lấy lại danh sách game từ DB
-          setDataSource(updatedDataSource); // Cập nhật dữ liệu trong state
+          const updatedDataSource = await GetAllgame();
+          setDataSource(updatedDataSource);
     
           Modal.success({
             title: "Game added successfully",
@@ -209,8 +199,6 @@ function Game() {
         }
       } catch (error) {
         console.error("Error adding game:", error.response ? error.response.data : error.message);
-        
-        // Hiển thị thông báo lỗi chi tiết
         Modal.error({
           title: "Error",
           content: `An error occurred while adding the game. Error details: ${error.response ? error.response.data : error.message}`,
@@ -219,28 +207,22 @@ function Game() {
   
     }
 
-    setIsModalOpen(false); // Đóng modal sau khi lưu
-    fetchGame(); // Cập nhật lại danh sách game sau khi thêm/sửa
+    setIsModalOpen(false);
+    fetchGame(); 
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Kiểm tra định dạng tệp (JPEG, PNG, GIF)
       const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
       if (!validImageTypes.includes(file.type)) {
         console.error('Invalid file type. Please select a valid image.');
         return;
       }
-  
-      // Kiểm tra kích thước tệp (Giới hạn là 5MB trong ví dụ này)
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024; 
       if (file.size > maxSize) {
         alert('File is too large. Maximum size is 5MB.');
         return;
       }
-  
-      // Đọc ảnh và kiểm tra tỷ lệ
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
@@ -249,61 +231,20 @@ function Game() {
         img.onload = () => {
           const width = img.width;
           const height = img.height;
-  
-          // Kiểm tra tỷ lệ 16:9 hoặc 3:4
           const ratio16_9 = Math.abs(width / height - 16 / 9) < 0.01;
           const ratio3_4 = Math.abs(width / height - 3 / 4) < 0.01;
-  
           if (ratio16_9 || ratio3_4) {
             console.log(`Image resolution is valid: ${width}x${height} (${ratio16_9 ? '16:9' : '3:4'})`);
-            setSelectedImage(file); // Lưu hình ảnh hợp lệ vào state
+            setSelectedImage(file); 
           } else {
             console.error('Image resolution must be 16:9 or 3:4.');
             alert('Image resolution must be 16:9 or 3:4.');
           }
         };
       };
-  
-      reader.readAsDataURL(file); // Đọc tệp hình ảnh
+      reader.readAsDataURL(file);
     }
   };
-  
-
- 
-
-  //test lại
-
-  // const handleDelete = (record) => {
-  //   Modal.confirm({
-  //       title: "Are you sure you want to delete this game?",
-  //       content: "This action cannot be undone.",
-  //       okText: "Delete",
-  //       okType: "danger",
-  //       cancelText: "Cancel",
-  //       onOk: () => {
-  //           const gameId = record.gameId;
-  //           DeleteGame(gameId)
-  //               .then(() => {
-  //                   setDataSource((prevDataSource) =>
-  //                       prevDataSource.filter((item) => item.gameId !== gameId)
-  //                   );
-  //                   Modal.success({
-  //                       title: 'Success',
-  //                       content: 'Game has been deleted.',
-  //                   });
-  //               })
-  //               .catch((error) => {
-  //                   console.error("Error deleting game:", error);
-  //                   Modal.error({
-  //                       title: 'Error',
-  //                       content: 'Failed to delete the game.',
-  //                   });
-  //               });
-  //       },
-  //   });
-  // };
-
-  // Handle deleting a game
   const handleDelete = (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this game?",
@@ -326,8 +267,6 @@ function Game() {
       },
     });
   };
-
-  // Validate game data before saving
   const validateGameRecord = () => {
     const {
       title,
@@ -339,8 +278,6 @@ function Game() {
       publisherId,
       genreId,
     } = gameRecord;
-
-    // Kiểm tra Publisher và Genre
     if (!publisherId) {
       Modal.error({
         title: "Error",
@@ -356,7 +293,6 @@ function Game() {
       });
       return false;
     }
-    // Kiểm tra Title và Author không được để trống
     if (!title || title.trim() === "") {
       Modal.error({
         title: "Error",
@@ -364,7 +300,6 @@ function Game() {
       });
       return false;
     }
-
     if (!author || author.trim() === "") {
       Modal.error({
         title: "Error",
@@ -372,8 +307,6 @@ function Game() {
       });
       return false;
     }
-
-    // Kiểm tra Price phải lớn hơn 0
     if (price < 0) {
       Modal.error({
         title: "Error",
@@ -381,8 +314,6 @@ function Game() {
       });
       return false;
     }
-
-    // Kiểm tra Rating phải nằm trong khoảng từ 0 đến 10
     if (rating < 0 || rating > 10) {
       Modal.error({
         title: "Error",
@@ -390,10 +321,8 @@ function Game() {
       });
       return false;
     }
-
-    // Kiểm tra Release Date phải có giá trị
     if (!release) {
-      gameRecord.release = new Date().toISOString().split("T")[0]; // Lấy ngày hiện tại và chuyển đổi về định dạng 'YYYY-MM-DD'
+      gameRecord.release = new Date().toISOString().split("T")[0]; 
     }
     // Kiểm tra Description không được để trống
     if (!description || description.trim() === "") {
@@ -406,9 +335,6 @@ function Game() {
 
     return true;
   };
-
-  // Handle saving game data
-
   const columns = [
     {
       title: "Game ID",
@@ -469,8 +395,6 @@ function Game() {
       key: "actions",
       render: (record) => (
         <Space size="middle">
-          
-         
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
@@ -479,7 +403,11 @@ function Game() {
           <Button danger onClick={() => handleDelete(record)}>
           Delete
         </Button>
+        
          }
+           <Button onClick={() => openModalImg(record)} type="primary">
+  Xem ảnh
+</Button>
         </Space>
       ),
     },
@@ -488,7 +416,7 @@ function Game() {
   return (
     <Space className="size_table" size={10} direction="vertical">
       { isAdmin() &&
-          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
           Add
         </Button>
         }
@@ -496,12 +424,39 @@ function Game() {
         className="data"
         loading={loading}
         columns={columns}
+        
         dataSource={dataSource}
         rowKey="gameId"
         pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
+      <Modal
+    open={isImageModalOpen}
+    onCancel={() => setIsImageModalOpen(false)}
+    title="Danh sách ảnh của Game"
+    footer={[
+      <Button key="cancel" onClick={handleCloseModal}>
+        Hủy
+      </Button>,
+    ]}
+  >
+    <div>
+   <label>
+   Thumbnail 
+   </label>
+    </div>
 
+    <div>
+    <label>screenshot </label>
+    </div>
+   <div>
+   <label>banner  </label>
+   </div>
+    <div>
+    <label>background   </label>
+    </div>
+   
+  </Modal>
       <Modal
         title={isEditing ? "Edit Game Info" : "Add New Game"}
         visible={isModalOpen}
@@ -515,27 +470,26 @@ function Game() {
           value={gameRecord.gameId}
           disabled
         />
-
         <label>Genre</label>
         <Select
           placeholder="Select Genre"
-          value={gameRecord.genreId} // Đảm bảo giá trị là genreId
+          value={gameRecord.genreId} 
           onChange={(value) => setGameRecord({ ...gameRecord, genreId: value })}
           style={{ width: "100%", height: "52px" }}
         >
           {datagenre.map((genre) => (
             <Option key={genre.genreId} value={genre.genreId}>
-              {genre.name} {/* Hiển thị tên genre */}
+              {genre.name} 
             </Option>
           ))}
         </Select>
         <label>Publisher</label>
         <Select
           placeholder="Select Publisher"
-          value={gameRecord.publisherId} // Lưu trữ publisherId trong gameRecord
+          value={gameRecord.publisherId} 
           onChange={(value) =>
             setGameRecord({ ...gameRecord, publisherId: value })
-          } // Cập nhật publisherId khi chọn publisher
+          } 
           style={{ width: "100%", height: "52px" }}
         >
           {datapublisher.map((publisher) => (
@@ -580,7 +534,6 @@ function Game() {
   value={gameRecord.rating}
   onChange={(e) => {
     const value = e.target.value;
-    // Kiểm tra nếu giá trị là số thập phân và nằm trong khoảng từ 0 đến 10, hoặc cho phép xóa
     if (
       value === "" ||
       (/^\d*\.?\d*$/.test(value) && parseFloat(value) >= 0 && parseFloat(value) <= 10)
@@ -589,22 +542,18 @@ function Game() {
     }
   }}
   onKeyPress={(e) => {
-    // Chỉ cho phép nhập số, dấu chấm (.), Backspace hoặc Delete
     if (
       !/[0-9.]/.test(e.key) &&
       e.key !== "Backspace" &&
       e.key !== "Delete"
     ) {
-      e.preventDefault(); // Ngăn chặn ký tự không hợp lệ
+      e.preventDefault(); 
     }
-    // Ngăn nhập nhiều dấu chấm
     if (e.key === "." && gameRecord.rating.includes(".")) {
       e.preventDefault();
     }
   }}
 />
-
-
         <label>Release Date</label>
         <Input
           className="modal-input"
@@ -630,7 +579,7 @@ function Game() {
       <Input
         className="modal-input"
         type="file"
-        accept="image/*" // Chỉ cho phép chọn file ảnh
+        accept="image/*"
         onChange={handleFileChange}
       />
     </>

@@ -1,4 +1,4 @@
-import { Button, Space, Table, Typography, Modal, Input, Select } from "antd";
+import { Button, Space, Table, Typography, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { GetAllPublisher, UpdatePublisher,AddPublisher } from "./API";
 import "./table.css";
@@ -8,7 +8,6 @@ const { Text } = Typography;
 function Publisher() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const [Count, setCount] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [publisherRecord, setpublisherRecord] = useState({
@@ -31,20 +30,21 @@ function Publisher() {
     fetchGame();
   }, []);
   const isAdmin = () => {
-    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const role = localStorage.getItem('authToken'); 
     const decodedToken = jwtDecode(role);
     const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     return userRole === "Admin";
   
   };
-  const openModal = (record = null) => {
+  const openModal = async  (record = null) => {
     if (record) {
       setpublisherRecord(record);
-      setIsEditing(true); // Chế độ sửa
+      setIsEditing(true); 
     } else {
+      const updatedDataSource = await GetAllPublisher();
+      setDataSource(updatedDataSource);
       const maxId = Math.max(...dataSource.map(item => item.publisherId)) ;
-      setCount(maxId); 
-      console.log(maxId);
+
       setpublisherRecord({
         id: maxId + 1,
         name: "",
@@ -53,16 +53,14 @@ function Publisher() {
         phone: "",
         website: "",
       });
-      setIsEditing(false); // Chế độ thêm
+      setIsEditing(false); 
     }
-    setIsModalOpen(true); // Mở modal
+    setIsModalOpen(true); 
   };
 
   
   const validatePublisherRecord = () => {
     const { name, phone, email, address, website } = publisherRecord;
-  
-    // Kiểm tra tên nhà sản xuất
     if (!name) {
       Modal.error({
         title: "Lỗi",
@@ -70,8 +68,6 @@ function Publisher() {
       });
       return false;
     }
-  
-    // Kiểm tra email (đảm bảo là email hợp lệ)
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!email || !emailRegex.test(email)) {
       Modal.error({
@@ -80,8 +76,6 @@ function Publisher() {
       });
       return false;
     }
-  
-    // Kiểm tra số điện thoại (đảm bảo là số hợp lệ)
     const phoneRegex = /^[0-9]{10,15}$/;
     if (!phone || !phoneRegex.test(phone)) {
       Modal.error({
@@ -90,8 +84,6 @@ function Publisher() {
       });
       return false;
     }
-  
-    // Kiểm tra địa chỉ
     if (!address) {
       Modal.error({
         title: "Lỗi",
@@ -99,8 +91,6 @@ function Publisher() {
       });
       return false;
     }
-  
-    // Kiểm tra website (nếu có) - đảm bảo là URL hợp lệ
     if (website && !/^https?:\/\/[^\s]+$/.test(website)) {
       Modal.error({
         title: "Lỗi",
@@ -108,26 +98,20 @@ function Publisher() {
       });
       return false;
     }
-  
-    return true; // Nếu tất cả các trường hợp lệ
+    return true; 
   };
   
   const handleSave = async () => {
     if (!validatePublisherRecord()) {
-      return; // Nếu không hợp lệ thì không lưu
+      return;
     }
     if (isEditing) {
       console.log(publisherRecord.publisherId, publisherRecord);
 
       try {
-        // Cập nhật dữ liệu (Ví dụ: gọi API để cập nhật publisher)
         await UpdatePublisher(publisherRecord.publisherId, publisherRecord);
-
-        // Cập nhật lại danh sách sau khi thay đổi
         const updatedDataSource = await GetAllPublisher();
         setDataSource(updatedDataSource);
-
-        // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",
           content: `Publisher ID ${publisherRecord.id} đã được cập nhật thành công.`,
@@ -141,16 +125,9 @@ function Publisher() {
       }
     } else {
       try {
-        // Thêm mới game hoặc publisher
-        // console.log("Thêm sản phẩm mới:", gameRecord);
-        // const addedGame = await AddGame(gameRecord); // Sử dụng await ở đây
-        // console.log("Added Game:", addedGame); // Kiểm tra dữ liệu vừa thêm
         await AddPublisher(publisherRecord);
-
-        // Cập nhật lại danh sách sau khi thay đổi
         const updatedDataSource = await GetAllPublisher();
         setDataSource(updatedDataSource);
-        // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",
           content: `Game ID  đã được thêm mới thành công.`,
@@ -164,13 +141,13 @@ function Publisher() {
       }
     }
 
-    setIsModalOpen(false); // Đóng modal sau khi lưu
+    setIsModalOpen(false); 
   };
 
   return (
     <Space className="size_table" size={10} direction="vertical">
         { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
                Add
              </Button>
              }
@@ -233,11 +210,9 @@ function Publisher() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="PublisherID"
-        pagination={{ pageSize: 4, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
-
-      {/* Modal cho cả Thêm và Sửa */}
       <Modal
         className="form_addedit"
         title={

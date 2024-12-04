@@ -44,43 +44,42 @@ function Discount() {
     fetchGame();
   }, []);
 
-  const openModal = (record = null) => {
+  const openModal = async (record = null) => {
     if (record) {
       setDiscountRecord({
-        id: record.discountId || "", // Lấy ID của discount
-        gameid: record.game?.gameId || "", // Lấy gameId từ record
+        id: record.discountId || "", 
+        gameid: record.game?.gameId || "", 
         percent: record.percent || 0, // Lấy percent
         code: record.code || "", // Lấy code
-        starton: record.startOn ? record.startOn.split("T")[0] : null, // Chuyển ngày thành định dạng YYYY-MM-DD
-        endon: record.endOn ? record.endOn.split("T")[0] : null, // Tương tự cho ngày kết thúc
+        starton: record.startOn ? record.startOn.split("T")[0] : null, 
+        endon: record.endOn ? record.endOn.split("T")[0] : null, 
       });
-      console.log(discountRecord.starton);
-      setIsEditing(true); // Chế độ sửa
+      setIsEditing(true); 
     } else {
+      const updatedDataSource = await GetAllDiscount();
+      setDataSource(updatedDataSource);
       const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
-        setCount(maxId);;
+      setCount(maxId);  
       setDiscountRecord({
-        id: Count+1,
+        id: Count + 1,
         gameid: "",
         percent: 0,
         code: "",
         starton: null,
         endon: null,
-      }); // Dữ liệu trống cho thêm mới
-      setIsEditing(false); // Chế độ thêm
+      });
+      setIsEditing(false); 
     }
-    setIsModalOpen(true); // Mở modal
+    setIsModalOpen(true);
   };
   const isAdmin = () => {
-    const role = localStorage.getItem('authToken'); // Assuming role is stored in localStorage
+    const role = localStorage.getItem('authToken'); 
     const decodedToken = jwtDecode(role);
     const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     return userRole === "Admin";
   
   };
   const handleDelete = async (record) => {
-    // Chuyển tham số record vào ngay trong dấu ngoặc
-
     Modal.confirm({
       title: "Are you sure you want to delete this discount?",
       content: "This action cannot be undone.",
@@ -104,8 +103,6 @@ function Discount() {
   };
   const validateDiscountRecord = () => {
     const { gameid, percent, code, starton, endon } = discountRecord;
-  
-    // Kiểm tra xem game có được chọn chưa
     if (!gameid) {
       Modal.error({
         title: 'Lỗi',
@@ -113,8 +110,6 @@ function Discount() {
       });
       return false;
     }
-  
-    // Kiểm tra tỷ lệ phần trăm (percent)
     if (percent <= 0 || percent > 100) {
       Modal.error({
         title: 'Lỗi',
@@ -122,8 +117,6 @@ function Discount() {
       });
       return false;
     }
-  
-    // Kiểm tra mã giảm giá (code) không được để trống
     if (!code) {
       Modal.error({
         title: 'Lỗi',
@@ -131,8 +124,6 @@ function Discount() {
       });
       return false;
     }
-    
-    // Kiểm tra mã giảm giá phải là chữ in và có 6 ký tự
     if (!/^[A-Z]{6}$/.test(code)) {
       Modal.error({
         title: 'Lỗi',
@@ -140,8 +131,6 @@ function Discount() {
       });
       return false;
     }
-  
-    // Kiểm tra ngày bắt đầu (starton) và ngày kết thúc (endon)
     if (!starton) {
       Modal.error({
         title: 'Lỗi',
@@ -149,7 +138,6 @@ function Discount() {
       });
       return false;
     }
-  
     if (!endon) {
       Modal.error({
         title: 'Lỗi',
@@ -157,8 +145,6 @@ function Discount() {
       });
       return false;
     }
-  
-    // Kiểm tra ngày kết thúc có phải sau ngày bắt đầu không
     if (new Date(starton) > new Date(endon)) {
       Modal.error({
         title: 'Lỗi',
@@ -166,40 +152,29 @@ function Discount() {
       });
       return false;
     }
-  
-    return true; // Nếu tất cả các điều kiện hợp lệ
+    return true; 
   };
   
   const handleSave = async () => {
-    // Kiểm tra dữ liệu có hợp lệ không trước khi thực hiện hành động
     if (!validateDiscountRecord()) {
-      return; // Nếu không hợp lệ, dừng lại và không lưu
+      return;
     }
 
     try {
-      setLoading(true); // Bật trạng thái loading
+      setLoading(true); 
       console.log(discountRecord.id, discountRecord);
       if (isEditing) {
-        // Gọi API cập nhật discount
         await UpdateDiscount(discountRecord.id, discountRecord);
-
-        // Cập nhật dữ liệu mới từ API
         const updatedDataSource = await GetAllDiscount();
         setDataSource(updatedDataSource);
-
-        // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",
           content: `Discount ID ${discountRecord.id} đã được cập nhật thành công.`,
         });
       } else {
         await AddDiscount(discountRecord);
-
-        // Cập nhật dữ liệu mới từ API
         const updatedDataSource = await GetAllDiscount();
         setDataSource(updatedDataSource);
-
-        // Hiển thị thông báo thành công
         Modal.success({
           title: "Success",
           content: `Discount ID ${discountRecord.id} đã được cập nhật thành công.`,
@@ -207,24 +182,21 @@ function Discount() {
       }
     } catch (error) {
       console.error("Error updating discount:", error);
-
-      // Hiển thị thông báo lỗi
       Modal.error({
         title: "Error",
         content:
           "Đã xảy ra lỗi trong quá trình cập nhật discount. Vui lòng thử lại.",
       });
     } finally {
-      setLoading(false); // Tắt trạng thái loading
-      setIsModalOpen(false); // Đóng modal
+      setLoading(false); 
+      setIsModalOpen(false); 
     }
   };
 
   return (
     <Space className="size_table" size={10} direction="vertical">
-       {/* Nút Add nằm phía trên bảng */}
   {isAdmin() && (
-    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
       Add
     </Button>
   )}
@@ -291,11 +263,9 @@ function Discount() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="discountid"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
-
-      {/* Modal cho cả Thêm và Sửa */}
       <Modal
         className="form_addedit"
         title={isEditing ? "Sửa thông tin discount" : "Thêm discount mới"}
@@ -352,21 +322,20 @@ function Discount() {
         <Input
           type="date"
           placeholder="Start Date"
-          value={discountRecord.starton || ""} // Hiển thị dữ liệu ngày
+          value={discountRecord.starton || ""} 
           onChange={(e) =>
             setDiscountRecord({ ...discountRecord, starton: e.target.value })
-          } // Cập nhật dữ liệu ngày bắt đầu
+          } 
           style={{ width: "100%", height: "52px" }}
         />
-
         <label>End date</label>
         <Input
           type="date"
           placeholder="End Date"
-          value={discountRecord.endon || ""} // Hiển thị dữ liệu ngày
+          value={discountRecord.endon || ""} 
           onChange={(e) =>
             setDiscountRecord({ ...discountRecord, endon: e.target.value })
-          } // Cập nhật dữ liệu ngày kết thúc
+          } 
           style={{ width: "100%", height: "52px" }}
         />
       </Modal>

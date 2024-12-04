@@ -24,11 +24,8 @@ function SideMenu() {
     setSelectedKeys(pathName);
   }, [location.pathname]);
   const handleLogout = () => {
-    // Xóa tất cả dữ liệu khỏi localStorage
-    localStorage.removeItem('authToken'); // Hoặc localStorage.removeItem("key") nếu muốn xóa một item cụ thể
-
-    // Sau khi xóa, chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
-    navigate("/"); // Hoặc bạn có thể chuyển hướng đến trang login: navigate("/login")
+    localStorage.clear();
+    navigate("/"); 
   };
 
   const navigate = useNavigate();
@@ -38,11 +35,11 @@ function SideMenu() {
         className="SideMenuVertical"
         mode="vertical"
         onClick={(item) => {
-          // Nếu key là "Logout", gọi handleLogout, còn lại chuyển hướng theo key
+
           if (item.key === "/") {
-            handleLogout(); // Gọi hàm logout
+            handleLogout(); 
           } else {
-            navigate(item.key); // Chuyển hướng đến trang khác
+            navigate(item.key); 
           }
         }}
         selectedKeys={[selectedKeys]}

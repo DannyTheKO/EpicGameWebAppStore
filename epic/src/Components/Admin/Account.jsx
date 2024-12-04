@@ -12,6 +12,7 @@ function Account() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [Count, setCount] = useState(0);
+
   const [AccountRecord, setAccountRecord] = useState({
     id: "",
     role: "",
@@ -19,7 +20,7 @@ function Account() {
     email: "",
     createdOn: null, // Thống nhất sử dụng createdOn
     isActive: "",
-    // password:"",
+    password:"",
   });
   useEffect(() => {
     const fetchAccount = async () => {
@@ -53,6 +54,7 @@ function Account() {
         createdOn: record.createdOn ? record.createdOn.split("T")[0] : "", // Đảm bảo ngày ở định dạng "yyyy-MM-dd"
         role: matchedRole ? matchedRole.name : "", // Lưu tên role
         id: record.accountId, // Đảm bảo lấy đúng id từ record
+    
       });
       setIsEditing(true);
     } else {
@@ -63,7 +65,7 @@ function Account() {
         email: "",
         createdOn: null,
         isActive: "Y",
-        password:"",
+        password :"123456",
       });
       setIsEditing(false);
     }
@@ -148,7 +150,7 @@ function Account() {
             if (roleId) {
               const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
               delete newAccount.role; // Nếu cần loại bỏ key role tránh bị override.
-        
+              console.log(newAccount);
               await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
         
               const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
@@ -215,7 +217,7 @@ function Account() {
   return (
     <Space className="size_table" size={10} direction="vertical">
         { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
                Add
              </Button>
              }
@@ -286,7 +288,7 @@ function Account() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="accountId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
         
       ></Table>

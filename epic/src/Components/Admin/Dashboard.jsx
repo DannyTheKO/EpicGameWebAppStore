@@ -4,9 +4,9 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Card, Space, Statistic, Table, Typography } from "antd";
+import { Card, Space, Statistic } from "antd";
 import { useEffect, useState } from "react";
-import { getCustomers, GetAllgame, getOrders, getRevenue } from "./API";
+import {  GetAllgame,GetAllCartdetal,GetAccount, getOrders, getRevenue } from "./API";
 import "./dash.css";
 
 import {
@@ -36,22 +36,25 @@ function Dashboard() {
   const [revenue, setRevenue] = useState(0);
 
   useEffect(() => {
-    getOrders().then((res) => {
-      setOrders(res.total);
-      setRevenue(res.discountedTotal);
+    GetAllCartdetal().then((res) => {
+      setOrders(res.length);
+      const total = res.reduce((sum, item) => sum + item.price, 0);
+      setRevenue(total);
     });
+   
     GetAllgame().then((res) => {
       setGame(res.length);
-      console.log(res.total);
+      
     });
-    getCustomers().then((res) => {
-      setCustomers(res.total);
+    GetAccount().then((res) => {
+      setCustomers(res.length);
     });
   }, []);
 
   return (
     <Space size={5} direction="vertical">
-      <Space direction="horizontal">
+      
+      <Space direction="horizontal" style={{ margin: "50px" }}>
         <DashboardCard
           icon={
             <ShoppingCartOutlined
@@ -143,37 +146,14 @@ function RecentOrders() {
     });
   }, []);
 
-  // return (
-  //   <>
-  //     <Typography.Text>Recent Orders</Typography.Text>
-  //     <Table className="table_recentorder"
-  //       columns={[
-  //         {
-  //           title: "Title",
-  //           dataIndex: "title",
-  //         },
-  //         {
-  //           title: "Quantity",
-  //           dataIndex: "quantity",
-  //         },
-  //         {
-  //           title: "Price",
-  //           dataIndex: "discountedPrice",
-  //         },
-  //       ]}
-  //       loading={loading}
-  //       dataSource={dataSource}
-  //       pagination={false}
-  //     ></Table>
-  //   </>
-  // );
+
 }
 function DashboardChart() {
   const [reveneuData, setReveneuData] = useState({
     labels: [],
     datasets: [],
   });
-  const [tableData, setTableData] = useState([]); // State để lưu dữ liệu bảng
+  const [tableData, setTableData] = useState([]); 
 
   useEffect(() => {
     getRevenue().then((res) => {
