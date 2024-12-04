@@ -54,3 +54,10 @@
 .ant-table-row.ant-table-row-level-0 {
   height: auto; /* Điều chỉnh chiều cao cho các dòng ở cấp độ 0 */
 }
+.data .ant-table-row {
+  height: 90px;
+  padding: 0px;
+}
+.data .ant-table-cell.ant-table-cell {
+  padding: 10px; /* Điều chỉnh padding của tất cả các ô */
+}

@@ -46,6 +46,8 @@ export const AddPublisher = async (Publisher) => {
     return null; // Hoặc bạn có thể xử lý theo cách khác
 }
 };
+
+
 export const AddAccountu = async (Account) => {
   try {
     const response = await apiClient.post('/Account/AddAccount', Account); // Gửi yêu cầu POST đến API
@@ -129,6 +131,17 @@ try {
   return [];
 }
 };
+export const GetAllCartdetal = async() => {
+  // Code để lấy tất cả thể loại
+  try {
+    const response = await apiClient.get('/Cartdetail/GetAllCartDetail'); // Đường dẫn chính xác đến endpoint
+    console.log("API Response:", response.data); // In toàn bộ dữ liệu phản hồi ra console
+    return response.data; // Trả về danh sách sản phẩm
+  } catch (error) {
+    console.error("Error :", error.response || error.message);
+    return [];
+  }
+  };
 
 
 export const GetAllUsername = () => {
@@ -161,6 +174,7 @@ export const GetRole = async () => {
     return [];
   }
 };
+
 
 export const GetAllgame = async () => {
   try {

@@ -7,6 +7,7 @@ import {
   Modal,
   Input,
   Select,
+
 } from "antd";
 import { useEffect, useState } from "react";
 import {jwtDecode} from 'jwt-decode';
@@ -31,6 +32,7 @@ function Game() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);  
   // const [isAdmin, setIsAdmin] = useState(false);
   const [gameRecord, setGameRecord] = useState({
     gameId: "", // Sử dụng gameId làm ID duy nhất
@@ -79,7 +81,9 @@ function Game() {
     return userRole === "Admin";
   
   };
-  
+  const handleCloseModal = () => {
+    setIsImageModalOpen(false);
+  };
   // Open modal to add or edit a game
   const openModal = (record = null) => {
     if (record) {
@@ -111,10 +115,18 @@ function Game() {
       });
       setIsEditing(false); // Đặt trạng thái là thêm mới
     }
-
+    
     setIsModalOpen(true); // Mở modal để thêm hoặc chỉnh sửa game
   };
+  const openModalImg = (record) => {
+    if (record) {
+      console.log(record.gameId); // Xử lý hoặc hiển thị ảnh dựa trên gameId
+    }
+    setIsImageModalOpen(true); // Mở modal khi có dữ liệu hợp lệ
+  };
 
+
+  
   const handleSave = async () => {
     if (!validateGameRecord()) {
       return; // Nếu không hợp lệ thì không lưu
@@ -469,8 +481,6 @@ function Game() {
       key: "actions",
       render: (record) => (
         <Space size="middle">
-          
-         
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
@@ -479,7 +489,11 @@ function Game() {
           <Button danger onClick={() => handleDelete(record)}>
           Delete
         </Button>
+        
          }
+           <Button onClick={() => openModalImg(record)} type="primary">
+  Xem ảnh
+</Button>
         </Space>
       ),
     },
@@ -488,7 +502,7 @@ function Game() {
   return (
     <Space className="size_table" size={10} direction="vertical">
       { isAdmin() &&
-          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
           Add
         </Button>
         }
@@ -496,12 +510,39 @@ function Game() {
         className="data"
         loading={loading}
         columns={columns}
+        
         dataSource={dataSource}
         rowKey="gameId"
         pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
+      <Modal
+    open={isImageModalOpen}
+    onCancel={() => setIsImageModalOpen(false)} // Đóng modal khi bấm cancel
+    title="Danh sách ảnh của Game"
+    footer={[
+      <Button key="cancel" onClick={handleCloseModal}>
+        Hủy
+      </Button>,
+    ]}
+  >
+    <div>
+   <label>
+   Thumbnail 
+   </label>
+    </div>
 
+    <div>
+    <label>screenshot </label>
+    </div>
+   <div>
+   <label>banner  </label>
+   </div>
+    <div>
+    <label>background   </label>
+    </div>
+   
+  </Modal>
       <Modal
         title={isEditing ? "Edit Game Info" : "Add New Game"}
         visible={isModalOpen}
@@ -603,8 +644,6 @@ function Game() {
     }
   }}
 />
-
-
         <label>Release Date</label>
         <Input
           className="modal-input"

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using EpicGameWebAppStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpicGameWebAppStore.Controllers;
@@ -8,6 +9,7 @@ namespace EpicGameWebAppStore.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize()]
 public class AccountGameController : _BaseController
 {
 	private readonly IAccountGameService _accountGameService;

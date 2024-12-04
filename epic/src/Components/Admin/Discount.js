@@ -44,7 +44,7 @@ function Discount() {
     fetchGame();
   }, []);
 
-  const openModal = (record = null) => {
+  const openModal = async (record = null) => {
     if (record) {
       setDiscountRecord({
         id: record.discountId || "", // Lấy ID của discount
@@ -57,16 +57,19 @@ function Discount() {
       console.log(discountRecord.starton);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const updatedDataSource = await GetAllDiscount();
+      setDataSource(updatedDataSource);
       const maxId = dataSource.length > 0 ? Math.max(...dataSource.map(item => item.discountId)) : 0;
-        setCount(maxId);;
+      setCount(maxId);  
       setDiscountRecord({
-        id: Count+1,
+        id: Count + 1,
         gameid: "",
         percent: 0,
         code: "",
         starton: null,
         endon: null,
       }); // Dữ liệu trống cho thêm mới
+    
       setIsEditing(false); // Chế độ thêm
     }
     setIsModalOpen(true); // Mở modal
@@ -224,7 +227,7 @@ function Discount() {
     <Space className="size_table" size={10} direction="vertical">
        {/* Nút Add nằm phía trên bảng */}
   {isAdmin() && (
-    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+    <Button type="primary" onClick={() => openModal()} style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
       Add
     </Button>
   )}
@@ -291,7 +294,7 @@ function Discount() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="discountid"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

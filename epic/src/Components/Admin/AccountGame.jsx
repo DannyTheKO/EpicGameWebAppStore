@@ -81,7 +81,7 @@ function Accountgame() {
   };
 
   const validateAccountGameRecord = () => {
-    const { accountId, gameId, dateAdded } = AcountgameRecord;
+    const { accountId, gameId} = AcountgameRecord;
   
     // Kiểm tra nếu accountId hoặc gameId trống
     if (!accountId || !gameId) {
@@ -169,7 +169,7 @@ function Accountgame() {
   
   return (
     <Space className="size_table" size={20} direction="vertical">
-      <Button type="primary" onClick={() => openModal()}  style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+      <Button type="primary" onClick={() => openModal()}  style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
                   Thêm
                 </Button>
       <Table
@@ -226,7 +226,7 @@ function Accountgame() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="accountGameId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       ></Table>
       <Modal

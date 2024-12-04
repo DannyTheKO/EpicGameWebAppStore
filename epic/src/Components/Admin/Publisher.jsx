@@ -37,11 +37,13 @@ function Publisher() {
     return userRole === "Admin";
   
   };
-  const openModal = (record = null) => {
+  const openModal = async  (record = null) => {
     if (record) {
       setpublisherRecord(record);
       setIsEditing(true); // Chế độ sửa
     } else {
+      const updatedDataSource = await GetAllPublisher();
+      setDataSource(updatedDataSource);
       const maxId = Math.max(...dataSource.map(item => item.publisherId)) ;
       setCount(maxId); 
       console.log(maxId);
@@ -170,7 +172,7 @@ function Publisher() {
   return (
     <Space className="size_table" size={10} direction="vertical">
         { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
                Add
              </Button>
              }
@@ -233,7 +235,7 @@ function Publisher() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="PublisherID"
-        pagination={{ pageSize: 4, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 5, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
 

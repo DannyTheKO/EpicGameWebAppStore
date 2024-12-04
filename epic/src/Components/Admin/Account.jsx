@@ -12,6 +12,7 @@ function Account() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [Count, setCount] = useState(0);
+
   const [AccountRecord, setAccountRecord] = useState({
     id: "",
     role: "",
@@ -215,7 +216,7 @@ function Account() {
   return (
     <Space className="size_table" size={10} direction="vertical">
         { isAdmin() &&
-               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1500px" ,marginTop: "20px"  }}>
+               <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
                Add
              </Button>
              }
@@ -286,7 +287,7 @@ function Account() {
         ]}
         dataSource={dataSource.map((item) => ({ ...item, key: item.id }))}
         rowKey="accountId"
-        pagination={{ pageSize: 8, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
         
       ></Table>

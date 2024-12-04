@@ -11,7 +11,7 @@ function Header() {
   const menu = (
     <Menu>
       <Menu.Item>
-        <a href="thông tin cá nhân ">Thông tin tài khoản</a>
+        <a href="/userprofile">Thông tin tài khoản</a>
       </Menu.Item>
       <Menu.Item onClick={handleLogout}>
         
