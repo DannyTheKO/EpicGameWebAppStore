@@ -8,6 +8,7 @@ kanban-plugin: board
 
 - [ ] Friends List
 - [ ] Gift Games though Friends List
+- [ ] [[Dashboard Image]]
 
 
 ## Working
