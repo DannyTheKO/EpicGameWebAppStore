@@ -36,8 +36,7 @@ export const AddAccountgame = async (AccountGame) => {
 };
 export const AddDiscount = async (Discount) => {
   try {
-    console.log(Discount);
-    const response = await apiClient.post('/Store/Dashboard/Account/Add', Discount); 
+    const response = await apiClient.post('/Store/Dashboard/Discount/Add', Discount); 
     return response.data; 
 } catch (error) {
     console.error("Error adding game:", error.response || error.message);

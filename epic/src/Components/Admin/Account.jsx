@@ -20,7 +20,7 @@ function Account() {
     email: "",
     createdOn: null, // Thống nhất sử dụng createdOn
     isActive: "",
-    // password:"",
+    password:"",
   });
   useEffect(() => {
     const fetchAccount = async () => {
@@ -54,6 +54,7 @@ function Account() {
         createdOn: record.createdOn ? record.createdOn.split("T")[0] : "", // Đảm bảo ngày ở định dạng "yyyy-MM-dd"
         role: matchedRole ? matchedRole.name : "", // Lưu tên role
         id: record.accountId, // Đảm bảo lấy đúng id từ record
+    
       });
       setIsEditing(true);
     } else {
@@ -64,7 +65,7 @@ function Account() {
         email: "",
         createdOn: null,
         isActive: "Y",
-        password:"",
+        password :"123456",
       });
       setIsEditing(false);
     }
@@ -149,7 +150,7 @@ function Account() {
             if (roleId) {
               const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
               delete newAccount.role; // Nếu cần loại bỏ key role tránh bị override.
-        
+              console.log(newAccount);
               await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
         
               const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
