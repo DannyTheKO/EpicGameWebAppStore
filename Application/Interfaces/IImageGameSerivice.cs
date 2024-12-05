@@ -10,8 +10,6 @@ namespace Application.Interfaces
 {
 	public interface IImageGameService
 	{
-		Task<(string Message, bool Flag)> AddImageGame(ImageGame imageGame);
-
 		Task<IEnumerable<ImageGame>> GetAllImageGame();
 		
 		Task<ImageGame> GetImageGameById(int imageGameID);
