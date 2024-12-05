@@ -60,21 +60,14 @@
             "id": "d554841b67408be0",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "Back-End/Back-End Progress.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false,
-                    false
-                  ]
-                }
+                "file": "Back-End/Dashboard Image.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-trello",
-              "title": "Back-End Progress"
+              "icon": "lucide-file",
+              "title": "Dashboard Image"
             }
           }
         ],
@@ -222,8 +215,8 @@
   },
   "active": "d554841b67408be0",
   "lastOpenFiles": [
-    "Back-End/Publisher.md",
     "Back-End/Back-End Progress.md",
+    "Back-End/Publisher.md",
     "Back-End/Dashboard Image.md",
     "Back-End/Dashboard Image",
     "Front-End/Admin/Game.md",

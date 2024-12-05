@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 namespace Application.Services
 {
@@ -79,9 +80,11 @@ namespace Application.Services
 			return (imageGame, true);
 		}
 
-		public Task<IEnumerable<ImageGame>> GetImageGameByGameId(int gameId)
+		public async Task<IEnumerable<ImageGame>> GetImageGameByGameId(int gameId)
 		{
-			throw new NotImplementedException();
+			var imageGameList = await _imageGameRepository.GetAll();
+			return imageGameList.Where(ig => ig.GameId == gameId);
+
 		}
 	}
 }
