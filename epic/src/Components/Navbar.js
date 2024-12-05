@@ -47,6 +47,13 @@ const Navbar = () => {
 
     // Xử lý đăng xuất
     const handleLogout = () => {
+        const storedUsername = localStorage.getItem('username');
+
+        // Xóa giỏ hàng của người dùng nếu có
+        if (storedUsername) {
+            localStorage.removeItem(`cart_${storedUsername}`);
+        }
+
         localStorage.removeItem('authToken');
         localStorage.removeItem('username');
         setIsLoggedIn(false);
