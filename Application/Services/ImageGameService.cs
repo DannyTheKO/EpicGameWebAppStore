@@ -84,6 +84,7 @@ namespace Application.Services
 		{
 			var imageGameList = await _imageGameRepository.GetAll();
 			return imageGameList.Where(ig => ig.GameId == gameId);
+
 		}
 	}
 }
