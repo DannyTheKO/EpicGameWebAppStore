@@ -21,13 +21,16 @@ const HomePage = () => {
             if (!response.ok) throw new Error("Failed to fetch Top New Releases");
             const data = await response.json();
 
+            // Cập nhật đường dẫn ảnh thumbnail
             const updatedGames = data.map(game => {
-                const coverImage = game.imageGame.find(img => img.fileName.includes('cover'));
-                const coverImagePath = coverImage ? `${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}` : '';
-                return { ...game, coverImagePath };
+                // Tìm ảnh thumbnail của game
+                const thumbnailImage = game.imageGame.find(img => img.imageType.toLowerCase() === 'thumbnail');
+                // Xây dựng đường dẫn ảnh thumbnail
+                const thumbnailPath = thumbnailImage ? `${process.env.PUBLIC_URL}${thumbnailImage.filePath}${thumbnailImage.fileName}` : '';
+                return { ...game, thumbnailPath };
             });
-            // Chỉ lấy tối đa 5 game
-            setTopNewReleases(updatedGames.slice(0, 5));
+
+            setTopNewReleases(updatedGames.slice(0, 5)); // Lấy 5 game mới nhất
         } catch (error) {
             console.error("Error fetching Top New Releases:", error);
             setTopNewReleases([]); // Set rỗng nếu có lỗi
@@ -39,20 +42,20 @@ const HomePage = () => {
             const response = await fetch('http://localhost:5084/Store/FeaturePage/GetTrendingGames');
             if (!response.ok) throw new Error("Failed to fetch Trending Games");
             const data = await response.json();
-            const updatedGames = data.map(game => {
-                const coverImage = game.imageGame.find(img => img.fileName.includes('cover'));
-                const coverImagePath = coverImage ? `${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}` : '';
-                return { ...game, coverImagePath };
-            });
-            setTrendingGames(updatedGames.slice(0, 5));
-            console.log("Trending Games:", data); // Log để kiểm tra
 
+            // Cập nhật đường dẫn ảnh thumbnail
+            const updatedGames = data.map(game => {
+                const thumbnailImage = game.imageGame.find(img => img.imageType.toLowerCase() === 'thumbnail');
+                const thumbnailPath = thumbnailImage ? `${process.env.PUBLIC_URL}${thumbnailImage.filePath}${thumbnailImage.fileName}` : '';
+                return { ...game, thumbnailPath };
+            });
+
+            setTrendingGames(updatedGames.slice(0, 5)); // Lấy 5 game trending
         } catch (error) {
             console.error("Error fetching Trending Games:", error);
             setTrendingGames([]); // Set rỗng nếu có lỗi
         }
     };
-
 
     useEffect(() => {
         fetchTopNewReleases();
@@ -78,9 +81,10 @@ const HomePage = () => {
                         topNewReleases.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    {game.coverImagePath && (
+                                    {/* Hiển thị ảnh thumbnail */}
+                                    {game.thumbnailPath && (
                                         <img
-                                            src={game.coverImagePath}
+                                            src={game.thumbnailPath}
                                             alt={game.title}
                                             className="game-cover"
                                         />
@@ -104,9 +108,10 @@ const HomePage = () => {
                         trendingGames.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    {game.coverImagePath && (
+                                    {/* Hiển thị ảnh thumbnail */}
+                                    {game.thumbnailPath && (
                                         <img
-                                            src={game.coverImagePath}
+                                            src={game.thumbnailPath}
                                             alt={game.title}
                                             className="game-cover"
                                         />

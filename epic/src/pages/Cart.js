@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import '../styles/pages/Cart.css';
 import Payment from './Payment';
 import { useNavigate } from 'react-router-dom';
+
 const Cart = () => {
     const [cart, setCart] = useState([]);
+    const [showPayment, setShowPayment] = useState(false); // Trạng thái để hiển thị phần thanh toán
     const navigate = useNavigate();
+
     // Lấy giỏ hàng từ localStorage khi component được mount
     useEffect(() => {
         const username = localStorage.getItem('username'); // Lấy username từ localStorage
@@ -18,11 +21,30 @@ const Cart = () => {
         const updatedCart = cart.filter(item => item.gameId !== id); // Loại bỏ sản phẩm có id tương ứng
         setCart(updatedCart);
         localStorage.setItem(`cart_${username}`, JSON.stringify(updatedCart)); // Cập nhật giỏ hàng mới vào localStorage
-        navigate(0);
+        navigate(0); // Tải lại trang để cập nhật giỏ hàng
     };
 
     // Tính tổng giá trị của các sản phẩm trong giỏ hàng
     const totalPrice = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+
+    // Xử lý nút "Proceed to Checkout"
+    const handleProceedToCheckout = () => {
+        if (cart.length === 0) {
+            alert('Your cart is empty. Please add some items to your cart before proceeding to checkout.');
+            return;
+        }
+
+        // Kiểm tra nếu người dùng chưa đăng nhập
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            alert('You must be logged in to proceed to checkout.');
+            navigate('/login'); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
+            return;
+        }
+
+        // Hiển thị phần thanh toán ngay trên trang Cart
+        setShowPayment(true);
+    };
 
     return (
         <div className="cart-page">
@@ -31,18 +53,22 @@ const Cart = () => {
                 <div className="cart-items">
                     {cart.length > 0 ? (
                         cart.map(item => {
-                            // Lọc ảnh cover từ imageGame
-                            const coverImage = item.imageGame.find(image => image.filePath.includes('cover'));
+                            // Kiểm tra cấu trúc và in ra console
+                            console.log(item.imageGame); // Để kiểm tra dữ liệu của imageGame
+                            const thumbnailImage = item.imageGame.find(image => image.imageType.toLowerCase() === 'thumbnail');
+                            console.log(thumbnailImage); // In ra thông tin thumbnailImage
 
                             return (
                                 <div key={item.gameId} className="cart-item">
                                     {/* Hiển thị hình ảnh của game */}
-                                    {coverImage && (
+                                    {thumbnailImage ? (
                                         <img
-                                            src={`${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}`}
+                                            src={`${process.env.PUBLIC_URL}${thumbnailImage.filePath}${thumbnailImage.fileName}`}
                                             alt={item.title}
                                             className="cart-item-image"
                                         />
+                                    ) : (
+                                        <p>No thumbnail available</p> // Nếu không có ảnh thumbnail, hiển thị thông báo
                                     )}
                                     <div className="cart-item-info">
                                         <span className="item-name">{item.title}</span>
@@ -62,8 +88,14 @@ const Cart = () => {
                 </div>
                 <div className="cart-summary">
                     <h3>Total: ${totalPrice}</h3>
-                    <button className="checkout-button">Proceed to Checkout</button>
-                    <Payment />
+                    <button className="checkout-button" onClick={handleProceedToCheckout}>
+                        Proceed to Checkout
+                    </button>
+                    {showPayment && (
+                        <div className="payment-section">
+                            <Payment /> {/* Hiển thị phần thanh toán */}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
