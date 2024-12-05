@@ -1255,7 +1255,7 @@ public class Dashboard : _BaseController
 	}
 
 	[HttpPost("Image/Add")]
-	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel)
+	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
 	{
 		await CheckPermission("add");
 
@@ -1269,6 +1269,7 @@ public class Dashboard : _BaseController
 					.Select(e => e.ErrorMessage)
 			});
 		}
+		
 		// Check if Game exists
 		var game = await _gameService.GetGameById(imageFormModel.GameId);
 		if (game == null)
@@ -1279,6 +1280,7 @@ public class Dashboard : _BaseController
 				message = "Game not found"
 			});
 		}
+		
 		// Create new image entity
 		var image = new ImageGame
 		{
@@ -1286,12 +1288,13 @@ public class Dashboard : _BaseController
 			ImageType = imageFormModel.ImageType,
 			Game = game
 		};
-		var createdImage = await _imageGameService.AddImageGame(image);
+
+		var (Createdimage, flag)= await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
 		return Ok(new
 		{
-			success = true,
+			success = flag,
 			message = "Image created successfully",
-			data = createdImage
+			data = image,
 		});
 	}
 
@@ -1302,15 +1305,17 @@ public class Dashboard : _BaseController
 	{
 		await CheckPermission("delete");
 
+		// First get the image entity
 		var image = await _imageGameService.GetImageGameById(imageId);
 		if (image == null)
 		{
-			return NotFound(new
+			return NotFound(new 
 			{
 				success = false,
 				message = "Image not found"
 			});
 		}
+
 		await _imageGameService.DeleteImageGame(imageId);
 		return Ok(new
 		{

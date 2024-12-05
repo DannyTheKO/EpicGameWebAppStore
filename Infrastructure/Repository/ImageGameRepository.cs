@@ -40,7 +40,7 @@ namespace Infrastructure.Repository
 			var checkImageGame = await GetById(imageGameID);
 			if (checkImageGame != null) //Found
 			{
-				_context.Remove(imageGameID);
+				_context.Remove(checkImageGame);
 				await _context.SaveChangesAsync();
 			}
 		}
