@@ -12,7 +12,7 @@ const UserProfile = () => {
 
     const accountToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
     const [ownedGames, setOwnedGames] = useState([]); // State lưu game đã sở hữu
-
+    const [detailedOwnedGames, setDetailedOwnedGames] = useState([]);
     const fetchOwnedGames = async () => {
         try {
             const response = await fetch('http://localhost:5084/Profile/ProfileUser/GetOwnedGames', {
@@ -32,7 +32,33 @@ const UserProfile = () => {
             console.log('Owned games data:', data);
 
             if (data.success) {
-                setOwnedGames(data.data);
+                const gamesWithDetails = await Promise.all(
+                    data.data.map(async (ownedGame) => {
+                        const gameResponse = await fetch(`http://localhost:5084/Game/GetGameId/${ownedGame.gameId}`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${accountToken}`,
+                                'Accept': 'application/json',
+                            },
+                        });
+
+                        if (gameResponse.ok) {
+                            const gameData = await gameResponse.json();
+                            return {
+                                ...ownedGame,
+                                title: gameData.title,
+                                genre: gameData.genre.name,
+                                publisher: gameData.publisher.name,
+                                coverImage: `${gameData.imageGame.find(img => img.imageType === 'Thumbnail').filePath}${gameData.imageGame.find(img => img.imageType === 'Thumbnail').fileName}`,
+                                description: gameData.description,
+                            };
+                        } else {
+                            console.error(`Failed to fetch game details for gameId: ${ownedGame.gameId}`);
+                            return ownedGame;
+                        }
+                    })
+                );
+                setDetailedOwnedGames(gamesWithDetails);
             } else {
                 console.error('Error fetching owned games:', data.message);
             }
@@ -40,6 +66,7 @@ const UserProfile = () => {
             console.error('Error fetching owned games:', error);
         }
     };
+
 
 
     useEffect(() => {
@@ -178,17 +205,23 @@ const UserProfile = () => {
                 return (
                     <div className="owned-games-section">
                         <h2>Owned Games</h2>
-                        {ownedGames.length > 0 ? (
-                            <ul>
-                                {ownedGames.map((game) => (
-                                    <li key={game.gameId}>
-                                        <h3>{game.title}</h3>
-                                        <p>Price: ${game.price.toFixed(2)}</p>
+                        {detailedOwnedGames.length > 0 ? (
+                            <ul className="owned-games-list">
+                                {detailedOwnedGames.map((game) => (
+                                    <li key={game.accountGameId} className="owned-game-item">
+                                        <img src={game.coverImage} alt={game.title} className="game-cover" />
+                                        <div className="game-info">
+                                            <h3>{game.title}</h3>
+                                            <p><strong>Genre:</strong> {game.genre}</p>
+                                            <p><strong>Publisher:</strong> {game.publisher}</p>
+                                            <p><strong>Date Added:</strong> {new Date(game.dateAdded).toLocaleString()}</p>
+                                            <p><strong>Description:</strong> {game.description}</p>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p>No games owned yet.</p>
+                            <p>You don't own any games yet.</p>
                         )}
                     </div>
                 );

@@ -16,16 +16,6 @@ namespace Application.Services
 			_gameRepository = gameRepository;
 		}
 
-		public async Task<(string Message, bool Flag)> AddImageGame(ImageGame imageGame)
-		{
-			// Check if that game ID existed
-			var game = await _gameRepository.GetById(imageGame.GameId);
-			if (game == null) return ("Game not found!", false);
-
-			await _imageGameRepository.Add(imageGame);
-
-			return ("ImageGame added successfully!", true);
-		}
 		public async Task<IEnumerable<ImageGame>> GetAllImageGame()
 		{
 			return await _imageGameRepository.GetAll();
@@ -38,7 +28,7 @@ namespace Application.Services
 
 		public async Task DeleteImageGame(int imageGameID)
 		{
-			var checkImageGame = await _gameRepository.GetById(imageGameID);
+			var checkImageGame = await _imageGameRepository.GetById(imageGameID);
 			if (checkImageGame == null) throw new Exception("Image Game not found!");
 			
 			await _imageGameRepository.Delete(imageGameID);

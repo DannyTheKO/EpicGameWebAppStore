@@ -19,13 +19,15 @@ const StorePage = () => {
 
             // Update images for each game
             const updatedGames = data.map((game) => {
-                // Find the cover image
-                const coverImage = game.imageGame.find(image => image.fileName.includes('cover'));
+                // Find the Thumbnail image
+                const thumbnailImage = game.imageGame.find(image => image.imageType.toLowerCase() === 'thumbnail');
 
-                // Build the path for the cover image
-                const coverImagePath = coverImage ? `${process.env.PUBLIC_URL}${coverImage.filePath}${coverImage.fileName}` : '';
+                // Build the path for the Thumbnail image
+                const thumbnailPath = thumbnailImage
+                    ? `${process.env.PUBLIC_URL}${thumbnailImage.filePath}${thumbnailImage.fileName}`
+                    : '';
 
-                return { ...game, coverImagePath };
+                return { ...game, thumbnailPath };
             });
 
             setGames(updatedGames);
@@ -34,15 +36,14 @@ const StorePage = () => {
         }
     };
 
-    // Fetch genres from API or define a static list if already in DB
+    // Fetch genres from API or define a static list
     const fetchGenres = async () => {
         try {
-            const response = await fetch('http://localhost:5084/Genre/GetAll'); // Giả sử có một API trả về danh sách thể loại
+            const response = await fetch('http://localhost:5084/Genre/GetAll');
             const data = await response.json();
             setGenres(data);
         } catch (error) {
             console.error("Error fetching genres:", error);
-            // Nếu không thể lấy từ API, sử dụng danh sách tĩnh
             setGenres([
                 { genreId: 1, name: "Action" },
                 { genreId: 2, name: "Adventure" },
@@ -118,10 +119,9 @@ const StorePage = () => {
                     paginatedGames.map(game => (
                         <Link to={`/game/${game.gameId}`} key={game.gameId}>
                             <div className="game-item">
-                                {/* Only show the cover image */}
-                                {game.coverImagePath && (
+                                {game.thumbnailPath && (
                                     <img
-                                        src={game.coverImagePath}
+                                        src={game.thumbnailPath}
                                         alt={game.title}
                                         className="game-cover"
                                     />
@@ -134,7 +134,6 @@ const StorePage = () => {
                 )}
             </div>
 
-            {/* Pagination controls */}
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button

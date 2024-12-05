@@ -64,7 +64,7 @@ const GamePage = () => {
     useEffect(() => {
         const fetchGameDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:5084/Store/FeaturePage/GetGameId/${id}`);
+                const response = await fetch(`http://localhost:5084/Store/GamePage/${id}`);
                 if (!response.ok) {
                     throw new Error('Failed to load game details.');
                 }
@@ -117,7 +117,8 @@ const GamePage = () => {
         : 'Price Not Available';
 
     // Lọc các ảnh thuộc folder gameplay
-    const gameplayImages = game?.imageGame?.filter(image => image.filePath.includes("gameplay")) || [];
+    const gameplayImages =
+        game.imageGame?.filter((img) => img.imageType === 'Screenshot') || [];
 
     // Đảm bảo không có ảnh gameplay
     const hasGameplayImages = gameplayImages.length > 0;
