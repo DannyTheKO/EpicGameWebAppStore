@@ -8,8 +8,7 @@ kanban-plugin: board
 
 - [ ] Friends List
 - [ ] Gift Games though Friends List
-- [ ] [[Dashboard Image]]
-- [ ] [[Back-End/Publisher]]
+- [ ] [[Author]]
 
 
 ## Working
@@ -42,6 +41,8 @@ kanban-plugin: board
 - [x] [[Back-End/Cart]] ✅ 2024-12-03
 - [x] [[Back-End/Game]] ✅ 2024-12-03
 - [x] [[CartDetail]] ✅ 2024-12-03
+- [x] [[Dashboard Image]] ✅ 2024-12-05
+- [x] [[Back-End/Publisher]] ✅ 2024-12-05
 
 
 
