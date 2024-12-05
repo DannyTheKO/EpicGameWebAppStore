@@ -1,9 +1,10 @@
 import { Space, Typography, Dropdown, Menu } from "antd";
 import "./header.css";
+import { useNavigate } from "react-router-dom";
 import { MdAccountCircle } from "react-icons/md";
-
+import EpicGamesLogo from '../../assets/EpicGames_Logo.png';
 function Header() {
-  
+  const navigate = useNavigate();
   const menu = (
     <Menu>
       <Menu.Item>
@@ -16,7 +17,13 @@ function Header() {
   );
   return (
     <div className="AppHeader">
-      <img className="logoad" src="../Asset/logo.png"></img>
+    <img 
+  src={EpicGamesLogo} 
+  alt="Epic Games Logo" 
+  className="logo-image" 
+  onClick={() => navigate("/")} 
+  style={{ width: '100px', height: 'auto',marginLeft:"90px" }} 
+/>
       <Typography.Title>EPIC GAMING</Typography.Title>
       <Space>
         <Dropdown overlay={menu} trigger={["hover"]}>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserAlt, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import "./regester.css";
 
