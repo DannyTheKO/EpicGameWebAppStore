@@ -7,10 +7,10 @@ System.NotImplementedException: The method or operation is not implemented. at A
 }
 ```
 ## Post: Add Image
-- [ ] /Store/Dashboard/Image/Add : không có đường dẫn tới file ảnh
+- [x] /Store/Dashboard/Image/Add : không có đường dẫn tới file ảnh ✅ 2024-12-05
 
 ## Delete Image
-- [ ] /Store/Dashboard/Image/Add
+- [x] /Store/Dashboard/Image/Add ✅ 2024-12-05
 ```
 Error: Internal Servcer Error
 ```json{
