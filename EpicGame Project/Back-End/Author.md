@@ -1,26 +1,26 @@
-- [ ] ## User: All Forbiden
+- [x] ## User: All Forbiden ✅ 2024-12-06
 
 # Mod: vẫn làm được
 
 ## Game:
-- [ ] ### /Store/Dashboard/Game/Create
-- [ ] ### /Store/Dashboard/Game/Delete/{gameId}
+- [x] ### /Store/Dashboard/Game/Create ✅ 2024-12-06
+- [x] ### /Store/Dashboard/Game/Delete/{gameId} ✅ 2024-12-06
 
 ## Account Game
 
-- [ ] ### /Store/Dashboard/AccountGame/Add
-- [ ] ### /Store/Dashboard/AccountGame/Delete/{accountGameId}
-- [ ] ### /Store/Dashboard/Account/Add
+- [x] ### /Store/Dashboard/AccountGame/Add ✅ 2024-12-06
+- [x] ### /Store/Dashboard/AccountGame/Delete/{accountGameId} ✅ 2024-12-06
+- [x] ### /Store/Dashboard/Account/Add ✅ 2024-12-06
 
 ## Discount
-- [ ] ### /Store/Dashboard/Discount/Add
-- [ ] ### /Store/Dashboard/DeleteDiscount/{discountId}
+- [x] ### /Store/Dashboard/Discount/Add ✅ 2024-12-06
+- [x] ### /Store/Dashboard/DeleteDiscount/{discountId} ✅ 2024-12-06
 
 ## Image
-- [ ] ### /Store/Dashboard/Image/Add
-- [ ] ### /Store/Dashboard/Image/Delete/{imageId}
+- [x] ### /Store/Dashboard/Image/Add ✅ 2024-12-06
+- [x] ### /Store/Dashboard/Image/Delete/{imageId} ✅ 2024-12-06
 
 ## Publisher
-- [ ] ### /Store/Dashboard/Publisher/Create
-- [ ] ### /Store/Dashboard/Publisher/Update/{publisherId}
+- [x] ### /Store/Dashboard/Publisher/Create ✅ 2024-12-06
+- [x] ### /Store/Dashboard/Publisher/Update/{publisherId} ✅ 2024-12-06
 # Không thấy khác admin chỗ nào:))))
