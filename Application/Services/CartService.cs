@@ -9,13 +9,14 @@ public class CartService : ICartService
 {
 	private readonly ICartRepository _cartRepository;
 	private readonly IGameRepository _gameRepository;
-	private readonly IAccountRepository _accountRepository;
+	private readonly IDiscountService _discountService;
 
-	public CartService(ICartRepository cartRepository, IGameRepository gameRepository, IAccountRepository accountRepository)
+
+	public CartService(ICartRepository cartRepository, IGameRepository gameRepository, IDiscountService discountService)
 	{
 		_cartRepository = cartRepository;
 		_gameRepository = gameRepository;
-		_accountRepository = accountRepository;
+		_discountService = discountService;
 	}
 
 	#region == CRUB Operation ==
@@ -109,9 +110,9 @@ public class CartService : ICartService
 
 	public async Task<(Cart, string Message)> AddGameToCart(int accountId, int gameId)
 	{
-		var existingCart = await GetActiveCartByAccountId(accountId); // Get most recent cart
+		var existingCart = await GetActiveCartByAccountId(accountId);
 
-		if (existingCart == null) // Cart doesn't exist for that account
+		if (existingCart == null)
 		{
 			// Create new cart
 			var newCart = new Cart
@@ -124,46 +125,58 @@ public class CartService : ICartService
 				Cartdetails = new List<Cartdetail>()
 			};
 
-			// After create new cart we create cartDetail for the game
+			// Get game price and check for active discounts
+			var game = await _gameRepository.GetById(gameId);
+			var activeDiscounts = await _discountService.GetDiscountByGameId(gameId);
+			var currentDiscount = activeDiscounts
+				.Where(d => d.StartOn <= DateTime.UtcNow && d.EndOn >= DateTime.UtcNow)
+				.OrderByDescending(d => d.Percent)
+				.FirstOrDefault();
+
+			// Create cart detail with discount if available
 			var cartDetail = new Cartdetail
 			{
 				GameId = gameId,
-				Price = (await _gameRepository.GetById(gameId)).Price,
-				Discount = 0
+				Price = game.Price,
+				Discount = currentDiscount?.Percent ?? 0
 			};
 
-			// Add CartDetail into new Cart
 			newCart.Cartdetails.Add(cartDetail);
-
-			// Add Cart into database
 			await _cartRepository.Add(newCart);
 			return (newCart, "Cart not found!, created a new cart with a new cartDetail");
 		}
 		else
 		{
-			// Check if that game already exist in the current cart
+			// Check if game already exists in cart
 			var gameExists = existingCart.Cartdetails.Any(cd => cd.GameId == gameId);
 			if (gameExists)
 			{
 				return (existingCart, "This game is already in your cart!");
 			}
 
-			// Add to existing cart
+			// Get active discount for the game
+			var activeDiscounts = await _discountService.GetDiscountByGameId(gameId);
+			var currentDiscount = activeDiscounts
+				.Where(d => d.StartOn <= DateTime.UtcNow && d.EndOn >= DateTime.UtcNow)
+				.OrderByDescending(d => d.Percent)
+				.FirstOrDefault();
+
+			// Add to existing cart with discount
 			var cartDetail = new Cartdetail
 			{
 				CartId = existingCart.CartId,
 				GameId = gameId,
 				Price = (await _gameRepository.GetById(gameId)).Price,
-				Discount = 0,
+				Discount = currentDiscount?.Percent ?? 0
 			};
 
 			existingCart.Cartdetails.Add(cartDetail);
-
 			existingCart.TotalAmount = await CalculateTotalAmount(existingCart.CartId);
 			await _cartRepository.Update(existingCart);
 			return (existingCart, "Cart found, add cartDetail into the existed cart!");
 		}
 	}
+
 
 	// ACTION: Complete Checkout Cart
 	public async Task CompleteCheckout(int cartId, int paymentMethodId)
@@ -180,8 +193,8 @@ public class CartService : ICartService
 		var cart = await _cartRepository.GetById(cartId);
 		if (cart == null) throw new Exception("Cart not found.");
 
-		decimal totalAmount = cart.Cartdetails.Sum(cd => 
-			cd.Price.GetValueOrDefault() * 
+		decimal totalAmount = cart.Cartdetails.Sum(cd =>
+			cd.Price.GetValueOrDefault() *
 			(1 - cd.Discount.GetValueOrDefault() / 100)
 		);
 

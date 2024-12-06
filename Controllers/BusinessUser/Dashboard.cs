@@ -65,11 +65,11 @@ public class Dashboard : _BaseController
 		_authorizationServices = authorizationServices;
 	}
 
-	[HttpGet]
+	[HttpGet("AccessDenied")]
 	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public ActionResult AccessDenied()
 	{
-		return Unauthorized( new
+		return Unauthorized(new
 		{
 			accessFlag = false,
 			message = "Access Denied: You don't have permission to access this resource"
@@ -105,7 +105,7 @@ public class Dashboard : _BaseController
 	[HttpPost("Game/Create")]
 	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -226,7 +226,7 @@ public class Dashboard : _BaseController
 	[HttpPut("Game/Update/{gameId}")]
 	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
-		var permissionFlag =  await CheckPermission("update");
+		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -308,7 +308,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("Game/Delete/{gameId}")]
 	public async Task<ActionResult> DeleteGame(int gameId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -402,7 +402,7 @@ public class Dashboard : _BaseController
 	[HttpPost("AccountGame/Add")]
 	public async Task<ActionResult<AccountGameFormModel>> AddAccountGame([FromBody] AccountGameFormModel accountGameFormModel)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -478,7 +478,7 @@ public class Dashboard : _BaseController
 	[HttpPut("AccountGame/Update/{accountGameId}")]
 	public async Task<ActionResult> UpdateAccountGame(int accountGameId, [FromBody] AccountGameFormModel accountGameFormModel)
 	{
-		var permissionFlag =  await CheckPermission("update");
+		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -541,7 +541,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("AccountGame/Delete/{accountGameId}")]
 	public async Task<ActionResult> DeleteAccountGame(int accountGameId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -606,7 +606,7 @@ public class Dashboard : _BaseController
 	[HttpPost("Account/Add")]
 	public async Task<ActionResult> AddAccount([FromBody] AccountFormModel accountFormModel)
 	{
-		var permissionFlag =  await CheckPermission("manage_users");
+		var permissionFlag = await CheckPermission("manage_users");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -658,7 +658,7 @@ public class Dashboard : _BaseController
 	[HttpPut("Account/Update/{accountId}")]
 	public async Task<ActionResult> UpdateAccount(int accountId, [FromBody] AccountFormModel accountFormModel)
 	{
-		var permissionFlag =  await CheckPermission("manage_users");
+		var permissionFlag = await CheckPermission("manage_users");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -746,7 +746,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("Account/Delete/{accountId}")]
 	public async Task<ActionResult> DeleteAccount(int accountId)
 	{
-		var permissionFlag =  await CheckPermission("manage_users");
+		var permissionFlag = await CheckPermission("manage_users");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -811,11 +811,10 @@ public class Dashboard : _BaseController
 		return Ok(discounts);
 	}
 
-	// Add a new discount
 	[HttpPost("Discount/Add")]
-	public async Task<IActionResult> AddDiscount([FromBody] DiscountFormModel discountFormModel)
+	public async Task<ActionResult> AddDiscount([FromBody] DiscountFormModel discountFormModel)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -843,6 +842,51 @@ public class Dashboard : _BaseController
 			});
 		}
 
+		// Validate dates
+		if (discountFormModel.StartOn >= discountFormModel.EndOn)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Start date must be before end date"
+			});
+		}
+
+		if (discountFormModel.StartOn < DateTime.UtcNow)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Start date cannot be in the past"
+			});
+		}
+
+		// Check if discount code already exists
+		var existingDiscounts = await _discountService.GetDiscountByCode(discountFormModel.Code);
+		if (existingDiscounts.Any())
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Discount code already exists"
+			});
+		}
+
+		// Check if game already has an active discount
+		var gameDiscounts = await _discountService.GetDiscountByGameId(discountFormModel.GameID);
+		var activeDiscounts = gameDiscounts.Where(d =>
+			d.EndOn >= DateTime.UtcNow &&
+			d.StartOn <= discountFormModel.EndOn);
+
+		if (activeDiscounts.Any())
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game already has an active discount for the specified period"
+			});
+		}
+
 		// Create new discount entity
 		var discount = new Discount
 		{
@@ -863,11 +907,12 @@ public class Dashboard : _BaseController
 		});
 	}
 
+
 	// Update an existing discount
 	[HttpPut("Discount/Update/{discountId}")]
-	public async Task<ActionResult> UpdateDiscount(int discountId, [FromBody] DiscountFormModel discountFormModel)
+	public async Task<IActionResult> UpdateDiscount(int discountId, [FromBody] DiscountFormModel discountFormModel)
 	{
-		var permissionFlag =  await CheckPermission("update");
+		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -884,6 +929,37 @@ public class Dashboard : _BaseController
 			});
 		}
 
+		// Check if discount exists
+		var existingDiscount = await _discountService.GetDiscountByIdAsync(discountId);
+		if (existingDiscount == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Discount not found"
+			});
+		}
+
+		// Validate dates
+		if (discountFormModel.StartOn >= discountFormModel.EndOn)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Start date must be before end date"
+			});
+		}
+
+		if (discountFormModel.StartOn < DateTime.UtcNow)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Start date cannot be in the past"
+			});
+		}
+
+		// Check if Game exists
 		var game = await _gameService.GetGameById(discountFormModel.GameID);
 		if (game == null)
 		{
@@ -891,6 +967,33 @@ public class Dashboard : _BaseController
 			{
 				success = false,
 				message = "Game not found"
+			});
+		}
+
+		// Check if the new code already exists (excluding current discount)
+		var existingDiscounts = await _discountService.GetDiscountByCode(discountFormModel.Code);
+		if (existingDiscounts.Any(d => d.DiscountId != discountId))
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Discount code already exists"
+			});
+		}
+
+		// Check for overlapping active discounts for the same game
+		var gameDiscounts = await _discountService.GetDiscountByGameId(discountFormModel.GameID);
+		var activeDiscounts = gameDiscounts.Where(d =>
+			d.DiscountId != discountId &&
+			d.EndOn >= DateTime.UtcNow &&
+			d.StartOn <= discountFormModel.EndOn);
+
+		if (activeDiscounts.Any())
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game already has an active discount for the specified period"
 			});
 		}
 
@@ -915,18 +1018,20 @@ public class Dashboard : _BaseController
 	}
 
 
+
 	// Delete a discount
-	[HttpDelete("DeleteDiscount/{discountId}")]
-	public async Task<IActionResult> DeleteDiscount(int discountId)
+	[HttpDelete("Discount/Delete/{discountId}")]
+	public async Task<ActionResult> DeleteDiscount(int discountId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
 		}
 
-		var discount = await _discountService.GetDiscountByIdAsync(discountId);
-		if (discount == null)
+		// Check if discount exists
+		var existingDiscount = await _discountService.GetDiscountByIdAsync(discountId);
+		if (existingDiscount == null)
 		{
 			return NotFound(new
 			{
@@ -935,15 +1040,31 @@ public class Dashboard : _BaseController
 			});
 		}
 
+		// Check if discount is currently active
+		if (existingDiscount.EndOn > DateTime.UtcNow && existingDiscount.StartOn <= DateTime.UtcNow)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Cannot delete an active discount"
+			});
+		}
+
 		var deletedDiscount = await _discountService.DeleteDiscountAsync(discountId);
 		return Ok(new
 		{
 			success = true,
 			message = "Discount deleted successfully",
-			data = deletedDiscount
+			data = new
+			{
+				discountId = deletedDiscount.DiscountId,
+				code = deletedDiscount.Code,
+				gameId = deletedDiscount.GameId,
+				deletedOn = DateTime.UtcNow
+			}
 		});
-	}
 
+	}
 
 	#endregion
 
@@ -989,7 +1110,7 @@ public class Dashboard : _BaseController
 	[HttpPost("Publisher/Create")]
 	public async Task<ActionResult> AddPublisher([FromBody] Publisher publisher)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1008,7 +1129,7 @@ public class Dashboard : _BaseController
 	[HttpPut("Publisher/Update/{publisherId}")]
 	public async Task<ActionResult> UpdatePublisher(int publisherId, [FromBody] PublisherFormModel publisherFormModel)
 	{
-		var permissionFlag =  await CheckPermission("update");
+		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1039,7 +1160,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("Publisher/Delete/{publisherId}")]
 	public async Task<ActionResult> DeletePublisher(int publisherId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1060,39 +1181,39 @@ public class Dashboard : _BaseController
 
 	#region == Cart ==
 
-		// GET: Cart/GetAll
+	// GET: Cart/GetAll
 	[HttpGet("Cart/GetAll")]
 	public async Task<ActionResult<IEnumerable<Cart>>> GetAllCarts()
 	{
 		var carts = await _cartService.GetAllCarts();
 
-        var formattedResponse = carts.GroupBy(c => c.AccountId)
-            .Select(group => new
-            {
-                accountId = group.Key,
-                name = group.First().Account.Username,
-                cart = group.Select(c => new
-                {
-                    cartId = c.CartId,
+		var formattedResponse = carts.GroupBy(c => c.AccountId)
+			.Select(group => new
+			{
+				accountId = group.Key,
+				name = group.First().Account.Username,
+				cart = group.Select(c => new
+				{
+					cartId = c.CartId,
 					cartStatus = c.CartStatus,
 					paymentMethodId = c.PaymentMethodId,
 					paymentMethod = c.PaymentMethod.Name,
 					cartDetails = c.Cartdetails.Select(cd => new
-                    {
-                        cartDetailId = cd.CartDetailId,
-                        cartDetail = new
-                        {
-                            gameId = cd.Game.GameId,
-                            title = cd.Game.Title,
-                            price = cd.Price,
-                            discount = cd.Discount
-                        }
-                    }).ToList()
-                }).ToList()
-            });
+					{
+						cartDetailId = cd.CartDetailId,
+						cartDetail = new
+						{
+							gameId = cd.Game.GameId,
+							title = cd.Game.Title,
+							price = cd.Price,
+							discount = cd.Discount
+						}
+					}).ToList()
+				}).ToList()
+			});
 
-        return Ok(formattedResponse);
-    }
+		return Ok(formattedResponse);
+	}
 
 	// GET: Cart/GetCartId
 	[HttpGet("Cart/GetById/{cartId}")]
@@ -1130,7 +1251,7 @@ public class Dashboard : _BaseController
 	[HttpGet("Cart/CheckOut/{accountId}")]
 	public async Task<ActionResult<Cart>> GetLatestCart(int accountId)
 	{
-		var (cart, message)= await _cartService.GetLatestCart(accountId);
+		var (cart, message) = await _cartService.GetLatestCart(accountId);
 		if (cart == null)
 		{
 			return NotFound(new
@@ -1140,7 +1261,7 @@ public class Dashboard : _BaseController
 			});
 		}
 
-		return Ok( new
+		return Ok(new
 		{
 			success = true,
 			message,
@@ -1154,7 +1275,7 @@ public class Dashboard : _BaseController
 	[HttpPost("Cart/CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1200,7 +1321,7 @@ public class Dashboard : _BaseController
 	[HttpPut("Cart/Update/{cartId}")]
 	public async Task<ActionResult<CartFormModel>> UpdateCart(int cartId, [FromBody] CartFormModel cartFormModel)
 	{
-		var permissionFlag =  await CheckPermission("update");
+		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1259,7 +1380,7 @@ public class Dashboard : _BaseController
 
 		// Update Cart
 		await _cartService.UpdateCart(cart);
-		
+
 		return Ok(new
 		{
 			sucess = true,
@@ -1272,7 +1393,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("Cart/Delete/{cartId}")]
 	public async Task<ActionResult> DeleteCart(int cartId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1338,7 +1459,7 @@ public class Dashboard : _BaseController
 	[HttpPost("Image/Add")]
 	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
 	{
-		var permissionFlag =  await CheckPermission("add");
+		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1353,7 +1474,7 @@ public class Dashboard : _BaseController
 					.Select(e => e.ErrorMessage)
 			});
 		}
-		
+
 		// Check if Game exists
 		var game = await _gameService.GetGameById(imageFormModel.GameId);
 		if (game == null)
@@ -1364,7 +1485,7 @@ public class Dashboard : _BaseController
 				message = "Game not found"
 			});
 		}
-		
+
 		// Create new image entity
 		var image = new ImageGame
 		{
@@ -1373,7 +1494,7 @@ public class Dashboard : _BaseController
 			Game = game
 		};
 
-		var (Createdimage, flag)= await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
+		var (Createdimage, flag) = await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
 		return Ok(new
 		{
 			success = flag,
@@ -1387,7 +1508,7 @@ public class Dashboard : _BaseController
 	[HttpDelete("Image/Delete/{imageId}")]
 	public async Task<ActionResult> DeleteImage(int imageId)
 	{
-		var permissionFlag =  await CheckPermission("delete");
+		var permissionFlag = await CheckPermission("delete");
 		if (permissionFlag == false)
 		{
 			return AccessDenied();
@@ -1396,7 +1517,7 @@ public class Dashboard : _BaseController
 		var image = await _imageGameService.GetImageGameById(imageId);
 		if (image == null)
 		{
-			return NotFound(new 
+			return NotFound(new
 			{
 				success = false,
 				message = "Image not found"

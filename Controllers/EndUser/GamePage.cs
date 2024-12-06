@@ -64,7 +64,7 @@ public class GamePage : _BaseController
 		return Ok(new
 		{
 			success = true,
-			message = "Game has been added to cart!",
+			message = message,
 			cartId = lastestAccountCart.CartId,
 			cartItems = lastestAccountCart,
 		});
