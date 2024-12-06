@@ -37,15 +37,17 @@ namespace EpicGameWebAppStore.Controllers
 			};
 		}
 
-		protected async Task<IActionResult> CheckPermission(string requiredPermission)
+		protected async Task<bool> CheckPermission(string requiredPermission)
 		{
-			var permissionCheck = await _authorizationServices.UserHasPermission(GetCurrentDetailAccount().AccountId, requiredPermission);
-			if (!permissionCheck)
+			var accountDetails = GetCurrentDetailAccount();
+			var hasPermission = await _authorizationServices.UserHasPermission(accountDetails.AccountId, requiredPermission);
+
+			if (!hasPermission)
 			{
-				return Redirect("Auth/AccessDenied");
+				return false;
 			}
 
-			return null; // this is a void return, but that fuck it, who cared anyway
+			return true;
 		}
 
 	}

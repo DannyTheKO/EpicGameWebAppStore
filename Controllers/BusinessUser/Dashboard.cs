@@ -65,6 +65,16 @@ public class Dashboard : _BaseController
 		_authorizationServices = authorizationServices;
 	}
 
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+	public ActionResult AccessDenied()
+	{
+		return Unauthorized( new
+		{
+			accessFlag = false,
+			message = "Access Denied: You don't have permission to access this resource"
+		});
+	}
+
 
 	#region == Game Tab ==
 
@@ -94,7 +104,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Game/Create")]
 	public async Task<ActionResult> CreateGame([FromForm] GameFormModel gameFormModel, IFormFile imageFile)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -211,7 +225,11 @@ public class Dashboard : _BaseController
 	[HttpPut("Game/Update/{gameId}")]
 	public async Task<ActionResult> UpdateGame([FromBody] GameFormModel gameFormModel, int gameId)
 	{
-		await CheckPermission("update");
+		var permissionFlag =  await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		// Check if user input is valid
 		if (!ModelState.IsValid)
@@ -289,7 +307,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("Game/Delete/{gameId}")]
 	public async Task<ActionResult> DeleteGame(int gameId)
 	{
-		await CheckPermission("delete");
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		var existingGame = await _gameService.GetGameById(gameId);
 		if (existingGame == null)
@@ -379,7 +401,11 @@ public class Dashboard : _BaseController
 	[HttpPost("AccountGame/Add")]
 	public async Task<ActionResult<AccountGameFormModel>> AddAccountGame([FromBody] AccountGameFormModel accountGameFormModel)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -451,7 +477,11 @@ public class Dashboard : _BaseController
 	[HttpPut("AccountGame/Update/{accountGameId}")]
 	public async Task<ActionResult> UpdateAccountGame(int accountGameId, [FromBody] AccountGameFormModel accountGameFormModel)
 	{
-		await CheckPermission("update");
+		var permissionFlag =  await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		// Validate user input
 		if (!ModelState.IsValid)
@@ -510,7 +540,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("AccountGame/Delete/{accountGameId}")]
 	public async Task<ActionResult> DeleteAccountGame(int accountGameId)
 	{
-		await CheckPermission("delete");
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		var accountGame = await _accountGameService.GetAccountGameById(accountGameId);
 		if (accountGame == null)
@@ -571,7 +605,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Account/Add")]
 	public async Task<ActionResult> AddAccount([FromBody] AccountFormModel accountFormModel)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("manage_users");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -619,7 +657,11 @@ public class Dashboard : _BaseController
 	[HttpPut("Account/Update/{accountId}")]
 	public async Task<ActionResult> UpdateAccount(int accountId, [FromBody] AccountFormModel accountFormModel)
 	{
-		await CheckPermission("update");
+		var permissionFlag =  await CheckPermission("manage_users");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		// Get Account by accountId
 		var checkAccount = await _accountService.GetAccountById(accountId);
@@ -703,7 +745,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("Account/Delete/{accountId}")]
 	public async Task<ActionResult> DeleteAccount(int accountId)
 	{
-		await CheckPermission("delete");
+		var permissionFlag =  await CheckPermission("manage_users");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		var account = await _accountService.GetAccountById(accountId);
 
@@ -768,7 +814,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Discount/Add")]
 	public async Task<IActionResult> AddDiscount([FromBody] DiscountFormModel discountFormModel)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -816,7 +866,11 @@ public class Dashboard : _BaseController
 	[HttpPut("Discount/Update/{discountId}")]
 	public async Task<ActionResult> UpdateDiscount(int discountId, [FromBody] DiscountFormModel discountFormModel)
 	{
-		await CheckPermission("update");
+		var permissionFlag =  await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -864,7 +918,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("DeleteDiscount/{discountId}")]
 	public async Task<IActionResult> DeleteDiscount(int discountId)
 	{
-		await CheckPermission("delete");
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		var discount = await _discountService.GetDiscountByIdAsync(discountId);
 		if (discount == null)
@@ -930,7 +988,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Publisher/Create")]
 	public async Task<ActionResult> AddPublisher([FromBody] Publisher publisher)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -945,7 +1007,11 @@ public class Dashboard : _BaseController
 	[HttpPut("Publisher/Update/{publisherId}")]
 	public async Task<ActionResult> UpdatePublisher(int publisherId, [FromBody] PublisherFormModel publisherFormModel)
 	{
-		await CheckPermission("update");
+		var permissionFlag =  await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid) return BadRequest(ModelState);
 		var publisher = new Publisher
@@ -972,7 +1038,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("Publisher/Delete/{publisherId}")]
 	public async Task<ActionResult> DeletePublisher(int publisherId)
 	{
-		await CheckPermission("delete");
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		try
 		{
@@ -1083,7 +1153,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Cart/CreateCart")]
 	public async Task<ActionResult<CartFormModel>> CreateCart([FromBody] CartFormModel cartFormModel)
 	{
-		await CheckPermission("add");
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 
 		if (!ModelState.IsValid)
 		{
@@ -1125,8 +1199,11 @@ public class Dashboard : _BaseController
 	[HttpPut("Cart/Update/{cartId}")]
 	public async Task<ActionResult<CartFormModel>> UpdateCart(int cartId, [FromBody] CartFormModel cartFormModel)
 	{
-		await CheckPermission("update");
-
+		var permissionFlag =  await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 		// Check if CartId exist
 		var checkCartId = await _cartService.GetCartById(cartId);
 		if (checkCartId == null) return NotFound(new
@@ -1194,8 +1271,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("Cart/Delete/{cartId}")]
 	public async Task<ActionResult> DeleteCart(int cartId)
 	{
-		await CheckPermission("delete");
-
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 		var existingCart = await _cartService.GetCartById(cartId);
 
 		if (existingCart == null)
@@ -1257,8 +1337,11 @@ public class Dashboard : _BaseController
 	[HttpPost("Image/Add")]
 	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
 	{
-		await CheckPermission("add");
-
+		var permissionFlag =  await CheckPermission("add");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -1294,7 +1377,7 @@ public class Dashboard : _BaseController
 		{
 			success = flag,
 			message = "Image created successfully",
-			data = image,
+			data = Createdimage,
 		});
 	}
 
@@ -1303,8 +1386,11 @@ public class Dashboard : _BaseController
 	[HttpDelete("Image/Delete/{imageId}")]
 	public async Task<ActionResult> DeleteImage(int imageId)
 	{
-		await CheckPermission("delete");
-
+		var permissionFlag =  await CheckPermission("delete");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
 		// First get the image entity
 		var image = await _imageGameService.GetImageGameById(imageId);
 		if (image == null)
