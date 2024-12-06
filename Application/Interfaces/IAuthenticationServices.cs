@@ -19,6 +19,9 @@ public interface IAuthenticationServices
     // ACTION: Login Account
     Task<(bool LoginState, string Token, string ResultMessage)> LoginAccount(Account account);
 
+	// ACTION: Forgot Password
+	Task<(bool ForgotPasswordState, string ResultMessage)> ForgotPassword(string username, string email);
+
 	// ACTION: Generate JWT Token
-	public Task<string> GenerateJwtToken(Account account);
+	Task<string> GenerateJwtToken(Account account);
 }
