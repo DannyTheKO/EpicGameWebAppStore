@@ -17,7 +17,6 @@ kanban-plugin: board
 
 ## Testing
 
-- [ ] [[Author]]
 - [ ] [[GamePage]]
 - [ ] [[CartDetail]]
 - [ ] [[Back-End/Cart]]
@@ -32,6 +31,7 @@ kanban-plugin: board
 ## Done
 
 **Complete**
+- [x] [[Author]] ✅ 2024-12-06
 - [x] Populate more data in the database ✅ 2024-11-16
 - [x] [[Back-End/Discount]] ✅ 2024-12-02
 - [x] [[AccountGame]] ✅ 2024-12-02
