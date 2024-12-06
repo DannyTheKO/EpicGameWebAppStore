@@ -8,7 +8,6 @@ kanban-plugin: board
 
 - [ ] Friends List
 - [ ] Gift Games though Friends List
-- [ ] [[Author]]
 
 
 ## Working
@@ -18,6 +17,7 @@ kanban-plugin: board
 
 ## Testing
 
+- [ ] [[Author]]
 - [ ] [[GamePage]]
 - [ ] [[CartDetail]]
 - [ ] [[Back-End/Cart]]

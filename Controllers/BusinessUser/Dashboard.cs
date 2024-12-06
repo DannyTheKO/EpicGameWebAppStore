@@ -65,6 +65,7 @@ public class Dashboard : _BaseController
 		_authorizationServices = authorizationServices;
 	}
 
+	[HttpGet]
 	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 	public ActionResult AccessDenied()
 	{
