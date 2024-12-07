@@ -10,6 +10,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import {
   GetAllgame,
   DeleteGame,
@@ -20,13 +21,18 @@ import {
 } from "./API";
 import "./table.css";
 import axios from "axios";
+
 const { Text } = Typography;
 const { Option } = Select;
 function Game() {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [datagenre, setgenre] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [datapublisher, setpublisher] = useState([]);
+  const [clickimg, setclickimg] = useState(null);
+  const imageTypes = ["Thumbnail", "Screenshot", "Banner", "Background"];
+  const [selectedType, setSelectedType] = useState("");
   const [dataImg, setDataImg] = useState([
     // {
     //   imageGameId: 5,
@@ -73,6 +79,93 @@ function Game() {
   useEffect(() => {
     fetchGame();
   }, []);
+  const isValidImage = (src) => {
+    // Kiểm tra đường dẫn hợp lệ
+    return src && src.trim() !== "";
+  };
+
+  const ImageSlider = ({ imageUrls }) => {
+    const validImageUrls = imageUrls.filter(isValidImage);
+
+    if (!validImageUrls || validImageUrls.length === 0) {
+      return <p>No valid images available</p>;
+    }
+    const imagesPerPage = 3; // Số ảnh hiển thị trên một trang
+
+    const nextImage = () => {
+      setCurrentIndex(
+        (prevIndex) => (prevIndex + imagesPerPage) % validImageUrls.length
+      );
+    };
+
+    const prevImage = () => {
+      setCurrentIndex(
+        (prevIndex) =>
+          (prevIndex - imagesPerPage + validImageUrls.length) %
+          validImageUrls.length
+      );
+    };
+
+    // Lấy các ảnh hiển thị trong trang hiện tại
+    const displayedImages = validImageUrls.slice(
+      currentIndex,
+      currentIndex + imagesPerPage
+    );
+
+    // Nếu không đủ ảnh, lấy thêm ảnh từ đầu
+    if (displayedImages.length < imagesPerPage) {
+      displayedImages.push(
+        ...validImageUrls.slice(0, imagesPerPage - displayedImages.length)
+      );
+    }
+
+    return (
+      <div style={{ textAlign: "center" }}>
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          <button
+            onClick={prevImage}
+            style={{
+              marginTop: "25px",
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+            }}
+          >
+            <GrFormPrevious />
+          </button>
+          {displayedImages.map((url, index) => (
+            <img
+              key={index}
+              src={url}
+              alt={`Image ${currentIndex + index + 1}`}
+              onClick={() => setclickimg(url)} // Lưu ảnh được chọn
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "10px",
+                border: clickimg === url ? "5px solid blue" : "5px solid #ccc", // Đánh dấu ảnh được chọn
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                cursor: "pointer",
+              }}
+            />
+          ))}
+
+          <button
+            onClick={nextImage}
+            style={{
+              marginTop: "25px",  
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+            }}
+          >
+            <GrFormNext />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const getMaxGameId = () => {
     if (dataSource.length === 0) return null;
     return dataSource.reduce((maxId, game) => {
@@ -594,64 +687,122 @@ function Game() {
         )}{" "}
       </Modal>
       <Modal
-  open={isImageModalOpen}
-  onCancel={() => setIsImageModalOpen(false)}
-  title={`Ảnh của ${gameRecord.title || "N/A"}`}
-  footer={[
-    <Button key="add" onClick={handleDelete}>
-      Thêm
-    </Button>,
-    <Button key="delete" onClick={handleDelete} danger>
-      Xóa
-    </Button>,
-    <Button key="cancel" onClick={handleCloseModal}>
-      Hủy
-    </Button>,
-    <Button key="update" onClick={handleCloseModal}>
-    Thay đổi ảnh
-  </Button>,
-  ]}
-
-> {dataImg.length === 0 ? (
-        <p>Lỗi chưa lấy dữ liệu được</p>
-      ) : (
+        open={isImageModalOpen}
+        onCancel={() => setIsImageModalOpen(false)}
+        title={`Ảnh của ${gameRecord.title || "N/A"}`}
+        footer={[
+          <Button key="add" onClick={handleDelete}>
+            Thêm
+          </Button>,
+          <Button key="update" onClick={handleCloseModal}>
+            Thay đổi ảnh
+          </Button>,
+          <Button key="delete" onClick={handleDelete} danger>
+            Xóa
+          </Button>,
+          <Button key="cancel" onClick={handleCloseModal}>
+            Hủy
+          </Button>,
+        ]}
+      >
+        {dataImg.length === 0 ? (
+          <p>Lỗi chưa lấy dữ liệu được</p>
+        ) : (
+          <div>
+            {["Thumbnail", "Banner", "Background"].map((type) => (
+              <div key={type}>
+                <h3>{type}</h3>
+                <br />
+                {dataImg.some((img) => img.imageType === type) ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {dataImg.map(
+                      (img, index) =>
+                        img.imageType === type && (
+                          <img
+                            key={index}
+                            src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                            alt={img.fileName}
+                            onClick={() => setclickimg(img)}
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              borderRadius: "8px",
+                              marginBottom: "10px",
+                              cursor: "pointer",
+                              border:
+                                clickimg?.fileName === img.fileName
+                                  ? "5px solid blue" // Đánh dấu ảnh được chọn
+                                  : "5px solid #ccc",
+                              margin: "5px", // Khoảng cách giữa các ảnh
+                            }}
+                          />
+                        )
+                    )}
+                  </div>
+                ) : (
+                  <p>Không có ảnh {type}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Background Section */}
         <div>
-          {["Thumbnail", "Banner", "Background", "Screenshot"].map((type) => (
-            <div key={type}>
-              <label>{type}</label>
-              <br />
-              {dataImg.some((img) => img.imageType === type) ? (
-                dataImg.map(
-                  (img, index) =>
-                    img.imageType === type && (
-                      <img
-                        key={index}
-                        src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-                        alt={img.fileName}
-                        // onClick={() => handleSelectImage(img)} // Thêm sự kiện onClick
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          borderRadius: "8px",
-                          marginBottom: "10px",
-                          cursor: "pointer",
-                          border:
-                            selectedImage?.fileName === img.fileName
-                              ? "2px solid blue" // Đánh dấu ảnh được chọn
-                              : "1px solid #ccc",
-                        }}
-                      />
-                    )
-                )
-              ) : (
-                <p>Không có ảnh {type}</p>
-              )}
+          <h3>Screenshot</h3>
+          <br />
+          {dataImg.some((img) => img.imageType === "Screenshot") ? (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              {
+                <ImageSlider
+                  // Thêm key cho mỗi phần tử trong map
+                  imageUrls={
+                    dataImg
+                      .filter((img) => img.imageType === "Screenshot") // Lọc ảnh "Screenshot"
+                      .map(
+                        (img) =>
+                          `${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`
+                      ) // Tạo mảng các đường dẫn ảnh
+                  }
+                />
+              }
             </div>
-          ))}
+          ) : (
+            <p>Không có ảnh Screenshot </p>
+          )}
         </div>
-      )}
-</Modal>
-
+        <div>
+          <Select
+            placeholder="Chọn loại ảnh"
+            style={{ width: "100%", marginTop: 30, marginBottom: 30 }}
+            onChange={(value) => setSelectedType(value)} // Cập nhật kiểu ảnh khi chọn
+            allowClear // Thêm tùy chọn để xóa chọn
+          >
+            {imageTypes.map((type) => (
+              <Option key={type} value={type}>
+                {type}
+              </Option>
+            ))}
+          </Select>
+          <Input
+            className="modal-input"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </div>
+      </Modal>
     </Space>
   );
 }
