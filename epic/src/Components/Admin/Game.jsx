@@ -7,19 +7,19 @@ import {
   Modal,
   Input,
   Select,
-
 } from "antd";
 import { useEffect, useState } from "react";
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import {
   GetAllgame,
   DeleteGame,
   GetAllPublisher,
   GetAllGenre,
   UpdateGame,
-} from "./API"; 
+  GetImgGame,
+} from "./API";
 import "./table.css";
-import axios from 'axios';
+import axios from "axios";
 const { Text } = Typography;
 const { Option } = Select;
 function Game() {
@@ -27,10 +27,20 @@ function Game() {
   const [dataSource, setDataSource] = useState([]);
   const [datagenre, setgenre] = useState([]);
   const [datapublisher, setpublisher] = useState([]);
+  const [dataImg, setDataImg] = useState([
+    // {
+    //   imageGameId: 5,
+    //   gameId: 5,
+    //   imageType: "Thumbnail",
+    //   fileName: "god_of_war_cover.jpg",
+    //   filePath: "/Images/god_of_war/5.jpg",
+    //   createdOn: "2022-11-09T00:00:00"
+    // }
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);  
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [gameRecord, setGameRecord] = useState({
     gameId: "",
     title: "",
@@ -51,9 +61,9 @@ function Game() {
         GetAllGenre(),
         GetAllPublisher(),
       ]);
-      setDataSource(res || [])
-      setgenre(genre || []); 
-      setpublisher(publisher || []); 
+      setDataSource(res || []);
+      setgenre(genre || []);
+      setpublisher(publisher || []);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu", error);
     }
@@ -61,20 +71,22 @@ function Game() {
   };
 
   useEffect(() => {
-    fetchGame(); 
+    fetchGame();
   }, []);
   const getMaxGameId = () => {
-    if (dataSource.length === 0) return null; 
+    if (dataSource.length === 0) return null;
     return dataSource.reduce((maxId, game) => {
       return game.gameId > maxId ? game.gameId : maxId;
-    }, 0); 
+    }, 0);
   };
   const isAdmin = () => {
-    const role = localStorage.getItem('authToken'); 
+    const role = localStorage.getItem("authToken");
     const decodedToken = jwtDecode(role);
-    const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    const userRole =
+      decodedToken[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+      ];
     return userRole === "Admin";
-  
   };
   const handleCloseModal = () => {
     setIsImageModalOpen(false);
@@ -87,34 +99,42 @@ function Game() {
         author: record.author,
         price: record.price,
         rating: record.rating,
-        release: record.release.split("T")[0], 
+        release: record.release.split("T")[0],
         description: record.description,
         genreId: record.genre.genreId,
         publisherId: record.publisher.publisherId,
       });
+
       setIsEditing(true);
     } else {
       setGameRecord({
-        gameId: getMaxGameId() + 1, 
+        gameId: getMaxGameId() + 1,
         title: "",
         author: "",
         price: 0,
         rating: 0,
         release: "",
         description: "",
-        genreId: "", 
-        publisherId: "", 
+        genreId: "",
+        publisherId: "",
       });
       setIsEditing(false);
     }
     setIsModalOpen(true);
   };
-  const openModalImg = (record) => {
+  const openModalImg = async (record = null) => {
     if (record) {
-      console.log(record.gameId); 
+      setGameRecord(record);
+      try {
+        const imgData = await GetImgGame(record.gameId);
+        setDataImg(imgData);
+      } catch (error) {
+        console.error("Lỗi khi lấy ảnh:", error);
+      }
     }
     setIsImageModalOpen(true);
   };
+
   const handleSave = async () => {
     if (!validateGameRecord()) {
       return;
@@ -122,8 +142,8 @@ function Game() {
     if (isEditing) {
       try {
         await UpdateGame(gameRecord.gameId, gameRecord);
-        const updatedDataSource = await GetAllgame(); 
-        setDataSource(updatedDataSource); 
+        const updatedDataSource = await GetAllgame();
+        setDataSource(updatedDataSource);
         Modal.success({
           title: "Account update successfully",
           content: `The account with ID ${gameRecord.gameId} has been update.`,
@@ -138,7 +158,7 @@ function Game() {
       }
     } else {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem("authToken");
         if (!token) {
           console.error("Token not found!");
           Modal.error({
@@ -147,7 +167,7 @@ function Game() {
           });
           return;
         }
-    
+
         if (!selectedImage) {
           console.error("No image selected!");
           Modal.error({
@@ -156,40 +176,45 @@ function Game() {
           });
           return;
         }
-    
+
         if (!gameRecord || !gameRecord.gameId) {
           console.error("Invalid game record");
           Modal.error({
             title: "Error",
-            content: "Invalid game data. Please check the game details and try again.",
+            content:
+              "Invalid game data. Please check the game details and try again.",
           });
           return;
         }
-    
+
         // Tạo đối tượng FormData
         const formData = new FormData();
-        formData.append('Price',gameRecord.price);
-        formData.append('Author',gameRecord.author);
-        formData.append('PublisherId',gameRecord.publisherId);
-        formData.append('Title',gameRecord.title);
-        formData.append('Description',gameRecord.description);
-        formData.append('Rating',gameRecord.rating);
-        formData.append('GenreId',gameRecord.genreId);
-        formData.append('Release',gameRecord.release);
-        formData.append('imageFile', selectedImage); 
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}: ${value}`);
-        }
-        const response = await axios.post("http://localhost:5084/Game/CreateGame", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, 
-          },
-        });
+        formData.append("Price", gameRecord.price);
+        formData.append("Author", gameRecord.author);
+        formData.append("PublisherId", gameRecord.publisherId);
+        formData.append("Title", gameRecord.title);
+        formData.append("Description", gameRecord.description);
+        formData.append("Rating", gameRecord.rating);
+        formData.append("GenreId", gameRecord.genreId);
+        formData.append("Release", gameRecord.release);
+        formData.append("imageFile", selectedImage);
+        // for (let [key, value] of formData.entries()) {
+        //   console.log(`${key}: ${value}`);
+        // }
+        const response = await axios.post(
+          "http://localhost:5084/Game/CreateGame",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (response.status === 200) {
           const updatedDataSource = await GetAllgame();
           setDataSource(updatedDataSource);
-    
+
           Modal.success({
             title: "Game added successfully",
             content: `The game with ID ${gameRecord.gameId} has been added.`,
@@ -198,47 +223,55 @@ function Game() {
           throw new Error("Failed to add the game. Please try again.");
         }
       } catch (error) {
-        console.error("Error adding game:", error.response ? error.response.data : error.message);
+        console.error(
+          "Error adding game:",
+          error.response ? error.response.data : error.message
+        );
         Modal.error({
           title: "Error",
-          content: `An error occurred while adding the game. Error details: ${error.response ? error.response.data : error.message}`,
+          content: `An error occurred while adding the game. Error details: ${
+            error.response ? error.response.data : error.message
+          }`,
         });
       }
-  
     }
 
     setIsModalOpen(false);
-    fetchGame(); 
+    fetchGame();
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
       if (!validImageTypes.includes(file.type)) {
-        console.error('Invalid file type. Please select a valid image.');
+        console.error("Invalid file type. Please select a valid image.");
         return;
       }
-      const maxSize = 5 * 1024 * 1024; 
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
-        alert('File is too large. Maximum size is 5MB.');
+        alert("File is too large. Maximum size is 5MB.");
         return;
       }
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
         img.src = event.target.result;
-  
+
         img.onload = () => {
           const width = img.width;
           const height = img.height;
           const ratio16_9 = Math.abs(width / height - 16 / 9) < 0.01;
           const ratio3_4 = Math.abs(width / height - 3 / 4) < 0.01;
           if (ratio16_9 || ratio3_4) {
-            console.log(`Image resolution is valid: ${width}x${height} (${ratio16_9 ? '16:9' : '3:4'})`);
-            setSelectedImage(file); 
+            console.log(
+              `Image resolution is valid: ${width}x${height} (${
+                ratio16_9 ? "16:9" : "3:4"
+              })`
+            );
+            setSelectedImage(file);
           } else {
-            console.error('Image resolution must be 16:9 or 3:4.');
-            alert('Image resolution must be 16:9 or 3:4.');
+            console.error("Image resolution must be 16:9 or 3:4.");
+            alert("Image resolution must be 16:9 or 3:4.");
           }
         };
       };
@@ -254,7 +287,6 @@ function Game() {
       cancelText: "Cancel",
       onOk: () => {
         const gameId = record.gameId;
-        console.log(gameId);
         DeleteGame(gameId)
           .then(() => {
             setDataSource((prevDataSource) =>
@@ -322,9 +354,8 @@ function Game() {
       return false;
     }
     if (!release) {
-      gameRecord.release = new Date().toISOString().split("T")[0]; 
+      gameRecord.release = new Date().toISOString().split("T")[0];
     }
-    // Kiểm tra Description không được để trống
     if (!description || description.trim() === "") {
       Modal.error({
         title: "Error",
@@ -398,16 +429,14 @@ function Game() {
           <Button onClick={() => openModal(record)} type="primary">
             Edit
           </Button>
-         {
-          isAdmin() &&
-          <Button danger onClick={() => handleDelete(record)}>
-          Delete
-        </Button>
-        
-         }
-           <Button onClick={() => openModalImg(record)} type="primary">
-  Xem ảnh
-</Button>
+          {isAdmin() && (
+            <Button danger onClick={() => handleDelete(record)}>
+              Delete
+            </Button>
+          )}
+          <Button onClick={() => openModalImg(record)} type="primary">
+            Xem ảnh
+          </Button>
         </Space>
       ),
     },
@@ -415,53 +444,31 @@ function Game() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
-      { isAdmin() &&
-          <Button onClick={() => openModal()} type="primary" style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
+      {isAdmin() && (
+        <Button
+          onClick={() => openModal()}
+          type="primary"
+          style={{ marginLeft: "1450px", marginTop: "20px" }}
+        >
           Add
         </Button>
-        }
+      )}
       <Table
         className="data"
         loading={loading}
         columns={columns}
-        
         dataSource={dataSource}
         rowKey="gameId"
         pagination={{ pageSize: 7, position: ["bottomCenter"] }}
         scroll={{ x: "max-content" }}
       />
-      <Modal
-    open={isImageModalOpen}
-    onCancel={() => setIsImageModalOpen(false)}
-    title="Danh sách ảnh của Game"
-    footer={[
-      <Button key="cancel" onClick={handleCloseModal}>
-        Hủy
-      </Button>,
-    ]}
-  >
-    <div>
-   <label>
-   Thumbnail 
-   </label>
-    </div>
 
-    <div>
-    <label>screenshot </label>
-    </div>
-   <div>
-   <label>banner  </label>
-   </div>
-    <div>
-    <label>background   </label>
-    </div>
-   
-  </Modal>
       <Modal
         title={isEditing ? "Edit Game Info" : "Add New Game"}
         visible={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}
+        okText={isEditing ? "Update" : "Add"}
       >
         <label>ID Game</label>
         <Input
@@ -473,23 +480,23 @@ function Game() {
         <label>Genre</label>
         <Select
           placeholder="Select Genre"
-          value={gameRecord.genreId} 
+          value={gameRecord.genreId}
           onChange={(value) => setGameRecord({ ...gameRecord, genreId: value })}
           style={{ width: "100%", height: "52px" }}
         >
           {datagenre.map((genre) => (
             <Option key={genre.genreId} value={genre.genreId}>
-              {genre.name} 
+              {genre.name}
             </Option>
           ))}
         </Select>
         <label>Publisher</label>
         <Select
           placeholder="Select Publisher"
-          value={gameRecord.publisherId} 
+          value={gameRecord.publisherId}
           onChange={(value) =>
             setGameRecord({ ...gameRecord, publisherId: value })
-          } 
+          }
           style={{ width: "100%", height: "52px" }}
         >
           {datapublisher.map((publisher) => (
@@ -498,7 +505,6 @@ function Game() {
             </Option>
           ))}
         </Select>
-
         <label>Title</label>
         <Input
           className="modal-input"
@@ -529,31 +535,33 @@ function Game() {
         />
         <label>Rating</label>
         <Input
-  className="modal-input"
-  placeholder="Rating"
-  value={gameRecord.rating}
-  onChange={(e) => {
-    const value = e.target.value;
-    if (
-      value === "" ||
-      (/^\d*\.?\d*$/.test(value) && parseFloat(value) >= 0 && parseFloat(value) <= 10)
-    ) {
-      setGameRecord({ ...gameRecord, rating: value });
-    }
-  }}
-  onKeyPress={(e) => {
-    if (
-      !/[0-9.]/.test(e.key) &&
-      e.key !== "Backspace" &&
-      e.key !== "Delete"
-    ) {
-      e.preventDefault(); 
-    }
-    if (e.key === "." && gameRecord.rating.includes(".")) {
-      e.preventDefault();
-    }
-  }}
-/>
+          className="modal-input"
+          placeholder="Rating"
+          value={gameRecord.rating}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (
+              value === "" ||
+              (/^\d*\.?\d*$/.test(value) &&
+                parseFloat(value) >= 0 &&
+                parseFloat(value) <= 10)
+            ) {
+              setGameRecord({ ...gameRecord, rating: value });
+            }
+          }}
+          onKeyPress={(e) => {
+            if (
+              !/[0-9.]/.test(e.key) &&
+              e.key !== "Backspace" &&
+              e.key !== "Delete"
+            ) {
+              e.preventDefault();
+            }
+            if (e.key === "." && gameRecord.rating.includes(".")) {
+              e.preventDefault();
+            }
+          }}
+        />
         <label>Release Date</label>
         <Input
           className="modal-input"
@@ -573,17 +581,141 @@ function Game() {
             setGameRecord({ ...gameRecord, description: e.target.value })
           }
         />
-          {!isEditing && (
-    <>
-      <label>Image</label>
-      <Input
-        className="modal-input"
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
-    </>
-)}      </Modal>
+        {!isEditing && (
+          <>
+            <label>Image</label>
+            <Input
+              className="modal-input"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </>
+        )}{" "}
+      </Modal>
+      <Modal
+  open={isImageModalOpen}
+  onCancel={() => setIsImageModalOpen(false)}
+  title={`Ảnh của ${gameRecord.title || "N/A"}`}
+  footer={[
+    <Button key="add" onClick={handleDelete}>
+      Thêm
+    </Button>,
+    <Button key="delete" onClick={handleDelete} danger>
+      Xóa
+    </Button>,
+    <Button key="cancel" onClick={handleCloseModal}>
+      Hủy
+    </Button>,
+    <Button key="update" onClick={handleCloseModal}>
+    Thay đổi ảnh
+  </Button>,
+  ]}
+>
+  {dataImg.length === 0 ? (
+    <p>Lỗi chưa lấy dữ liệu được</p> 
+  ) : (
+    <div>
+      <div>
+        <label> Thumbnail </label>
+        <br />
+        {dataImg.some((img) => img.imageType === "Thumbnail") ? (
+          dataImg.map((img, index) =>
+            img.imageType === "Thumbnail" ? (
+              <img
+                key={index}
+                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                alt={""}
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                }}
+              />
+            ) : null
+          )
+        ) : (
+          <p>Không có ảnh Thumbnail</p>
+        )}
+      </div>
+
+      <div>
+  <label> Banner </label>
+  <br />
+  {dataImg.some((img) => img.imageType === "Banner") ? (
+    dataImg.map((img, index) => {
+      const imageSrc = `${process.env.PUBLIC_URL}${img.filePath}/${img.fileName}`;
+      console.log("Image Source: ", imageSrc); // In ra đường dẫn ảnh
+      return img.imageType === "Banner" ? (
+        <img
+          key={index}
+          src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+          alt={""}
+          style={{
+            width: "50px",
+            height: "50px",
+     
+            marginBottom: "10px",
+          }}
+        />
+      ) : null;
+    })
+  ) : (
+    <p>Không có ảnh Banner</p>
+  )}
+</div>
+
+      <div>
+        <label> Background  </label>
+        <br />
+        {dataImg.some((img) => img.imageType === "Background") ? (
+          dataImg.map((img, index) =>
+            img.imageType === "Background" ? (
+              <img
+                key={index}
+                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                alt={""}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                }}
+              />
+            ) : null
+          )
+        ) : (
+          <p>Không có ảnh Background </p> // Nếu không có ảnh "Thumbnail", hiển thị thông báo
+        )}
+      </div>
+      <div>
+        <label> Screenshot </label>
+        <br />
+        {dataImg.some((img) => img.imageType === "Screenshot") ? (
+          dataImg.map((img, index) =>
+            img.imageType === "Screenshot" ? (
+              <img
+                key={index}
+                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                alt={""}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "8px",
+                  marginBottom: "10px",
+                }}
+              />
+            ) : null
+          )
+        ) : (
+          <p>Không có ảnh Screenshot</p> // Nếu không có ảnh "Thumbnail", hiển thị thông báo
+        )}
+      </div>
+    </div>
+  )}
+</Modal>
+
     </Space>
   );
 }

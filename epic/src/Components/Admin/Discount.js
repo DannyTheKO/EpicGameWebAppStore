@@ -46,11 +46,12 @@ function Discount() {
 
   const openModal = async (record = null) => {
     if (record) {
+      
       setDiscountRecord({
         id: record.discountId || "", 
         gameid: record.game?.gameId || "", 
-        percent: record.percent || 0, // Lấy percent
-        code: record.code || "", // Lấy code
+        percent: record.percent || 0,
+        code: record.code || "", 
         starton: record.startOn ? record.startOn.split("T")[0] : null, 
         endon: record.endOn ? record.endOn.split("T")[0] : null, 
       });

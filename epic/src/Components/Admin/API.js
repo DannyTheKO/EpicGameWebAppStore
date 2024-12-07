@@ -70,6 +70,17 @@ export const GetAllCart = async() => {
     return [];
   }
   };
+  export const GetImgGame = async (idGame) => {
+    try {
+      const response = await apiClient.get(`/Store/Dashboard/Image/GetByGameId/${idGame}`); 
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error.response || error.message);
+      return [];
+    }
+  };
+  
 export const GetAllPublisher = async() => {
 
 try {

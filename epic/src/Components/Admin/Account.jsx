@@ -46,6 +46,7 @@ function Account() {
   };
   const openModal = (record = null) => {
     if (record) {
+      
       const matchedRole = dataRole.find(
         (role) => role.roleId === record.roleId
       );
