@@ -611,109 +611,45 @@ function Game() {
     Thay đổi ảnh
   </Button>,
   ]}
->
-  {dataImg.length === 0 ? (
-    <p>Lỗi chưa lấy dữ liệu được</p> 
-  ) : (
-    <div>
-      <div>
-        <label> Thumbnail </label>
-        <br />
-        {dataImg.some((img) => img.imageType === "Thumbnail") ? (
-          dataImg.map((img, index) =>
-            img.imageType === "Thumbnail" ? (
-              <img
-                key={index}
-                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-                alt={""}
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  borderRadius: "8px",
-                  marginBottom: "10px",
-                }}
-              />
-            ) : null
-          )
-        ) : (
-          <p>Không có ảnh Thumbnail</p>
-        )}
-      </div>
 
-      <div>
-  <label> Banner </label>
-  <br />
-  {dataImg.some((img) => img.imageType === "Banner") ? (
-    dataImg.map((img, index) => {
-      const imageSrc = `${process.env.PUBLIC_URL}${img.filePath}/${img.fileName}`;
-      console.log("Image Source: ", imageSrc); // In ra đường dẫn ảnh
-      return img.imageType === "Banner" ? (
-        <img
-          key={index}
-          src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-          alt={""}
-          style={{
-            width: "50px",
-            height: "50px",
-     
-            marginBottom: "10px",
-          }}
-        />
-      ) : null;
-    })
-  ) : (
-    <p>Không có ảnh Banner</p>
-  )}
-</div>
-
-      <div>
-        <label> Background  </label>
-        <br />
-        {dataImg.some((img) => img.imageType === "Background") ? (
-          dataImg.map((img, index) =>
-            img.imageType === "Background" ? (
-              <img
-                key={index}
-                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-                alt={""}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: "8px",
-                  marginBottom: "10px",
-                }}
-              />
-            ) : null
-          )
-        ) : (
-          <p>Không có ảnh Background </p> // Nếu không có ảnh "Thumbnail", hiển thị thông báo
-        )}
-      </div>
-      <div>
-        <label> Screenshot </label>
-        <br />
-        {dataImg.some((img) => img.imageType === "Screenshot") ? (
-          dataImg.map((img, index) =>
-            img.imageType === "Screenshot" ? (
-              <img
-                key={index}
-                src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-                alt={""}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: "8px",
-                  marginBottom: "10px",
-                }}
-              />
-            ) : null
-          )
-        ) : (
-          <p>Không có ảnh Screenshot</p> // Nếu không có ảnh "Thumbnail", hiển thị thông báo
-        )}
-      </div>
-    </div>
-  )}
+> {dataImg.length === 0 ? (
+        <p>Lỗi chưa lấy dữ liệu được</p>
+      ) : (
+        <div>
+          {["Thumbnail", "Banner", "Background", "Screenshot"].map((type) => (
+            <div key={type}>
+              <label>{type}</label>
+              <br />
+              {dataImg.some((img) => img.imageType === type) ? (
+                dataImg.map(
+                  (img, index) =>
+                    img.imageType === type && (
+                      <img
+                        key={index}
+                        src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                        alt={img.fileName}
+                        // onClick={() => handleSelectImage(img)} // Thêm sự kiện onClick
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "8px",
+                          marginBottom: "10px",
+                          cursor: "pointer",
+                          border:
+                            selectedImage?.fileName === img.fileName
+                              ? "2px solid blue" // Đánh dấu ảnh được chọn
+                              : "1px solid #ccc",
+                        }}
+                      />
+                    )
+                )
+              ) : (
+                <p>Không có ảnh {type}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 </Modal>
 
     </Space>
