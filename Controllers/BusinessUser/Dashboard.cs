@@ -153,13 +153,13 @@ public class Dashboard : _BaseController
 			// If game exists and image is provided, add it to existing game
 			if (imageFile != null)
 			{
-				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, "Thumbnail");
+				var (imageGame, flag, message) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, "Thumbnail");
 				if (!flag)
 				{
 					return BadRequest(new
 					{
 						success = flag,
-						message = "Failed to upload image",
+						message = message,
 					});
 				}
 
@@ -200,13 +200,13 @@ public class Dashboard : _BaseController
 
 		if (imageFile != null)
 		{
-			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId, "Thumbnail");
+			var (imageGame, flag, message) = await _imageGameService.UploadImageGame(imageFile, game.GameId, "Thumbnail");
 			if (!flag)
 			{
 				return BadRequest(new
 				{
 					success = flag,
-					message = "Failed to upload image",
+					message = message,
 					data = imageGame
 				});
 			}
@@ -1464,6 +1464,7 @@ public class Dashboard : _BaseController
 		{
 			return AccessDenied();
 		}
+
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(new
@@ -1472,6 +1473,15 @@ public class Dashboard : _BaseController
 				errors = ModelState.Values
 					.SelectMany(v => v.Errors)
 					.Select(e => e.ErrorMessage)
+			});
+		}
+
+		if (!new[] {"Banner", "Thumbnail", "Screenshot", "Background"}.Contains(imageFormModel.ImageType))
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Invalid image type. Must be Banner, Thumbnail, Screenshot, or Background"
 			});
 		}
 
@@ -1494,12 +1504,90 @@ public class Dashboard : _BaseController
 			Game = game
 		};
 
-		var (Createdimage, flag) = await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
+		var (createdImage, flag, message) = await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
 		return Ok(new
 		{
 			success = flag,
-			message = "Image created successfully",
-			data = Createdimage,
+			message = message,
+			data = createdImage,
+		});
+	}
+
+	// PUT: Update Image
+	[HttpPut("Image/Update/{imageId}")]
+	public async Task<ActionResult> UpdateImage(int imageId, [FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
+	{
+		var permissionFlag = await CheckPermission("update");
+		if (permissionFlag == false)
+		{
+			return AccessDenied();
+		}
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				errors = ModelState.Values
+					.SelectMany(v => v.Errors)
+					.Select(e => e.ErrorMessage)
+			});
+		}
+
+		if (imageFile == null || imageFile.Length == 0)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "No image file was provided"
+			});
+		}
+
+		if (!new[] {"Banner", "Thumbnail", "Screenshot", "Background"}.Contains(imageFormModel.ImageType))
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Invalid image type. Must be Banner, Thumbnail, Screenshot, or Background"
+			});
+		}
+
+		var image = await _imageGameService.GetImageGameById(imageId);
+		if (image == null)
+		{
+			return NotFound(new
+			{
+				success = false,
+				message = "Image not found"
+			});
+		}
+
+		// Check if Game exists
+		var game = await _gameService.GetGameById(imageFormModel.GameId);
+		if (game == null)
+		{
+			return BadRequest(new
+			{
+				success = false,
+				message = "Game not found"
+			});
+		}
+
+		// Create new image entity
+		var newImage = new ImageGame
+		{
+			ImageGameId = imageId,
+			GameId = imageFormModel.GameId,
+			ImageType = imageFormModel.ImageType,
+			Game = game
+		};
+
+		var (updatedImage, message) = await _imageGameService.UpdateImageGame(imageFile, newImage);
+		return Ok(new
+		{
+			success = true,
+			message = message,
+			data = updatedImage
 		});
 	}
 
