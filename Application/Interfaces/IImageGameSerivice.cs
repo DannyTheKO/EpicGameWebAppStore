@@ -16,8 +16,10 @@ namespace Application.Interfaces
 
 		Task<IEnumerable<ImageGame>> GetImageGameByGameId(int gameId);
 
-		Task DeleteImageGame(int imageGameID);
+		Task<(ImageGame imageGame, string Message)> UpdateImageGame(IFormFile image, ImageGame imageGame);
 
-		Task<(ImageGame imageGame, bool Flag)> UploadImageGame(IFormFile image, int gameId, string imageType);
+		Task<(bool Success, string Message)> DeleteImageGame(int imageGameID);
+
+		Task<(ImageGame imageGame, bool Flag, string Message)> UploadImageGame(IFormFile image, int gameId, string imageType);
 	}
 }

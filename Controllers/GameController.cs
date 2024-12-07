@@ -102,7 +102,7 @@ public class GameController : _BaseController
 			// If game exists and image is provided, add it to existing game
 			if (imageFile != null)
 			{
-				var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, "Thumbnail");
+				var (imageGame, flag, message) = await _imageGameService.UploadImageGame(imageFile, existingGame.GameId, "Thumbnail");
 				if (!flag)
 				{
 					return BadRequest(new
@@ -149,7 +149,7 @@ public class GameController : _BaseController
 
 		if (imageFile != null)
 		{
-			var (imageGame, flag) = await _imageGameService.UploadImageGame(imageFile, game.GameId, "Thumbnail");
+			var (imageGame, flag, message) = await _imageGameService.UploadImageGame(imageFile, game.GameId, "Thumbnail");
 			if (!flag)
 			{
 				return BadRequest(new

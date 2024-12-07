@@ -40,12 +40,6 @@ public class GamePage : _BaseController
 	}
 
 
-	public class AddToCartRequest
-	{
-		[Required(ErrorMessage = "GameId is Required")]
-		public int GameId { get; set; }
-	}
-
 	[Authorize]
 	[HttpPost("AddToCart")]
 	public async Task<ActionResult> AddToCart(int gameId)
@@ -64,7 +58,7 @@ public class GamePage : _BaseController
 		return Ok(new
 		{
 			success = true,
-			message = "Game has been added to cart!",
+			message = message,
 			cartId = lastestAccountCart.CartId,
 			cartItems = lastestAccountCart,
 		});

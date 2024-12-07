@@ -9,8 +9,6 @@ namespace EpicGameWebAppStore.Controllers;
 //[Authorize]
 [Route("[controller]")]
 [ApiController]
-
-
 public class AuthController : _BaseController
 {
 	private readonly IAuthenticationServices _authenticationServices;
