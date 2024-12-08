@@ -58,8 +58,8 @@ public class GamePage : _BaseController
 		return Ok(new
 		{
 			success = true,
-			message = message,
-			cartId = lastestAccountCart.CartId,
+			message = "Game has been add to your cart !",
+            cartId = lastestAccountCart.CartId,
 			cartItems = lastestAccountCart,
 		});
 	}

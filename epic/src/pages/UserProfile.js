@@ -9,7 +9,7 @@ const UserProfile = () => {
     const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
     const [carts, setCarts] = useState([]); // State để lưu danh sách giỏ hàng
     const [updatedUser, setUpdatedUser] = useState(null); // Lưu thông tin người dùng khi sửa
-
+    const [showPassword, setShowPassword] = useState(false);
     const accountToken = localStorage.getItem('authToken'); // Lấy token từ localStorage
     const [ownedGames, setOwnedGames] = useState([]); // State lưu game đã sở hữu
     const [detailedOwnedGames, setDetailedOwnedGames] = useState([]);
@@ -182,12 +182,21 @@ const UserProfile = () => {
                             />
 
                             <label htmlFor="password">Password:</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={updatedUser?.password || ''}
-                                onChange={(e) => setUpdatedUser({ ...updatedUser, password: e.target.value })}
-                            />
+                            <div className="password-input-container">
+                                <input
+                                    type={showPassword ? 'text' : 'password'} // Loại input thay đổi dựa vào state
+                                    id="password"
+                                    value={updatedUser?.password || ''}
+                                    onChange={(e) => setUpdatedUser({ ...updatedUser, password: e.target.value })}
+                                />
+                                <button
+                                    type="button" // Nút không submit form
+                                    onClick={() => setShowPassword(!showPassword)} // Đổi trạng thái showPassword
+                                    className="toggle-password-btn"
+                                >
+                                    {showPassword ? 'Hide' : 'Show'} {/* Nội dung nút thay đổi */}
+                                </button>
+                            </div>
 
                             <label htmlFor="email">Email:</label>
                             <input

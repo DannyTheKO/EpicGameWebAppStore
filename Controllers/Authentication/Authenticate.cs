@@ -101,7 +101,7 @@ public class Authenticate : _BaseController
 		});
 	}
 
-	[HttpGet("ForgotPassword")]
+	[HttpPost("ForgotPassword")]
 	public async Task<ActionResult> ForgotPasswordTask(ForgotPasswordForm request)
 	{
 		// Check if the form is valid

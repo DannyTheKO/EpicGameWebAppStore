@@ -16,50 +16,60 @@ const GamePage = () => {
     const [reviews, setReviews] = useState([]);
     const [alert, setAlert] = useState(null); // Thêm alert state
 
-    const handleAddToCart = (e) => {
-        e.preventDefault(); // Ngừng hành động mặc định (nếu có)
+    const handleAddToCart = async (e) => {
+        e.preventDefault();
 
-        const authToken = localStorage.getItem('authToken'); // Kiểm tra nếu có authToken
-
+        const authToken = localStorage.getItem('authToken');
         if (!authToken) {
-            setAlert({
-                message: 'Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng.',
-                type: 'error',
-            });
-            setTimeout(() => setAlert(null), 3000); // Ẩn thông báo sau 3 giây
-            navigate('/login'); // Điều hướng đến trang đăng nhập
-            return;
-        }
-
-        const username = localStorage.getItem('username'); // Lấy username từ localStorage
-        const storedCart = JSON.parse(localStorage.getItem(`cart_${username}`)) || [];
-
-        // Kiểm tra nếu game đã có trong giỏ hàng
-        const isGameInCart = storedCart.some(item => item.gameId === game.gameId);
-        if (isGameInCart) {
-            setAlert({
-                message: 'Game này đã có trong giỏ hàng của bạn!',
-                type: 'error',
-            });
+            setAlert({ message: 'Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng.', type: 'error' });
             setTimeout(() => setAlert(null), 3000);
+            navigate('/login');
             return;
         }
 
-        const newCart = [...storedCart, game]; // Thêm game vào giỏ hàng
-        localStorage.setItem(`cart_${username}`, JSON.stringify(newCart)); // Lưu giỏ hàng riêng biệt theo username
+        try {
+            // Fetch owned games for the current user
+            const ownedGamesResponse = await fetch(`http://localhost:5084/Profile/ProfileUser/GetOwnedGames`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
 
-        setAlert({
-            message: `${game.title} đã được thêm vào giỏ hàng!`,
-            type: 'success',
-        });
+            if (!ownedGamesResponse.ok) {
+                throw new Error('Failed to fetch owned games.');
+            }
 
-        // Sử dụng window.location.replace() để reload lại trang mà không giật
-        setTimeout(() => {
-            window.location.replace(window.location.href); // Reload trang nhanh chóng mà không tạo hiệu ứng nhấp nháy
-        }, 3000); // Sau 3 giây, reload lại trang sau khi thông báo ẩn đi
+            const ownedGamesData = await ownedGamesResponse.json();
+            const ownedGameIds = ownedGamesData.data.map(game => game.gameId);
 
+            // Check if the current game already exists in the user's owned games
+            if (ownedGameIds.includes(parseInt(id))) {
+                setAlert({ message: 'You already have this game !.', type: 'error' });
+                setTimeout(() => setAlert(null), 3000);
+                return;
+            }
+
+            // Proceed to add to cart if not already owned
+            const response = await fetch(`http://localhost:5084/Store/GamePage/AddToCart?gameid=${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add game to cart.');
+            }
+
+            const data = await response.json();
+            setAlert({ message: data.message, type: 'success' });
+
+        } catch (error) {
+            setAlert({ message: error.message, type: 'error' });
+        }
     };
-
 
     useEffect(() => {
         const fetchGameDetails = async () => {

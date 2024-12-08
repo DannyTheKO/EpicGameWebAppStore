@@ -26,11 +26,35 @@ const Navbar = () => {
         }
     }, []);
 
-    // Lấy số lượng sản phẩm trong giỏ hàng từ localStorage mỗi khi giỏ hàng thay đổi
+    // Lấy số lượng sản phẩm trong giỏ hàng từ API mỗi khi component mount
     useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        const savedCart = JSON.parse(localStorage.getItem(`cart_${storedUsername}`)) || [];
-        setCartItemCount(savedCart.length);
+        const fetchCartCount = async () => {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                };
+                const response = await fetch('http://localhost:5084/Store/CheckoutPage/CurrentCartList', { headers });
+
+                if (response.status === 401) {
+                    alert('You are not authorized to view this cart. Please log in.');
+                    navigate('/login'); // Điều hướng người dùng đến trang đăng nhập nếu chưa đăng nhập
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cart');
+                }
+
+                const data = await response.json();
+                setCartItemCount(data.cartdetails.length);
+            } catch (error) {
+                console.error("Error fetching cart count:", error);
+            }
+        };
+
+        fetchCartCount();
     }, [location.pathname]);
 
     // Ẩn/Hiện navbar khi cuộn trang

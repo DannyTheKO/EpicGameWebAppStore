@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/pages/HomePage.css';
-import images from '../assets'; // Import tất cả ảnh từ assets
 
-// Dùng hình ảnh banner từ assets
-const bannerImages = [
-    images['image1.jpg'],
-    images['image2.jpg'],
-    images['image3.jpg']
-];
+// Fetch dữ liệu từ API và lấy 3 game mới nhất làm ảnh banner
+const fetchBannerImages = async () => {
+    try {
+        const response = await fetch('http://localhost:5084/Store/FeaturePage/GetTopNewReleases');
+        if (!response.ok) throw new Error("Failed to fetch Top New Releases");
+        const data = await response.json();
+
+        // Lọc ra 3 game mới nhất
+        const latestBanners = data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).slice(0, 3);
+
+        // Cập nhật đường dẫn ảnh banner
+        return latestBanners.map(banner => `${process.env.PUBLIC_URL}${banner.imageGame.find(img => img.imageType.toLowerCase() === 'banner').filePath}${banner.imageGame.find(img => img.imageType.toLowerCase() === 'banner').fileName}`);
+    } catch (error) {
+        console.error("Error fetching Top New Releases:", error);
+        return []; // Trả về mảng rỗng nếu có lỗi
+    }
+};
 
 const HomePage = () => {
     const [topNewReleases, setTopNewReleases] = useState([]);
     const [trendingGames, setTrendingGames] = useState([]);
+    const [bannerImages, setBannerImages] = useState([]);
 
     // Fetch dữ liệu từ API
     const fetchTopNewReleases = async () => {
@@ -23,9 +34,7 @@ const HomePage = () => {
 
             // Cập nhật đường dẫn ảnh thumbnail
             const updatedGames = data.map(game => {
-                // Tìm ảnh thumbnail của game
                 const thumbnailImage = game.imageGame.find(img => img.imageType.toLowerCase() === 'thumbnail');
-                // Xây dựng đường dẫn ảnh thumbnail
                 const thumbnailPath = thumbnailImage ? `${process.env.PUBLIC_URL}${thumbnailImage.filePath}${thumbnailImage.fileName}` : '';
                 return { ...game, thumbnailPath };
             });
@@ -60,6 +69,7 @@ const HomePage = () => {
     useEffect(() => {
         fetchTopNewReleases();
         fetchTrendingGames();
+        fetchBannerImages().then(images => setBannerImages(images));
     }, []);
 
     return (
@@ -81,13 +91,8 @@ const HomePage = () => {
                         topNewReleases.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    {/* Hiển thị ảnh thumbnail */}
                                     {game.thumbnailPath && (
-                                        <img
-                                            src={game.thumbnailPath}
-                                            alt={game.title}
-                                            className="game-cover"
-                                        />
+                                        <img src={game.thumbnailPath} alt={game.title} className="game-cover" />
                                     )}
                                     <h3>{game.title}</h3>
                                     <p>${game.price.toFixed(2)}</p>
@@ -108,13 +113,8 @@ const HomePage = () => {
                         trendingGames.map(game => (
                             <Link to={`/game/${game.gameId}`} key={game.gameId}>
                                 <div className="game-item">
-                                    {/* Hiển thị ảnh thumbnail */}
                                     {game.thumbnailPath && (
-                                        <img
-                                            src={game.thumbnailPath}
-                                            alt={game.title}
-                                            className="game-cover"
-                                        />
+                                        <img src={game.thumbnailPath} alt={game.title} className="game-cover" />
                                     )}
                                     <h3>{game.title}</h3>
                                     <p>${game.price.toFixed(2)}</p>
