@@ -39,7 +39,7 @@ const StorePage = () => {
     // Fetch genres from API or define a static list
     const fetchGenres = async () => {
         try {
-            const response = await fetch('http://localhost:5084/Genre/GetAll');
+            const response = await fetch('http://localhost:5084/Store/FeaturePage/GetAllGenre');
             const data = await response.json();
             setGenres(data);
         } catch (error) {

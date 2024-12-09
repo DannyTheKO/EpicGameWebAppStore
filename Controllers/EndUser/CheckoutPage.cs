@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
+using EpicGameWebAppStore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +15,24 @@ public class CheckoutPage : _BaseController
 	private readonly ICartService _cartService;
 	private readonly ICartdetailService _cartdetailService;
 	private readonly IAuthorizationServices _authorizationServices;
+    private readonly IAccountService _accountService;
+    private readonly IGameService _gameService;
+    private readonly IAccountGameService _accountGameService;
 
-	public CheckoutPage(ICartService cartService,
+    public CheckoutPage(ICartService cartService,
 		ICartdetailService cartdetailService,
-		IAuthorizationServices authorizationServices)
+		IAuthorizationServices authorizationServices,
+        IAccountService accountService,
+        IGameService gameService,
+        IAccountGameService accountGameService)
 		: base(authorizationServices)
 	{
 		_cartService = cartService;
 		_cartdetailService = cartdetailService;
-	}
+        _accountService = accountService;
+        _gameService = gameService;
+        _accountGameService = accountGameService;
+    }
 
 	[HttpGet("CurrentCartList")]
 	public async Task<ActionResult<Cart>> GetCurrentCartList()
@@ -86,5 +97,75 @@ public class CheckoutPage : _BaseController
 		await _cartdetailService.UpdateCartDetail(cartDetailToUpdate);
 		return Ok(new { success = true, message = "Item updated successfully" });
 	}
+
+    [HttpPost("AddAccountGame")]
+    public async Task<ActionResult<AccountGameFormModel>> AddAccountGame([FromBody] AccountGameFormModel accountGameFormModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+            });
+        }
+
+        // Retrieve both Account, Game and AccountGame data
+        var checkAccount = await _accountService.GetAccountById(accountGameFormModel.AccountId);
+        var checkGame = await _gameService.GetGameById(accountGameFormModel.GameId);
+
+        // Check if both Account and game exist 
+        if (checkAccount == null)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = "Account is not found!"
+            });
+        }
+
+        if (checkGame == null)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = "Game is not found!"
+            });
+        }
+
+        // Check if that Account already has that game
+        var checkAccountGame = (await _accountGameService.GetAccountGameByAccountId(accountGameFormModel.AccountId))
+            .Where(g => g.GameId == checkGame.GameId);
+
+        if (checkAccountGame.Any())
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = "That Account already has that Game."
+            });
+        }
+
+
+        // Create new Account Game
+        var accountGame = new AccountGame
+        {
+            AccountId = checkAccount.AccountId,
+            GameId = checkGame.GameId,
+            DateAdded = DateTime.UtcNow,
+        };
+
+        await _accountGameService.AddAccountGame(accountGame);
+        return Ok(new
+        {
+            success = true,
+            message = "Successfully added AccountGame",
+            data = accountGame,
+        });
+
+    }
+
 }
 

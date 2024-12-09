@@ -4,13 +4,13 @@ namespace EpicGameWebAppStore.Models
 {
 	public class DiscountFormModel
 	{
-		[Required(ErrorMessage = "EndOn is required")]
-		[DataType(DataType.DateTime)]
-		public DateTime EndOn { get; set; }
-
 		[Required(ErrorMessage = "StartOn is required")]
 		[DataType(DataType.DateTime)]
 		public DateTime StartOn { get; set; }
+
+		[Required(ErrorMessage = "EndOn is required")]
+		[DataType(DataType.DateTime)]
+		public DateTime EndOn { get; set; }
 
 		[Required(ErrorMessage = "Code is required")]
 		[StringLength(45)]

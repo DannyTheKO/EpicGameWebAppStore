@@ -31,8 +31,17 @@ public class DiscountService : IDiscountService
 
 	public async Task<Discount> UpdateDiscountAsync(Discount discount)
 	{
-		await _discountRepository.Update(discount);
-		return discount;
+		var checkDiscount = await _discountRepository.GetById(discount.DiscountId);
+		if (checkDiscount == null) throw new Exception("Discount not found.");
+
+		checkDiscount.StartOn = discount.StartOn;
+		checkDiscount.EndOn = discount.EndOn;
+		checkDiscount.Code = discount.Code;
+		checkDiscount.GameId = discount.GameId;
+		checkDiscount.Percent = discount.Percent;
+
+		await _discountRepository.Update(checkDiscount);
+		return checkDiscount;
 	}
 
     public async Task<Discount> DeleteDiscountAsync(int id)
@@ -60,10 +69,27 @@ public class DiscountService : IDiscountService
         return discountList.ToList();
 	}
 
+	// Search Code by Game ID
     public async Task<IEnumerable<Discount>> GetDiscountByGameId(int gameId)
 	{
 		var discountList = await _discountRepository.GetAll();
 		discountList = discountList.Where(d => d.GameId == gameId);
+		return discountList.ToList();
+	}
+
+	// Search Active Discount
+	public async Task<IEnumerable<Discount>> GetActiveDiscount()
+	{
+		var discountList = await _discountRepository.GetAll();
+		discountList = discountList.Where(d => d.StartOn <= DateTime.Now && d.EndOn >= DateTime.Now);
+		return discountList.ToList();
+	}
+
+	// Search Expired Discount
+	public async Task<IEnumerable<Discount>> GetExpiredDiscount()
+	{
+		var discountList = await _discountRepository.GetAll();
+		discountList = discountList.Where(d => d.StartOn >= DateTime.Now && d.EndOn <= DateTime.Now);
 		return discountList.ToList();
 	}
 }

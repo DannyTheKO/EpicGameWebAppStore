@@ -1,4 +1,5 @@
-﻿.payment-container {
+﻿/* styles/pages/Payment.css */
+.payment-container {
     margin-top: 30px;
     background-color: #1f2731;
     padding: 20px;
@@ -47,6 +48,28 @@
 .payment-icon {
     font-size: 1.5rem;
 }
+
+.promo-code-section {
+    margin-top: 20px;
+}
+
+    .promo-code-section input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #00d4ff;
+        border-radius: 5px;
+        background-color: #1f2731;
+        color: #ffffff;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        .promo-code-section input:focus {
+            border-color: #00b3e6;
+            box-shadow: 0 0 5px rgba(0, 179, 230, 0.5);
+        }
 
 .payment-form {
     margin-top: 20px;

@@ -811,6 +811,23 @@ public class Dashboard : _BaseController
 		return Ok(discounts);
 	}
 
+	// Get active discount
+	[HttpGet("Discount/GetActiveDiscount")]
+	public async Task<ActionResult> GetActiveDiscount()
+	{
+		var discounts = await _discountService.GetActiveDiscount();
+		return Ok(discounts);
+	}
+
+	// Get expired discount
+	[HttpGet("Discount/GetExpiredDiscount")]
+	public async Task<ActionResult> GetExpiredDiscount()
+	{
+		var discounts = await _discountService.GetExpiredDiscount();
+		return Ok(discounts);
+	}
+
+
 	[HttpPost("Discount/Add")]
 	public async Task<ActionResult> AddDiscount([FromBody] DiscountFormModel discountFormModel)
 	{
@@ -1005,7 +1022,6 @@ public class Dashboard : _BaseController
 			Code = discountFormModel.Code,
 			StartOn = discountFormModel.StartOn,
 			EndOn = discountFormModel.EndOn,
-			Game = game
 		};
 
 		var updatedDiscount = await _discountService.UpdateDiscountAsync(discount);
