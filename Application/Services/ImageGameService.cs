@@ -81,12 +81,6 @@ namespace Application.Services
 				return (null, "Game not found!");
 			}
 
-			// Validate image type limit
-			if (!await ValidateImageTypeLimit(imageGame.GameId, imageGame.ImageType))
-			{
-				return (null, $"Only one {imageGame.ImageType} image is allowed per game");
-			}
-
 			// Create directory path for new location
 			var gameFolder = game.Title.Replace(" ", "_").ToLower();
 			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "epic", "public", "images", gameFolder, imageGame.ImageType);

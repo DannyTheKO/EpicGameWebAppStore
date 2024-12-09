@@ -1022,7 +1022,6 @@ public class Dashboard : _BaseController
 			Code = discountFormModel.Code,
 			StartOn = discountFormModel.StartOn,
 			EndOn = discountFormModel.EndOn,
-			Game = game
 		};
 
 		var updatedDiscount = await _discountService.UpdateDiscountAsync(discount);
