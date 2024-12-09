@@ -118,7 +118,7 @@ namespace Application.Services
 
 			// Update image properties
 			checkImageGame.FileName = fileName;
-			checkImageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageGame.ImageType}/{fileName}";
+			checkImageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageGame.ImageType}";
 			checkImageGame.ImageType = imageGame.ImageType;
 			checkImageGame.GameId = imageGame.GameId;
 
@@ -169,7 +169,7 @@ namespace Application.Services
 
 			// Update ImageGame with file info
 			imageGame.FileName = fileName;
-			imageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageType}/{fileName}";
+			imageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageType}";
 
 			// Update the entity
 			await _imageGameRepository.Update(imageGame);
