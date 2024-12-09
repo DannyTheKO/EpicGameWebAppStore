@@ -1457,7 +1457,7 @@ public class Dashboard : _BaseController
 	}
 
 	[HttpPost("Image/Add")]
-	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
+	public async Task<ActionResult> AddImage([FromForm] ImageFormModel imageFormModel)
 	{
 		var permissionFlag = await CheckPermission("add");
 		if (permissionFlag == false)
@@ -1504,7 +1504,7 @@ public class Dashboard : _BaseController
 			Game = game
 		};
 
-		var (createdImage, flag, message) = await _imageGameService.UploadImageGame(imageFile, image.GameId, image.ImageType);
+		var (createdImage, flag, message) = await _imageGameService.UploadImageGame(imageFormModel.imageFile, image.GameId, image.ImageType);
 		return Ok(new
 		{
 			success = flag,
@@ -1515,7 +1515,7 @@ public class Dashboard : _BaseController
 
 	// PUT: Update Image
 	[HttpPut("Image/Update/{imageId}")]
-	public async Task<ActionResult> UpdateImage(int imageId, [FromForm] ImageFormModel imageFormModel, IFormFile imageFile)
+	public async Task<ActionResult> UpdateImage(int imageId, [FromForm] ImageFormModel imageFormModel)
 	{
 		var permissionFlag = await CheckPermission("update");
 		if (permissionFlag == false)
@@ -1534,7 +1534,7 @@ public class Dashboard : _BaseController
 			});
 		}
 
-		if (imageFile == null || imageFile.Length == 0)
+		if (imageFormModel.imageFile == null || imageFormModel.imageFile.Length == 0)
 		{
 			return BadRequest(new
 			{
@@ -1582,7 +1582,7 @@ public class Dashboard : _BaseController
 			Game = game
 		};
 
-		var (updatedImage, message) = await _imageGameService.UpdateImageGame(imageFile, newImage);
+		var (updatedImage, message) = await _imageGameService.UpdateImageGame(imageFormModel.imageFile, newImage);
 		return Ok(new
 		{
 			success = true,

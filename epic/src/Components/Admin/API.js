@@ -4,7 +4,8 @@ const apiClient = axios.create({
   baseURL: 'http://localhost:5084',
   headers: {
     'Content-Type': 'application/json',
-   'Authorization': `Bearer ${token}`
+  'Authorization': `Bearer ${token}`
+
   },
 });
 export const AddPublisher = async (Publisher) => {
@@ -52,6 +53,15 @@ try {
   return [];
 }
 };
+export const GetIMGbygameid = async (gameif) => {
+  try {
+    const response = await apiClient.get(`/Store/Dashboard/Image/GetByGameId/${gameif}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error :", error.response || error.message);
+    return [];
+  }
+  };
 export const GetAllDiscount =  async () => {
   try {
     const response = await apiClient.get('/Store/Dashboard/Discount/GetAll');
@@ -82,7 +92,6 @@ export const GetAllCart = async() => {
   };
   
 export const GetAllPublisher = async() => {
-
 try {
   const response = await apiClient.get('/Store/Dashboard/Publisher/GetAll'); 
   return response.data; 
@@ -152,6 +161,15 @@ try {
   throw new Error("Xóa không thành công");
 }
 };
+export const DeleteIMG = async (imgid) => {
+  try {
+    const response = await apiClient.delete(`/Store/Dashboard/Image/Delete/${imgid}`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa sản phẩm:", error.response || error.message);
+    throw new Error("Xóa không thành công");
+  }
+  };
 
 // API.js
 export const DeleteAccountgame = async (AccountGameID) => {
@@ -185,6 +203,15 @@ export const UpdateGame = async (gameId,updatedGameData) => {
 export const UpdateAccount = async (Accountid,updatedAccount) => {
   try {
     const response = await apiClient.put(`/Store/Dashboard/Account/Update/${Accountid}`, updatedAccount); 
+    return response.data;
+  } catch (error) {
+    console.error("Error updating game:", error.response || error.message);
+    return null; 
+  }
+};
+export const UpdateIMG = async (gameid,img) => {
+  try {
+    const response = await apiClient.put(`/Store/Dashboard/Image/Update/${gameid}`, img); 
     return response.data;
   } catch (error) {
     console.error("Error updating game:", error.response || error.message);
