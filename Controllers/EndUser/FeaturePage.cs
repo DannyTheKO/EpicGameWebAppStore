@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,17 +13,18 @@ public class FeaturePage : _BaseController
 	private readonly IAuthenticationServices _authenticationServices;
 	private readonly IAuthorizationServices _authorizationServices;
 	private readonly IGameService _gameServices;
-
-	public FeaturePage(
+    private readonly IGenreService _genreService;
+    public FeaturePage(
 		IAuthenticationServices authenticationServices,
 		IAuthorizationServices authorizationServices,
-		IGameService gameServices)
+		IGameService gameServices , IGenreService genreService)
 		: base(authorizationServices)
 	{
 		_authenticationServices = authenticationServices;
 		_authorizationServices = authorizationServices;
 		_gameServices = gameServices;
-	}
+        _genreService = genreService;
+    }
 
 	// GET: Game/Index
 	[HttpGet("GetAll")]
@@ -68,5 +70,12 @@ public class FeaturePage : _BaseController
         });
 
         return Ok(game);
+    }
+    //GET: Genre/GetAllGenre
+    [HttpGet("GetAllGenre")]
+    public async Task<ActionResult<IEnumerable<Genre>>> GetAllGenre()
+    {
+        var genre = await _genreService.GetAllGenres();
+        return Ok(genre);
     }
 }

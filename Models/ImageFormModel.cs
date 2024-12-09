@@ -9,5 +9,7 @@ namespace EpicGameWebAppStore.Models
 
 		[Required(ErrorMessage = "ImageType is required")]
 		public string ImageType { get; set; }
-	}
+        public IFormFile imageFile { get; set; }
+
+    }
 }
