@@ -231,12 +231,6 @@ const Cart = () => {
                     </button>
                     <div className="payment-container">
                         <h2 className="payment-title">Payment Options</h2>
-                        <div className="promo-code-section">
-                            <input
-                                type="text"
-                                placeholder="Enter discount code"
-                            />
-                        </div>
                         <div className="payment-methods">
                             <div
                                 className={`payment-method ${selectedMethod === 'credit-card' ? 'selected' : ''}`}
