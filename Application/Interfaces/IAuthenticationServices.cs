@@ -24,4 +24,4 @@ public interface IAuthenticationServices
 
 	// ACTION: Generate JWT Token
 	Task<string> GenerateJwtToken(Account account);
-}
+} 
