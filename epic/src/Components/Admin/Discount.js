@@ -18,7 +18,7 @@ function Discount() {
   const [dataSource, setDataSource] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [searchText, setSearchText] = useState(""); 
+  const [searchText, setSearchText] = useState("");
   const [status, setStatus] = useState("");
   const [discountRecord, setDiscountRecord] = useState({
     id: "",
@@ -36,58 +36,107 @@ function Discount() {
         const [res, game] = await Promise.all([GetAllDiscount(), GetAllgame()]);
         setDataSource(res || []);
         setDataGame(game || []);
-        
       } catch (error) {
         console.log("lỗi load data");
       }
       setLoading(false);
     };
     fetchGame();
-    }, []);
-    const handleSearch = () => {
-        if (!searchText.trim()) {
-          setDataSource(dataSource); // Gọi lại dữ liệu ban đầu
-          return;
-          
-  }
+  }, []);
+  const handleSearch = async () => {
+    if (!status && !searchText.trim()) {
+      // Nếu không có trạng thái và không có văn bản tìm kiếm, lấy toàn bộ dữ liệu
+      const updatedDataSource = await GetAllDiscount();
+      setDataSource(updatedDataSource);
+      return;
+    }
+  
+    if (!status && searchText.trim()) {
+      // Nếu không có trạng thái nhưng có văn bản tìm kiếm, lọc theo văn bản tìm kiếm
       const filteredData = dataSource.filter((item) => {
-        const isMatchingDiscountId = item.discountId.toString().includes(searchText); // Filter by discount ID
-        const isMatchingCode = item.code.toLowerCase().includes(searchText.toLowerCase()); // Filter by discount code
-        const isMatchingGameTitle = item.game?.title.toLowerCase().includes(searchText.toLowerCase()); // Filter by game title
-    
-        // Filter by start and end dates
+        const isMatchingDiscountId = item.discountId
+          .toString()
+          .includes(searchText); // Tìm theo Discount ID
+        const isMatchingCode = item.code
+          .toLowerCase()
+          .includes(searchText.toLowerCase()); // Tìm theo Code
+        const isMatchingGameTitle = item.game?.title
+          .toLowerCase()
+          .includes(searchText.toLowerCase()); // Tìm theo Game Title
         const isMatchingStartOn = item.startOn
           ? item.startOn.toLowerCase().includes(searchText.toLowerCase())
-          : false;
-    
+          : false; // Tìm theo Start Date
         const isMatchingEndOn = item.endOn
           ? item.endOn.toLowerCase().includes(searchText.toLowerCase())
-          : false;
+          : false; // Tìm theo End Date
+  
+        return (
+          isMatchingDiscountId ||
+          isMatchingCode ||
+          isMatchingGameTitle ||
+          isMatchingStartOn ||
+          isMatchingEndOn
+        );
+      });
+      setDataSource(filteredData);
+      return;
+    }
+  
+    if (status && !searchText.trim()) {
+      // Nếu có trạng thái, lọc theo trạng thái và kiểm tra tính hợp lệ của mã giảm giá
+      const filteredData = dataSource.filter((item) => {
+        const isValidDiscount = checkDiscountValidity(item.startOn, item.endOn); // Kiểm tra tính hợp lệ của mã giảm giá
+        return item.status === status && isValidDiscount; // Lọc theo trạng thái và tính hợp lệ
+      });
+      setDataSource(filteredData);
+    }
     
-        // Check the active status based on the date range
-        const currentDate = new Date();
-        const startOnDate = new Date(item.startOn);
-        const endOnDate = new Date(item.endOn);
+    if (status && searchText.trim()) {
+      // Nếu có cả trạng thái và văn bản tìm kiếm, lọc theo cả hai tiêu chí
+      const filteredData = dataSource.filter((item) => {
+        // Chuyển đổi text tìm kiếm về dạng chữ thường để so sánh dễ dàng hơn
+        const searchTextLower = searchText.toLowerCase();
     
-        const isActive = currentDate >= startOnDate && currentDate <= endOnDate; // Check if the discount is active
+        // Kiểm tra các tiêu chí tìm kiếm
+        const isMatchingDiscountId = item.discountId
+          .toString()
+          .includes(searchText); // Tìm theo Discount ID
+        const isMatchingCode = item.code
+          .toLowerCase()
+          .includes(searchTextLower); // Tìm theo Code
+        const isMatchingGameTitle = item.game?.title
+          .toLowerCase()
+          .includes(searchTextLower); // Tìm theo Game Title
+        const isMatchingStartOn = item.startOn
+          ? item.startOn.toLowerCase().includes(searchTextLower)
+          : false; // Tìm theo Start Date
+        const isMatchingEndOn = item.endOn
+          ? item.endOn.toLowerCase().includes(searchTextLower)
+          : false; // Tìm theo End Date
     
-        // Determine the status (Active, Expired, Not Started)
-        const isMatchingStatus = status ? (status === "active" ? isActive : !isActive) : true;
-    
-        // Return data based on the search criteria and status filter
+        // Lọc theo các tiêu chí tìm kiếm và trạng thái
         return (
           (isMatchingDiscountId ||
             isMatchingCode ||
             isMatchingGameTitle ||
             isMatchingStartOn ||
             isMatchingEndOn) &&
-          isMatchingStatus
+          item.status === status // Kiểm tra cả trạng thái
         );
       });
     
       setDataSource(filteredData);
-    };
+    }
+      
+  };
+  const checkDiscountValidity = (startOn, endOn) => {
+    const currentDate = new Date();  // Ngày hiện tại
+    const startDate = new Date(startOn);  // Ngày bắt đầu
+    const endDate = new Date(endOn);  // Ngày kết thúc
   
+    // Kiểm tra xem ngày hiện tại có nằm trong khoảng thời gian không
+    return currentDate >= startDate && currentDate <= endDate;
+  };
 
   const openModal = async (record = null) => {
     if (record) {
@@ -107,7 +156,7 @@ function Discount() {
         dataSource.length > 0
           ? Math.max(...dataSource.map((item) => item.discountId))
           : 0;
-  
+
       setDiscountRecord({
         id: maxId + 1,
         gameid: "",
@@ -136,7 +185,8 @@ function Discount() {
       okText: "Delete",
       okType: "danger",
       cancelText: "Cancel",
-      onOk: async () => {  // Đảm bảo onOk là một hàm async
+      onOk: async () => {
+        // Đảm bảo onOk là một hàm async
         const discountid = record.discountId;
         console.log(discountid);
         const result = await DeleteDiscount(discountid); // Sử dụng await trong onOk
@@ -145,23 +195,23 @@ function Discount() {
           setDataSource((prevDataSource) =>
             prevDataSource.filter((item) => item.discountId !== discountid)
           );
-  
+
           // Thông báo thành công
           Modal.success({
-            title: 'Thành công',
+            title: "Thành công",
             content: `Mã giảm giá đã được xóa thành công.`,
           });
         } else {
           // Nếu có lỗi, hiển thị thông báo lỗi
           Modal.error({
-            title: 'Lỗi',
+            title: "Lỗi",
             content: result.message,
           });
         }
       },
     });
   };
-  
+
   const validateDiscountRecord = () => {
     const { gameid, percent, code, starton, endon } = discountRecord;
     const currentDate = new Date(); // Ngày hiện tại
@@ -223,7 +273,10 @@ function Discount() {
     }
     return true;
   };
-
+  function findNameById(id, list) {
+    const item = list.find((element) => element.id === id);
+    return item ? item.name : "Unknown"; // Trả về tên hoặc "Unknown" nếu không tìm thấy
+  }
   const handleSave = async () => {
     if (!validateDiscountRecord()) {
       return;
@@ -239,7 +292,7 @@ function Discount() {
           setDataSource(updatedDataSource);
           Modal.success({
             title: "Success",
-            content: result.message ,
+            content: result.message,
           });
         } else {
           Modal.error({
@@ -255,12 +308,12 @@ function Discount() {
           setDataSource(updatedDataSource);
           Modal.success({
             title: "Success",
-            content: result.message ,
+            content: result.message,
           });
         } else {
           Modal.error({
             title: "Thêm giảm giá thất bại",
-            content: result.message 
+            content: result.message,
           });
         }
       }
@@ -279,43 +332,48 @@ function Discount() {
 
   return (
     <Space className="size_table" size={10} direction="vertical">
-    <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "20px"}}>
-  <Select
-    placeholder="Select an option"
-    value={status} 
-        onChange={(value) => setStatus(value)} 
-    style={{
-      width:"150px",
-      
-    }}
-  >
-    <Option value="active">Còn hạn sử dụng</Option>
-    <Option value="expired">Hết hạn sử dụng</Option>
-  </Select>
-  <Input
-    placeholder=" Nhập thứ bạn muốn tìm kiếm"
-    value={searchText}
-    onChange={(e) => setSearchText(e.target.value)}
-    style={{
-      height: "30px", // Chiều cao giống Select
-      lineHeight: "32px", // Đồng bộ nội dung
-      width:"300px"
-    }}
-  />
-  <Button onClick={handleSearch}>
-  <CiSearch />
-
-  </Button>
-  {isAdmin() && (
-    <Button
-      type="primary"
-      onClick={() => openModal()}
-      style={{ marginLeft: "auto" }}
-    >
-      Add
-    </Button>
-  )}
-</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          margin: "20px",
+        }}
+      >
+        <Select
+          placeholder="Select an option"
+          value={status}
+          onChange={(value) => setStatus(value)}
+          style={{
+            width: "150px",
+          }}
+        >
+          <Option value="active">Còn hạn sử dụng</Option>
+          <Option value="expired">Hết hạn sử dụng</Option>
+        </Select>
+        <Input
+          placeholder=" Nhập thứ bạn muốn tìm kiếm"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{
+            height: "30px", // Chiều cao giống Select
+            lineHeight: "32px", // Đồng bộ nội dung
+            width: "300px",
+          }}
+        />
+        <Button onClick={handleSearch}>
+          <CiSearch />
+        </Button>
+        {isAdmin() && (
+          <Button
+            type="primary"
+            onClick={() => openModal()}
+            style={{ marginLeft: "auto" }}
+          >
+            Add
+          </Button>
+        )}
+      </div>
 
       <Table
         className="data"
@@ -330,8 +388,14 @@ function Discount() {
           {
             title: "Game Title",
             key: "gameTitle",
-            render: (record) => <Text>{record.game?.title || "Unknown"}</Text>,
+            render: (record) => {
+              const game = dataGame.find(
+                (game) => game.gameId === record.gameId
+              );
+              return <Text>{game ? game.title : "Unknown"}</Text>; // Ensure there's a fallback for missing game
+            },
           },
+
           {
             title: "Percent",
             dataIndex: "percent",
@@ -399,7 +463,10 @@ function Discount() {
         <label>Chọn game</label>
         <Select
           placeholder="Chọn Game"
-          value={discountRecord.gameid}
+          value={
+            dataGame.find((game) => game.gameId === discountRecord.id)?.title ||
+            "Chọn Game"
+          }
           onChange={(value) =>
             setDiscountRecord({ ...discountRecord, gameid: value })
           }

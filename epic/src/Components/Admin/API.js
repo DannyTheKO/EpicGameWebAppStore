@@ -116,6 +116,7 @@ export const GetIMGbygameid = async (gameif) => {
 export const GetAllDiscount =  async () => {
   try {
     const response = await apiClient.get('/Store/Dashboard/Discount/GetAll');
+    console.log(response.data);
     return response.data; 
   } catch (error) {
     console.error("Error :", error.response || error.message);
@@ -195,6 +196,7 @@ export const GetRole = async () => {
 export const GetAllgame = async () => {
   try {
     const response = await apiClient.get('/Store/Dashboard/Game/GetAll'); 
+    console.log(response.data);
     return response.data; 
   } catch (error) {
     console.error("Error :", error.response || error.message);
