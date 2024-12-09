@@ -15,11 +15,17 @@ public interface IDiscountService
     // == Feature Function ==
 
     // Search by Discount ID
-    public Task<Discount> GetDiscountByIdAsync(int id);
+    Task<Discount> GetDiscountByIdAsync(int id);
 
 	// Search Game available discount
-    public Task<IEnumerable<Discount>> GetDiscountByGameId(int gameId);
+    Task<IEnumerable<Discount>> GetDiscountByGameId(int gameId);
 
 	// Search by Discount Code
-	public Task<IEnumerable<Discount>> GetDiscountByCode(string code);
+	Task<IEnumerable<Discount>> GetDiscountByCode(string code);
+
+    // Search Active Discount
+    Task<IEnumerable<Discount>> GetActiveDiscount();
+
+    // Search Expired Discount
+    Task<IEnumerable<Discount>> GetExpiredDiscount();
 }

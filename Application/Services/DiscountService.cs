@@ -60,10 +60,27 @@ public class DiscountService : IDiscountService
         return discountList.ToList();
 	}
 
+	// Search Code by Game ID
     public async Task<IEnumerable<Discount>> GetDiscountByGameId(int gameId)
 	{
 		var discountList = await _discountRepository.GetAll();
 		discountList = discountList.Where(d => d.GameId == gameId);
+		return discountList.ToList();
+	}
+
+	// Search Active Discount
+	public async Task<IEnumerable<Discount>> GetActiveDiscount()
+	{
+		var discountList = await _discountRepository.GetAll();
+		discountList = discountList.Where(d => d.StartOn <= DateTime.Now && d.EndOn >= DateTime.Now);
+		return discountList.ToList();
+	}
+
+	// Search Expired Discount
+	public async Task<IEnumerable<Discount>> GetExpiredDiscount()
+	{
+		var discountList = await _discountRepository.GetAll();
+		discountList = discountList.Where(d => d.StartOn >= DateTime.Now && d.EndOn <= DateTime.Now);
 		return discountList.ToList();
 	}
 }
