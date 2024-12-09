@@ -20,7 +20,9 @@ import {
   GetAllGenre,
   UpdateGame,
   GetImgGame,
-  DeleteIMG,  UpdateIMG,GetIMGbygameid
+  DeleteIMG,
+  UpdateIMG,
+  GetIMGbygameid,
 } from "./API";
 import "./table.css";
 import axios from "axios";
@@ -41,7 +43,7 @@ function Game() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [imageType, setImageType] = useState(""); // Loại ảnh (Thumbnail, Banner, Background, Screenshot)
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState(null);
   const [gameRecord, setGameRecord] = useState({
     gameId: "",
     title: "",
@@ -86,7 +88,7 @@ function Game() {
   const handleFileChangeIMG = ({ fileList }) => {
     setFileList(fileList);
   };
-  
+
   const handleAddIMG = async (gameId) => {
     if (!imageType) {
       alert("Vui lòng chọn loại ảnh.");
@@ -95,9 +97,9 @@ function Game() {
     if (fileList.length === 0) {
       alert("Vui lòng chọn ít nhất một file.");
       return;
-    } 
+    }
     const token = localStorage.getItem("authToken");
-    
+
     // Kiểm tra token
     if (!token) {
       alert("Bạn cần phải đăng nhập.");
@@ -109,9 +111,8 @@ function Game() {
         const formData = new FormData();
         formData.append("GameId", gameId);
         formData.append("ImageType", imageType); // Chọn loại ảnh
-        formData.append("imageFile", file.originFileObj
-          ); // Tải lên file
-        console.log("file", file)
+        formData.append("imageFile", file.originFileObj); // Tải lên file
+        console.log("file", file);
         const response = await axios.post(
           "http://localhost:5084/Store/Dashboard/Image/Add",
           formData,
@@ -127,7 +128,7 @@ function Game() {
         } else {
           alert("Thất bại khi thêm ảnh");
         }
-        setFileList([]); 
+        setFileList([]);
         setImageType("");
       }
     } catch (error) {
@@ -136,7 +137,6 @@ function Game() {
     }
     handleCloseModalAU();
   };
-  
 
   // Hàm xử lý cập nhật ảnh
   const handleUpdateIMG = async (gameId) => {
@@ -144,83 +144,87 @@ function Game() {
       alert("Vui lòng chọn loại ảnh.");
       return;
     }
-    
+
     if (fileList.length === 0) {
       alert("Vui lòng chọn ít nhất một file.");
       return;
     }
-  
+
     const token = localStorage.getItem("authToken");
-    
+
     // Kiểm tra token
     if (!token) {
       alert("Bạn cần phải đăng nhập.");
       return;
     }
-  
+
     try {
       // Lấy ảnh của game theo gameId
-      const imgbygameid = await GetIMGbygameid(gameId);  // Thêm await nếu GetIMGbygameid là async
-      const idimg = imgbygameid.filter(image => image.imageType === imageType).map(image => image.imageGameId);
+      const imgbygameid = await GetIMGbygameid(gameId); // Thêm await nếu GetIMGbygameid là async
+      const idimg = imgbygameid
+        .filter((image) => image.imageType === imageType)
+        .map((image) => image.imageGameId);
       console.log(idimg);
-  
+
       const img = {
         gameId: gameId,
-        imageType: imageType,  // Loại ảnh (ví dụ: 'Thumbnail', 'Banner', v.v.)
-        imageFile: fileList[0].originFileObj  // Lấy file từ fileList, giả sử chỉ có một file
+        imageType: imageType, // Loại ảnh (ví dụ: 'Thumbnail', 'Banner', v.v.)
+        imageFile: fileList[0].originFileObj, // Lấy file từ fileList, giả sử chỉ có một file
       };
       console.log(idimg);
-  
+
       const formData = new FormData();
-      formData.append('GameId', img.gameId);
-      formData.append('ImageType', img.imageType);
-      formData.append('imageFile', img.imageFile); // Không cần gọi .originFileObj ở đây nếu là file trong fileList
+      formData.append("GameId", img.gameId);
+      formData.append("ImageType", img.imageType);
+      formData.append("imageFile", img.imageFile); // Không cần gọi .originFileObj ở đây nếu là file trong fileList
       console.log(formData.get("imageFile"));
-     if(!idimg)
-     {
-      try {
-        const response = await axios.put(
-          `http://localhost:5084/Store/Dashboard/Image/Update/${idimg}`, 
-          formData, 
+      if (idimg>0) {
+        try {
+          const response = await axios.put(
+            `http://localhost:5084/Store/Dashboard/Image/Update/${idimg}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Sử dụng token từ localStorage
+              },
+            }
+          );
+          if(response.status)
+          {
+            alert("Thay đổi ảnh thành công")
+            setFileList([]);
+        setImageType("");
+          }
+          console.log("Image updated successfully:", response.data);
+          handleCloseModalAU(); // Đảm bảo hàm này đã được định nghĩa
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      } else {
+        const response = await axios.post(
+          "http://localhost:5084/Store/Dashboard/Image/Add",
+          formData,
           {
             headers: {
-              'Authorization': `Bearer ${token}`, // Sử dụng token từ localStorage
-            }
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        console.log('Image updated successfully:', response.data);
-        handleCloseModalAU();  // Đảm bảo hàm này đã được định nghĩa
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      }
-     }
-     else{
-      const response = await axios.post(
-        "http://localhost:5084/Store/Dashboard/Image/Add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-       
-      if (response.data && response.data.success) {
-        alert("Thêm ảnh thành công");
-      } else {
-        alert("Thất bại khi thêm ảnh");
-      }
-      setFileList([]); 
-      setImageType("");
-    
 
-     }
+        if (response.data && response.data.success) {
+          alert("Thêm ảnh thành công");
+        } else {
+          alert("Đã có ảnh thất bại khi thêm ảnh");
+        }
+        setFileList([]);
+        setImageType("");
+      }
     } catch (error) {
-      console.error('Error getting image by game ID:', error);
+      console.error("Error getting image by game ID:", error);
     }
   };
-  
+
   const handleDeleteImg = async () => {
     Modal.confirm({
       title: "Are you sure you want to delete this discount?",
@@ -322,12 +326,7 @@ function Game() {
     );
   };
 
-  const getMaxGameId = () => {
-    if (dataSource.length === 0) return null;
-    return dataSource.reduce((maxId, game) => {
-      return game.gameId > maxId ? game.gameId : maxId;
-    }, 0);
-  };
+
   const isAdmin = () => {
     const role = localStorage.getItem("authToken");
     const decodedToken = jwtDecode(role);
@@ -340,7 +339,7 @@ function Game() {
   const handleCloseModal = () => {
     setIsImageModalOpen(false);
   };
-  const openModal = (record = null) => {
+  const openModal = async(record = null) => {
     if (record) {
       setGameRecord({
         gameId: record.gameId,
@@ -356,8 +355,14 @@ function Game() {
 
       setIsEditing(true);
     } else {
+      const updatedDataSource = await GetAllgame();
+      setDataSource(updatedDataSource);
+      const maxId =dataSource.length > 0
+          ? Math.max(...dataSource.map((item) => item.gameId))
+          : 0;
+  
       setGameRecord({
-        gameId: getMaxGameId() + 1,
+        gameId: maxId + 1,
         title: "",
         author: "",
         price: 0,
@@ -388,7 +393,7 @@ function Game() {
       setGameRecord(record);
     }
     setIsModalOpenIMG(true);
-  }
+  };
 
   const handleSave = async () => {
     if (!validateGameRecord()) {
@@ -396,13 +401,21 @@ function Game() {
     }
     if (isEditing) {
       try {
-        await UpdateGame(gameRecord.gameId, gameRecord);
-        const updatedDataSource = await GetAllgame();
-        setDataSource(updatedDataSource);
-        Modal.success({
-          title: "Account update successfully",
-          content: `The account with ID ${gameRecord.gameId} has been update.`,
-        });
+        const result = await UpdateGame(gameRecord.gameId, gameRecord);
+
+        if (result.success) {
+          const updatedDataSource = await GetAllgame();
+          setDataSource(updatedDataSource);
+          Modal.success({
+            title: "Success",
+            content: result.message,
+          });
+        } else {
+          Modal.error({
+            title: "Error",
+            content: result.message,
+          });
+        }
       } catch (error) {
         console.error("Error deleting account:", error);
         Modal.error({
@@ -457,7 +470,7 @@ function Game() {
         //   console.log(`${key}: ${value}`);
         // }
         const response = await axios.post(
-          "http://localhost:5084/Game/CreateGame",
+          "http://localhost:5084/Store/Dashboard/Game/Create",
           formData,
           {
             headers: {
@@ -472,7 +485,12 @@ function Game() {
 
           Modal.success({
             title: "Game added successfully",
-            content: `The game with ID ${gameRecord.gameId} has been added.`,
+            content: response.data.message,
+          });
+        } else if (response.status === 400) {
+          Modal.error({
+            title: "Failed to add the game",
+            content: response.data.message,
           });
         } else {
           throw new Error("Failed to add the game. Please try again.");
@@ -543,13 +561,33 @@ function Game() {
       onOk: () => {
         const gameId = record.gameId;
         DeleteGame(gameId)
-          .then(() => {
-            setDataSource((prevDataSource) =>
-              prevDataSource.filter((item) => item.gameId !== gameId)
-            );
+          .then((result) => {
+            if (result.success) {
+              // Nếu xóa thành công, cập nhật lại dữ liệu nguồn
+              setDataSource((prevDataSource) =>
+                prevDataSource.filter((item) => item.gameId !== gameId)
+              );
+              Modal.success({
+                title: "Success",
+                content: result.message,
+              });
+            } else {
+              // Nếu xóa không thành công
+              Modal.error({
+                title: "Error",
+                content: result.message,
+              });
+            }
           })
           .catch((error) => {
+            // Nếu xảy ra lỗi khi gọi API
             console.error("Error deleting game:", error);
+            Modal.error({
+              title: "Error",
+              content:
+                error.message ||
+                "Something went wrong while deleting the game.",
+            });
           });
       },
     });
@@ -627,7 +665,6 @@ function Game() {
       dataIndex: "gameId",
       key: "gameId",
       render: (gameId) => <Text>{gameId}</Text>,
-      
     },
     {
       title: "Title",
@@ -736,6 +773,7 @@ function Game() {
           value={gameRecord.gameId}
           disabled
         />
+        <br />
         <label>Genre</label>
         <Select
           placeholder="Select Genre"
@@ -765,6 +803,7 @@ function Game() {
           ))}
         </Select>
         <label>Title</label>
+        <br />
         <Input
           className="modal-input"
           placeholder="Title"
@@ -774,6 +813,7 @@ function Game() {
           }
           // style={{width:10}}
         />
+        <br />
         <label>Author</label>
         <Input
           className="modal-input"
@@ -910,7 +950,7 @@ function Game() {
                               marginBottom: "10px",
                               cursor: "pointer",
                               border:
-                              CurrentSelectedImage === img
+                                CurrentSelectedImage === img
                                   ? "5px solid blue" // Đánh dấu ảnh được chọn
                                   : "5px solid #ccc",
                               margin: "5px", // Khoảng cách giữa các ảnh
@@ -954,11 +994,10 @@ function Game() {
       <Modal
         title="Chỉnh sửa ảnh"
         open={isModalOpenIMG}
+        onCancel={() => setIsModalOpenIMG(false)}
+        closable
         footer={[
-          <Button
-            key="Add"
-            onClick={() => handleAddIMG(gameRecord.gameId)}
-          >
+          <Button key="Add" onClick={() => handleAddIMG(gameRecord.gameId)}>
             Thêm
           </Button>,
           <Button
@@ -987,15 +1026,13 @@ function Game() {
 
         <p>Tải lên file:</p>
         <Upload
-        multiple 
+          multiple
           fileList={fileList}
           beforeUpload={() => false} // Prevent auto-upload
           onChange={handleFileChangeIMG}
         >
           <Button icon={<UploadOutlined />}>Chọn file</Button>
         </Upload>
-
-       
       </Modal>
     </Space>
   );

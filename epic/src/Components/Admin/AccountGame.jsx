@@ -100,14 +100,21 @@ function Accountgame() {
     setLoading(true); 
     try {
       if (!isEditing) {
-        await AddAccountgame(AcountgameRecord);
-        Modal.success({
-          title: "Thành công",
-          content: "Thêm tài khoản game thành công.",
-        });
+        const result = await AddAccountgame(AcountgameRecord);
+        if (result.success) {
+          Modal.success({
+            title: "Thành công",
+            content: result.message,
+          });
+        } else {
+          Modal.error({
+            title: "Thất bại",
+            content: result.message,
+          });
       } 
       const updatedDataSource = await GetAllAccountgame();
       setDataSource(updatedDataSource);
+    }
     } catch (error) {
       console.error("Lỗi khi thêm tài khoản game:", error);
       Modal.error({

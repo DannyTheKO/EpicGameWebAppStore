@@ -20,30 +20,81 @@ export const AddPublisher = async (Publisher) => {
 export const AddAccountu = async (Account) => {
   try {
     const response = await apiClient.post('/Store/Dashboard/Account/Add', Account);
-    return response.data; 
-} catch (error) {
-    console.error("Error adding game:", error.response || error.message);
-    return null; 
-}
+
+    if (response.status === 200) {
+      console.log("API Success:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400) {
+        console.error("API Error:", error.response.data.message);
+        return {
+          success: false,
+          message: error.response.data.message 
+        };
+        }
+    }
+  }
 };
+
 export const AddAccountgame = async (AccountGame) => {
   try {
-    const response = await apiClient.post('/Store/Dashboard/AccountGame/Add', AccountGame); 
-    return response.data; 
-} catch (error) {
-    console.error("Error adding game:", error.response || error.message);
-    return null; 
-}
+    const response = await apiClient.post('/Store/Dashboard/AccountGame/Add', AccountGame);
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: response.data.message || "Thêm tài khoản game thành công.",
+      };
+    } else if (response.status === 400) {
+      return {
+        success: false,
+        message: response.data.message || "Dữ liệu không hợp lệ, vui lòng kiểm tra lại.",
+      };
+    }
+  } catch (error) {
+    console.error("Error adding account game:", error.response || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra trong quá trình thêm tài khoản game.",
+    };
+  }
 };
+
 export const AddDiscount = async (Discount) => {
   try {
-    const response = await apiClient.post('/Store/Dashboard/Discount/Add', Discount); 
-    return response.data; 
-} catch (error) {
-    console.error("Error adding game:", error.response || error.message);
-    return null; 
-}
+    const response = await apiClient.post('/Store/Dashboard/Discount/Add', Discount);
+    if (response.status === 200) {
+      console.log("API Success:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 400) {
+        console.error("API Error:", error.response.data.message);
+        return {
+          success: false,
+          message: error.response.data.message || "Dữ liệu không hợp lệ, vui lòng kiểm tra lại."
+        };
+      }
+      if (error.response.status === 500) {
+        console.error("Server Error:", error.response.data.message);
+        return {
+          success: false,
+          message: "Đã xảy ra lỗi từ phía máy chủ. Vui lòng thử lại sau."
+        };
+      }
+    }
+    console.error("Unexpected Error:", error.message);
+    return {
+      success: false,
+      message: error.message || "Có lỗi xảy ra. Vui lòng kiểm tra lại kết nối."
+    };
+  }
 };
+
+
 export const GetAllGenre = async () => {
 try {
   const response = await apiClient.get('/Genre/GetAllGenre'); 
@@ -152,15 +203,36 @@ export const GetAllgame = async () => {
 };
 
 // API.js
-export const DeleteGame = async (gameId) => {
-try {
-  const response = await apiClient.delete(`/Store/Dashboard/Game/Delete/${gameId}`);
-  return response.data;
-} catch (error) {
-  console.error("Lỗi khi xóa sản phẩm:", error.response || error.message);
-  throw new Error("Xóa không thành công");
-}
+export const 
+DeleteGame = async (gameId) => {
+  try {
+    const response = await apiClient.delete(`/Store/Dashboard/Game/Delete/${gameId}`);
+    
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: response.data.message || "Game deleted successfully.",
+      };
+    } else if (response.status === 400) {
+      return {
+        success: false,
+        message: response.data.message || "Failed to delete the game. Please check the data.",
+      };
+    } else {
+      return {
+        success: false,
+        message: "Unexpected server response.",
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi khi xóa sản phẩm:", error.response || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to delete the game. Please try again.",
+    };
+  }
 };
+
 export const DeleteIMG = async (imgid) => {
   try {
     const response = await apiClient.delete(`/Store/Dashboard/Image/Delete/${imgid}`);
@@ -191,24 +263,59 @@ export const getCustomers = async () => {
   }
 };
 
-export const UpdateGame = async (gameId,updatedGameData) => {
+export const UpdateGame = async (gameId, updatedGameData) => {
   try {
-    const response = await apiClient.put(`/Store/Dashboard/Game/Update/${gameId}`, updatedGameData); 
-    return response.data; 
+    const response = await apiClient.put(`/Store/Dashboard/Game/Update/${gameId}`, updatedGameData);
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: response.data.message || "Game updated successfully.",
+      };
+    } else if (response.status === 400) {
+      return {
+        success: false,
+        message: response.data.message || "Invalid data provided. Please check and try again.",
+      };
+    } else {
+      return {
+        success: false,
+        message: "Unexpected server response.",
+      };
+    }
   } catch (error) {
     console.error("Error updating game:", error.response || error.message);
-    return null; 
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to update the game. Please try again.",
+    };
   }
 };
-export const UpdateAccount = async (Accountid,updatedAccount) => {
+
+export const UpdateAccount = async (Accountid, updatedAccount) => {
   try {
-    const response = await apiClient.put(`/Store/Dashboard/Account/Update/${Accountid}`, updatedAccount); 
-    return response.data;
+    const response = await apiClient.put(`/Store/Dashboard/Account/Update/${Accountid}`, updatedAccount);
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: response.data.message || "Cập nhật tài khoản thành công.",
+      };
+    } else if (response.status === 400) {
+      return {
+        success: false,
+        message: response.data.message || "Dữ liệu không hợp lệ, vui lòng kiểm tra lại.",
+      };
+    }
   } catch (error) {
-    console.error("Error updating game:", error.response || error.message);
-    return null; 
+    console.error("Error updating account:", error.response || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra trong quá trình cập nhật.",
+    };
   }
 };
+
 export const UpdateIMG = async (gameid,img) => {
   try {
     const response = await apiClient.put(`/Store/Dashboard/Image/Update/${gameid}`, img); 
@@ -218,33 +325,77 @@ export const UpdateIMG = async (gameid,img) => {
     return null; 
   }
 };
-export const UpdateDiscount = async (DiscountID,UpdateDiscount) => {
+export const UpdateDiscount = async (DiscountID, updatedDiscount) => {
   try {
-    const response = await apiClient.put(`/Store/Dashboard/Discount/Update/${DiscountID}`, UpdateDiscount); 
-    return response.data; 
+    const response = await apiClient.put(`/Store/Dashboard/Discount/Update/${DiscountID}`, updatedDiscount);
+    console.log(DiscountID,updatedDiscount);
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: response.data.message || "Cập nhật giảm giá thành công.",
+      };
+    } else if (response.status === 400) {
+      return {
+        success: false,
+        message: response.data.message || "Dữ liệu không hợp lệ, vui lòng kiểm tra lại.",
+      };
+    }
   } catch (error) {
-    console.error("Error updating game:", error.response || error.message);
-    return null; 
+    console.error("Error updating discount:", error.response || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra trong quá trình cập nhật.",
+    };
   }
 };
+
 export const UpdatePublisher = async (publisher,UpdatePublisher) => {
   try {
-    const response = await apiClient.put(`/Store/Dashboard/Discount/Update/${publisher}`, UpdatePublisher); 
+    const response = await apiClient.put(`/Store/Dashboard/Publisher/Update/${publisher}`, UpdatePublisher); 
     return response.data; 
   } catch (error) {
-    console.error("Error updating game:", error.response || error.message);
+    console.error("Error updating publisher:", error.response || error.message);
     return null; 
   }
-};
-export const DeleteDiscount = async (DiscountID) => {
+};export const DeleteDiscount = async (DiscountID) => {
   try {
-    const response = await apiClient.delete(`/Store/Dashboard/DeleteDiscount/${DiscountID}`);
-    return response.data; 
+    const response = await apiClient.delete(`/Store/Dashboard/Discount/Delete/${DiscountID}`);
+    
+    // Kiểm tra nếu thành công
+    if (response.status === 200) {
+      console.log("API Success:", response.data);
+      return { success: true, message: "Discount deleted successfully", data: response.data };
+    } else {
+      // Xử lý nếu API không trả về 200
+      return { success: false, message: "Failed to delete discount" };
+    }
   } catch (error) {
-    console.error("Lỗi khi xóa điscount:", error.response || error.message);
-    throw new Error("Xóa không thành công");
+    if (error.response) {
+      // Xử lý lỗi dựa trên mã lỗi HTTP
+      if (error.response.status === 400) {
+        console.error("API Error:", error.response.data.message);
+        return {
+          success: false,
+          message: error.response.data.message || "Dữ liệu không hợp lệ, vui lòng kiểm tra lại."
+        };
+      } else if (error.response.status === 500) {
+        console.error("Server Error:", error.response.data.message);
+        return {
+          success: false,
+          message: "Đã xảy ra lỗi từ phía máy chủ. Vui lòng thử lại sau."
+        };
+      }
+    } else {
+      // Xử lý khi không có phản hồi từ server (lỗi mạng hoặc cấu hình API sai)
+      console.error("Unexpected Error:", error.message);
+      return {
+        success: false,
+        message: "Có lỗi xảy ra. Vui lòng kiểm tra kết nối mạng hoặc cấu hình API."
+      };
+    }
   }
 };
+
 export const getOrders = async () => {
   try {
     const response = await fetch("https://dummyjson.com/carts/1");
