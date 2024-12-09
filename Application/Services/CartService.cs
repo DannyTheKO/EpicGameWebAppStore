@@ -183,6 +183,8 @@ public class CartService : ICartService
 	{
 		var cart = await _cartRepository.GetById(cartId);
 		if (cart == null) throw new Exception("Cart not found.");
+
+		cart.PaymentMethodId = paymentMethodId;
 		cart.CartStatus = "Completed";
 		await _cartRepository.Update(cart);
 	}
