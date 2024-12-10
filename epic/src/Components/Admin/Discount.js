@@ -64,6 +64,7 @@ function Discount() {
       filteredData = filteredData.filter((item) => {
         return (
           item.discountId.toString().includes(searchText) || // Tìm theo Discount 
+          item.gameId.toString().includes(searchText) ||
           item.code.toLowerCase().includes(searchTextLower) || // Tìm theo Code
           item.game?.title.toLowerCase().includes(searchTextLower) || // Tìm theo Game Title
           (item.startOn && item.startOn.toLowerCase().includes(searchTextLower)) || // Tìm theo Start Date
