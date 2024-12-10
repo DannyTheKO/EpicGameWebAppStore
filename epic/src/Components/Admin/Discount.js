@@ -44,91 +44,40 @@ function Discount() {
     fetchGame();
   }, []);
   const handleSearch = async () => {
-    if (!status && !searchText.trim()) {
-      // Nếu không có trạng thái và không có văn bản tìm kiếm, lấy toàn bộ dữ liệu
-      const updatedDataSource = await GetAllDiscount();
-      setDataSource(updatedDataSource);
-      return;
+    // Lấy danh sách tất cả mã giảm giá
+    const updatedDataSource = await GetAllDiscount();
+  
+    // Lọc theo trạng thái (nếu có)
+    let filteredData = updatedDataSource;
+    if (status) {
+      filteredData = filteredData.filter((item) => {
+        const isValid = checkDiscountValidity(item.startOn, item.endOn);
+        return status === "active" ? isValid : !isValid;
+      });
     }
   
-    if (!status && searchText.trim()) {
-      // Nếu không có trạng thái nhưng có văn bản tìm kiếm, lọc theo văn bản tìm kiếm
-      const filteredData = dataSource.filter((item) => {
-        const isMatchingDiscountId = item.discountId
-          .toString()
-          .includes(searchText); // Tìm theo Discount ID
-        const isMatchingCode = item.code
-          .toLowerCase()
-          .includes(searchText.toLowerCase()); // Tìm theo Code
-        const isMatchingGameTitle = item.game?.title
-          .toLowerCase()
-          .includes(searchText.toLowerCase()); // Tìm theo Game Title
-        const isMatchingStartOn = item.startOn
-          ? item.startOn.toLowerCase().includes(searchText.toLowerCase())
-          : false; // Tìm theo Start Date
-        const isMatchingEndOn = item.endOn
-          ? item.endOn.toLowerCase().includes(searchText.toLowerCase())
-          : false; // Tìm theo End Date
-  
+    // Lọc theo từ khóa tìm kiếm (nếu có)
+    if (searchText.trim()) {
+    
+      const searchTextLower = searchText.toLowerCase();
+      console.log(searchText);
+      filteredData = filteredData.filter((item) => {
         return (
-          isMatchingDiscountId ||
-          isMatchingCode ||
-          isMatchingGameTitle ||
-          isMatchingStartOn ||
-          isMatchingEndOn
+          item.discountId.toString().includes(searchText) || // Tìm theo Discount 
+          item.code.toLowerCase().includes(searchTextLower) || // Tìm theo Code
+          item.game?.title.toLowerCase().includes(searchTextLower) || // Tìm theo Game Title
+          (item.startOn && item.startOn.toLowerCase().includes(searchTextLower)) || // Tìm theo Start Date
+          (item.endOn && item.endOn.toLowerCase().includes(searchTextLower)) // Tìm theo End Date
         );
       });
-      setDataSource(filteredData);
-      return;
     }
   
-    if (status && !searchText.trim()) {
-      // Nếu có trạng thái, lọc theo trạng thái và kiểm tra tính hợp lệ của mã giảm giá
-      const filteredData = dataSource.filter((item) => {
-        const isValidDiscount = checkDiscountValidity(item.startOn, item.endOn); // Kiểm tra tính hợp lệ của mã giảm giá
-        return item.status === status && isValidDiscount; // Lọc theo trạng thái và tính hợp lệ
-      });
-      setDataSource(filteredData);
-    }
-    
-    if (status && searchText.trim()) {
-      // Nếu có cả trạng thái và văn bản tìm kiếm, lọc theo cả hai tiêu chí
-      const filteredData = dataSource.filter((item) => {
-        // Chuyển đổi text tìm kiếm về dạng chữ thường để so sánh dễ dàng hơn
-        const searchTextLower = searchText.toLowerCase();
-    
-        // Kiểm tra các tiêu chí tìm kiếm
-        const isMatchingDiscountId = item.discountId
-          .toString()
-          .includes(searchText); // Tìm theo Discount ID
-        const isMatchingCode = item.code
-          .toLowerCase()
-          .includes(searchTextLower); // Tìm theo Code
-        const isMatchingGameTitle = item.game?.title
-          .toLowerCase()
-          .includes(searchTextLower); // Tìm theo Game Title
-        const isMatchingStartOn = item.startOn
-          ? item.startOn.toLowerCase().includes(searchTextLower)
-          : false; // Tìm theo Start Date
-        const isMatchingEndOn = item.endOn
-          ? item.endOn.toLowerCase().includes(searchTextLower)
-          : false; // Tìm theo End Date
-    
-        // Lọc theo các tiêu chí tìm kiếm và trạng thái
-        return (
-          (isMatchingDiscountId ||
-            isMatchingCode ||
-            isMatchingGameTitle ||
-            isMatchingStartOn ||
-            isMatchingEndOn) &&
-          item.status === status // Kiểm tra cả trạng thái
-        );
-      });
-    
-      setDataSource(filteredData);
-    }
-      
+    // Cập nhật danh sách hiển thị
+    setDataSource(filteredData);
   };
+  
+;
+  
   const checkDiscountValidity = (startOn, endOn) => {
     const currentDate = new Date();  // Ngày hiện tại
     const startDate = new Date(startOn);  // Ngày bắt đầu
@@ -348,6 +297,7 @@ function Discount() {
             width: "150px",
           }}
         >
+               <Option value=""></Option>
           <Option value="active">Còn hạn sử dụng</Option>
           <Option value="expired">Hết hạn sử dụng</Option>
         </Select>
