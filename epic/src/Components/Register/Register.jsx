@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import "./regester.css";
-
+import EpicGamesLogo from "../../assets/EpicGames_Logo.png";
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -60,7 +60,7 @@ const RegisterForm = () => {
     <div className="wrapper">
       <form className="form-register" onSubmit={handleRegister}>
         <div className="logo">
-          <img src="/Images/EpicGames_Logo.png" alt="" />
+            <img src={EpicGamesLogo} alt="Epic Games Logo" />
         </div>
         <h1>REGISTER</h1>
         <div className="input_box">
