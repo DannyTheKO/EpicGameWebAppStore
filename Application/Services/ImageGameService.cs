@@ -81,15 +81,9 @@ namespace Application.Services
 				return (null, "Game not found!");
 			}
 
-			// Validate image type limit
-			if (!await ValidateImageTypeLimit(imageGame.GameId, imageGame.ImageType))
-			{
-				return (null, $"Only one {imageGame.ImageType} image is allowed per game");
-			}
-
 			// Create directory path for new location
 			var gameFolder = game.Title.Replace(" ", "_").ToLower();
-			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "epic", "public", "images", gameFolder, imageGame.ImageType);
+			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "epic", "public", "Images", gameFolder, imageGame.ImageType);
 			Directory.CreateDirectory(uploadsFolder);
 
 			// Delete old image from its original location
@@ -118,7 +112,7 @@ namespace Application.Services
 
 			// Update image properties
 			checkImageGame.FileName = fileName;
-			checkImageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageGame.ImageType}";
+			checkImageGame.FilePath = $"/Images/{gameFolder}/{imageGame.ImageType}/";
 			checkImageGame.ImageType = imageGame.ImageType;
 			checkImageGame.GameId = imageGame.GameId;
 
@@ -142,7 +136,7 @@ namespace Application.Services
 
 			// Create directory if the game folder does not exist
 			var gameFolder = game.Title.Replace(" ", "_").ToLower();
-			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "epic", "public", "images", gameFolder, imageType);
+			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),"epic", "public", "Images", gameFolder, imageType);
 			Directory.CreateDirectory(uploadsFolder);
 
 			// Create ImageGame first to get the ID
@@ -169,7 +163,7 @@ namespace Application.Services
 
 			// Update ImageGame with file info
 			imageGame.FileName = fileName;
-			imageGame.FilePath = $"/epic/public/images/{gameFolder}/{imageType}";
+			imageGame.FilePath = $"/Images/{gameFolder}/{imageType}/";
 
 			// Update the entity
 			await _imageGameRepository.Update(imageGame);

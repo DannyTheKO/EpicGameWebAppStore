@@ -1022,7 +1022,6 @@ public class Dashboard : _BaseController
 			Code = discountFormModel.Code,
 			StartOn = discountFormModel.StartOn,
 			EndOn = discountFormModel.EndOn,
-			Game = game
 		};
 
 		var updatedDiscount = await _discountService.UpdateDiscountAsync(discount);
@@ -1127,8 +1126,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Publisher/Create")]
 	public async Task<ActionResult> AddPublisher([FromBody] Publisher publisher)
 	{
-		var permissionFlag = await CheckPermission("add");
-		if (permissionFlag == false)
+			var permissionFlag = await CheckPermission("add");
+			if (permissionFlag == false)
 		{
 			return AccessDenied();
 		}

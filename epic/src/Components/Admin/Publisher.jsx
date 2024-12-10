@@ -114,7 +114,7 @@ function Publisher() {
         setDataSource(updatedDataSource);
         Modal.success({
           title: "Success",
-          content: `Publisher ID ${publisherRecord.id} đã được cập nhật thành công.`,
+          content: `Publisher đã được cập nhật thành công.`,
         });
       } catch (error) {
         console.error("Update failed", error);
