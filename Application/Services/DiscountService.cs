@@ -2,10 +2,6 @@
 using Domain.Entities;
 using Domain.Repository;
 
-// Domain
-
-// Application
-
 namespace Application.Services;
 
 public class DiscountService : IDiscountService
@@ -81,15 +77,15 @@ public class DiscountService : IDiscountService
 	public async Task<IEnumerable<Discount>> GetActiveDiscount()
 	{
 		var discountList = await _discountRepository.GetAll();
-		discountList = discountList.Where(d => d.StartOn <= DateTime.Now && d.EndOn >= DateTime.Now);
-		return discountList.ToList();
+		var filtered = discountList.Where(d => (d.StartOn <= DateTime.Now) && (d.EndOn >= DateTime.Now) );
+		return filtered.ToList();
 	}
 
 	// Search Expired Discount
 	public async Task<IEnumerable<Discount>> GetExpiredDiscount()
 	{
 		var discountList = await _discountRepository.GetAll();
-		discountList = discountList.Where(d => d.StartOn >= DateTime.Now && d.EndOn <= DateTime.Now);
+		discountList = discountList.Where(d => d.EndOn <= DateTime.Now);
 		return discountList.ToList();
 	}
 }

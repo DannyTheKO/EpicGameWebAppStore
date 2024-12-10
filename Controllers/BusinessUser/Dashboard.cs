@@ -1126,8 +1126,8 @@ public class Dashboard : _BaseController
 	[HttpPost("Publisher/Create")]
 	public async Task<ActionResult> AddPublisher([FromBody] Publisher publisher)
 	{
-		var permissionFlag = await CheckPermission("add");
-		if (permissionFlag == false)
+			var permissionFlag = await CheckPermission("add");
+			if (permissionFlag == false)
 		{
 			return AccessDenied();
 		}

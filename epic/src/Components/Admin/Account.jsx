@@ -44,7 +44,8 @@ function Account() {
     return userRole === "Admin";
   
   };
-  const openModal = (record = null) => {
+  
+  const openModal =async (record = null) => {
     if (record) {
       
       const matchedRole = dataRole.find(
@@ -59,8 +60,15 @@ function Account() {
       });
       setIsEditing(true);
     } else {
+      const updatedDataSource = await GetAccount();
+      setDataSource(updatedDataSource);
+      const maxId =
+        dataSource.length > 0
+          ? Math.max(...dataSource.map((item) => item.accountId))
+          : 0;
+  
       setAccountRecord({
-        id: Count + 1, // Tạo ID mới cho tài khoản
+        id: maxId + 1, // Tạo ID mới cho tài khoản
         role: "",
         username: "",
         email: "",
@@ -117,69 +125,39 @@ function Account() {
   };
   
   const handleSave = async () => {
-    if (!validateAccountRecord()) {
-      return;
-    }
+    if (!validateAccountRecord()) return;
+  
     const roleId = dataRole.find((role) => role.name === AccountRecord.role)?.roleId;
-  const recordToSave = { ...AccountRecord, roleId };
-    if (isEditing) {
-      console.log("Lưu dữ liệu đã sửa:", recordToSave);
-      try {
-        await UpdateAccount(AccountRecord.id, recordToSave);
-        const updatedDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-        setDataSource(updatedDataSource); // Cập nhật state với danh sách mới
-
+    const recordToSave = { ...AccountRecord, roleId };
+  
+    try {
+      const result = isEditing
+        ? await UpdateAccount(AccountRecord.id, recordToSave)
+        : await AddAccountu(recordToSave);
+  
+      if (result.success) {
+        const updatedData = await GetAccount(); // Lấy lại danh sách từ API
+        setDataSource(updatedData); // Cập nhật danh sách
         Modal.success({
-          title: "Account update successfully",
-          content: `The account with ID ${AccountRecord.id} has been deleted.`,
+          title: "Success",
+          content: result.message || "Dữ liệu đã được lưu thành công.",
         });
-      } catch (error) {
-        console.error("Error deleting account:", error);
+        setIsModalOpen(false); // Đóng modal
+      } else {
         Modal.error({
           title: "Error",
-          content:
-            "An error occurred while deleting the account. Please try again.",
+          content: result.message || "Có lỗi xảy ra, vui lòng thử lại.",
         });
       }
-      } else {
-
-          console.log("Thêm sản phẩm mới:", AccountRecord);
-          try {
-            const roleId = dataRole.find((role) => role.name === AccountRecord.role)?.roleId;
-            console.log(roleId);
-        
-            if (roleId) {
-              const newAccount = { ...AccountRecord, roleId }; // Thêm roleId vào dữ liệu tài khoản
-              delete newAccount.role; // Nếu cần loại bỏ key role tránh bị override.
-              console.log(newAccount);
-              await AddAccountu(newAccount); // Thêm tài khoản vào hệ thống
-        
-              const addDataSource = await GetAccount(); // Lấy lại danh sách tài khoản từ DB
-              setDataSource(addDataSource); // Cập nhật state với danh sách mới
-        
-              Modal.success({
-                title: "Success",
-                content: "Account added successfully.",
-              });
-            } else {
-              Modal.error({
-                title: "Error",
-                content: "Please select a valid role.",
-              });
-            }
-          } catch (error) {
-            console.error("Error adding account:", error);
-            Modal.error({
-              title: "Error",
-              content: "An error occurred while adding the account. Please try again.",
-            });
-          }
-        
-        
-      }
-    setIsModalOpen(false);
-  };  
-
+    } catch (error) {
+      console.error("Lỗi lưu dữ liệu:", error);
+      Modal.error({
+        title: "Lỗi",
+        content: "Không thể lưu dữ liệu, vui lòng thử lại.",
+      });
+    }
+  };
+  
   const handleDelete = (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this account?",
@@ -334,7 +312,7 @@ function Account() {
           onChange={(e) =>
             setAccountRecord({ ...AccountRecord, createdOn: e.target.value })
           } // Cập nhật giá trị
-          disabled={isEditing}
+          disabled
         />
         <label htmlFor="">Active</label>
         <Input
