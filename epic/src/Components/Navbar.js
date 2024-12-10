@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import '../styles/components/Navbar.css';
 import EpicGamesLogo from '../assets/EpicGames_Logo.png';
-
+import { jwtDecode } from "jwt-decode";
 const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -84,12 +84,21 @@ const Navbar = () => {
         setUsername("User");
         navigate('/');
     };
-
+    
     // Xử lý chuyển đến trang UserProfile
     const handleUserProfile = () => {
         navigate('/userprofile');
     };
 
+    const isAdmin = () => {
+        const role = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(role);
+        const userRole =
+            decodedToken[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ];
+        return userRole === "Admin" || userRole === "Moderator"
+    };
     return (
         <nav className={`navbar ${isNavbarVisible ? 'visible' : 'hidden'}`}>
             <div className="navbar-left">
@@ -126,9 +135,14 @@ const Navbar = () => {
                                 <button onClick={handleUserProfile} className="dropdown-item">
                                     User Profile
                                 </button>
+                                {isAdmin() && (
+                                    <button onClick={() => navigate("/admin")} className="dropdown-item">
+                                        Admin Page
+                                    </button>   
+                                )}
                                 <button onClick={handleLogout} className="dropdown-item">
-                                    Logout
-                                </button>
+                                    Log out
+                                </button>   
                             </div>
                         )}
                     </div>

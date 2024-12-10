@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./forgot.css";
-
+import EpicGamesLogo from "../../assets/EpicGames_Logo.png";
 const Forgotpass = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
@@ -14,21 +14,12 @@ const Forgotpass = () => {
         setSuccessMessage("");
 
         try {
-            // Gửi yêu cầu POST tới API backend
             const response = await axios.post(
                 "http://localhost:5084/Authenticate/ForgotPassword",
-                {
-                    Username: username,
-                    Email: email,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json", // Đảm bảo header đúng
-                    },
-                }
+                { Username: username, Email: email },
+                { headers: { "Content-Type": "application/json" } }
             );
 
-            // Kiểm tra trạng thái trả về
             if (response.data.forgotPasswordState) {
                 setSuccessMessage(response.data.message);
                 setUsername("");
@@ -37,46 +28,45 @@ const Forgotpass = () => {
                 setErrorMessage(response.data.message);
             }
         } catch (error) {
-            // Xử lý lỗi từ server
             setErrorMessage(error.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại.");
         }
     };
 
     return (
-        <div className="wrapper-forgot">
-            <form className="form-register" onSubmit={handleForgotPassword}>
-                <div className="logo">
-                    <img src="/Images/EpicGames_Logo.png" alt="Epic Games Logo" />
+        <div className="forgot-container">
+            <div className="forgot-box">
+                <div className="forgot-logo">
+                    <img src={EpicGamesLogo} alt="Epic Games Logo" />
                 </div>
-                <h1>FORGOT PASSWORD</h1>
-                <div className="input_box">
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="input_box">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                {errorMessage && <div className="error">{errorMessage}</div>}
-                {successMessage && <div className="success">{successMessage}</div>}
-
-                <button className="register" type="submit">Send</button>
-
-                <div className="login-link">
-                    <p>Already have an account? <a href="/login">Sign in</a></p>
+                <h1 className="forgot-title">Forgot Password</h1>
+                <form className="forgot-form" onSubmit={handleForgotPassword}>
+                    <div className="forgot-input">
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="forgot-input">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    {errorMessage && <div className="forgot-error">{errorMessage}</div>}
+                    {successMessage && <div className="forgot-success">{successMessage}</div>}
+                    <button type="submit" className="forgot-button">Send</button>
+                </form>
+                <div className="forgot-links">
+                    <p><a href="/login">Sign in</a></p>
                     <p><a href="/register">Create account</a></p>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };

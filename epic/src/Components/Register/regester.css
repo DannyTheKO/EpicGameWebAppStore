@@ -23,131 +23,108 @@ body {
   min-height: 120vh;
   }
 
-.wrapper
-{
-    height: 750px;
+.wrapper {
+    height: auto;
     width: 500px;
-    background: rgb(2, 28, 34);
-    color:#000000;
+    background: #2c2f33; /* Màu nền giống trang login */
+    color: #ffffff;
     border-radius: 10px;
-    padding: 30px 40px;
+    padding: 40px 50px; /* Tăng padding để tạo khoảng trống */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-.logo img
-{
-    
-    height: 50px;
-    width: 50px;
+    .wrapper h1 {
+        color: aqua;
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 20px; /* Tăng khoảng cách với các phần tử bên dưới */
+    }
+
+    .wrapper .input_box {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        margin-bottom: 25px; /* Tăng khoảng cách giữa các input */
+    }
+
+.input_box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 1px solid #555;
+    border-radius: 25px;
+    font-size: 16px;
+    color: #ffffff;
+    padding: 10px 40px; /* Thêm khoảng trống để không trùng với icon */
 }
-.logo
-{
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+
+    .input_box input::placeholder {
+        color: #aaa;
+    }
+
+.input_box .iconseyes {
+    position: absolute;
+    right: 15px; /* Đặt cách mép phải một khoảng */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
 }
+
 .error {
     color: red;
+    text-align: center;
     margin-bottom: 15px;
+}
+
+.success {
+    color: green;
     text-align: center;
-    /* display: none; */
+    margin-bottom: 15px;
 }
-.wrapper h1
-{
-    color: white;
-    font-size: 36px;
-    text-align: center;
-    padding: 10px;
-}
-.wrapper .input_box
-{
-    position: relative;
-    width: 100%;
-    height: 50px;
-    /* background: blue */
-    margin: 30px 20px 20px 0px;
-}
-.input_box input
-{
-    width: 100%;
-    height: 100% ;
-    background: transparent;
-    border: none;
-    outline: none;
-    border: 2px solid wheat;
-    border-radius: 2px;
-    font-size: 16px;
-    color: aquamarine;
-    padding: 20px 20px 20px 20px;
-     
-}
-.input_box input::placeholder
-{
-     color: white;
-}
-.input_box .icons
-{
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-}
-.input_box .iconseyes
-{
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-}
-.wrapper .forgot{
-    display: flex;
-    justify-content: center;
-    font-size: 15px;
-    padding: 10px 15px;
-    margin: -15px 0 15px;
-    
-}
- .forgot a{
-    color: white;
-    text-decoration: none;
- }
- .forgot a::hover
- {
-    text-decoration: underline;
- } 
- .wrapper button {
+
+.wrapper button {
     width: 100%;
     height: 45px;
-    background: whitesmoke;
+    background-color: #ff4081;
     border: none;
-    outline: none;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rebeccapurple;
+    border-radius: 25px;
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 25px;
-    color: blueviolet;
-    font-weight: 700 ;
- }
- .wrapper .login-link
- {
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Tạo khoảng cách với các thành phần bên trên */
+}
+
+    .wrapper button:hover {
+        background-color: #e63972;
+    }
+
+.login-link {
     font-size: 15px;
     text-align: center;
-    margin-top: 30px;
- }
- .login-link p
- {
-    color: aliceblue;
- }
- .login-link  a{
-    color: white;
-    text-decoration: none;
-    font-weight:600;
- }
- .login-link p a::hover{
-    text-decoration: underline;
- }
- .icons 
- {
-    color: white;
- }
+    margin-top: 20px; /* Tăng khoảng cách */
+}
+
+    .login-link p {
+        color: #aaa;
+    }
+
+    .login-link a {
+        color: aqua;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+.logo img {
+    height: 50px;
+    width: 50px;
+    display: block;
+    margin: 0 auto 20px auto; /* Căn giữa và tạo khoảng cách với tiêu đề */
+}

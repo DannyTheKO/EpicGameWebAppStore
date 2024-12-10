@@ -149,6 +149,7 @@
 .user-name {
     background: none;
     color: white;
+    width:170px;
     border: 1px solid #555;
     cursor: pointer;
     padding: 8px 12px;
@@ -177,6 +178,7 @@
 
 .dropdown-item {
     color: white;
+    width:150px;
     background: none;
     padding: 8px 10px;
     border-radius: 5px;
