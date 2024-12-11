@@ -152,76 +152,132 @@
 
 .review-section {
     margin-top: 30px;
-    background-color: #1c2025;
+    background-color: #20252b; /* Tông màu tối đồng nhất */
     padding: 20px;
     border-radius: 10px;
-    color: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5); /* Hiệu ứng đổ bóng */
+    color: rgba(255, 255, 255, 0.85); /* Màu chữ sáng vừa phải */
 }
 
     .review-section h2 {
         font-size: 1.8rem;
         margin-bottom: 20px;
+        text-align: left;
+        text-transform: uppercase;
+        color: aqua;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
     }
 
 .rating {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: left; /* Căn giữa các ngôi sao */
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
     .rating .star {
-        font-size: 1.5rem;
+        font-size: 2rem;
         cursor: pointer;
-        color: #888;
-        transition: color 0.2s;
+        color: #444; /* Màu xám nhạt ban đầu */
+        transition: color 0.2s, transform 0.2s;
     }
 
         .rating .star.selected {
-            color: #ffcc00; /* Màu vàng cho sao đã chọn */
+            color: #ffcc00; /* Màu vàng cho sao được chọn */
+            transform: scale(1.2); /* Tăng kích thước khi được chọn */
         }
 
 textarea {
     width: 100%;
-    min-height: 80px;
-    background-color: #2c2f33;
+    min-height: 100px;
+    background-color: #2b3037; /* Tông màu tối hơn */
     color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #444; /* Viền nhẹ để phân biệt */
+    border-radius: 8px;
+    margin-bottom: 15px;
     resize: vertical;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Hiệu ứng chìm */
 }
 
-.submit-review {
-    background-color: #ff4081;
+.submit-review-button {
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
+    text-transform: uppercase;
+    margin: 0 auto; /* Căn giữa nút */ 
 }
 
-    .submit-review:hover {
-        background-color: #e63972;
+    .submit-review-button:hover {
+        background-color: #218838;
     }
 
-.reviews-list {
-    margin-top: 20px;
+.reviews {
+    margin-top: 30px;
 }
 
-.review-item {
+.review {
     background-color: #2c2f33;
-    padding: 15px;
-    border-radius: 5px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffcc00; /* Màu vàng nổi bật cho đánh giá */
     margin-bottom: 10px;
 }
 
-.review-rating .star {
-    font-size: 1.2rem;
-    color: #ffcc00;
+.review p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85); /* Màu sáng hơn cho phần text */
+    text-align: justify;
 }
+
+    .review p:first-letter {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: aqua; /* Chữ cái đầu nổi bật */
+    }
+
+.alert-message {
+    background-color: #333;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
 
 
 .game-rating h3 {
