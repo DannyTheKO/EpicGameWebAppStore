@@ -91,16 +91,40 @@ const GamePage = () => {
     }, [id]);
 
     const handleNextImage = () => {
-        if (hasGameplayImages) {
+        if (gameplayImages.length > 0) {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % gameplayImages.length);
         }
     };
 
     const handlePrevImage = () => {
-        if (hasGameplayImages) {
+        if (gameplayImages.length > 0) {
             setCurrentImageIndex((prevIndex) =>
                 (prevIndex - 1 + gameplayImages.length) % gameplayImages.length
             );
+        }
+    };
+
+
+    const getVisibleImages = () => {
+        if (!gameplayImages || gameplayImages.length === 0) return []; // Trả về danh sách trống nếu không có ảnh
+        const len = gameplayImages.length;
+        const leftIndex = (currentImageIndex - 1 + len) % len; // Xử lý chỉ số vòng lặp
+        const rightIndex = (currentImageIndex + 1) % len;
+
+        return [
+            gameplayImages[leftIndex],
+            gameplayImages[currentImageIndex],
+            gameplayImages[rightIndex],
+        ];
+    };
+
+
+
+    const handleImageClick = (clickedIndex) => {
+        if (gameplayImages.length > 0) {
+            const len = gameplayImages.length;
+            const newIndex = (clickedIndex + len) % len; // Đảm bảo chỉ số luôn hợp lệ
+            setCurrentImageIndex(newIndex);
         }
     };
 
@@ -178,17 +202,27 @@ const GamePage = () => {
                 {hasGameplayImages ? (
                     <div className="gameplay-slider">
                         <button className="prev-button" onClick={handlePrevImage}>❮</button>
-                        <img
-                            src={`${process.env.PUBLIC_URL}${gameplayImages[currentImageIndex]?.filePath}${gameplayImages[currentImageIndex]?.fileName}`}
-                            alt={`Gameplay ${currentImageIndex + 1}`}
-                            className="gameplay-image"
-                            onError={(e) => {
-                                e.target.src = '/images/placeholder.png'; // Ảnh dự phòng nếu lỗi
-                                console.log('Lỗi khi tải hình ảnh, sử dụng ảnh placeholder');
-                            }}
-                        />
+                        <div className="gameplay-images">
+                            {getVisibleImages().map((img, index) => {
+                                const isMainImage = index === 1; // Ảnh giữa là ảnh chính
+                                return (
+                                    <img
+                                        key={index}
+                                        src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
+                                        alt={`Gameplay ${index + 1}`}
+                                        className={`gameplay-image ${isMainImage ? 'main-image' : 'dimmed-image'}`}
+                                        onClick={() => handleImageClick((currentImageIndex + index - 1) % gameplayImages.length)}
+                                        style={{
+                                            transform: isMainImage ? 'scale(1.2)' : 'scale(1)',
+                                            opacity: isMainImage ? 1 : 0.5,
+                                        }}
+                                    />
+                                );
+                            })}
+                        </div>
                         <button className="next-button" onClick={handleNextImage}>❯</button>
                     </div>
+
                 ) : (
                     <div className="no-gameplay-message">Không có hình ảnh gameplay.</div>
                 )}

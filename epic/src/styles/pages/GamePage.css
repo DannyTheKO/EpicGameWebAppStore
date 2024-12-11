@@ -261,16 +261,11 @@ textarea {
 .star {
     color: #ffcc00; /* Màu vàng cho ngôi sao */
 }
-.gameplay-section {
-    text-align: center;
-    margin-top: 100px ;
-    margin-bottom: 100px;
-    position: relative; /* Đặt vị trí tương đối để căn chỉnh các thành phần con */
-}
-.gameplay-section h2 {
-    font-size: 2rem;
+.gameplay-section h2{
+    margin-top : 5rem;
+    font-size: 1.8rem;
     color: aqua;
-    margin-bottom: 15px;
+    margin-bottom: 35px;
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
@@ -280,72 +275,47 @@ textarea {
     animation: glow 1.5s infinite alternate;
 }
 .gameplay-slider {
-    position: relative;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.gameplay-images {
+    margin-top: 3rem;
+    margin-bottom: 5rem;
+    display: flex;
+    gap: 10px;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 800px; /* Giới hạn chiều rộng tối đa của slider */
-    height: 400px; /* Đặt chiều cao cố định cho slider */
-    overflow: hidden; /* Ẩn phần ảnh vượt khỏi khung */
-    border-radius: 10px; /* Bo góc cho slider */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7); /* Hiệu ứng đổ bóng */
-    background-color: rgba(0, 0, 0, 0.8); /* Nền tối cho khung ảnh */
 }
 
 .gameplay-image {
-    width: 100%; /* Chiều rộng tối đa */
-    aspect-ratio: 16 / 9; /* Tỷ lệ 16:9 */
-    object-fit: cover; /* Đảm bảo lấp đầy khung mà không méo */
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-    .gameplay-image:hover {
-        transform: scale(1.03); /* Phóng to nhẹ khi hover */
-        opacity: 0.95; /* Làm ảnh mờ đi chút khi hover */
-    }
-
-.prev-button,
-.next-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.6); /* Nền đen mờ */
-    color: white;
-    border: none;
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%; /* Nút hình tròn */
+    width: 400px;
+    height: auto;
+    transition: transform 0.3s, opacity 0.3s;
     cursor: pointer;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
-    .prev-button:hover,
-    .next-button:hover {
-        background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ khi hover */
-        color: black; /* Màu chữ đậm khi hover */
-        transform: scale(1.2); /* Nút phóng to nhẹ khi hover */
+    .gameplay-image.main-image {
+        width: 550px;
+        height: auto;
+        transform: scale(1.2);
+        z-index: 2;
     }
 
-.prev-button {
-    left: 10px; /* Căn bên trái */
+    .gameplay-image.dimmed-image {
+        opacity: 0.5;
+    }
+
+.prev-button, .next-button {
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
 }
 
-.next-button {
-    right: 10px; /* Căn bên phải */
-}
-
-.no-gameplay-message {
-    font-size: 18px;
-    color: #888;
-    margin-top: 20px;
-}
 
 /* CSS cho thông báo alert */
 .alert-message {

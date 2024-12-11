@@ -10,7 +10,7 @@
 
 .banner {
     display: flex;
-    width: 100vw; /* Mở rộng để tất cả ảnh nằm trong banner */
+    width: 99vw; /* Mở rộng để tất cả ảnh nằm trong banner */
     animation: slide 15s infinite;
 }
 
@@ -85,3 +85,98 @@
     50%, 70% { transform: translateX(-200vw); }
     100% { transform: translateX(0); }
 }
+
+.publisher-section,
+.genre-section {
+    margin: 20px;
+}
+
+    .publisher-section h2,
+    .genre-section h2 {
+        font-size: 2.5rem;
+        color: aqua;
+        margin-bottom: 35px;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        background: linear-gradient(90deg, #00ffff, #0066ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 1.5s infinite alternate;
+    }
+
+.publisher-grid,
+.genre-grid {
+    margin-left: 50px;
+    margin-right: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.publisher-item-h,
+.genre-item-h {
+    flex: 1 1 calc(20% - 1rem); /* Adjusted to fit 5 items */
+    background-color: #1e242c;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.publisher-item-h h3,
+.genre-item-h h3 {
+    font-size: 1.7rem;
+    margin: 0.5rem 0;
+    color: #fff;
+    text-align:center;
+    font-weight:bold;
+}
+
+.publisher-item-h p,
+.genre-item-h p {
+    font-size: 0.875rem;
+    color: #aaa;
+    margin: 0.5rem 0;
+}
+
+.publisher-item,
+.genre-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-top: 2rem;
+}
+
+.publisher-item img,
+.genre-item img {
+    width: 100px; /* Adjusted size */
+    height: 130px; /* Adjusted size */
+    object-fit: cover;
+    margin-right: 0.7rem;
+}
+
+.publisher-item .game-details,
+.genre-item .game-details {
+    display: flex;
+    flex-direction: column;
+}
+
+    .publisher-item h4,
+    .genre-item h4 {
+        font-size: 1.15rem;
+        color: #a39e9e;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .publisher-item p,
+    .genre-item p {
+        font-size: 1rem;
+        color: aqua;
+        margin: 0;
+        margin-top: 0.25rem; /* Adjusted to push price below the title */
+        font-weight: bold;
+    }
