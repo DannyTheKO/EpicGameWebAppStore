@@ -130,7 +130,7 @@ function Accountgame() {
   return (
     <Space className="size_table" size={20} direction="vertical">
       <Button type="primary" onClick={() => openModal()}  style={{ marginLeft: "1450px" ,marginTop: "20px"  }}>
-                  Thêm
+                  Add
                 </Button>
       <Table
         className="data"
@@ -176,7 +176,7 @@ function Accountgame() {
             render: (record) => (
               <Space size="middle">
                 <Button danger onClick={() => handleDelete(record)}>
-                  Xóa
+                  Delete
                 </Button>
               </Space>
             ),
@@ -190,7 +190,7 @@ function Accountgame() {
       ></Table>
       <Modal
         className="form_addedit"
-        title={"Thêm tài khoản mới"}
+        title={"Add account game new"}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}

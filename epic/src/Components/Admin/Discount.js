@@ -397,7 +397,7 @@ function Discount() {
       />
       <Modal
         className="form_addedit"
-        title={isEditing ? "Sửa thông tin discount" : "Thêm discount mới"}
+        title={isEditing ? "Edit discount information" : "Add discount new"}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}

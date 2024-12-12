@@ -11,39 +11,29 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { GrFormPrevious, GrFormNext } from "react-icons/gr";
-import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from 'react-router-dom';
 import {
   GetAllgame,
   DeleteGame,
   GetAllPublisher,
   GetAllGenre,
   UpdateGame,
-  GetImgGame,
-  DeleteIMG,
-  UpdateIMG,
-  GetIMGbygameid,
 } from "./API";
 import "./table.css";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 const { Text } = Typography;
 const { Option } = Select;
 function Game() {
-  const [fileList, setFileList] = useState([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [datagenre, setgenre] = useState([]);
-  const [CurrentSelectedImage, setCurrentSelectedImage] = useState(0);
   const [datapublisher, setpublisher] = useState([]);
-  const [dataImg, setDataImg] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpenIMG, setIsModalOpenIMG] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imageType, setImageType] = useState(""); // Loại ảnh (Thumbnail, Banner, Background, Screenshot)
-  const [file, setFile] = useState(null);
   const [gameRecord, setGameRecord] = useState({
     gameId: "",
     title: "",
@@ -76,255 +66,14 @@ function Game() {
   useEffect(() => {
     fetchGame();
   }, []);
-  const handleCloseModalAU = () => {
-    setIsModalOpenIMG(false); // Đóng modal khi click Hủy
-  };
+ 
 
-  const handleChange = (value) => {
-    setImageType(value);
-  };
 
   // Hàm xử lý khi file thay đổi
-  const handleFileChangeIMG = ({ fileList }) => {
-    setFileList(fileList);
-  };
 
-  const handleAddIMG = async (gameId) => {
-    if (!imageType) {
-      alert("Vui lòng chọn loại ảnh.");
-      return;
-    }
-    if (fileList.length === 0) {
-      alert("Vui lòng chọn ít nhất một file.");
-      return;
-    }
-    const token = localStorage.getItem("authToken");
 
-    // Kiểm tra token
-    if (!token) {
-      alert("Bạn cần phải đăng nhập.");
-      return;
-    }
-    try {
-      // Duyệt qua tất cả các file trong fileList
-      for (const file of fileList) {
-        const formData = new FormData();
-        formData.append("GameId", gameId);
-        formData.append("ImageType", imageType); // Chọn loại ảnh
-        formData.append("imageFile", file.originFileObj); // Tải lên file
-        console.log("file", file);
-        const response = await axios.post(
-          "http://localhost:5084/Store/Dashboard/Image/Add",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data && response.data.success) {
-          alert("Thêm ảnh thành công");
-        } else {
-          alert("Thất bại khi thêm ảnh");
-        }
-        setFileList([]);
-        setImageType("");
-      }
-    } catch (error) {
-      console.error("Lỗi khi thêm ảnh:", error);
-      alert("Đã có lỗi xảy ra khi thêm ảnh.");
-    }
-    handleCloseModalAU();
-  };
-
+ 
   // Hàm xử lý cập nhật ảnh
-  const handleUpdateIMG = async (gameId) => {
-    if (!imageType) {
-      alert("Vui lòng chọn loại ảnh.");
-      return;
-    }
-
-    if (fileList.length === 0) {
-      alert("Vui lòng chọn ít nhất một file.");
-      return;
-    }
-
-    const token = localStorage.getItem("authToken");
-
-    // Kiểm tra token
-    if (!token) {
-      alert("Bạn cần phải đăng nhập.");
-      return;
-    }
-
-    try {
-      // Lấy ảnh của game theo gameId
-      const imgbygameid = await GetIMGbygameid(gameId); // Thêm await nếu GetIMGbygameid là async
-      const idimg = imgbygameid
-        .filter((image) => image.imageType === imageType)
-        .map((image) => image.imageGameId);
-      console.log(idimg);
-
-      const img = {
-        gameId: gameId,
-        imageType: imageType, // Loại ảnh (ví dụ: 'Thumbnail', 'Banner', v.v.)
-        imageFile: fileList[0].originFileObj, // Lấy file từ fileList, giả sử chỉ có một file
-      };
-      console.log(idimg);
-
-      const formData = new FormData();
-      formData.append("GameId", img.gameId);
-      formData.append("ImageType", img.imageType);
-      formData.append("imageFile", img.imageFile); // Không cần gọi .originFileObj ở đây nếu là file trong fileList
-      console.log(formData.get("imageFile"));
-      if (idimg>0) {
-        try {
-          const response = await axios.put(
-            `http://localhost:5084/Store/Dashboard/Image/Update/${idimg}`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Sử dụng token từ localStorage
-              },
-            }
-          );
-          if(response.status)
-          {
-            alert("Thay đổi ảnh thành công")
-            setFileList([]);
-        setImageType("");
-          }
-          console.log("Image updated successfully:", response.data);
-          handleCloseModalAU(); // Đảm bảo hàm này đã được định nghĩa
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      } else {
-        const response = await axios.post(
-          "http://localhost:5084/Store/Dashboard/Image/Add",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data && response.data.success) {
-          alert("Thêm ảnh thành công");
-        } else {
-          alert("Đã có ảnh thất bại khi thêm ảnh");
-        }
-        setFileList([]);
-        setImageType("");
-      }
-    } catch (error) {
-      console.error("Error getting image by game ID:", error);
-    }
-  };
-
-  const handleDeleteImg = async () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this discount?",
-      content: "This action cannot be undone.",
-      okText: "Delete",
-      okType: "danger",
-      cancelText: "Cancel",
-      onOk: () => {
-        const ImgID = CurrentSelectedImage.imageGameId;
-        DeleteIMG(ImgID)
-          .then(() => {
-            Modal.success({
-              title: "Success",
-              content: "Image deleted successfully!",
-            });
-            setIsImageModalOpen(false);
-          })
-          .catch((error) => {
-            console.error("Error deleting image:", error);
-          });
-      },
-    });
-  };
-
-  const ImageSlider = ({ imageUrls }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const validImageUrls = imageUrls.filter(
-      (image) => image.filePath && image.fileName
-    );
-    if (!validImageUrls || validImageUrls.length === 0) {
-      return <p>No valid images available</p>;
-    }
-    const imagesPerPage = 3; // Số ảnh hiển thị trên một trang
-    const nextImage = () => {
-      setCurrentIndex(
-        (prevIndex) => (prevIndex + imagesPerPage) % validImageUrls.length
-      );
-    };
-    const prevImage = () => {
-      setCurrentIndex(
-        (prevIndex) =>
-          (prevIndex - imagesPerPage + validImageUrls.length) %
-          validImageUrls.length
-      );
-    };
-    const displayedImages = validImageUrls.slice(
-      currentIndex,
-      Math.min(currentIndex + imagesPerPage, validImageUrls.length)
-    );
-    return (
-      <div style={{ textAlign: "center" }}>
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-          <button
-            onClick={prevImage}
-            style={{
-              marginTop: "25px",
-              width: "50px",
-              height: "50px",
-              borderRadius: "50%",
-              cursor: "pointer",
-            }}
-          >
-            <GrFormPrevious />
-          </button>
-          {displayedImages.map((image, index) => (
-            <img
-              key={image.id || index}
-              src={`${image.filePath}${image.fileName}`}
-              alt={`Image ${index + 1}`}
-              onClick={() => setCurrentSelectedImage(image)}
-              style={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "10px",
-                border:
-                  CurrentSelectedImage === image
-                    ? "5px solid blue"
-                    : "5px solid #ccc",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                cursor: "pointer",
-              }}
-            />
-          ))}
-
-          <button
-            onClick={nextImage}
-            style={{
-              marginTop: "25px",
-              width: "50px",
-              height: "50px",
-              borderRadius: "50%",
-              cursor: "pointer",
-            }}
-          >
-            <GrFormNext />
-          </button>
-        </div>
-      </div>
-    );
-  };
 
 
   const isAdmin = () => {
@@ -335,9 +84,6 @@ function Game() {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
       ];
     return userRole === "Admin";
-  };
-  const handleCloseModal = () => {
-    setIsImageModalOpen(false);
   };
   const openModal = async(record = null) => {
     if (record) {
@@ -375,24 +121,6 @@ function Game() {
       setIsEditing(false);
     }
     setIsModalOpen(true);
-  };
-  const openModalImg = async (record = null) => {
-    if (record) {
-      setGameRecord(record);
-      try {
-        const imgData = await GetImgGame(record.gameId);
-        setDataImg(imgData);
-      } catch (error) {
-        console.error("Lỗi khi lấy ảnh:", error);
-      }
-    }
-    setIsImageModalOpen(true);
-  };
-  const openModalAddUpdate = async (record = null) => {
-    if (record) {
-      setGameRecord(record);
-    }
-    setIsModalOpenIMG(true);
   };
 
   const handleSave = async () => {
@@ -455,7 +183,6 @@ function Game() {
           return;
         }
 
-        // Tạo đối tượng FormData
         const formData = new FormData();
         formData.append("Price", gameRecord.price);
         formData.append("Author", gameRecord.author);
@@ -466,9 +193,7 @@ function Game() {
         formData.append("GenreId", gameRecord.genreId);
         formData.append("Release", gameRecord.release);
         formData.append("imageFile", selectedImage);
-        // for (let [key, value] of formData.entries()) {
-        //   console.log(`${key}: ${value}`);
-        // }
+    
         const response = await axios.post(
           "http://localhost:5084/Store/Dashboard/Game/Create",
           formData,
@@ -704,35 +429,21 @@ function Game() {
       key: "release",
       render: (release) => new Date(release).toLocaleDateString(),
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      render: (description) => (
-        <Text ellipsis style={{ maxWidth: 200 }}>
-          {description}
-        </Text>
-      ),
-    },
+ 
     {
       title: "Actions",
       key: "actions",
       render: (record) => (
         <Space size="middle">
-          <Button onClick={() => openModal(record)} type="primary">
-            Edit
-          </Button>
+            <Button onClick={() => navigate(`/edit/${record.gameId}`)} type="primary">
+          Edit
+        </Button>
           {isAdmin() && (
             <Button danger onClick={() => handleDelete(record)}>
               Delete
             </Button>
           )}
-          <Button onClick={() => openModalImg(record)} type="primary">
-            Xem ảnh
-          </Button>
-          <Button onClick={() => openModalAddUpdate(record)} type="primary">
-            Chỉnh sửa ảnh
-          </Button>
+         
         </Space>
       ),
     },
@@ -880,10 +591,6 @@ function Game() {
           onChange={(e) =>
             setGameRecord({ ...gameRecord, description: e.target.value })
           }
-          //  style={{
-          //   width: "10px", // Đặt chiều rộng
-          //   height: "50px",  // Đặt chiều cao
-          // }}
         />
         {!isEditing && (
           <>
@@ -897,143 +604,8 @@ function Game() {
           </>
         )}{" "}
       </Modal>
-      <Modal
-        open={isImageModalOpen}
-        onCancel={() => setIsImageModalOpen(false)}
-        title={`Ảnh của ${gameRecord.title || "N/A"}`}
-        footer={[
-          <Button
-            key="delete"
-            onClick={() => handleDeleteImg(gameRecord.gameId)}
-            danger
-          >
-            Xóa
-          </Button>,
+     
 
-          <Button key="cancel" onClick={handleCloseModal}>
-            Hủy
-          </Button>,
-        ]}
-      >
-        {dataImg.length === 0 ? (
-          <div>
-            <p>Không có ảnh Thumbnail</p>
-            <p>Không có ảnh Banner</p>
-            <p>Không có ảnh Background</p>
-          </div>
-        ) : (
-          <div>
-            {["Thumbnail", "Banner", "Background"].map((type) => (
-              <div key={type}>
-                <h3>{type}</h3>
-                <br />
-                {dataImg.some((img) => img.imageType === type) ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {dataImg.map(
-                      (img, index) =>
-                        img.imageType === type && (
-                          <img
-                            key={index}
-                            src={`${process.env.PUBLIC_URL}${img.filePath}${img.fileName}`}
-                            alt={img.fileName}
-                            onClick={() => setCurrentSelectedImage(img)} // Cập nhật ảnh được chọn
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              borderRadius: "8px",
-                              marginBottom: "10px",
-                              cursor: "pointer",
-                              border:
-                                CurrentSelectedImage === img
-                                  ? "5px solid blue" // Đánh dấu ảnh được chọn
-                                  : "5px solid #ccc",
-                              margin: "5px", // Khoảng cách giữa các ảnh
-                            }}
-                          />
-                        )
-                    )}
-                  </div>
-                ) : (
-                  <p>Không có ảnh {type}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-        {/* Background Section */}
-        <div>
-          <h3>Screenshot</h3>
-          <br />
-          {dataImg.some((img) => img.imageType === "Screenshot") ? (
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {
-                <ImageSlider
-                  imageUrls={dataImg.filter(
-                    (img) => img.imageType === "Screenshot"
-                  )}
-                />
-              }
-            </div>
-          ) : (
-            <p>Không có ảnh Screenshot </p>
-          )}
-        </div>
-      </Modal>
-      <Modal
-        title="Chỉnh sửa ảnh"
-        open={isModalOpenIMG}
-        onCancel={() => setIsModalOpenIMG(false)}
-        closable
-        footer={[
-          <Button key="Add" onClick={() => handleAddIMG(gameRecord.gameId)}>
-            Thêm
-          </Button>,
-          <Button
-            key="Update"
-            onClick={() => handleUpdateIMG(gameRecord.gameId)}
-            danger
-          >
-            Thay đổi
-          </Button>,
-          <Button key="cancel" onClick={handleCloseModalAU}>
-            Hủy
-          </Button>,
-        ]}
-      >
-        <p>Chọn một loại ảnh</p>
-        <Select
-          style={{ width: "100%", marginBottom: "20px" }}
-          placeholder="Select an option"
-          onChange={handleChange}
-        >
-          <Option value="Thumbnail">Thumbnail</Option>
-          <Option value="Banner">Banner</Option>
-          <Option value="Background">Background</Option>
-          <Option value="Screenshot">Screenshot</Option>
-        </Select>
-
-        <p>Tải lên file:</p>
-        <Upload
-          multiple
-          fileList={fileList}
-          beforeUpload={() => false} // Prevent auto-upload
-          onChange={handleFileChangeIMG}
-        >
-          <Button icon={<UploadOutlined />}>Chọn file</Button>
-        </Upload>
-      </Modal>
     </Space>
   );
 }

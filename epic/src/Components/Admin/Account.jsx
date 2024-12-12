@@ -273,7 +273,7 @@ function Account() {
       ></Table>
       <Modal
         className="form_addedit"
-        title={isEditing ? "Sửa thông tin tài khoản" : "Thêm tài khoản mới"}
+        title={isEditing ? "Edit account information" : "Add account new"}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSave}

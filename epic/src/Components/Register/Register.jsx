@@ -38,8 +38,6 @@ const RegisterForm = () => {
             }
           );
           window.location.href = "/login";
-          
-
       if (response.status === 201) {
         setSuccessMessage("Registration successful!");
         setErrorMessage("");

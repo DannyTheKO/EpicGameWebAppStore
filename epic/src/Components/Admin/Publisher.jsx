@@ -216,7 +216,7 @@ function Publisher() {
       <Modal
         className="form_addedit"
         title={
-          isEditing ? "Sửa thông tin nhà sản xuất" : "Thêm nhà sản xuất mới"
+          isEditing ? "Edit manufacturer information" : "Add new manufacturer"
         }
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

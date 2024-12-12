@@ -15,6 +15,7 @@ import Discount from "./Components/Admin/Discount.js";
 import Publisher from "./Components/Admin/Publisher.jsx";
 import Cart from "./Components/Admin/Cart.jsx";
 import {jwtDecode} from 'jwt-decode';
+import Edit from "./Components/Admin/EditGame.js"
 
 // User Routes
 import UserRoutes from "./User.js";  // Import UserRoutes
@@ -37,6 +38,8 @@ return (
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot_pass" element={<Forgotpass />} />
+        <Route path="/edit/:id" element={<Edit />} />
+
         
         {/* Routes dành cho người dùng */}
         <Route path="/*" element={<UserRoutes />} />  {/* Bao bọc UserRoutes trong Route */}

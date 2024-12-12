@@ -172,8 +172,8 @@
   };
 
     return (
-      <Card style={{ width: 1200, height: "auto", marginLeft: 200 }}>
-        <Bar options={options} data={reveneuData} />
+      <Card style={{ width: 1200, height: "500px", marginLeft: 200 }}>
+        <Bar style={{ width: 1200, height: "500px", marginLeft: 100 }} options={options} data={reveneuData} />
       </Card>
     );
   }
